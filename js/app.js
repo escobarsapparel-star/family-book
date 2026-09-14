@@ -291,6 +291,9 @@ function getFamilyStory(){
 async function saveFamilyStory(v){
  return window.FB_FAMILY_DATA?.saveStory?.(v);
 }
+async function uploadFamilyStoryCover(blob,position){
+ return window.FB_FAMILY_DATA?.uploadStoryCover?.(blob,position);
+}
 function storyPhotoList(memories,{imagesOnly=false}={}){
  let rows=[];
  [...memories].reverse().forEach(m=>{
@@ -328,9 +331,9 @@ async function bindHomeMemories(){
   const hero=$("#homeHero");
   if(hero){
     const story=getFamilyStory();
-    let coverRow=null;
+    let coverRow=null,uploadedCover=story.storagePath&&story.url?story.url:"";
 
-    if(story.memoryId){
+    if(!uploadedCover&&story.memoryId){
       const memory=list.find(m=>m.id===story.memoryId);
       const photos=memory?FB_MEMORIES.getPhotos(memory):[];
       const photo=photos[Number(story.photoIndex)||0];
@@ -339,8 +342,8 @@ async function bindHomeMemories(){
 
     clearStoryUrls();
 
-    if(coverRow){
-      const src=storyBlobUrl(coverRow.photo.image||coverRow.photo.thumb);
+    if(uploadedCover||coverRow){
+      const src=uploadedCover||storyBlobUrl(coverRow.photo.image||coverRow.photo.thumb);
       const sx=Number(story.x),sy=Number(story.y);
       const x=Math.max(0,Math.min(100,Number.isFinite(sx)?sx:50));
       const y=Math.max(0,Math.min(100,Number.isFinite(sy)?sy:50));
@@ -360,59 +363,113 @@ async function bindHomeMemories(){
 }
 
 function storyCoverPage(){
- return `<section class="story-cover-page"><button class="back-link" data-r="home"><i data-lucide="arrow-left"></i>Back to Home</button><div class="story-page-head"><p class="eyebrow">${esc(familyLabel()).toUpperCase()}</p><h1>Create Family Cover</h1><p>Choose a photo already saved in Memories, then position it inside the wide Family Book cover.</p></div><div id="storyCoverMount" class="story-loading"><span class="memory-spinner"></span><p>Opening your family photos…</p></div></section>`;
+ return `<section class="story-cover-page"><button class="back-link" data-r="home"><i data-lucide="arrow-left"></i>Back to Home</button><div class="story-page-head"><p class="eyebrow">${esc(familyLabel()).toUpperCase()}</p><h1>Create Family Cover</h1><p>Upload a new cover photo or choose one already saved in Memories, then position it inside the wide Family Book cover.</p></div><div id="storyCoverMount" class="story-loading"><span class="memory-spinner"></span><p>Opening your family photos…</p></div></section>`;
+}
+
+async function prepareStoryCoverPhoto(file){
+ if(!file?.type?.startsWith("image/"))throw new Error("Please choose a photo.");
+ let bitmap=null,source=null,width=0,height=0;
+ if("createImageBitmap" in window){
+  try{bitmap=await createImageBitmap(file,{imageOrientation:"from-image"});source=bitmap;width=bitmap.width;height=bitmap.height}catch(_){}
+ }
+ if(!source){
+  const url=URL.createObjectURL(file);
+  try{
+   const img=await new Promise((resolve,reject)=>{const im=new Image();im.onload=()=>resolve(im);im.onerror=()=>reject(new Error("This photo could not be opened."));im.src=url});
+   source=img;width=img.naturalWidth;height=img.naturalHeight;
+  }finally{URL.revokeObjectURL(url)}
+ }
+ if(!width||!height)throw new Error("This photo has no readable dimensions.");
+ const scale=Math.min(1,2400/Math.max(width,height)),w=Math.max(1,Math.round(width*scale)),h=Math.max(1,Math.round(height*scale));
+ const c=document.createElement("canvas");c.width=w;c.height=h;const ctx=c.getContext("2d",{alpha:false});ctx.fillStyle="#fff";ctx.fillRect(0,0,w,h);ctx.drawImage(source,0,0,w,h);
+ const blob=await new Promise((resolve,reject)=>c.toBlob(b=>b?resolve(b):reject(new Error("Could not prepare this Family Cover.")),"image/webp",.84));
+ if(bitmap)bitmap.close();
+ return blob;
 }
 
 async function bindStoryCover(){
  const mount=$("#storyCoverMount");if(!mount||!FB_MEMORIES?.getAll)return;
  clearStoryUrls();
  try{
-  const memories=await FB_MEMORIES.getAll(),rows=storyPhotoList(memories,{imagesOnly:true});
-  if(!rows.length){
-    mount.className="story-empty";
-    mount.innerHTML=`<i data-lucide="images"></i><h2>No photos yet</h2><p>Add a Memory first, then you can choose a Family Cover.</p><button class="primary" data-r="add-memory">Add memory</button>`;
-    mount.querySelector("[data-r]")?.addEventListener("click",()=>go("add-memory"));
-    icons();return;
-  }
-
-  const saved=getFamilyStory();
+  const memories=await FB_MEMORIES.getAll(),rows=storyPhotoList(memories,{imagesOnly:true}),saved=getFamilyStory();
   let selected=rows.findIndex(r=>r.memory.id===saved.memoryId&&r.index===(Number(saved.photoIndex)||0));
-  if(selected<0)selected=0;
+  if(selected<0&&rows.length)selected=0;
 
   let x=Number.isFinite(Number(saved.x))?Number(saved.x):50;
   let y=Number.isFinite(Number(saved.y))?Number(saved.y):50;
+  let source=saved.storagePath&&saved.url?"upload":(rows.length?"memory":"none");
+  let stagedBlob=null,stagedUrl="";
   const urls=rows.map(r=>storyBlobUrl(r.photo.thumb||r.photo.image));
   const fullUrls=rows.map(r=>storyBlobUrl(r.photo.image||r.photo.thumb));
 
   mount.className="story-cover-builder";
-  mount.innerHTML=`<div class="story-cover-editor"><div class="story-cover-preview"><img id="storyCoverPreview" alt="Family cover preview"><span class="story-cover-preview-shade"></span><div><small>${esc(familyLabel())}</small><strong>Our family story.</strong></div></div><div class="story-position-controls"><label>Move left / right<input id="storyPosX" type="range" min="0" max="100" value="${x}"></label><label>Move up / down<input id="storyPosY" type="range" min="0" max="100" value="${y}"></label></div><div class="story-cover-actions"><button class="secondary" type="button" id="storyCoverReset"><i data-lucide="rotate-ccw"></i>Center</button><button class="primary" type="button" id="storyCoverSave"><i data-lucide="check"></i>Save cover</button></div></div><div><div class="story-photo-grid">${rows.map((r,i)=>`<button type="button" class="story-photo-choice ${i===selected?"active":""}" data-story-photo="${i}"><img src="${urls[i]}" alt="${esc(r.memory.caption||`Family photo ${i+1}`)}">${r.memory.caption?`<span>${esc(r.memory.caption)}</span>`:""}</button>`).join("")}</div></div>`;
+  mount.innerHTML=`<div class="story-cover-editor">
+    <div class="story-cover-preview" id="storyCoverPreviewWrap"><img id="storyCoverPreview" alt="Family cover preview"><span class="story-cover-preview-shade"></span><div><small>${esc(familyLabel())}</small><strong>Our family story.</strong></div><p class="story-cover-empty-preview" id="storyCoverEmptyPreview">Upload a cover photo or choose one below.</p></div>
+    <div class="story-cover-upload-row"><button class="primary" type="button" id="storyCoverUpload"><i data-lucide="upload"></i>Upload cover photo</button><input id="storyCoverFile" type="file" accept="image/*" hidden><small>This cover does not need to be added as a Memory.</small></div>
+    <div class="story-position-controls"><label>Move left / right<input id="storyPosX" type="range" min="0" max="100" value="${x}"></label><label>Move up / down<input id="storyPosY" type="range" min="0" max="100" value="${y}"></label></div>
+    <div class="story-cover-actions"><button class="secondary" type="button" id="storyCoverReset"><i data-lucide="rotate-ccw"></i>Center</button><button class="primary" type="button" id="storyCoverSave"><i data-lucide="check"></i>Save cover</button></div>
+  </div>
+  <div class="story-memory-source"><div class="story-source-heading"><strong>Or choose from Memories</strong><small>${rows.length?`${rows.length} family ${rows.length===1?"photo":"photos"}`:"No Memory photos yet"}</small></div>
+  ${rows.length?`<div class="story-photo-grid">${rows.map((r,i)=>`<button type="button" class="story-photo-choice ${source==="memory"&&i===selected?"active":""}" data-story-photo="${i}"><img src="${urls[i]}" alt="${esc(r.memory.caption||`Family photo ${i+1}`)}">${r.memory.caption?`<span>${esc(r.memory.caption)}</span>`:""}</button>`).join("")}</div>`:`<div class="story-cover-no-memories"><i data-lucide="images"></i><p>You can still use an uploaded cover photo even without any Memories.</p></div>`}
+  </div>`;
 
-  const preview=$("#storyCoverPreview"),rx=$("#storyPosX"),ry=$("#storyPosY");
-  function render(){
-    preview.src=fullUrls[selected];
-    preview.style.objectPosition=`${x}% ${y}%`;
-    rx.value=x;ry.value=y;
-    mount.querySelectorAll("[data-story-photo]").forEach(b=>b.classList.toggle("active",Number(b.dataset.storyPhoto)===selected));
+  const preview=$("#storyCoverPreview"),wrap=$("#storyCoverPreviewWrap"),empty=$("#storyCoverEmptyPreview"),rx=$("#storyPosX"),ry=$("#storyPosY"),file=$("#storyCoverFile"),save=$("#storyCoverSave");
+
+  function currentSrc(){
+   if(source==="upload")return stagedUrl||saved.url||"";
+   if(source==="memory"&&selected>=0)return fullUrls[selected]||"";
+   return "";
   }
-  mount.querySelectorAll("[data-story-photo]").forEach(b=>b.onclick=()=>{selected=Number(b.dataset.storyPhoto)||0;render()});
+  function render(){
+    const src=currentSrc(),has=!!src;
+    preview.src=src||"";
+    preview.hidden=!has;
+    empty.hidden=has;
+    wrap.classList.toggle("has-image",has);
+    if(has)preview.style.objectPosition=`${x}% ${y}%`;
+    rx.disabled=!has;ry.disabled=!has;save.disabled=!has;
+    rx.value=x;ry.value=y;
+    mount.querySelectorAll("[data-story-photo]").forEach(b=>b.classList.toggle("active",source==="memory"&&Number(b.dataset.storyPhoto)===selected));
+  }
+
+  $("#storyCoverUpload").onclick=()=>file.click();
+  file.onchange=async()=>{
+    const chosen=file.files?.[0];file.value="";if(!chosen)return;
+    const button=$("#storyCoverUpload"),old=button.innerHTML;button.disabled=true;button.innerHTML=`<span class="memory-spinner small"></span>Preparing…`;
+    try{
+      stagedBlob=await prepareStoryCoverPhoto(chosen);
+      stagedUrl=storyBlobUrl(stagedBlob);
+      source="upload";x=50;y=50;render();
+    }catch(err){alert(err.message||"Could not prepare that cover photo.")}
+    finally{button.disabled=false;button.innerHTML=old;icons()}
+  };
+
+  mount.querySelectorAll("[data-story-photo]").forEach(b=>b.onclick=()=>{selected=Number(b.dataset.storyPhoto)||0;source="memory";render()});
   rx.oninput=()=>{x=Number(rx.value);render()};
   ry.oninput=()=>{y=Number(ry.value);render()};
   $("#storyCoverReset").onclick=()=>{x=50;y=50;render()};
-  $("#storyCoverSave").onclick=async()=>{
-    const row=rows[selected],btn=$("#storyCoverSave");
-    btn.disabled=true;
+  save.onclick=async()=>{
+    const old=save.innerHTML;save.disabled=true;save.innerHTML=`<span class="memory-spinner small"></span>Saving…`;
     try{
-      await saveFamilyStory({memoryId:row.memory.id,photoIndex:row.index,x,y});
+      if(source==="upload"){
+        if(stagedBlob)await uploadFamilyStoryCover(stagedBlob,{x,y});
+        else await saveFamilyStory({memoryId:"",photoIndex:0,storagePath:saved.storagePath,x,y});
+      }else{
+        const row=rows[selected];
+        if(!row)throw new Error("Choose a Family Cover photo.");
+        await saveFamilyStory({memoryId:row.memory.id,photoIndex:row.index,storagePath:"",x,y});
+      }
       go("home");
     }catch(err){
       alert(err.message||"Could not save the Family Story cover.");
-      btn.disabled=false;
+      save.disabled=false;save.innerHTML=old;icons();
     }
   };
+
   render();icons();
  }catch(err){
   mount.className="story-empty";
-  mount.innerHTML=`<i data-lucide="circle-alert"></i><h2>Could not open your photos</h2><p>${esc(err.message||"Something went wrong.")}</p>`;
+  mount.innerHTML=`<i data-lucide="circle-alert"></i><h2>Could not open your cover photos</h2><p>${esc(err.message||"Something went wrong.")}</p>`;
   icons();
  }
 }

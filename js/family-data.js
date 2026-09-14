@@ -107,15 +107,19 @@
   }
 
   async function saveStory(story){
+    const storagePath=String(story?.storagePath||"");
     const next={
       memoryId:story?.memoryId||"",
       photoIndex:Math.max(0,Number(story?.photoIndex)||0),
+      storagePath,
+      url:storagePath&&storagePath===storySettings.storagePath?storySettings.url||"":"",
       x:Math.max(0,Math.min(100,Number(story?.x)||50)),
       y:Math.max(0,Math.min(100,Number(story?.y)||50))
     };
-    const {error}=await sb().rpc("save_family_story_settings",{
+    const {error}=await sb().rpc("save_family_story_cover",{
       p_memory_id:next.memoryId||null,
       p_photo_index:next.photoIndex,
+      p_storage_path:next.storagePath||null,
       p_x:next.x,p_y:next.y
     });
     if(error)throw error;
@@ -123,19 +127,47 @@
     return {...storySettings};
   }
 
+  async function uploadStoryCover(blob,{x=50,y=50}={}){
+    const u=auth();
+    if(!u.familyId||!u.supabaseUserId)throw new Error("Your Family Book session is not ready.");
+    if(!blob)throw new Error("Choose a cover photo first.");
+
+    const path=`${u.familyId}/${u.supabaseUserId}/covers/family-cover-${Date.now()}.webp`;
+    const {error}=await sb().storage.from(window.FB_SUPABASE_CONFIG.mediaBucket).upload(path,blob,{
+      contentType:blob.type||"image/webp",
+      upsert:false,
+      cacheControl:"3600"
+    });
+    if(error)throw new Error(error.message||"Could not upload the Family Cover.");
+
+    try{
+      await saveStory({memoryId:"",photoIndex:0,storagePath:path,x,y});
+      const url=URL.createObjectURL(blob);
+      objectUrls.add(url);
+      storySettings={...storySettings,url};
+      return {...storySettings};
+    }catch(err){
+      try{await sb().storage.from(window.FB_SUPABASE_CONFIG.mediaBucket).remove([path])}catch(_){}
+      throw err;
+    }
+  }
+
   async function loadStory(){
     const {data,error}=await sb().rpc("get_family_story_settings");
     if(error)throw error;
 
+    const storagePath=data?.storage_path?String(data.storage_path):"";
     storySettings={
       memoryId:data?.memory_id?String(data.memory_id):"",
       photoIndex:Number(data?.photo_index)||0,
+      storagePath,
+      url:storagePath?await photoUrl(storagePath):"",
       x:Number.isFinite(Number(data?.x))?Number(data.x):50,
       y:Number.isFinite(Number(data?.y))?Number(data.y):50
     };
 
     const legacy=readLegacyStory();
-    if(!storySettings.memoryId&&legacy?.memoryId){
+    if(!storySettings.memoryId&&!storySettings.storagePath&&legacy?.memoryId){
       try{await saveStory(legacy)}
       catch(err){console.warn("Could not migrate old Family Story cover:",err)}
     }
@@ -368,7 +400,7 @@
   });
 
   window.FB_FAMILY_DATA={
-    init,load,reload,startRealtime,stopRealtime,getPeople,getRelationships,getStory,saveStory,
+    init,load,reload,startRealtime,stopRealtime,getPeople,getRelationships,getStory,saveStory,uploadStoryCover,
     syncMembers,syncRelationships,syncPrivacy,familyKey
   };
 })();

@@ -6,21 +6,47 @@
 
   const sb=()=>window.FB_SUPABASE?.client;
   const user=()=>window.FB_AUTH?.get?.()||{};
+  const bucket=()=>window.FB_SUPABASE_CONFIG?.mediaBucket||"family-media";
 
   function enqueue(fn){
-    queue=queue.then(fn).catch(err=>{
-      console.error("Family Book organizer sync:",err);
-      throw err;
-    });
-    return queue;
+    const run=queue.then(fn);
+    queue=run.catch(err=>console.error("Family Book organizer sync:",err));
+    return run;
   }
 
-  function albumFrom(row){
+  async function signedUrlMap(paths){
+    const unique=[...new Set((paths||[]).filter(Boolean))];
+    const map=new Map();
+    if(!unique.length)return map;
+    const {data,error}=await sb().storage.from(bucket()).createSignedUrls(unique,60*60*2);
+    if(error)throw error;
+    (data||[]).forEach((row,i)=>{
+      const path=row.path||unique[i];
+      if(path)map.set(path,row.signedUrl||"");
+    });
+    return map;
+  }
+
+  function albumFrom(row,urls){
     return {
       id:String(row.id),
       name:row.name||"Untitled album",
       description:row.description||"",
       memoryIds:(row.memory_ids||[]).map(String),
+      media:(row.media||[]).map(m=>({
+        id:String(m.id),
+        storagePath:m.storage_path||"",
+        thumbnailPath:m.thumbnail_path||"",
+        image:urls.get(m.storage_path)||"",
+        thumb:urls.get(m.thumbnail_path)||urls.get(m.storage_path)||"",
+        name:m.original_filename||"Album photo",
+        type:m.mime_type||"image/webp",
+        width:m.width==null?null:Number(m.width),
+        height:m.height==null?null:Number(m.height),
+        sortOrder:Number(m.display_order)||0,
+        uploadedByUserId:m.uploaded_by_user_id?String(m.uploaded_by_user_id):"",
+        createdAt:m.created_at?new Date(m.created_at).getTime():0
+      })),
       createdByUserId:row.created_by_user_id?String(row.created_by_user_id):"",
       createdAt:row.created_at?new Date(row.created_at).getTime():0,
       updatedAt:row.updated_at?new Date(row.updated_at).getTime():0
@@ -53,10 +79,16 @@
     const {data,error}=await sb().rpc("get_family_organizer_bundle");
     if(error)throw error;
 
-    albums=(data?.albums||[]).map(albumFrom)
+    const paths=[];
+    (data?.albums||[]).forEach(a=>(a.media||[]).forEach(m=>{
+      if(m.storage_path)paths.push(m.storage_path);
+      if(m.thumbnail_path)paths.push(m.thumbnail_path);
+    }));
+    const urls=await signedUrlMap(paths);
+
+    albums=(data?.albums||[]).map(row=>albumFrom(row,urls))
       .sort((a,b)=>(b.updatedAt||0)-(a.updatedAt||0));
     events=(data?.events||[]).map(eventFrom);
-
     loadedFamilyId=u.familyId;
   }
 
@@ -85,9 +117,76 @@
     return getAlbum(id);
   }
 
+  async function uploadObject(path,blob){
+    const {error}=await sb().storage.from(bucket()).upload(path,blob,{
+      contentType:blob.type||"application/octet-stream",
+      upsert:false,
+      cacheControl:"3600"
+    });
+    if(error)throw new Error(error.message||"Could not upload Album photo.");
+  }
+
+  async function removeStorage(paths){
+    const unique=[...new Set((paths||[]).filter(Boolean))];
+    if(!unique.length)return;
+    const {error}=await sb().storage.from(bucket()).remove(unique);
+    if(error)console.warn("Album media cleanup:",error.message);
+  }
+
+  async function uploadAlbumPhotos(albumId,prepared){
+    const u=user();
+    if(!u.familyId||!u.supabaseUserId)throw new Error("Your Family Book session is not ready.");
+    const album=getAlbum(albumId);
+    if(!album)throw new Error("Save the Album before adding photos.");
+
+    const metadata=[],uploaded=[];
+    try{
+      for(const p of (prepared||[])){
+        const id=crypto.randomUUID();
+        const base=`${u.familyId}/${u.supabaseUserId}/albums/${albumId}/${id}`;
+        const main=`${base}.webp`,thumb=`${base}-thumb.webp`;
+        await uploadObject(main,p.image);
+        uploaded.push(main);
+        await uploadObject(thumb,p.thumb);
+        uploaded.push(thumb);
+        metadata.push({
+          id,
+          storage_path:main,
+          thumbnail_path:thumb,
+          original_filename:p.name||"album-photo",
+          mime_type:"image/webp",
+          width:p.width||null,
+          height:p.height||null
+        });
+      }
+
+      const {error}=await sb().rpc("add_family_album_media",{
+        p_album_id:albumId,
+        p_items:metadata
+      });
+      if(error)throw error;
+
+      await load();
+      return getAlbum(albumId);
+    }catch(err){
+      await removeStorage(uploaded);
+      throw err;
+    }
+  }
+
+  async function deleteAlbumMedia(mediaId){
+    const {data,error}=await sb().rpc("delete_family_album_media",{p_media_id:mediaId});
+    if(error)throw error;
+    await removeStorage([data?.storage_path,data?.thumbnail_path]);
+    await load();
+  }
+
   async function deleteAlbum(id){
+    const album=getAlbum(id);
+    const paths=(album?.media||[]).flatMap(m=>[m.storagePath,m.thumbnailPath]).filter(Boolean);
     const {error}=await sb().rpc("delete_family_album",{p_album_id:id});
     if(error)throw error;
+    await removeStorage(paths);
     await load();
   }
 
@@ -120,7 +219,7 @@
 
   window.FB_ORGANIZER_DATA={
     init,load,
-    getAlbums,getAlbum,saveAlbum,deleteAlbum,
+    getAlbums,getAlbum,saveAlbum,deleteAlbum,uploadAlbumPhotos,deleteAlbumMedia,
     getEvents,getEvent,saveEvent,deleteEvent
   };
 })();
