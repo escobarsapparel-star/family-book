@@ -3983,3 +3983,167 @@ html[data-theme="dark"] .backend-account-chip,html[data-theme="dark"] .backend-i
 html[data-theme="dark"] .backend-account-chip small,html[data-theme="dark"] .backend-invite-card>p:not(.eyebrow),html[data-theme="dark"] .backend-created-invite>small,html[data-theme="dark"] .backend-created-invite>p:last-child,html[data-theme="dark"] .family-invite-history-row small,html[data-theme="dark"] .family-invite-history-row>span{color:#CBBFB2}
 html[data-theme="dark"] .setup-choice-tabs{background:#151914}html[data-theme="dark"] .backend-created-invite{background:#1d2920;border-color:#42604a}html[data-theme="dark"] .family-invite-history-row{border-color:#3b4339}
 @media(max-width:560px){.family-invite-history-row{grid-template-columns:1fr}.family-invite-history-row>span{justify-self:start}.backend-created-invite>div{display:grid;grid-template-columns:1fr}}
+
+
+/* ==========================================================
+   Family Book Build 5.1.1 — Supabase Setup Theme Isolation
+   Keep secure onboarding visually consistent with the approved
+   light auth experience even when a previous dark-theme preference
+   is stored in the browser.
+   ========================================================== */
+.supabase-setup-page{
+  color:#3f3933!important;
+  background:linear-gradient(180deg,#f4efe6,#fbf8f3)!important;
+}
+
+.supabase-setup-page .join-card{
+  background:#fff!important;
+  border-color:#e0d5c8!important;
+  color:#3f3933!important;
+}
+
+.supabase-setup-page .join-card h1{
+  color:#315c43!important;
+}
+
+.supabase-setup-page .join-card>p:not(.eyebrow){
+  color:#786e65!important;
+}
+
+.supabase-setup-page .backend-account-chip{
+  background:#faf7f1!important;
+  border-color:#ddd4c9!important;
+  color:#3f3933!important;
+}
+
+.supabase-setup-page .backend-account-chip strong{
+  color:#3f3933!important;
+}
+
+.supabase-setup-page .backend-account-chip small{
+  color:#83786e!important;
+}
+
+.supabase-setup-page .setup-choice-tabs{
+  background:#eee9e1!important;
+}
+
+.supabase-setup-page .setup-choice-tabs button{
+  background:transparent!important;
+  color:#6f665d!important;
+}
+
+.supabase-setup-page .setup-choice-tabs button.active{
+  background:#fff!important;
+  color:#315c43!important;
+  box-shadow:0 2px 8px rgba(52,41,29,.08)!important;
+}
+
+.supabase-setup-page form{
+  display:grid;
+  gap:14px;
+}
+
+.supabase-setup-page form label{
+  display:grid!important;
+  gap:6px!important;
+  color:#514a43!important;
+  font-size:.72rem!important;
+  font-weight:800!important;
+}
+
+.supabase-setup-page form input{
+  width:100%!important;
+  box-sizing:border-box!important;
+  border:1px solid #ddd2c6!important;
+  border-radius:11px!important;
+  background:#fcfaf7!important;
+  padding:12px 13px!important;
+  color:#38332e!important;
+  -webkit-text-fill-color:#38332e!important;
+  outline:none!important;
+}
+
+.supabase-setup-page form input::placeholder{
+  color:#9b9187!important;
+  opacity:1!important;
+}
+
+.supabase-setup-page form input:focus{
+  border-color:#78957f!important;
+  box-shadow:0 0 0 3px rgba(49,92,67,.09)!important;
+}
+
+.supabase-setup-page .field-hint{
+  color:#8b8178!important;
+  font-size:.6rem!important;
+  font-weight:500!important;
+  line-height:1.35!important;
+}
+
+.supabase-setup-page .primary{
+  background:#79ad8a!important;
+  color:#fff!important;
+  border-color:#79ad8a!important;
+  min-height:48px;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  gap:8px;
+}
+
+.supabase-setup-page .primary:hover{
+  background:#6a9e7b!important;
+  border-color:#6a9e7b!important;
+}
+
+.supabase-setup-page .primary svg{
+  width:19px;
+  height:19px;
+  flex:0 0 auto;
+}
+
+.supabase-setup-page .secondary{
+  background:#fff!important;
+  color:#315c43!important;
+  border-color:#cfc5b9!important;
+}
+
+.supabase-setup-page .setup-signout{
+  color:#7f746a!important;
+}
+
+.supabase-setup-page .setup-signout:hover{
+  color:#315c43!important;
+}
+
+.supabase-setup-page .backend-invite-card{
+  background:#faf7f1!important;
+  border-color:#ddd4c9!important;
+  color:#3f3933!important;
+}
+
+.supabase-setup-page .backend-claim{
+  background:#fff!important;
+  border-color:#ddd4c9!important;
+  color:#3f3933!important;
+}
+
+@media(max-width:560px){
+  .supabase-setup-page{
+    padding:14px!important;
+  }
+
+  .supabase-setup-page .join-card{
+    padding:18px!important;
+    border-radius:20px!important;
+  }
+
+  .supabase-setup-page .join-card h1{
+    font-size:1.85rem!important;
+  }
+
+  .supabase-setup-page .row{
+    grid-template-columns:1fr!important;
+  }
+}
