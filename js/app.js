@@ -1177,7 +1177,13 @@ async function routeAfterBackendAuth(){
  if(FB_AUTH.needsSetup?.()){FB_AUTH.renderSetup(A,()=>routeAfterBackendAuth(),()=>auth());return}
  shell();
 }
-window.FB_APP_AUTH_CHANGED=()=>routeAfterBackendAuth();
+window.FB_APP_AUTH_CHANGED=event=>{
+ if(event==="SIGNED_OUT"){auth();return}
+ // Supabase may emit SIGNED_IN again when a browser tab regains focus
+ // or confirms an existing session. That is not a fresh login, so do
+ // not rebuild the Family Book shell here. Real login flows already
+ // call routeAfterBackendAuth() directly, and initial page load does too.
+};
 window.FB_APP_AUTH_ERROR=err=>{console.error(err);alert(err.message||"Family Book authentication could not be loaded.")};
 (async()=>{try{await FB_AUTH.init();await routeAfterBackendAuth()}catch(err){console.error(err);auth();setTimeout(()=>alert(err.message||"Could not connect Family Book to Supabase."),50)}})();
 
