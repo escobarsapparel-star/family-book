@@ -77,7 +77,7 @@
   function pageShell(){
     return `<section class="memories-page">
       <div class="memories-head"><div><p class="eyebrow">${e(window.familyLabel?.()||"FAMILY BOOK").toUpperCase()}</p><h1>Memories</h1><p>Keep the photos, video clips, people and stories that make your family yours.</p></div><div class="memory-head-actions"><button class="secondary" data-r="albums"><i data-lucide="folder-heart"></i><span>Albums</span></button><button class="primary memory-add-top" data-r="add-memory"><i data-lucide="image-plus"></i><span>Add memory</span></button></div></div>
-      <div class="memory-local-note"><i data-lucide="shield-check"></i><div><strong>Private test library</strong><span>For now, uploaded memories stay on this device/browser until we connect Family Book to cloud storage.</span></div></div>
+      
       <section class="memory-filter-panel" id="memoryFilterPanel">
         <label class="memory-search-box"><i data-lucide="search"></i><input id="memorySearch" type="search" placeholder="Search captions, people or dates…" autocomplete="off"></label>
         <div class="memory-filter-selects">
@@ -189,7 +189,7 @@
           <div class="memory-photo-actions memory-media-actions"><button type="button" class="secondary" id="memoryGalleryBtn"><i data-lucide="images"></i>Add photos / videos</button><button type="button" class="secondary" id="memoryCameraBtn"><i data-lucide="camera"></i>Take photo</button><button type="button" class="secondary" id="memoryVideoBtn"><i data-lucide="video"></i>Record video</button><button type="button" class="memory-remove-all hidden" id="memoryRemoveAllBtn"><i data-lucide="trash-2"></i>Remove all</button></div>
           <input id="memoryGalleryInput" type="file" accept="image/*,video/*" multiple hidden><input id="memoryCameraInput" type="file" accept="image/*" capture="environment" hidden><input id="memoryVideoInput" type="file" accept="video/*" capture="environment" hidden>
           <div id="memoryProcessStatus" class="memory-process-status hidden"><span class="memory-spinner small"></span><span>Preparing media…</span></div>
-          <p class="memory-video-note"><i data-lucide="video"></i>Prototype video limit: 80 MB per clip. Videos stay on this browser/device until cloud storage is connected.</p>
+          <p class="memory-video-note"><i data-lucide="video"></i>Video limit: 50 MB per clip. Videos are currently saved on this device until secure cloud media sync is enabled.</p>
         </div>
         <div id="memoryMetaNote" class="memory-meta-note ${existing?.dateSource==="exif"?"detected":""}"><i data-lucide="${existing?.dateSource==="exif"?"scan-line":"info"}"></i><div><strong>${existing?.dateSource==="exif"?"Date detected from photo":"Photo date & time"}</strong><span>${existing?.dateSource==="exif"?"This came from image metadata. You can still edit it below.":"If metadata is available, Family Book will fill these fields automatically."}</span></div></div>
         <div class="memory-date-grid"><label>Date taken <span class="optional">(editable)</span><input id="memoryDate" type="date" value="${e(existing?.date||"")}"></label><label>Time taken <span class="optional">(optional)</span><input id="memoryTime" type="time" value="${e(existing?.time||"")}"></label></div>
@@ -368,8 +368,8 @@
     return {image,thumb,width,height};
   }
   async function prepareVideo(file){
-    const MAX_VIDEO_BYTES=80*1024*1024;
-    if(file.size>MAX_VIDEO_BYTES)throw new Error("That video is larger than 80 MB. For this local prototype, choose a shorter or smaller clip.");
+    const MAX_VIDEO_BYTES=50*1024*1024;
+    if(file.size>MAX_VIDEO_BYTES)throw new Error("That video is larger than 50 MB. Choose a shorter or smaller clip.");
     const url=URL.createObjectURL(file),video=document.createElement("video");
     video.preload="metadata";video.muted=true;video.playsInline=true;video.src=url;
     try{
