@@ -1,0 +1,19 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1600 1000">
+<defs>
+ <linearGradient id="sky" x1="0" y1="0" x2="0" y2="1"><stop stop-color="#f4c887"/><stop offset=".5" stop-color="#d9965e"/><stop offset="1" stop-color="#405845"/></linearGradient>
+ <linearGradient id="hill" x1="0" x2="1"><stop stop-color="#435b46"/><stop offset="1" stop-color="#263d31"/></linearGradient>
+ <radialGradient id="sun"><stop stop-color="#fff7c7"/><stop offset=".35" stop-color="#ffd681"/><stop offset="1" stop-color="#e6a15f" stop-opacity="0"/></radialGradient>
+</defs>
+<rect width="1600" height="1000" fill="url(#sky)"/>
+<circle cx="1180" cy="315" r="210" fill="url(#sun)"/>
+<path d="M0 610 Q250 500 480 610T920 590T1600 560V1000H0Z" fill="#65705b" opacity=".55"/>
+<path d="M0 700 Q300 580 620 690T1150 650T1600 625V1000H0Z" fill="url(#hill)"/>
+<!-- stylized family silhouettes from behind -->
+<g fill="#1d2a24">
+ <circle cx="610" cy="540" r="62"/><path d="M520 900V680Q520 600 610 600T700 680V900Z"/>
+ <circle cx="445" cy="610" r="48"/><path d="M380 900V720Q380 655 445 655T510 720V900Z"/>
+ <circle cx="775" cy="600" r="51"/><path d="M705 900V715Q705 650 775 650T845 715V900Z"/>
+ <circle cx="900" cy="675" r="37"/><path d="M850 900V770Q850 720 900 720T950 770V900Z"/>
+ <circle cx="330" cy="690" r="34"/><path d="M285 900V775Q285 730 330 730T375 775V900Z"/>
+</g>
+</svg>
