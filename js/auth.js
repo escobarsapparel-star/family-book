@@ -202,14 +202,35 @@
       </div>
 
       <form id="backendCreateFamily" class="${invite?"hidden":""}">
-        <div class="row"><label>First name<input id="backendFirst" required value="${e(names.first)}"></label><label>Surname<input id="backendLast" value="${e(names.last)}"></label></div>
-        <label>Family name<input id="backendFamilyName" required placeholder="e.g. Smith"><small class="field-hint">Family Book will display this as “Smith Family”.</small></label>
+        <div class="setup-name-grid">
+          <label class="setup-field">
+            <span class="setup-label-text">First name</span>
+            <input id="backendFirst" required value="${e(names.first)}">
+          </label>
+          <label class="setup-field">
+            <span class="setup-label-text">Surname</span>
+            <input id="backendLast" value="${e(names.last)}">
+          </label>
+        </div>
+
+        <label class="setup-field setup-family-field">
+          <span class="setup-label-text">Family name</span>
+          <input id="backendFamilyName" required placeholder="e.g. Smith">
+          <small class="field-hint">Family Book will display this as “Smith Family”.</small>
+        </label>
+
         <div class="backend-form-error" id="backendCreateError" hidden></div>
-        <button class="primary full" type="submit"><i data-lucide="users-round"></i>Create my family</button>
+        <button class="primary full setup-create-button" type="submit">
+          <i data-lucide="users-round"></i>
+          <span>Create my family</span>
+        </button>
       </form>
 
       <form id="backendJoinFamily" class="${invite?"":"hidden"}">
-        <label>Invite code<input id="backendInviteCode" required value="${e(invite)}" placeholder="FB-AB12-CD34-EF56"></label>
+        <label class="setup-field">
+          <span class="setup-label-text">Invite code</span>
+          <input id="backendInviteCode" required value="${e(invite)}" placeholder="FB-AB12-CD34-EF56">
+        </label>
         <button class="secondary full" type="button" id="backendPreviewInvite"><i data-lucide="search"></i>Check invitation</button>
         <div id="backendInvitePreview"></div>
         <div class="backend-form-error" id="backendJoinError" hidden></div>
