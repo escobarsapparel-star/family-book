@@ -1,67 +1,285 @@
 (function(){
-  const DB_NAME="familybook_memories_v1", STORE="memories", DB_VERSION=1;
+  let cloudCache=null;
+  let cloudCacheAt=0;
+  let cloudFamilyId="";
   let objectUrls=[];
+
+  const client=()=>window.FB_SUPABASE?.client;
+  const auth=()=>window.FB_AUTH?.get?.()||{};
+  const bucket=()=>window.FB_SUPABASE_CONFIG?.mediaBucket||"family-media";
 
   function e(v=""){
     return String(v??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#039;"}[c]));
   }
   function familyKey(){
     if(window.FB_AUTH?.familyStorageKey)return window.FB_AUTH.familyStorageKey();
-    const u=window.FB_AUTH?.get?.()||{};
+    const u=auth();
     const raw=(u.family||window.FB_DATA?.family||"family").trim().toLowerCase();
     return raw.replace(/^the\s+/i,"").replace(/(?:\s+family)+$/i,"").replace(/[^a-z0-9]+/g,"_").replace(/^_|_$/g,"")||"family";
   }
-  function openDb(){
-    return new Promise((resolve,reject)=>{
-      if(!("indexedDB" in window)){reject(new Error("This browser does not support local photo storage."));return}
-      const req=indexedDB.open(DB_NAME,DB_VERSION);
-      req.onupgradeneeded=()=>{
-        const db=req.result;
-        if(!db.objectStoreNames.contains(STORE)){
-          const s=db.createObjectStore(STORE,{keyPath:"id"});
-          s.createIndex("familyKey","familyKey",{unique:false});
-          s.createIndex("createdAt","createdAt",{unique:false});
-        }
-      };
-      req.onsuccess=()=>resolve(req.result);
-      req.onerror=()=>reject(req.error||new Error("Could not open the memory library."));
-    });
-  }
-  async function withStore(mode,work){
-    const db=await openDb();
-    try{
-      return await new Promise((resolve,reject)=>{
-        const tx=db.transaction(STORE,mode),store=tx.objectStore(STORE);
-        let settled=false,txDone=false,workDone=false,result;
-        const finish=()=>{if(!settled&&txDone&&workDone){settled=true;resolve(result)}};
-        tx.oncomplete=()=>{txDone=true;finish()};
-        tx.onerror=()=>{if(!settled){settled=true;reject(tx.error||new Error("Memory storage failed."))}};
-        tx.onabort=()=>{if(!settled){settled=true;reject(tx.error||new Error("Memory storage was cancelled."))}};
-        try{
-          Promise.resolve(work(store,tx)).then(v=>{result=v;workDone=true;finish()}).catch(err=>{if(!settled){settled=true;try{tx.abort()}catch(_){}reject(err)}});
-        }catch(err){settled=true;try{tx.abort()}catch(_){}reject(err)}
-      });
-    }finally{db.close()}
-  }
-  function reqPromise(req){return new Promise((resolve,reject)=>{req.onsuccess=()=>resolve(req.result);req.onerror=()=>reject(req.error)})}
-  async function getAll(){
-    const key=familyKey();
-    return withStore("readonly",async store=>{
-      let list;
-      if(store.indexNames.contains("familyKey")) list=await reqPromise(store.index("familyKey").getAll(key));
-      else list=(await reqPromise(store.getAll())).filter(x=>x.familyKey===key);
-      return (list||[]).sort((a,b)=>memorySortValue(b)-memorySortValue(a));
-    });
-  }
-  async function getOne(id){return withStore("readonly",store=>reqPromise(store.get(id)))}
-  async function put(memory){return withStore("readwrite",store=>reqPromise(store.put(memory)))}
-  async function remove(id){return withStore("readwrite",store=>reqPromise(store.delete(id)))}
+
   function memorySortValue(m){
-    if(m.date){const t=Date.parse(`${m.date}T${m.time||"00:00"}:00`);if(Number.isFinite(t))return t}
+    if(m.date){
+      const t=Date.parse(`${m.date}T${String(m.time||"00:00").slice(0,5)}:00`);
+      if(Number.isFinite(t))return t;
+    }
     return Number(m.createdAt)||0;
   }
+
+  function invalidateCloud(){
+    cloudCache=null;
+    cloudCacheAt=0;
+  }
+
+  async function signedUrlMap(paths){
+    const unique=[...new Set((paths||[]).filter(Boolean))];
+    const map=new Map();
+    if(!unique.length)return map;
+    const {data,error}=await client().storage.from(bucket()).createSignedUrls(unique,60*60*2);
+    if(error)throw new Error(error.message||"Could not open private family media.");
+    (data||[]).forEach((item,i)=>{
+      const path=item.path||unique[i];
+      if(path)map.set(path,item.signedUrl||"");
+    });
+    return map;
+  }
+
+  async function loadCloud(force=false){
+    const u=auth();
+    if(!u.familyId)return [];
+    const fresh=cloudCache && cloudFamilyId===u.familyId && (Date.now()-cloudCacheAt)<45*60*1000;
+    if(!force&&fresh)return cloudCache;
+
+    const {data,error}=await client().rpc("get_family_memories_bundle");
+    if(error)throw new Error(error.message||"Could not load family memories.");
+
+    const memories=Array.isArray(data?.memories)?data.memories:[];
+    const media=Array.isArray(data?.media)?data.media:[];
+    const tags=Array.isArray(data?.tags)?data.tags:[];
+
+    const allPaths=[];
+    media.forEach(row=>{
+      if(row.storage_path)allPaths.push(row.storage_path);
+      if(row.thumbnail_path)allPaths.push(row.thumbnail_path);
+    });
+    const urls=await signedUrlMap(allPaths);
+
+    const mediaByMemory={};
+    media.forEach(row=>{
+      const mid=String(row.memory_id);
+      const meta={
+        cloudMediaId:String(row.id||""),
+        storagePath:row.storage_path||"",
+        thumbnailPath:row.thumbnail_path||"",
+        name:row.original_filename||"",
+        type:row.mime_type||"",
+        width:row.width==null?null:Number(row.width),
+        height:row.height==null?null:Number(row.height),
+        duration:row.duration_seconds==null?null:Number(row.duration_seconds)
+      };
+      (mediaByMemory[mid]??=[]).push({
+        id:String(row.id),
+        kind:row.media_type==="video"?"video":"image",
+        image:urls.get(row.storage_path)||"",
+        thumb:urls.get(row.thumbnail_path)||urls.get(row.storage_path)||"",
+        sortOrder:Number(row.sort_order)||0,
+        meta
+      });
+    });
+    Object.values(mediaByMemory).forEach(rows=>rows.sort((a,b)=>a.sortOrder-b.sortOrder));
+
+    const tagsByMemory={};
+    tags.forEach(row=>(tagsByMemory[String(row.memory_id)]??=[]).push(String(row.person_id)));
+
+    const members=window.ensureOwner?.()||[];
+    const byId=Object.fromEntries(members.map(m=>[m.id,m]));
+
+    cloudCache=memories.map(row=>{
+      const authorId=row.created_by_person_id?String(row.created_by_person_id):"";
+      const author=byId[authorId]||{};
+      return {
+        id:String(row.id),
+        familyKey:familyKey(),
+        photos:mediaByMemory[String(row.id)]||[],
+        date:row.memory_date||"",
+        time:row.memory_time?String(row.memory_time).slice(0,5):"",
+        dateSource:row.date_source||"manual",
+        caption:row.caption||row.story||"",
+        story:row.story||"",
+        tags:tagsByMemory[String(row.id)]||[],
+        photoMeta:(mediaByMemory[String(row.id)]||[])[0]?.meta||{},
+        authorId,
+        authorName:author.name||"Family member",
+        authorPhoto:author.photo||"",
+        canEdit:row.can_edit!==false,
+        createdAt:row.created_at?new Date(row.created_at).getTime():0,
+        updatedAt:row.updated_at?new Date(row.updated_at).getTime():0
+      };
+    }).sort((a,b)=>memorySortValue(b)-memorySortValue(a));
+
+    cloudFamilyId=u.familyId;
+    cloudCacheAt=Date.now();
+    return cloudCache;
+  }
+
+  async function getAll(){return loadCloud(false)}
+  async function getOne(id){
+    const list=await loadCloud(false);
+    return list.find(m=>m.id===String(id))||null;
+  }
+
+  function extForMime(type,kind="image"){
+    const t=String(type||"").toLowerCase();
+    if(t==="image/webp")return "webp";
+    if(t==="image/png")return "png";
+    if(t==="image/jpeg"||t==="image/jpg")return "jpg";
+    if(t==="video/webm")return "webm";
+    if(t==="video/quicktime")return "mov";
+    if(t==="video/mp4")return "mp4";
+    return kind==="video"?"mp4":"jpg";
+  }
+
+  async function uploadObject(path,blob){
+    const {error}=await client().storage.from(bucket()).upload(path,blob,{
+      contentType:blob.type||"application/octet-stream",
+      upsert:false,
+      cacheControl:"3600"
+    });
+    if(error)throw new Error(error.message||"Could not upload family media.");
+    return path;
+  }
+
+  async function removeStorage(paths){
+    const unique=[...new Set((paths||[]).filter(Boolean))];
+    if(!unique.length)return;
+    const {error}=await client().storage.from(bucket()).remove(unique);
+    if(error)console.warn("Family Book media cleanup:",error.message);
+  }
+
+  async function uploadMemoryMedia(memoryId,photo,index){
+    const u=auth();
+    if(!u.familyId||!u.supabaseUserId)throw new Error("Your Family Book session is not ready.");
+
+    const meta=photo.meta||{};
+    if(meta.storagePath){
+      return {
+        media_type:photo.kind==="video"?"video":"image",
+        storage_path:meta.storagePath,
+        thumbnail_path:meta.thumbnailPath||null,
+        original_filename:meta.name||null,
+        mime_type:meta.type||null,
+        width:meta.width==null?null:Number(meta.width),
+        height:meta.height==null?null:Number(meta.height),
+        duration_seconds:meta.duration==null?null:Number(meta.duration),
+        sort_order:index
+      };
+    }
+
+    const full=photo.image;
+    if(!(full instanceof Blob))throw new Error("One of the selected media files is no longer available.");
+
+    const token=crypto.randomUUID();
+    const fullExt=extForMime(full.type,photo.kind);
+    const fullPath=`${u.familyId}/${u.supabaseUserId}/memories/${memoryId}/${token}.${fullExt}`;
+    const uploaded=[await uploadObject(fullPath,full)];
+
+    let thumbPath=null;
+    try{
+      if(photo.thumb instanceof Blob){
+        const thumbExt=extForMime(photo.thumb.type,"image");
+        thumbPath=`${u.familyId}/${u.supabaseUserId}/thumbnails/${memoryId}/${token}.${thumbExt}`;
+        uploaded.push(await uploadObject(thumbPath,photo.thumb));
+      }
+    }catch(err){
+      await removeStorage(uploaded);
+      throw err;
+    }
+
+    return {
+      media_type:photo.kind==="video"?"video":"image",
+      storage_path:fullPath,
+      thumbnail_path:thumbPath,
+      original_filename:meta.name||null,
+      mime_type:full.type||meta.type||null,
+      width:meta.width==null?null:Number(meta.width),
+      height:meta.height==null?null:Number(meta.height),
+      duration_seconds:meta.duration==null?null:Number(meta.duration),
+      sort_order:index,
+      _new_paths:uploaded
+    };
+  }
+
+  async function put(memory){
+    const u=auth();
+    if(!u.familyId)throw new Error("You are not connected to a Family Book family.");
+
+    const id=String(memory.id||crypto.randomUUID());
+    const existing=await getOne(id);
+    const oldPaths=[];
+    memoryPhotos(existing).forEach(p=>{
+      if(p.meta?.storagePath)oldPaths.push(p.meta.storagePath);
+      if(p.meta?.thumbnailPath)oldPaths.push(p.meta.thumbnailPath);
+    });
+
+    const photos=memoryPhotos(memory);
+    if(!photos.length)throw new Error("Please add at least one photo or video.");
+
+    const uploadedNow=[];
+    let mediaPayload=[];
+    try{
+      for(let i=0;i<photos.length;i++){
+        const row=await uploadMemoryMedia(id,photos[i],i);
+        (row._new_paths||[]).forEach(p=>uploadedNow.push(p));
+        delete row._new_paths;
+        mediaPayload.push(row);
+      }
+
+      const finalPaths=new Set();
+      mediaPayload.forEach(row=>{
+        if(row.storage_path)finalPaths.add(row.storage_path);
+        if(row.thumbnail_path)finalPaths.add(row.thumbnail_path);
+      });
+
+      const {error}=await client().rpc("save_family_memory",{
+        p_memory_id:id,
+        p_caption:memory.caption||null,
+        p_story:memory.story||null,
+        p_memory_date:memory.date||null,
+        p_memory_time:memory.time||null,
+        p_date_source:memory.dateSource||"manual",
+        p_media:mediaPayload,
+        p_tag_person_ids:(memory.tags||[])
+      });
+      if(error)throw new Error(error.message||"Could not save this memory.");
+
+      const removedOld=oldPaths.filter(path=>!finalPaths.has(path));
+      await removeStorage(removedOld);
+      invalidateCloud();
+      await loadCloud(true);
+      return await getOne(id);
+    }catch(err){
+      await removeStorage(uploadedNow);
+      throw err;
+    }
+  }
+
+  async function remove(id){
+    const existing=await getOne(id);
+    if(!existing)return;
+
+    const {data,error}=await client().rpc("delete_family_memory",{p_memory_id:id});
+    if(error)throw new Error(error.message||"Could not delete this memory.");
+
+    const paths=[
+      ...((data?.storage_paths)||[]),
+      ...((data?.thumbnail_paths)||[])
+    ];
+    await removeStorage(paths);
+    invalidateCloud();
+  }
+
   function cleanupUrls(){objectUrls.forEach(u=>URL.revokeObjectURL(u));objectUrls=[]}
-  function blobUrl(blob){if(!blob)return "";const u=URL.createObjectURL(blob);objectUrls.push(u);return u}
+  function blobUrl(blob){if(!blob)return "";if(typeof blob==="string")return blob;const u=URL.createObjectURL(blob);objectUrls.push(u);return u}
   function photoId(){return `pho_${Date.now()}_${Math.random().toString(36).slice(2,8)}`}
   function memoryPhotos(m){
     if(Array.isArray(m?.photos)&&m.photos.length){
@@ -189,7 +407,7 @@
           <div class="memory-photo-actions memory-media-actions"><button type="button" class="secondary" id="memoryGalleryBtn"><i data-lucide="images"></i>Add photos / videos</button><button type="button" class="secondary" id="memoryCameraBtn"><i data-lucide="camera"></i>Take photo</button><button type="button" class="secondary" id="memoryVideoBtn"><i data-lucide="video"></i>Record video</button><button type="button" class="memory-remove-all hidden" id="memoryRemoveAllBtn"><i data-lucide="trash-2"></i>Remove all</button></div>
           <input id="memoryGalleryInput" type="file" accept="image/*,video/*" multiple hidden><input id="memoryCameraInput" type="file" accept="image/*" capture="environment" hidden><input id="memoryVideoInput" type="file" accept="video/*" capture="environment" hidden>
           <div id="memoryProcessStatus" class="memory-process-status hidden"><span class="memory-spinner small"></span><span>Preparing media…</span></div>
-          <p class="memory-video-note"><i data-lucide="video"></i>Video limit: 50 MB per clip. Videos are currently saved on this device until secure cloud media sync is enabled.</p>
+          <p class="memory-video-note"><i data-lucide="video"></i>Video limit: 50 MB per clip. Photos are optimized automatically before private family upload.</p>
         </div>
         <div id="memoryMetaNote" class="memory-meta-note ${existing?.dateSource==="exif"?"detected":""}"><i data-lucide="${existing?.dateSource==="exif"?"scan-line":"info"}"></i><div><strong>${existing?.dateSource==="exif"?"Date detected from photo":"Photo date & time"}</strong><span>${existing?.dateSource==="exif"?"This came from image metadata. You can still edit it below.":"If metadata is available, Family Book will fill these fields automatically."}</span></div></div>
         <div class="memory-date-grid"><label>Date taken <span class="optional">(editable)</span><input id="memoryDate" type="date" value="${e(existing?.date||"")}"></label><label>Time taken <span class="optional">(optional)</span><input id="memoryTime" type="time" value="${e(existing?.time||"")}"></label></div>
@@ -292,7 +510,7 @@
         const tags=[...mount.querySelectorAll('input[name="memoryTags"]:checked')].map(x=>x.value);
         const now=Date.now();
         await put({
-          id:existing?.id||`mem_${now}_${Math.random().toString(36).slice(2,8)}`,
+          id:existing?.id||crypto.randomUUID(),
           familyKey:familyKey(),photos,
           date:dateInput.value||"",time:timeInput.value||"",dateSource,
           caption:mount.querySelector("#memoryCaption").value.trim(),tags,photoMeta:photos[0]?.meta||{},
@@ -362,8 +580,8 @@
       try{const img=await new Promise((res,rej)=>{const im=new Image();im.onload=()=>res(im);im.onerror=()=>rej(new Error("This image could not be opened."));im.src=url});drawSource=img;width=img.naturalWidth;height=img.naturalHeight}finally{URL.revokeObjectURL(url)}
     }
     if(!width||!height)throw new Error("This image has no readable dimensions.");
-    const image=await canvasBlob(drawSource,width,height,1800,.86);
-    const thumb=await canvasBlob(drawSource,width,height,720,.78);
+    const image=await canvasBlob(drawSource,width,height,1800,.80,"image/webp");
+    const thumb=await canvasBlob(drawSource,width,height,540,.72,"image/webp");
     if(bitmap)bitmap.close();
     return {image,thumb,width,height};
   }
@@ -407,10 +625,10 @@
     return new Promise((resolve,reject)=>c.toBlob(b=>b?resolve(b):reject(new Error("Could not create a video preview.")),"image/jpeg",quality));
   }
 
-  function canvasBlob(source,width,height,max,quality){
+  function canvasBlob(source,width,height,max,quality,mime="image/jpeg"){
     const scale=Math.min(1,max/Math.max(width,height)),w=Math.max(1,Math.round(width*scale)),h=Math.max(1,Math.round(height*scale));
     const c=document.createElement("canvas");c.width=w;c.height=h;const ctx=c.getContext("2d",{alpha:false});ctx.fillStyle="#fff";ctx.fillRect(0,0,w,h);ctx.drawImage(source,0,0,w,h);
-    return new Promise((resolve,reject)=>c.toBlob(b=>b?resolve(b):reject(new Error("Could not prepare this photo.")),"image/jpeg",quality));
+    return new Promise((resolve,reject)=>c.toBlob(b=>b?resolve(b):reject(new Error("Could not prepare this photo.")),mime,quality));
   }
 
   async function readPhotoMetadata(file){
@@ -441,12 +659,9 @@
   function ascii(v,start,len){let s="";for(let i=0;i<len&&start+i<v.byteLength;i++)s+=String.fromCharCode(v.getUint8(start+i));return s}
 
   async function removePersonTag(personId){
-    const list=await getAll();
-    for(const memory of list){
-      if((memory.tags||[]).includes(personId)){
-        await put({...memory,tags:(memory.tags||[]).filter(id=>id!==personId),updatedAt:Date.now()});
-      }
-    }
+    const {error}=await client().rpc("remove_memory_person_tag",{p_person_id:personId});
+    if(error)throw new Error(error.message||"Could not remove this person from Memory tags.");
+    invalidateCloud();
   }
 
   function rebindRoutes(){
