@@ -4147,3 +4147,77 @@ html[data-theme="dark"] .setup-choice-tabs{background:#151914}html[data-theme="d
     grid-template-columns:1fr!important;
   }
 }
+
+
+/* ==========================================================
+   Family Book Build 5.6.2 — Dark Mode Relationship Editor Fix
+   ========================================================== */
+html[data-theme="dark"] .relationship-section{
+  background:#191D18!important;
+  border-color:#3B4339!important;
+  color:#F3ECDD!important;
+}
+
+html[data-theme="dark"] .relationship-title h3{
+  color:#A7CBB0!important;
+}
+
+html[data-theme="dark"] .relationship-title p{
+  color:#CBBFB2!important;
+}
+
+html[data-theme="dark"] .relationship-field,
+html[data-theme="dark"] .relationship-field>span,
+html[data-theme="dark"] .relationship-section label{
+  color:#F3ECDD!important;
+}
+
+html[data-theme="dark"] .relationship-row select,
+html[data-theme="dark"] #memberForm .relationship-row select,
+html[data-theme="dark"] #editMemberForm .relationship-row select,
+html[data-theme="dark"] #historyProfileForm .relationship-row select{
+  background:#171B16!important;
+  border-color:#4A5548!important;
+  color:#F3ECDD!important;
+  -webkit-text-fill-color:#F3ECDD!important;
+  color-scheme:dark;
+}
+
+html[data-theme="dark"] .relationship-row select:focus,
+html[data-theme="dark"] #historyProfileForm .relationship-row select:focus{
+  border-color:#8DB299!important;
+  box-shadow:0 0 0 3px rgba(141,178,153,.14)!important;
+}
+
+html[data-theme="dark"] .relationship-row select option,
+html[data-theme="dark"] #historyProfileForm .relationship-row select option{
+  background:#171B16!important;
+  color:#F3ECDD!important;
+}
+
+html[data-theme="dark"] .relationship-row select option:disabled{
+  color:#8F968D!important;
+}
+
+html[data-theme="dark"] .add-rel{
+  color:#A7CBB0!important;
+}
+
+html[data-theme="dark"] .add-rel:hover{
+  color:#C5E1CC!important;
+}
+
+html[data-theme="dark"] .remove-rel{
+  background:#292D27!important;
+  color:#D7B48D!important;
+}
+
+html[data-theme="dark"] .relationship-note{
+  background:#202A22!important;
+  color:#D6DED7!important;
+}
+
+html[data-theme="dark"] .rel-chip{
+  background:#292D27!important;
+  color:#DDD3C3!important;
+}
