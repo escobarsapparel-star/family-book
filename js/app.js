@@ -1,5 +1,33 @@
 
 const A=document.getElementById("app"),D=window.FB_DATA;
+let currentRoute="home";
+let familyNavRefreshToken=0;
+
+function isSafeFamilyRefreshRoute(r){
+ return r==="home"||r==="members"||r==="tree"||r==="tree-full"||r==="profile"
+   ||r.startsWith("view-member:")||r.startsWith("family-unit:");
+}
+
+function updateLiveFamilyChrome(){
+ const avatar=document.querySelector(".topbar .avatar");
+ if(avatar)avatar.innerHTML=userAvatarHtml();
+}
+
+function scheduleFamilyRouteRefresh(r){
+ if(!isSafeFamilyRefreshRoute(r)||!window.FB_FAMILY_DATA?.reload)return;
+ const token=++familyNavRefreshToken;
+ Promise.resolve(window.FB_FAMILY_DATA.reload()).then(()=>{
+   if(token!==familyNavRefreshToken||currentRoute!==r)return;
+   go(r,{skipFamilyRefresh:true,preserveScroll:true});
+ }).catch(err=>console.warn("Family route refresh:",err));
+}
+
+window.addEventListener("familybook:family-data-updated",()=>{
+ updateLiveFamilyChrome();
+ if(isSafeFamilyRefreshRoute(currentRoute)){
+   go(currentRoute,{skipFamilyRefresh:true,preserveScroll:true});
+ }
+});
 function auth(){
 A.innerHTML=`<main class="login-page">
 <section class="login-photo"><img class="login-logo auth-logo" src="assets/logo/family-book-logo.png" alt="Family Book"><div class="login-message"><h2 class="script">Family is everything.</h2><p>Our family. Our memories. Our story.</p></div></section>
@@ -84,49 +112,83 @@ function familyTreeAnchorId(G){
 function currentUserPhoto(){let u=FB_AUTH.get()||{},owner=getMembers().find(m=>m.id===currentMemberId());return owner?.photo||u.photo||""}
 function userAvatarHtml(){let p=currentUserPhoto();return p?`<img src="${p}" alt="Profile photo">`:userInitials()}
 function userInitials(){let u=FB_AUTH.get()||{},parts=(u.name||"Family User").trim().split(/\s+/).filter(Boolean);return esc((parts[0]?.[0]||"F")+(parts.length>1?(parts.at(-1)?.[0]||""):"")).toUpperCase()}
-function shell(){window.FB_INVITES?.ensureCurrentAccount?.();let fam=esc(familyLabel()),initials=userInitials();A.innerHTML=`<div class="app"><header class="topbar"><button class="brand-home" data-r="home" aria-label="Go to Family Book Home"><span class="brand-logo-wrap"><img class="theme-logo theme-logo-light" src="assets/logo/family-book-logo-header.png" alt="Family Book"><img class="theme-logo theme-logo-dark" src="assets/logo/family-book-logo-dark-header.png" alt="Family Book"></span><span class="brand-tagline">OUR FAMILY <b>•</b> OUR MEMORIES <b>•</b> OUR STORY</span></button><div class="actions profile-actions"><button class="notify circle" id="topNotificationButton" aria-label="Notification settings"><i data-lucide="bell"></i></button><button class="circle avatar" id="topProfileButton" aria-label="Open profile menu" aria-haspopup="menu" aria-expanded="false">${userAvatarHtml()}</button>${window.FB_SETTINGS?.menuShell?.()||""}</div></header><main id="screen" class="screen"></main><nav class="bottom" aria-label="Main navigation"><button class="nav active" data-r="home"><i data-lucide="house"></i><small>Home</small></button><button class="nav" data-r="memories"><i data-lucide="images"></i><small>Memories</small></button><button class="nav" data-r="tree"><i data-lucide="git-fork"></i><small>Tree</small></button><button class="nav" data-r="calendar"><i data-lucide="calendar-days"></i><small>Calendar</small></button><button class="nav members-nav" data-r="members"><i data-lucide="users-round"></i><small>Members</small></button><button class="nav" data-r="profile"><i data-lucide="user-round"></i><small>Profile</small></button></nav></div>`;document.querySelectorAll("[data-r]").forEach(b=>b.onclick=()=>go(b.dataset.r));icons();window.FB_SETTINGS?.bindMenu?.();document.querySelector("#topNotificationButton")?.addEventListener("click",()=>go("notifications"));window.FB_NOTIFICATIONS?.refreshBadge?.();go("home")}
-function go(r){let navRoute=(r==="albums"||r==="new-album"||r.startsWith("album:")||r.startsWith("edit-album:"))?"memories":(r==="add-history"||r.startsWith("edit-history:"))?"tree":r;document.querySelectorAll(".nav").forEach(b=>b.classList.toggle("active",b.dataset.r===navRoute));$("#screen").innerHTML=r==="home"?home():r==="memories"?FB_MEMORIES.pageShell():r==="albums"?FB_ALBUMS.pageShell():r==="new-album"?FB_ALBUMS.editorShell():r.startsWith("edit-album:")?FB_ALBUMS.editorShell(r.split(":")[1]):r.startsWith("album:")?FB_ALBUMS.detailShell(r.split(":")[1]):r==="calendar"?FB_CALENDAR.pageShell():r==="add-event"?FB_CALENDAR.editorShell():r.startsWith("edit-event:")?FB_CALENDAR.editorShell(r.split(":")[1]):r.startsWith("view-event:")?FB_CALENDAR.detailShell(r.split(":")[1]):r==="add-memory"?FB_MEMORIES.editorShell():r.startsWith("view-memory:")?FB_MEMORIES.detailShell(r.split(":")[1]):r.startsWith("edit-memory:")?FB_MEMORIES.editorShell(r.split(":")[1]):r==="members"?members():r==="add-member"?addMember():r.startsWith("edit-member:")?editMember(r.split(":")[1]):r==="add-history"?historyForm():r.startsWith("edit-history:")?historyForm(r.split(":")[1]):r.startsWith("family-unit:")?familyUnitView(r.split(":")[1]):r.startsWith("view-member:")?viewMember(r.split(":")[1]):r.startsWith("member-wall:")?memberWallPage(r.split(":")[1]):r==="tree-full"?fullFamilyTree():r==="tree"?familyTree():r==="story-cover"?storyCoverPage():r==="story-slideshow"?storySlideshowPage():r==="notifications"?FB_NOTIFICATIONS.pageShell():r==="family-access"?FB_INVITES.pageShell():r==="settings"?FB_SETTINGS.pageShell():r==="profile"?profilePage():page(r);document.querySelectorAll("#screen [data-r]").forEach(b=>b.onclick=()=>go(b.dataset.r));
+function setFamilyFormSaving(form,saving,label="Saving…"){
+ if(!form)return;
+ const btn=form.querySelector('button[type="submit"]');
+ if(!btn)return;
+ if(saving){
+   btn.dataset.oldHtml=btn.innerHTML;
+   btn.disabled=true;
+   btn.innerHTML=`<span class="memory-spinner small"></span>${esc(label)}`;
+ }else{
+   btn.disabled=false;
+   if(btn.dataset.oldHtml)btn.innerHTML=btn.dataset.oldHtml;
+   delete btn.dataset.oldHtml;
+   icons();
+ }
+}
+function shell(){window.FB_INVITES?.ensureCurrentAccount?.();let fam=esc(familyLabel()),initials=userInitials();A.innerHTML=`<div class="app"><header class="topbar"><button class="brand-home" data-r="home" aria-label="Go to Family Book Home"><span class="brand-logo-wrap"><img class="theme-logo theme-logo-light" src="assets/logo/family-book-logo-header.png" alt="Family Book"><img class="theme-logo theme-logo-dark" src="assets/logo/family-book-logo-dark-header.png" alt="Family Book"></span><span class="brand-tagline">OUR FAMILY <b>•</b> OUR MEMORIES <b>•</b> OUR STORY</span></button><div class="actions profile-actions"><button class="notify circle" id="topNotificationButton" aria-label="Notification settings"><i data-lucide="bell"></i></button><button class="circle avatar" id="topProfileButton" aria-label="Open profile menu" aria-haspopup="menu" aria-expanded="false">${userAvatarHtml()}</button>${window.FB_SETTINGS?.menuShell?.()||""}</div></header><main id="screen" class="screen"></main><nav class="bottom" aria-label="Main navigation"><button class="nav active" data-r="home"><i data-lucide="house"></i><small>Home</small></button><button class="nav" data-r="memories"><i data-lucide="images"></i><small>Memories</small></button><button class="nav" data-r="tree"><i data-lucide="git-fork"></i><small>Tree</small></button><button class="nav" data-r="calendar"><i data-lucide="calendar-days"></i><small>Calendar</small></button><button class="nav members-nav" data-r="members"><i data-lucide="users-round"></i><small>Members</small></button><button class="nav" data-r="profile"><i data-lucide="user-round"></i><small>Profile</small></button></nav></div>`;document.querySelectorAll("[data-r]").forEach(b=>b.onclick=()=>go(b.dataset.r));icons();window.FB_SETTINGS?.bindMenu?.();document.querySelector("#topNotificationButton")?.addEventListener("click",()=>go("notifications"));window.FB_NOTIFICATIONS?.refreshBadge?.();go("home",{skipFamilyRefresh:true})}
+function go(r,opts={}){currentRoute=r;let navRoute=(r==="albums"||r==="new-album"||r.startsWith("album:")||r.startsWith("edit-album:"))?"memories":(r==="add-history"||r.startsWith("edit-history:"))?"tree":r;document.querySelectorAll(".nav").forEach(b=>b.classList.toggle("active",b.dataset.r===navRoute));$("#screen").innerHTML=r==="home"?home():r==="memories"?FB_MEMORIES.pageShell():r==="albums"?FB_ALBUMS.pageShell():r==="new-album"?FB_ALBUMS.editorShell():r.startsWith("edit-album:")?FB_ALBUMS.editorShell(r.split(":")[1]):r.startsWith("album:")?FB_ALBUMS.detailShell(r.split(":")[1]):r==="calendar"?FB_CALENDAR.pageShell():r==="add-event"?FB_CALENDAR.editorShell():r.startsWith("edit-event:")?FB_CALENDAR.editorShell(r.split(":")[1]):r.startsWith("view-event:")?FB_CALENDAR.detailShell(r.split(":")[1]):r==="add-memory"?FB_MEMORIES.editorShell():r.startsWith("view-memory:")?FB_MEMORIES.detailShell(r.split(":")[1]):r.startsWith("edit-memory:")?FB_MEMORIES.editorShell(r.split(":")[1]):r==="members"?members():r==="add-member"?addMember():r.startsWith("edit-member:")?editMember(r.split(":")[1]):r==="add-history"?historyForm():r.startsWith("edit-history:")?historyForm(r.split(":")[1]):r.startsWith("family-unit:")?familyUnitView(r.split(":")[1]):r.startsWith("view-member:")?viewMember(r.split(":")[1]):r.startsWith("member-wall:")?memberWallPage(r.split(":")[1]):r==="tree-full"?fullFamilyTree():r==="tree"?familyTree():r==="story-cover"?storyCoverPage():r==="story-slideshow"?storySlideshowPage():r==="notifications"?FB_NOTIFICATIONS.pageShell():r==="family-access"?FB_INVITES.pageShell():r==="settings"?FB_SETTINGS.pageShell():r==="profile"?profilePage():page(r);document.querySelectorAll("#screen [data-r]").forEach(b=>b.onclick=()=>go(b.dataset.r));
  document.querySelectorAll("[data-edit-member]").forEach(b=>b.onclick=()=>go("edit-member:"+b.dataset.editMember));
  if(r.startsWith("edit-member:")){
   let f=$("#editMemberForm"),rows=$("#relationshipRows"),add=$("#addRelationship"),id=r.split(":")[1],current=ensureOwner().find(x=>x.id===id),mode=f?.dataset.editMode||"none";
   let bindRemove=()=>document.querySelectorAll(".remove-rel").forEach(b=>{b.style.visibility="visible";b.onclick=()=>{b.closest("[data-rel-row]").remove();refreshIcons()}});
   if(add)add.onclick=()=>{rows.insertAdjacentHTML("beforeend",relationshipRow(Date.now(),ensureOwner().filter(x=>x.id!==id)));bindRemove();refreshIcons()};
   bindRemove();if(mode==="full")bindMemberPhotoPicker(current?.photo||"");
-  if(f)f.onsubmit=e=>{e.preventDefault();clearFamilySafetyMessage(f);let list=ensureOwner(),idx=list.findIndex(x=>x.id===id);if(idx<0)return;
+  if(f)f.onsubmit=async e=>{e.preventDefault();clearFamilySafetyMessage(f);let list=ensureOwner(),idx=list.findIndex(x=>x.id===id);if(idx<0)return;
    const allowed=memberEditMode(list[idx]);if(allowed==="none"){showFamilySafetyMessage(f,"You no longer have permission to edit this profile.");return}
    const name=`${$("#mfFirst").value.trim()} ${$("#mfLast").value.trim()}`.trim(),birthday=$("#mfBirthday").value,plan=relationshipPlanRows(f);
    const guard=validateRelationshipPlan(id,plan,true);
    if(!guard.ok){showFamilySafetyMessage(f,guard.message);return}
    if(!confirmDuplicatePerson(name,birthday,id))return;
+   const wasCurrent=id===currentMemberId();
+   const oldAuth={...(FB_AUTH.get()||{})};
+   let nextAuth=null;
    if(allowed==="structure"){
      list[idx]={...list[idx],name,birthday};
    }else{
      let photo=$("#mfPhotoData")?.value||"";
      list[idx]={...list[idx],name,birthday,email:$("#mfEmail").value.trim(),phone:$("#mfPhone").value.trim(),photo,managedProfile:$("#mfManaged")?!!$("#mfManaged").checked:!!list[idx].managedProfile};
-     if(id===currentMemberId()){
-       const oldEmail=(FB_AUTH.get()||{}).email||"";
-       const newEmail=$("#mfEmail").value.trim();
-       FB_AUTH.update({photo,name,email:newEmail});
-       window.FB_INVITES?.syncCurrentAccount?.({name,email:newEmail,oldEmail});
-     }
+     if(wasCurrent)nextAuth={photo,name,email:$("#mfEmail").value.trim()};
    }
-   saveMembers(list);
-   removeRelationshipsFor(id);
-   plan.forEach(({type,to})=>addRelationship(id,type,to));
-   go("members")}
+   setFamilyFormSaving(f,true,"Saving photo…");
+   try{
+     await saveMembers(list);
+     removeRelationshipsFor(id);
+     plan.forEach(({type,to})=>addRelationship(id,type,to));
+     await window.FB_FAMILY_DATA?.syncRelationships?.(getRelationships());
+     if(nextAuth){
+       FB_AUTH.update(nextAuth);
+       await window.FB_INVITES?.syncCurrentAccount?.({name,email:nextAuth.email,oldEmail:oldAuth.email||""});
+     }
+     go("members");
+   }catch(err){
+     console.error("Could not save member:",err);
+     showFamilySafetyMessage(f,err?.message||"Could not save this member. Please try again.");
+     setFamilyFormSaving(f,false);
+   }}
  }if(r==="add-member"){
  let f=$("#memberForm"),rows=$("#relationshipRows"),add=$("#addRelationship");
  let bindRemove=()=>document.querySelectorAll(".remove-rel").forEach((b,i)=>{b.style.visibility=document.querySelectorAll("[data-rel-row]").length>1?"visible":"hidden";b.onclick=()=>{if(document.querySelectorAll("[data-rel-row]").length>1){b.closest("[data-rel-row]").remove();bindRemove();refreshIcons()}}});
  if(add)add.onclick=()=>{rows.insertAdjacentHTML("beforeend",relationshipRow(Date.now(),ensureOwner()));bindRemove();refreshIcons()};
  bindRemove();bindMemberPhotoPicker("");
- if(f)f.onsubmit=e=>{e.preventDefault();clearFamilySafetyMessage(f);let first=$("#mfFirst").value.trim(),last=$("#mfLast").value.trim(),photo=$("#mfPhotoData")?.value||"";
+ if(f)f.onsubmit=async e=>{e.preventDefault();clearFamilySafetyMessage(f);let first=$("#mfFirst").value.trim(),last=$("#mfLast").value.trim(),photo=$("#mfPhotoData")?.value||"";
   let list=ensureOwner(),id=crypto.randomUUID(),name=`${first} ${last}`.trim(),birthday=$("#mfBirthday").value,plan=relationshipPlanRows(f);
   const guard=validateRelationshipPlan(id,plan,true);
   if(!guard.ok){showFamilySafetyMessage(f,guard.message);return}
   if(!confirmDuplicatePerson(name,birthday,""))return;
-  let member={id,name,profileType:"member",relationship:"Family member",birthday,email:$("#mfEmail").value.trim(),phone:$("#mfPhone").value.trim(),photo,managedProfile:!!$("#mfManaged")?.checked};list.push(member);saveMembers(list);
-  plan.forEach(({type,to})=>addRelationship(id,type,to));
-  go("members")}
+  let member={id,name,profileType:"member",relationship:"Family member",birthday,email:$("#mfEmail").value.trim(),phone:$("#mfPhone").value.trim(),photo,managedProfile:!!$("#mfManaged")?.checked};list.push(member);
+  setFamilyFormSaving(f,true,"Saving photo…");
+  try{
+    await saveMembers(list);
+    plan.forEach(({type,to})=>addRelationship(id,type,to));
+    await window.FB_FAMILY_DATA?.syncRelationships?.(getRelationships());
+    go("members");
+  }catch(err){
+    console.error("Could not add member:",err);
+    showFamilySafetyMessage(f,err?.message||"Could not save this member. Please try again.");
+    setFamilyFormSaving(f,false);
+  }}
  }
  if(r==="add-history"||r.startsWith("edit-history:"))bindHistoryForm(r.startsWith("edit-history:")?r.split(":")[1]:"");
  if(r==="profile"){bindOwnProfilePhoto();window.FB_WALL?.bindProfile?.()}
@@ -150,7 +212,10 @@ function go(r){let navRoute=(r==="albums"||r==="new-album"||r.startsWith("album:
  if(r==="settings")window.FB_SETTINGS?.bindPage?.()
  if(r==="notifications")window.FB_NOTIFICATIONS?.bindPage?.()
  if(r==="family-access")window.FB_INVITES?.bindPage?.()
- $("#logout")?.addEventListener("click",async()=>{await FB_AUTH.logout();auth()});icons();scrollTo(0,0)}
+ $("#logout")?.addEventListener("click",async()=>{await FB_AUTH.logout();auth()});icons();
+ if(!opts.preserveScroll)scrollTo(0,0);
+ if(!opts.skipFamilyRefresh)scheduleFamilyRouteRefresh(r);
+}
 function home(){
 let u=FB_AUTH.get()||{name:"Family"},n=esc(u.name.split(" ")[0]);
 let demo=(u.email||"").toLowerCase()==="demo@familybook.local";
@@ -411,9 +476,9 @@ async function bindStorySlideshow(){
 }
 
 function getMembers(){return window.FB_FAMILY_DATA?.getPeople?.()||[]}
-function saveMembers(v){window.FB_FAMILY_DATA?.syncMembers?.(v)}
+function saveMembers(v){return window.FB_FAMILY_DATA?.syncMembers?.(v)||Promise.resolve()}
 function getRelationships(){return window.FB_FAMILY_DATA?.getRelationships?.()||[]}
-function saveRelationships(v){window.FB_FAMILY_DATA?.syncRelationships?.(v)}
+function saveRelationships(v){return window.FB_FAMILY_DATA?.syncRelationships?.(v)||Promise.resolve()}
 function memberInitials(name){let p=(name||"Family Member").trim().split(/\s+/).filter(Boolean);return esc(((p[0]?.[0]||"F")+(p.length>1?(p.at(-1)?.[0]||""):"")).toUpperCase())}
 function memberPhotoPickerHtml(photo="",name="Family member"){
  let image=photo?`<img src="${photo}" alt="${esc(name)}">`:`<i data-lucide="user-round"></i>`;
@@ -770,7 +835,7 @@ function bindHistoryForm(id=""){
  });
  if(add)add.onclick=()=>{rows.insertAdjacentHTML("beforeend",relationshipRow(Date.now(),candidates()));bindRemove();icons()};
  bindRemove();bindMemberPhotoPicker(current?.photo||"");
- f.onsubmit=e=>{
+ f.onsubmit=async e=>{
    e.preventDefault();clearFamilySafetyMessage(f);
    const first=$("#hfFirst").value.trim(),last=$("#hfLast").value.trim(),photo=$("#mfPhotoData")?.value||"";
    const list=ensureOwner(),personId=id||crypto.randomUUID(),idx=list.findIndex(x=>x.id===personId);
@@ -786,10 +851,18 @@ function bindHistoryForm(id=""){
      email:"",phone:""
    };
    if(idx>=0)list[idx]=person;else list.push(person);
-   saveMembers(list);
-   removeRelationshipsFor(personId);
-   plan.forEach(({type,to})=>addRelationship(personId,type,to));
-   go(`view-member:${personId}`);
+   setFamilyFormSaving(f,true,"Saving photo…");
+   try{
+     await saveMembers(list);
+     removeRelationshipsFor(personId);
+     plan.forEach(({type,to})=>addRelationship(personId,type,to));
+     await window.FB_FAMILY_DATA?.syncRelationships?.(getRelationships());
+     go(`view-member:${personId}`);
+   }catch(err){
+     console.error("Could not save Family History profile:",err);
+     showFamilySafetyMessage(f,err?.message||"Could not save this profile. Please try again.");
+     setFamilyFormSaving(f,false);
+   }
  };
 }
 function historyRelationshipsHtml(id){
@@ -1157,7 +1230,22 @@ function profilePage(){
 }
 function bindOwnProfilePhoto(){
  let b=$("#accountPhotoPicker");if(!b)return;let owner=ensureOwner().find(m=>m.id===currentMemberId()),u=FB_AUTH.get()||{},current=owner?.photo||u.photo||"";
- b.onclick=()=>openPhotoMenu(current,photo=>{let list=ensureOwner(),idx=list.findIndex(m=>m.id===currentMemberId());if(idx>=0){list[idx]={...list[idx],photo};saveMembers(list)}FB_AUTH.update({photo});let top=document.querySelector(".topbar .avatar");if(top)top.innerHTML=photo?`<img src="${photo}" alt="Profile photo">`:userInitials();go("profile")});
+ b.onclick=()=>openPhotoMenu(current,async photo=>{let list=ensureOwner(),idx=list.findIndex(m=>m.id===currentMemberId());if(idx<0)return;
+   b.disabled=true;
+   const previous=(FB_AUTH.get()||{}).photo||"";
+   try{
+     list[idx]={...list[idx],photo};
+     await saveMembers(list);
+     FB_AUTH.update({photo});
+     let top=document.querySelector(".topbar .avatar");
+     if(top)top.innerHTML=photo?`<img src="${photo}" alt="Profile photo">`:userInitials();
+     go("profile");
+   }catch(err){
+     console.error("Could not save profile photo:",err);
+     FB_AUTH.update({photo:previous});
+     alert(err?.message||"Could not save your profile photo. Please try again.");
+     b.disabled=false;
+   }});
 }
 function permissionDeniedPage(message){
  return `<section class="permission-page"><div class="permission-card"><span><i data-lucide="shield-alert"></i></span><p class="eyebrow">FAMILY ACCESS</p><h1>View only</h1><p>${esc(message||"You do not have permission to change this profile.")}</p><div><button class="primary" data-r="members"><i data-lucide="users-round"></i>Back to Members</button><button class="secondary" data-r="profile"><i data-lucide="user-round"></i>My Profile</button></div></div></section>`;

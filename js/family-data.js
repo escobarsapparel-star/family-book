@@ -6,6 +6,10 @@
   let peopleSnapshot=new Map();
   let relationshipFingerprint="";
   let queue=Promise.resolve();
+  let reloadPromise=null;
+  let realtimeChannel=null;
+  let realtimeFamilyId=null;
+  let realtimeTimer=null;
   const objectUrls=new Set();
 
   const sb=()=>window.FB_SUPABASE?.client;
@@ -138,10 +142,76 @@
     localStorage.removeItem(legacyStoryKey());
   }
 
+  function scheduleRealtimeReload(reason){
+    clearTimeout(realtimeTimer);
+    realtimeTimer=setTimeout(async()=>{
+      try{
+        await reload();
+        window.dispatchEvent(new CustomEvent("familybook:family-data-updated",{
+          detail:{reason:reason||"family-change",familyId:auth().familyId||""}
+        }));
+      }catch(err){
+        console.warn("Live family refresh failed:",err);
+      }
+    },300);
+  }
+
+  async function stopRealtime(){
+    clearTimeout(realtimeTimer);
+    realtimeTimer=null;
+    if(realtimeChannel){
+      try{await sb()?.removeChannel?.(realtimeChannel)}catch(_){}
+    }
+    realtimeChannel=null;
+    realtimeFamilyId=null;
+  }
+
+  function startRealtime(){
+    const client=sb(),u=auth(),familyId=u.familyId;
+    if(!client||!familyId)return;
+    if(realtimeChannel&&realtimeFamilyId===familyId)return;
+
+    if(realtimeChannel){
+      try{client.removeChannel(realtimeChannel)}catch(_){}
+      realtimeChannel=null;
+    }
+
+    const changed=label=>()=>scheduleRealtimeReload(label);
+    realtimeFamilyId=familyId;
+    realtimeChannel=client
+      .channel(`family-book-family-${familyId}`)
+      .on("postgres_changes",{
+        event:"INSERT",schema:"public",table:"persons",
+        filter:`family_id=eq.${familyId}`
+      },changed("person-added"))
+      .on("postgres_changes",{
+        event:"UPDATE",schema:"public",table:"persons",
+        filter:`family_id=eq.${familyId}`
+      },changed("person-updated"))
+      .on("postgres_changes",{
+        event:"INSERT",schema:"public",table:"relationships",
+        filter:`family_id=eq.${familyId}`
+      },changed("relationship-added"))
+      .on("postgres_changes",{
+        event:"UPDATE",schema:"public",table:"relationships",
+        filter:`family_id=eq.${familyId}`
+      },changed("relationship-updated"))
+      .on("postgres_changes",{
+        event:"UPDATE",schema:"public",table:"families",
+        filter:`id=eq.${familyId}`
+      },changed("family-updated"))
+      .subscribe(status=>{
+        if(status==="CHANNEL_ERROR"||status==="TIMED_OUT"){
+          console.warn("Family Book live sync status:",status);
+        }
+      });
+  }
+
   async function load(){
     const u=auth();
     if(!u.familyId)return;
 
+    const previousUrls=[...objectUrls];
     const {data,error}=await sb().rpc("get_family_people_bundle");
     if(error)throw error;
 
@@ -157,7 +227,13 @@
     try{await loadStory()}
     catch(err){console.warn("Family Story settings unavailable:",err)}
 
+    previousUrls.forEach(url=>{
+      try{URL.revokeObjectURL(url)}catch(_){}
+      objectUrls.delete(url);
+    });
+
     loadedFamilyId=u.familyId;
+    startRealtime();
   }
 
   async function init(){
@@ -278,14 +354,21 @@
     });
   }
 
-  async function reload(){loadedFamilyId=null;await init()}
+  async function reload(){
+    if(reloadPromise)return reloadPromise;
+    loadedFamilyId=null;
+    reloadPromise=load().finally(()=>{reloadPromise=null});
+    return reloadPromise;
+  }
 
   window.addEventListener("beforeunload",()=>{
+    try{if(realtimeChannel)sb()?.removeChannel?.(realtimeChannel)}catch(_){}
+
     objectUrls.forEach(u=>URL.revokeObjectURL(u));objectUrls.clear();
   });
 
   window.FB_FAMILY_DATA={
-    init,load,reload,getPeople,getRelationships,getStory,saveStory,
+    init,load,reload,startRealtime,stopRealtime,getPeople,getRelationships,getStory,saveStory,
     syncMembers,syncRelationships,syncPrivacy,familyKey
   };
 })();
