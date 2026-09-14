@@ -797,36 +797,19 @@ function historyRelationshipsHtml(id){
  return `<section class="history-relations"><span>Family connections</span><div>${rels.map(r=>`<span class="history-rel-chip"><strong>${esc(r.label)}</strong>${esc(r.person)}</span>`).join("")}</div></section>`;
 }
 
-function historyNotesStorageKey(){
- const family=window.FB_AUTH?.familyStorageKey?.()||String((FB_AUTH.get()||{}).family||familyLabel()||"family").toLowerCase().replace(/[^a-z0-9]+/g,"_");
- return `fb_history_notes_${family}`;
-}
-function getAllHistoryNotes(){
- try{let v=JSON.parse(localStorage.getItem(historyNotesStorageKey())||"{}");return v&&typeof v==="object"?v:{}}catch(_){return {}}
-}
 function getHistoryNotes(personId){
- const all=getAllHistoryNotes(),rows=all[personId];
- return Array.isArray(rows)?rows.slice().sort((a,b)=>(Number(b.createdAt)||0)-(Number(a.createdAt)||0)):[];
-}
-function saveHistoryNotes(personId,rows){
- const all=getAllHistoryNotes();
- if(rows.length)all[personId]=rows;else delete all[personId];
- localStorage.setItem(historyNotesStorageKey(),JSON.stringify(all));
+ return window.FB_HISTORY_DATA?.get?.(personId)||[];
 }
 function currentHistoryNoteAuthor(){
  const u=FB_AUTH.get()||{};
- return {id:(u.email||u.name||"owner").toLowerCase(),name:u.name||"Family member",photo:currentUserPhoto()};
+ return {id:u.memberId||"owner",name:u.name||"Family member",photo:currentUserPhoto()};
 }
-function addHistoryNote(personId,type,text){
+async function addHistoryNote(personId,type,text){
  const clean=String(text||"").trim();if(!clean)return false;
- const rows=getHistoryNotes(personId),author=currentHistoryNoteAuthor();
- rows.unshift({id:`hn_${Date.now()}_${Math.random().toString(36).slice(2,6)}`,personId,type:["story","memory","note"].includes(type)?type:"story",text:clean.slice(0,1600),authorId:author.id,authorName:author.name,authorPhoto:author.photo,createdAt:Date.now()});
- saveHistoryNotes(personId,rows);return true;
+ return window.FB_HISTORY_DATA?.add?.(personId,type,clean);
 }
-function deleteHistoryNote(personId,noteId){
- const author=currentHistoryNoteAuthor(),rows=getHistoryNotes(personId),note=rows.find(n=>n.id===noteId);
- if(!note||note.authorId!==author.id)return false;
- saveHistoryNotes(personId,rows.filter(n=>n.id!==noteId));return true;
+async function deleteHistoryNote(personId,noteId){
+ return window.FB_HISTORY_DATA?.remove?.(noteId);
 }
 function historyNoteTypeLabel(type){return type==="memory"?"Memory":type==="note"?"Note":"Story"}
 function historyNoteAvatar(n){
@@ -855,19 +838,27 @@ function renderHistoryNotes(m){
      ${n.authorId===me.id?`<button type="button" class="history-note-delete" data-history-note-delete="${esc(n.id)}" aria-label="Delete this note"><i data-lucide="trash-2"></i></button>`:""}
    </article>`).join("");
  }
- mount.querySelectorAll("[data-history-note-delete]").forEach(btn=>btn.onclick=()=>{
+ mount.querySelectorAll("[data-history-note-delete]").forEach(btn=>btn.onclick=async()=>{
    if(!confirm("Delete this story or note from the biography?"))return;
-   deleteHistoryNote(m.id,btn.dataset.historyNoteDelete);renderHistoryNotes(m);icons();
+   btn.disabled=true;
+   try{await deleteHistoryNote(m.id,btn.dataset.historyNoteDelete);renderHistoryNotes(m);icons()}
+   catch(err){alert(err.message||"Could not delete this Family Voices note.");btn.disabled=false}
  });
  icons();
 }
 function bindHistoryNotes(m){
  const form=$("#historyNoteForm"),text=$("#historyNoteText"),type=$("#historyNoteType");
- if(form)form.onsubmit=e=>{
+ if(form)form.onsubmit=async e=>{
    e.preventDefault();
-   if(!addHistoryNote(m.id,type?.value||"story",text?.value||"")){text?.focus();return}
-   if(text)text.value="";
-   renderHistoryNotes(m);
+   const clean=text?.value||"";
+   if(!String(clean).trim()){text?.focus();return}
+   const submit=form.querySelector('button[type="submit"]');if(submit)submit.disabled=true;
+   try{
+     await addHistoryNote(m.id,type?.value||"story",clean);
+     if(text)text.value="";
+     renderHistoryNotes(m);
+   }catch(err){alert(err.message||"Could not add this Family Voices note.")}
+   finally{if(submit)submit.disabled=false}
  };
  renderHistoryNotes(m);
 }
@@ -1179,6 +1170,8 @@ async function routeAfterBackendAuth(){
  await window.FB_FAMILY_DATA?.init?.();
  await window.FB_SOCIAL_DATA?.init?.();
  await window.FB_ORGANIZER_DATA?.init?.();
+ await window.FB_HISTORY_DATA?.init?.();
+ await window.FB_NOTIFICATION_DATA?.init?.();
  shell();
 }
 window.FB_APP_AUTH_CHANGED=event=>{

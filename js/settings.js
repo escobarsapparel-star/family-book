@@ -103,6 +103,7 @@
     localStorage.setItem(keyForMember(user().memberId||"owner"),JSON.stringify(merged));
     applyTheme(merged.appearance.theme);
     window.FB_FAMILY_DATA?.syncPrivacy?.(merged);
+    window.FB_NOTIFICATION_DATA?.savePreferences?.(merged.notifications).catch(err=>console.error("Notification preference sync:",err));
     window.dispatchEvent(new CustomEvent("familybook:settings",{detail:merged}));
     return merged;
   }
