@@ -1,7 +1,7 @@
 (()=>{
   const POST_LIMIT=60;
-  const WALL_MEDIA_DB="family_book_wall_media_v1",WALL_MEDIA_STORE="media",MAX_VIDEO_BYTES=80*1024*1024;
-  let objectUrls=[],wallMediaDb=null;
+  const MAX_VIDEO_BYTES=50*1024*1024;
+  let objectUrls=[];
   const composerMedia={home:null,profile:null};
 
   const ACTIVITIES={
@@ -21,14 +21,9 @@
     const u=window.FB_AUTH?.get?.()||{};
     return String(u.family||"Family").toLowerCase().replace(/[^a-z0-9]+/g,"_");
   }
-  function key(){return `fb_wall_${familyKey()}`}
   function getPosts(){
-    try{
-      const p=JSON.parse(localStorage.getItem(key())||"[]");
-      return Array.isArray(p)?p:[];
-    }catch(_){return []}
+    return window.FB_SOCIAL_DATA?.getPosts?.()||[];
   }
-  function savePosts(posts){localStorage.setItem(key(),JSON.stringify(posts.slice(0,POST_LIMIT)))}
   function currentIdentity(){
     const u=window.FB_AUTH?.get?.()||{};
     const photo=typeof window.currentUserPhoto==="function"?window.currentUserPhoto():(u.photo||"");
@@ -48,45 +43,6 @@
     try{const u=URL.createObjectURL(blob);objectUrls.push(u);return u}catch(_){return ""}
   }
 
-  function wallMediaOpen(){
-    if(wallMediaDb)return Promise.resolve(wallMediaDb);
-    return new Promise((resolve,reject)=>{
-      const req=indexedDB.open(WALL_MEDIA_DB,1);
-      req.onupgradeneeded=()=>{const db=req.result;if(!db.objectStoreNames.contains(WALL_MEDIA_STORE))db.createObjectStore(WALL_MEDIA_STORE,{keyPath:"postId"})};
-      req.onsuccess=()=>{wallMediaDb=req.result;resolve(wallMediaDb)};
-      req.onerror=()=>reject(req.error||new Error("Could not open Wall media storage."));
-    });
-  }
-  async function wallMediaPut(postId,media){
-    if(!media)return;
-    const db=await wallMediaOpen();
-    return new Promise((resolve,reject)=>{
-      const tx=db.transaction(WALL_MEDIA_STORE,"readwrite");
-      tx.objectStore(WALL_MEDIA_STORE).put({postId,kind:media.kind,blob:media.blob,thumb:media.thumb||media.blob,meta:media.meta||{},savedAt:Date.now()});
-      tx.oncomplete=()=>resolve();tx.onerror=()=>reject(tx.error||new Error("Could not save the attachment."));
-    });
-  }
-  async function wallMediaGet(postId){
-    if(!postId)return null;
-    try{
-      const db=await wallMediaOpen();
-      return await new Promise((resolve,reject)=>{
-        const req=db.transaction(WALL_MEDIA_STORE,"readonly").objectStore(WALL_MEDIA_STORE).get(postId);
-        req.onsuccess=()=>resolve(req.result||null);req.onerror=()=>reject(req.error);
-      });
-    }catch(_){return null}
-  }
-  async function wallMediaDelete(postId){
-    if(!postId)return;
-    try{
-      const db=await wallMediaOpen();
-      await new Promise((resolve,reject)=>{
-        const tx=db.transaction(WALL_MEDIA_STORE,"readwrite");
-        tx.objectStore(WALL_MEDIA_STORE).delete(postId);
-        tx.oncomplete=()=>resolve();tx.onerror=()=>reject(tx.error);
-      });
-    }catch(_){}
-  }
   async function imageFromFile(file){
     if("createImageBitmap" in window){
       const bmp=await createImageBitmap(file);
@@ -98,21 +54,21 @@
       return {source:img,width:img.naturalWidth,height:img.naturalHeight,close:()=>URL.revokeObjectURL(url)};
     }catch(err){URL.revokeObjectURL(url);throw err}
   }
-  function mediaCanvasBlob(source,width,height,max,quality=.84){
+  function mediaCanvasBlob(source,width,height,max,quality=.8,mime="image/webp"){
     const scale=Math.min(1,max/Math.max(width,height)),w=Math.max(1,Math.round(width*scale)),h=Math.max(1,Math.round(height*scale));
     const c=document.createElement("canvas");c.width=w;c.height=h;c.getContext("2d").drawImage(source,0,0,w,h);
-    return new Promise((resolve,reject)=>c.toBlob(b=>b?resolve({blob:b,width:w,height:h}):reject(new Error("Could not prepare this image.")),"image/jpeg",quality));
+    return new Promise((resolve,reject)=>c.toBlob(b=>b?resolve({blob:b,width:w,height:h}):reject(new Error("Could not prepare this image.")),mime,quality));
   }
   async function prepareWallImage(file){
     const img=await imageFromFile(file);
     try{
-      const main=await mediaCanvasBlob(img.source,img.width,img.height,1800,.86);
-      const thumb=await mediaCanvasBlob(img.source,img.width,img.height,850,.8);
+      const main=await mediaCanvasBlob(img.source,img.width,img.height,1800,.80,"image/webp");
+      const thumb=await mediaCanvasBlob(img.source,img.width,img.height,540,.72,"image/webp");
       return {kind:"image",blob:main.blob,thumb:thumb.blob,meta:{name:file.name,type:file.type,size:file.size,width:main.width,height:main.height}};
     }finally{img.close?.()}
   }
   async function prepareWallVideo(file){
-    if(file.size>MAX_VIDEO_BYTES)throw new Error("That video is larger than 80 MB. Choose a shorter or smaller clip for this local prototype.");
+    if(file.size>MAX_VIDEO_BYTES)throw new Error("That video is larger than 50 MB. Choose a shorter or smaller clip.");
     const url=URL.createObjectURL(file),video=document.createElement("video");
     video.preload="metadata";video.muted=true;video.playsInline=true;video.src=url;
     try{
@@ -285,11 +241,7 @@
   }
 
   async function combinedFeed(){
-    const manual=await Promise.all(getPosts().map(async p=>{
-      let attachment=null;
-      if(p.media?.kind)attachment=await wallMediaGet(p.id);
-      return {...p,kind:"status",activity:p.activity||"update",attachment};
-    }));
+    const manual=getPosts().map(p=>({...p,kind:"status",activity:p.activity||"update"}));
     let memories=[];
     try{
       if(window.FB_MEMORIES?.getAll){
@@ -354,7 +306,7 @@
         <div class="wall-post-body"><p>${e(item.caption||"Family memory")}</p>${src?`<button type="button" class="wall-memory-photo ${item.video?"has-video":""}" data-wall-memory="${e(item.memoryId)}"><img src="${src}" alt="${e(item.caption||"Family memory")}">${item.video?`<b class="wall-video-play"><i data-lucide="play"></i></b>`:""}${item.count>1?`<span><i data-lucide="files"></i>${item.count}</span>`:""}</button>`:""}${window.FB_REACTIONS?.controlsHtml?.(`memory:${item.memoryId}`,{compact})||""}${window.FB_COMMENTS?.threadHtml?.(`memory:${item.memoryId}`,{compact})||""}</div>
       </article>`;
     }
-    const own=item.authorId===(window.FB_AUTH?.get?.()?.memberId||"owner"),act=activityOf(item.activity);
+    const own=item.canDelete!==false&&(item.authorId===(window.FB_AUTH?.get?.()?.memberId||"owner")||(window.FB_AUTH?.get?.()?.role==="admin")),act=activityOf(item.activity);
     const map=mapsUrl(item.location||"",item.lat,item.lng);
     const attachment=item.attachment,attachmentSrc=blobUrl(attachment?.blob),attachmentPoster=blobUrl(attachment?.thumb||attachment?.blob);
     return `<article class="wall-post ${compact?"compact":""}">
@@ -414,10 +366,14 @@
     bindFeedLinks(feed);
     feed.querySelectorAll("[data-wall-delete]").forEach(b=>b.onclick=async()=>{
       const id=b.dataset.wallDelete;
-      savePosts(getPosts().filter(p=>p.id!==id));
-      await wallMediaDelete(id);
-      renderHome();
-      refreshProfileLatest();
+      if(!confirm("Delete this family update?"))return;
+      b.disabled=true;
+      try{
+        await window.FB_SOCIAL_DATA?.deletePost?.(id);
+        await renderHome();
+        refreshProfileLatest();
+      }catch(err){alert(err.message||"Could not delete this update.")}
+      finally{b.disabled=false}
     });
     window.icons?.();
   }
@@ -465,16 +421,14 @@
     const clean=String(text||"").trim(),requested=ACTIVITIES[activity]?activity:"update",safe=requested==="checkin"&&!canUseLocationPosts()?"update":requested;
     const place=String(checkin.place||"").trim();
     if(!clean && !attachment && !(safe==="checkin"&&(place||checkin.lat!=null)))return false;
-    const me=currentIdentity(),posts=getPosts(),id=`post_${Date.now()}_${Math.random().toString(36).slice(2,7)}`;
-    if(attachment)await wallMediaPut(id,attachment);
-    posts.unshift({
+    const me=currentIdentity(),id=crypto.randomUUID();
+    await window.FB_SOCIAL_DATA?.savePost?.({
       id,authorId:me.id,authorName:me.name,authorPhoto:me.photo,
       text:clean,activity:safe,location:place,
       lat:checkin.lat??null,lng:checkin.lng??null,
-      media:attachment?{kind:attachment.kind,type:attachment.meta?.type||"",name:attachment.meta?.name||""}:null,
       createdAt:Date.now()
-    });
-    savePosts(posts);return true;
+    },attachment);
+    return true;
   }
 
   function bindHome(){

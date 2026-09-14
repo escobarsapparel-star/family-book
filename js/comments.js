@@ -1,91 +1,31 @@
 (()=>{
-  const MAX_PER_TARGET=200;
-
   function e(v=""){return String(v??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#039;"}[c]))}
   function user(){return window.FB_AUTH?.get?.()||{}}
-  function familyKey(){return window.FB_AUTH?.familyStorageKey?.()||String(user().family||"family").toLowerCase().replace(/[^a-z0-9]+/g,"_")}
-  function accountKey(){return String(user().email||user().name||"owner").toLowerCase().replace(/[^a-z0-9]+/g,"_")}
-  function memberKey(){return String(user().memberId||accountKey()||"owner").toLowerCase().replace(/[^a-z0-9]+/g,"_")}
-  function commentsKey(){return `fb_comments_${familyKey()}`}
-  function hiddenKey(){return `fb_hidden_comments_v2_${familyKey()}_${memberKey()}`}
-  function legacyHiddenKey(){return `fb_hidden_comments_${familyKey()}_${accountKey()}`}
   function isAdmin(){return (user().role||"member")==="admin"}
-
   function current(){
     const u=user();
-    return {
-      id:u.memberId||"owner",
-      name:u.name||"Family member",
-      photo:typeof window.currentUserPhoto==="function"?window.currentUserPhoto():(u.photo||"")
-    };
+    return {id:u.memberId||"owner",name:u.name||"Family member",photo:typeof window.currentUserPhoto==="function"?window.currentUserPhoto():(u.photo||"")};
   }
   function initials(name){
     const p=String(name||"Family").trim().split(/\s+/).filter(Boolean);
     return e(((p[0]?.[0]||"F")+(p.length>1?(p.at(-1)?.[0]||""):"")).toUpperCase());
   }
-  function avatar(name,photo){
-    return photo?`<img src="${e(photo)}" alt="">`:`<span>${initials(name)}</span>`;
-  }
-  function readAll(){
-    try{
-      const v=JSON.parse(localStorage.getItem(commentsKey())||"{}");
-      return v&&typeof v==="object"?v:{};
-    }catch(_){return {}}
-  }
-  function saveAll(v){localStorage.setItem(commentsKey(),JSON.stringify(v||{}))}
-  function rows(target){
-    const all=readAll(),r=all[target];
-    return Array.isArray(r)?r:[];
-  }
-  function hiddenSet(){
-    try{
-      const current=JSON.parse(localStorage.getItem(hiddenKey())||"[]"),legacy=JSON.parse(localStorage.getItem(legacyHiddenKey())||"[]");
-      const set=new Set([...(Array.isArray(current)?current:[]),...(Array.isArray(legacy)?legacy:[])]);
-      if(set.size)localStorage.setItem(hiddenKey(),JSON.stringify([...set]));
-      return set;
-    }catch(_){return new Set()}
-  }
-  function saveHidden(set){localStorage.setItem(hiddenKey(),JSON.stringify([...set]))}
+  function avatar(name,photo){return photo?`<img src="${e(photo)}" alt="">`:`<span>${initials(name)}</span>`}
+  function rows(target){return window.FB_SOCIAL_DATA?.getComments?.(target)||[]}
+  function hiddenSet(){return window.FB_SOCIAL_DATA?.getHidden?.()||new Set()}
   function timeAgo(ts){return window.FB_TIME?.activity?.(ts)||"Earlier"}
 
-  function add(target,text){
+  async function add(target,text){
     const clean=String(text||"").trim();
     if(!target||!clean)return null;
-    const all=readAll(),list=Array.isArray(all[target])?all[target]:[],me=current();
-    const row={
-      id:`c_${Date.now()}_${Math.random().toString(36).slice(2,7)}`,
-      target,
-      authorId:me.id,
-      authorName:me.name,
-      authorPhoto:me.photo,
-      text:clean.slice(0,500),
-      createdAt:Date.now()
-    };
-    list.push(row);
-    all[target]=list.slice(-MAX_PER_TARGET);
-    saveAll(all);
-    window.dispatchEvent(new CustomEvent("familybook:comment",{detail:{target,comment:row}}));
-    return row;
+    return window.FB_SOCIAL_DATA?.addComment?.(target,clean);
   }
-
-  function remove(target,id){
-    const all=readAll(),me=current(),list=Array.isArray(all[target])?all[target]:[];
-    const row=list.find(x=>x.id===id);
-    if(!row||(row.authorId!==me.id&&!isAdmin()))return false;
-    const next=list.filter(x=>x.id!==id);
-    if(next.length)all[target]=next;else delete all[target];
-    saveAll(all);
-    const h=hiddenSet();h.delete(id);saveHidden(h);
-    window.dispatchEvent(new CustomEvent("familybook:comment-delete",{detail:{target,id}}));
+  async function remove(target,id){
+    await window.FB_SOCIAL_DATA?.deleteComment?.(id);
     return true;
   }
-
-  function hide(id){
-    const h=hiddenSet();h.add(id);saveHidden(h);
-  }
-  function unhide(id){
-    const h=hiddenSet();h.delete(id);saveHidden(h);
-  }
+  async function hide(id){await window.FB_SOCIAL_DATA?.setHidden?.(id,true)}
+  async function unhide(id){await window.FB_SOCIAL_DATA?.setHidden?.(id,false)}
   function count(target){return rows(target).length}
 
   function threadHtml(target,{compact=false,open=false}={}){
@@ -125,7 +65,7 @@
         <button type="button" class="comment-menu-button" data-comment-menu aria-label="Comment options"><i data-lucide="more-horizontal"></i></button>
         <div class="comment-menu" hidden>
           <button type="button" data-comment-hide="${e(row.id)}"><i data-lucide="eye-off"></i>Hide comment</button>
-          ${own||moderator?`<button type="button" class="danger" data-comment-delete="${e(row.id)}"><i data-lucide="trash-2"></i>${moderator?"Remove comment":"Delete comment"}</button>`:""}
+          ${own||moderator||row.canDelete?`<button type="button" class="danger" data-comment-delete="${e(row.id)}"><i data-lucide="trash-2"></i>${moderator?"Remove comment":"Delete comment"}</button>`:""}
         </div>
       </div>
     </article>`;
@@ -137,8 +77,8 @@
     const mount=thread.querySelector("[data-comment-list]");
     const toggleText=thread.querySelector(".comment-toggle span");
     if(toggleText)toggleText.textContent=list.length?`${list.length} comment${list.length===1?"":"s"}`:"Comment";
-
     if(!mount)return;
+
     mount.innerHTML=list.length
       ? list.map(row=>commentHtml(row,hidden.has(row.id))).join("")
       : `<div class="comment-empty"><span>No comments yet</span><small>Start the family conversation.</small></div>`;
@@ -150,16 +90,22 @@
       menu.hidden=!menu.hidden;
     });
 
-    mount.querySelectorAll("[data-comment-hide]").forEach(btn=>btn.onclick=()=>{
-      hide(btn.dataset.commentHide);render(thread);window.icons?.();
+    mount.querySelectorAll("[data-comment-hide]").forEach(btn=>btn.onclick=async()=>{
+      btn.disabled=true;
+      try{await hide(btn.dataset.commentHide);render(thread);window.icons?.()}
+      catch(err){alert(err.message||"Could not hide this comment.")}
     });
-    mount.querySelectorAll("[data-comment-unhide]").forEach(btn=>btn.onclick=()=>{
-      unhide(btn.dataset.commentUnhide);render(thread);window.icons?.();
+    mount.querySelectorAll("[data-comment-unhide]").forEach(btn=>btn.onclick=async()=>{
+      btn.disabled=true;
+      try{await unhide(btn.dataset.commentUnhide);render(thread);window.icons?.()}
+      catch(err){alert(err.message||"Could not restore this comment.")}
     });
-    mount.querySelectorAll("[data-comment-delete]").forEach(btn=>btn.onclick=()=>{
+    mount.querySelectorAll("[data-comment-delete]").forEach(btn=>btn.onclick=async()=>{
       const id=btn.dataset.commentDelete;
       if(!confirm(isAdmin()?"Remove this comment from the family conversation?":"Delete this comment?"))return;
-      remove(target,id);render(thread);window.icons?.();
+      btn.disabled=true;
+      try{await remove(target,id);render(thread);window.icons?.()}
+      catch(err){alert(err.message||"Could not delete this comment.")}
     });
 
     window.icons?.();
@@ -169,7 +115,6 @@
     holder.querySelectorAll?.(".comment-thread[data-comment-target]").forEach(thread=>{
       if(thread.dataset.commentBound==="1")return;
       thread.dataset.commentBound="1";
-
       const toggle=thread.querySelector("[data-comment-toggle]");
       const panel=thread.querySelector(".comment-panel");
       const form=thread.querySelector("[data-comment-form]");
@@ -182,13 +127,19 @@
         window.icons?.();
       });
 
-      form?.addEventListener("submit",ev=>{
+      form?.addEventListener("submit",async ev=>{
         ev.preventDefault();
         const text=input?.value||"";
-        if(!add(thread.dataset.commentTarget,text)){input?.focus();return}
-        if(input)input.value="";
-        panel.hidden=false;thread.classList.add("open");
-        render(thread);
+        const send=form.querySelector(".comment-send");
+        send.disabled=true;
+        try{
+          const row=await add(thread.dataset.commentTarget,text);
+          if(!row){input?.focus();return}
+          if(input)input.value="";
+          panel.hidden=false;thread.classList.add("open");
+          render(thread);
+        }catch(err){alert(err.message||"Could not post this comment.")}
+        finally{send.disabled=false}
       });
 
       input?.addEventListener("keydown",ev=>{
@@ -202,6 +153,5 @@
   }
 
   function summary(target){return {count:count(target)}}
-
   window.FB_COMMENTS={threadHtml,bind,rows,count,summary,add,remove,hide,unhide};
 })();

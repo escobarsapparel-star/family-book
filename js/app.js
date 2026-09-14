@@ -1177,6 +1177,7 @@ async function routeAfterBackendAuth(){
  if(!u){auth();return}
  if(FB_AUTH.needsSetup?.()){FB_AUTH.renderSetup(A,()=>routeAfterBackendAuth(),()=>auth());return}
  await window.FB_FAMILY_DATA?.init?.();
+ await window.FB_SOCIAL_DATA?.init?.();
  shell();
 }
 window.FB_APP_AUTH_CHANGED=event=>{
