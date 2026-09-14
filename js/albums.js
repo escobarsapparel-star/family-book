@@ -3,22 +3,12 @@
   function e(v=""){return String(v??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#039;"}[c]))}
   function user(){return window.FB_AUTH?.get?.()||{}}
   function familyKey(){return window.FB_AUTH?.familyStorageKey?.()||String(user().family||"family").toLowerCase().replace(/[^a-z0-9]+/g,"_")}
-  function key(){return `fb_albums_${familyKey()}`}
   function cleanup(){urls.forEach(u=>{try{URL.revokeObjectURL(u)}catch(_){}});urls=[]}
   function blobUrl(blob){if(!blob)return "";if(typeof blob==="string")return blob;try{const u=URL.createObjectURL(blob);urls.push(u);return u}catch(_){return ""}}
-  function getAll(){
-    try{const v=JSON.parse(localStorage.getItem(key())||"[]");return Array.isArray(v)?v.sort((a,b)=>(Number(b.updatedAt)||0)-(Number(a.updatedAt)||0)):[]}
-    catch(_){return []}
-  }
-  function getOne(id){return getAll().find(a=>a.id===id)||null}
-  function write(list){localStorage.setItem(key(),JSON.stringify(list||[]))}
-  function save(album){
-    const all=getAll(),now=Date.now(),id=album.id||`alb_${now}_${Math.random().toString(36).slice(2,7)}`;
-    const prev=all.find(a=>a.id===id);
-    const row={id,name:String(album.name||"Untitled album").trim().slice(0,80),description:String(album.description||"").trim().slice(0,300),memoryIds:[...new Set((album.memoryIds||[]).filter(Boolean))],createdAt:prev?.createdAt||now,updatedAt:now};
-    const next=[row,...all.filter(a=>a.id!==id)];write(next);return row;
-  }
-  function remove(id){write(getAll().filter(a=>a.id!==id))}
+  function getAll(){return window.FB_ORGANIZER_DATA?.getAlbums?.()||[]}
+  function getOne(id){return window.FB_ORGANIZER_DATA?.getAlbum?.(id)||null}
+  async function save(album){return window.FB_ORGANIZER_DATA?.saveAlbum?.(album)}
+  async function remove(id){return window.FB_ORGANIZER_DATA?.deleteAlbum?.(id)}
   function idsForMemory(memoryId){return getAll().filter(a=>(a.memoryIds||[]).includes(memoryId)).map(a=>a.id)}
   function countForMemory(memoryId){return idsForMemory(memoryId).length}
   function pageShell(){
@@ -68,7 +58,7 @@
       picker.querySelectorAll('input[type="checkbox"]').forEach(box=>box.onchange=()=>{box.checked?selected.add(box.value):selected.delete(box.value);if(count)count.textContent=`${selected.size} selected`});window.icons?.();
     }
     search?.addEventListener('input',renderPicker);renderPicker();bindRoutes();window.icons?.();
-    mount.querySelector('#albumForm').onsubmit=ev=>{ev.preventDefault();const name=mount.querySelector('#albumName').value.trim();if(!name){mount.querySelector('#albumName').focus();return}const row=save({id:existing?.id,name,description:mount.querySelector('#albumDescription').value,memoryIds:[...selected]});window.go?.(`album:${row.id}`)};
+    mount.querySelector('#albumForm').onsubmit=async ev=>{ev.preventDefault();const name=mount.querySelector('#albumName').value.trim();if(!name){mount.querySelector('#albumName').focus();return}const btn=mount.querySelector('#albumForm button[type="submit"]');if(btn)btn.disabled=true;try{const row=await save({id:existing?.id||crypto.randomUUID(),name,description:mount.querySelector('#albumDescription').value,memoryIds:[...selected]});window.go?.(`album:${row.id}`)}catch(err){alert(err.message||"Could not save this album.")}finally{if(btn)btn.disabled=false}};
   }
   async function mountDetail(id){
     cleanup();const mount=document.querySelector('#albumDetailMount');if(!mount)return;const album=getOne(id);
@@ -80,7 +70,7 @@
     const grid=mount.querySelector('#albumMemoryGrid');
     if(!memories.length)grid.innerHTML=`<div class="album-detail-empty"><i data-lucide="images"></i><h2>This album is empty</h2><p>Edit the album and choose Memories to add.</p><button class="primary" data-r="edit-album:${e(album.id)}">Add Memories</button></div>`;
     else grid.innerHTML=memories.map(m=>{const p=window.FB_MEMORIES.getPhotos(m)?.[0],u=p?blobUrl(p.thumb||p.image):'';return `<button class="album-memory-card" data-r="view-memory:${e(m.id)}"><span class="${p?.kind==="video"?"has-video":""}">${u?`<img src="${u}" alt="${e(m.caption||'Family memory')}">`:`<i data-lucide="image"></i>`}${p?.kind==="video"?`<b><i data-lucide="play"></i></b>`:""}</span><strong>${e(m.caption||'Family memory')}</strong><small>${e(m.date||'Date unknown')}</small></button>`}).join('');
-    bindRoutes();window.icons?.();mount.querySelector('#deleteAlbum').onclick=()=>{if(!confirm(`Delete the album “${album.name}”? The Memories themselves will not be deleted.`))return;remove(album.id);window.go?.('albums')};
+    bindRoutes();window.icons?.();mount.querySelector('#deleteAlbum').onclick=async()=>{if(!confirm(`Delete the album “${album.name}”? The Memories themselves will not be deleted.`))return;const btn=mount.querySelector('#deleteAlbum');btn.disabled=true;try{await remove(album.id);window.go?.('albums')}catch(err){alert(err.message||"Could not delete this album.");btn.disabled=false}};
   }
   function bindRoutes(){document.querySelectorAll('#screen [data-r]').forEach(b=>b.onclick=()=>window.go?.(b.dataset.r))}
   async function bindRoute(r){if(r==='albums')return mountLibrary();if(r==='new-album')return mountEditor('');if(r.startsWith('edit-album:'))return mountEditor(r.split(':')[1]);if(r.startsWith('album:'))return mountDetail(r.split(':')[1])}

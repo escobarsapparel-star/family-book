@@ -16,17 +16,12 @@
     const u=window.FB_AUTH?.get?.()||{};
     return String(u.family||"Family").toLowerCase().replace(/[^a-z0-9]+/g,"_");
   }
-  function storageKey(){return `fb_calendar_${familyKey()}`}
   function members(){try{return (window.ensureOwner?.()||[]).filter(m=>m.profileType!=="history")}catch(_){return []}}
   function memberById(id){return members().find(m=>m.id===id)}
-  function readEvents(){
-    try{
-      const rows=JSON.parse(localStorage.getItem(storageKey())||"[]");
-      return Array.isArray(rows)?rows:[];
-    }catch(_){return []}
-  }
-  function saveEvents(rows){localStorage.setItem(storageKey(),JSON.stringify(rows||[]))}
-  function getEvent(id){return readEvents().find(x=>x.id===id)||null}
+  function readEvents(){return window.FB_ORGANIZER_DATA?.getEvents?.()||[]}
+  function getEvent(id){return window.FB_ORGANIZER_DATA?.getEvent?.(id)||null}
+  async function saveEvent(row){return window.FB_ORGANIZER_DATA?.saveEvent?.(row)}
+  async function removeEvent(id){return window.FB_ORGANIZER_DATA?.deleteEvent?.(id)}
   function pad(n){return String(n).padStart(2,"0")}
   function ymd(d){return `${d.getFullYear()}-${pad(d.getMonth()+1)}-${pad(d.getDate())}`}
   function parseDate(s){
@@ -318,12 +313,11 @@
       }
     });
 
-    form.onsubmit=ev=>{
+    form.onsubmit=async ev=>{
       ev.preventDefault();
-      const now=Date.now(),rows=readEvents();
       const selected=[...form.querySelectorAll(".cal-member-check input:checked")].map(x=>x.value);
       const row={
-        id:id||`ev_${now}_${Math.random().toString(36).slice(2,6)}`,
+        id:id||crypto.randomUUID(),
         title:document.querySelector("#calTitle").value.trim(),
         type:document.querySelector("#calType").value,
         date:document.querySelector("#calDate").value,
@@ -334,20 +328,19 @@
         lng:document.querySelector("#calLng").value===""?null:Number(document.querySelector("#calLng").value),
         notes:document.querySelector("#calNotes").value.trim(),
         recurringYearly:document.querySelector("#calRepeat").checked,
-        memberIds:selected,
-        createdAt:id?(getEvent(id)?.createdAt||now):now,
-        updatedAt:now
+        memberIds:selected
       };
-      if(id){
-        const i=rows.findIndex(x=>x.id===id);
-        if(i>=0)rows[i]=row;else rows.push(row);
-      }else rows.push(row);
-      saveEvents(rows);window.go?.("calendar");
+      const submit=form.querySelector('button[type="submit"]');if(submit)submit.disabled=true;
+      try{await saveEvent(row);window.go?.("calendar")}
+      catch(err){alert(err.message||"Could not save this family event.")}
+      finally{if(submit)submit.disabled=false}
     };
     const del=document.querySelector("#calDelete");
-    if(del)del.onclick=()=>{
+    if(del)del.onclick=async()=>{
       if(!confirm("Delete this family event?"))return;
-      saveEvents(readEvents().filter(x=>x.id!==id));window.go?.("calendar");
+      del.disabled=true;
+      try{await removeEvent(id);window.go?.("calendar")}
+      catch(err){alert(err.message||"Could not delete this family event.");del.disabled=false}
     };
   }
 
