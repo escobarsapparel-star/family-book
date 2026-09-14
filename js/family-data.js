@@ -17,11 +17,12 @@
   };
 
   function enqueue(fn){
-    queue=queue.then(fn).catch(err=>{
+    const run=queue.then(fn);
+    queue=run.catch(err=>{
       console.error("Family Book cloud sync:",err);
       window.dispatchEvent(new CustomEvent("familybook:cloud-sync-error",{detail:{message:err?.message||String(err)}}));
     });
-    return queue;
+    return run;
   }
 
   function cloneRows(rows){return (rows||[]).map(x=>({...x}))}
@@ -183,10 +184,11 @@
   }
 
   async function uploadPhoto(member){
-    if(!member?.photo||!String(member.photo).startsWith("data:image/")){
-      return member?.photoPath||"";
-    }
-    const response=await fetch(member.photo),blob=await response.blob();
+    const photo=String(member?.photo||"");
+    if(!photo)return "";
+    if(!photo.startsWith("data:image/"))return member?.photoPath||"";
+
+    const response=await fetch(photo),blob=await response.blob();
     const ext=blob.type==="image/png"?"png":"jpg",u=auth();
     const path=`${u.familyId}/${u.supabaseUserId}/profiles/${member.id}-${Date.now()}.${ext}`;
     const {error}=await sb().storage.from(window.FB_SUPABASE_CONFIG.mediaBucket).upload(path,blob,{
@@ -213,6 +215,8 @@
     if(error)throw error;
 
     member.photoPath=photoPath||"";
+    const live=people.find(x=>x.id===member.id);
+    if(live)live.photoPath=member.photoPath;
     if(oldPhotoPath&&oldPhotoPath!==photoPath)await removeStorage([oldPhotoPath]);
     peopleSnapshot.set(member.id,snapshotPerson(member));
     return data;
@@ -223,7 +227,7 @@
     const copy=cloneRows(list),before=cloneRows(people);
     people=copy;
 
-    enqueue(async()=>{
+    return enqueue(async()=>{
       const currentIds=new Set(copy.map(m=>m.id));
       for(const old of before){
         if(!currentIds.has(old.id)){
@@ -235,7 +239,10 @@
       }
 
       for(const m of copy){
-        if(peopleSnapshot.get(m.id)!==snapshotPerson(m))await persistPerson(m);
+        const cloudSnapshotChanged=peopleSnapshot.get(m.id)!==snapshotPerson(m);
+        const hasNewPhoto=String(m.photo||"").startsWith("data:image/");
+        const removedExistingPhoto=!m.photo&&!!m.photoPath;
+        if(cloudSnapshotChanged||hasNewPhoto||removedExistingPhoto)await persistPerson(m);
       }
     });
   }
@@ -247,7 +254,7 @@
     const fp=relFingerprint(copy);
     if(fp===relationshipFingerprint)return;
 
-    enqueue(async()=>{
+    return enqueue(async()=>{
       const {error}=await sb().rpc("replace_family_relationships",{
         p_relationships:copy.map(r=>({from:r.from,to:r.to,type:r.type}))
       });
