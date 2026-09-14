@@ -171,7 +171,7 @@
     if(!("Notification" in window))return {state:"unsupported",title:"Browser notifications unavailable",text:"This browser does not support notification permission."};
     if(Notification.permission==="granted")return {state:"granted",title:"Notification permission granted",text:"Family Book is allowed to show notifications on this device."};
     if(Notification.permission==="denied")return {state:"denied",title:"Notifications blocked",text:"Notification permission is blocked in your browser/device settings."};
-    return {state:"default",title:"Enable notifications on this device",text:"Allow Family Book to show notifications when browser push is connected."};
+    return {state:"default",title:"Enable notifications on this device",text:"Allow Family Book to show notifications on this device while the app is active."};
   }
 
   function pageShell(){
@@ -240,8 +240,8 @@
       </section>
 
       <section class="settings-card settings-about-card">
-        <div class="settings-card-head"><span class="settings-card-icon"><i data-lucide="info"></i></span><div><p>APP</p><h2>Family Book</h2><span>Build 5.1.3 • Secure family access</span></div></div>
-        <div class="settings-version-row"><span>Current build</span><strong>5.1 — Supabase Auth Foundation</strong></div>
+        <div class="settings-card-head"><span class="settings-card-icon"><i data-lucide="info"></i></span><div><p>APP</p><h2>Family Book</h2><span>Build 5.7 • Cloud production baseline</span></div></div>
+        <div class="settings-version-row"><span>Current build</span><strong>5.7 — Cloud Production</strong></div>
       </section>
 
       <button type="button" class="settings-signout" id="settingsSignout"><i data-lucide="log-out"></i>Sign out</button>

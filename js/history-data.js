@@ -5,12 +5,7 @@
   const sb=()=>window.FB_SUPABASE?.client;
   const user=()=>window.FB_AUTH?.get?.()||{};
 
-  function members(){
-    try{
-      const key=window.FB_AUTH?.familyStorageKey?.()||"family";
-      return JSON.parse(localStorage.getItem(`fb_members_${key}`)||"[]")||[];
-    }catch(_){return []}
-  }
+  function members(){return window.FB_FAMILY_DATA?.getPeople?.()||[]}
 
   function mapPeople(){return Object.fromEntries(members().map(m=>[m.id,m]))}
 

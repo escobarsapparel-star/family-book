@@ -10,12 +10,7 @@
   const user=()=>window.FB_AUTH?.get?.()||{};
   const bucket=()=>window.FB_SUPABASE_CONFIG?.mediaBucket||"family-media";
 
-  function members(){
-    try{
-      const k=window.FB_AUTH?.familyStorageKey?.()||"family";
-      return JSON.parse(localStorage.getItem(`fb_members_${k}`)||"[]")||[];
-    }catch(_){return []}
-  }
+  function members(){return window.FB_FAMILY_DATA?.getPeople?.()||[]}
   function memberMap(){return Object.fromEntries(members().map(m=>[m.id,m]))}
   function targetKey(type,id){return `${type}:${id}`}
   function parseTarget(target){

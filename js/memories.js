@@ -674,5 +674,5 @@
     if(r.startsWith("view-memory:"))return mountDetail(r.split(":")[1]);
   }
 
-  window.FB_MEMORIES={pageShell,editorShell,detailShell,bindRoute,getAll,getOne,getPhotos:memoryPhotos,removePersonTag,_parseExifDate:parseExifDate};
+  window.FB_MEMORIES={pageShell,editorShell,detailShell,bindRoute,getAll,getOne,getPhotos:memoryPhotos,removePersonTag,refresh:()=>loadCloud(true),_parseExifDate:parseExifDate};
 })();

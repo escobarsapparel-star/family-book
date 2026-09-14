@@ -220,14 +220,11 @@ function homeMemoryDate(m){
  if(!m?.date)return "Family memory";
  try{return new Intl.DateTimeFormat(undefined,{day:"numeric",month:"short",year:"numeric"}).format(new Date(`${m.date}T12:00:00`))}catch(_){return m.date}
 }
-function familyStoryStoreKey(){
- return `fb_story_${window.FB_AUTH?.familyStorageKey?.()||normalizeFamilyName((FB_AUTH.get()||{}).family||D.family||"Family").toLowerCase().replace(/[^a-z0-9]+/g,"_")}`;
-}
 function getFamilyStory(){
- try{return JSON.parse(localStorage.getItem(familyStoryStoreKey())||"{}")}catch(_){return {}}
+ return window.FB_FAMILY_DATA?.getStory?.()||{};
 }
-function saveFamilyStory(v){
- localStorage.setItem(familyStoryStoreKey(),JSON.stringify(v||{}));
+async function saveFamilyStory(v){
+ return window.FB_FAMILY_DATA?.saveStory?.(v);
 }
 function storyPhotoList(memories,{imagesOnly=false}={}){
  let rows=[];
@@ -336,10 +333,16 @@ async function bindStoryCover(){
   rx.oninput=()=>{x=Number(rx.value);render()};
   ry.oninput=()=>{y=Number(ry.value);render()};
   $("#storyCoverReset").onclick=()=>{x=50;y=50;render()};
-  $("#storyCoverSave").onclick=()=>{
-    const row=rows[selected];
-    saveFamilyStory({memoryId:row.memory.id,photoIndex:row.index,x,y});
-    go("home");
+  $("#storyCoverSave").onclick=async()=>{
+    const row=rows[selected],btn=$("#storyCoverSave");
+    btn.disabled=true;
+    try{
+      await saveFamilyStory({memoryId:row.memory.id,photoIndex:row.index,x,y});
+      go("home");
+    }catch(err){
+      alert(err.message||"Could not save the Family Story cover.");
+      btn.disabled=false;
+    }
   };
   render();icons();
  }catch(err){
@@ -407,12 +410,10 @@ async function bindStorySlideshow(){
  }
 }
 
-function memberStoreKey(){let u=FB_AUTH.get()||{},k=window.FB_AUTH?.familyStorageKey?.()||(u.family||D.family||"family").toLowerCase().replace(/\s+/g,"_");return `fb_members_${k}`}
-function relationshipStoreKey(){let u=FB_AUTH.get()||{},k=window.FB_AUTH?.familyStorageKey?.()||(u.family||D.family||"family").toLowerCase().replace(/\s+/g,"_");return `fb_relationships_${k}`}
-function getMembers(){try{return JSON.parse(localStorage.getItem(memberStoreKey())||"[]")}catch(e){return []}}
-function saveMembers(v){localStorage.setItem(memberStoreKey(),JSON.stringify(v));window.FB_FAMILY_DATA?.syncMembers?.(v)}
-function getRelationships(){try{return JSON.parse(localStorage.getItem(relationshipStoreKey())||"[]")}catch(e){return []}}
-function saveRelationships(v){localStorage.setItem(relationshipStoreKey(),JSON.stringify(v));window.FB_FAMILY_DATA?.syncRelationships?.(v)}
+function getMembers(){return window.FB_FAMILY_DATA?.getPeople?.()||[]}
+function saveMembers(v){window.FB_FAMILY_DATA?.syncMembers?.(v)}
+function getRelationships(){return window.FB_FAMILY_DATA?.getRelationships?.()||[]}
+function saveRelationships(v){window.FB_FAMILY_DATA?.syncRelationships?.(v)}
 function memberInitials(name){let p=(name||"Family Member").trim().split(/\s+/).filter(Boolean);return esc(((p[0]?.[0]||"F")+(p.length>1?(p.at(-1)?.[0]||""):"")).toUpperCase())}
 function memberPhotoPickerHtml(photo="",name="Family member"){
  let image=photo?`<img src="${photo}" alt="${esc(name)}">`:`<i data-lucide="user-round"></i>`;
@@ -1186,14 +1187,38 @@ async function routeAfterBackendAuth(){
    }
  });
 
+ cleanupLegacyBrowserData();
  shell();
 }
+function cleanupLegacyBrowserData(){
+ const prefixes=["fb_members_","fb_relationships_","fb_story_","fb_wall_","fb_calendar_","fb_albums_","fb_history_notes_"];
+ for(let i=localStorage.length-1;i>=0;i--){
+   const key=localStorage.key(i)||"";
+   if(prefixes.some(prefix=>key.startsWith(prefix)))localStorage.removeItem(key);
+ }
+}
+let lastCloudRefreshAt=Date.now();
+async function refreshCloudCaches(){
+ const tasks=[
+   ()=>window.FB_FAMILY_DATA?.reload?.(),
+   ()=>window.FB_MEMORIES?.refresh?.(),
+   ()=>window.FB_SOCIAL_DATA?.load?.(),
+   ()=>window.FB_ORGANIZER_DATA?.load?.(),
+   ()=>window.FB_HISTORY_DATA?.load?.(),
+   ()=>window.FB_NOTIFICATION_DATA?.loadNotifications?.(false)
+ ];
+ await Promise.allSettled(tasks.map(fn=>Promise.resolve().then(fn)));
+ lastCloudRefreshAt=Date.now();
+}
+document.addEventListener("visibilitychange",()=>{
+ if(document.visibilityState!=="visible")return;
+ if(Date.now()-lastCloudRefreshAt<60000)return;
+ refreshCloudCaches().catch(err=>console.warn("Background cloud refresh:",err));
+});
+
 window.FB_APP_AUTH_CHANGED=event=>{
  if(event==="SIGNED_OUT"){auth();return}
- // Supabase may emit SIGNED_IN again when a browser tab regains focus
- // or confirms an existing session. That is not a fresh login, so do
- // not rebuild the Family Book shell here. Real login flows already
- // call routeAfterBackendAuth() directly, and initial page load does too.
+ // Returning to a browser tab refreshes cloud caches without changing route.
 };
 window.FB_APP_AUTH_ERROR=err=>{console.error(err);alert(err.message||"Family Book authentication could not be loaded.")};
 (async()=>{try{await FB_AUTH.init();await routeAfterBackendAuth()}catch(err){console.error(err);auth();setTimeout(()=>alert(err.message||"Could not connect Family Book to Supabase."),50)}})();
