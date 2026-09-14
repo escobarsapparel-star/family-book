@@ -1,0 +1,5 @@
+Build 2.1
+Added Family Members and Add Family Member.
+Member data is stored per family in localStorage for this prototype.
+Profile photo, birthday, relationship and optional email supported.
+Existing Login and Home markup/content preserved.

@@ -1,0 +1,8 @@
+Family Book Build 2.4.1 — Tree logic correction
+- Fixed spouse generation alignment.
+- A spouse with no recorded parents can no longer pull their partner up into the older generation.
+- Explicit parent/child ancestry takes priority.
+- Spouses are aligned to the deeper established generation.
+- Descendant levels are recalculated after spouse alignment.
+- No relationship records were changed or inferred.
+- Existing locked screens were not redesigned.

@@ -1,0 +1,23 @@
+Family Book — Netlify Testing Package
+
+This package is based on Build 2.9 Coordinate Tree.
+
+Verified before packaging:
+- index.html present
+- CSS present
+- app.js, auth.js and data.js pass JavaScript syntax validation
+- exact Family Book logo PNG present
+- existing approved login implementation retained
+- coordinate-based Family Tree retained
+- Members/View/Edit/Remove functionality retained
+- optional contact number retained
+- localStorage prototype data/auth retained for testing
+- _redirects added for Netlify SPA fallback
+- netlify.toml added with publish root set to this folder
+
+DEPLOY
+Upload the CONTENTS of this folder to Netlify (or drag this folder into a new/manual deploy).
+index.html is already at the publish root.
+
+IMPORTANT FOR THIS TEST BUILD
+This is still a localStorage prototype. Accounts, members and relationships are stored in the browser/device used for testing. They are not yet shared between devices and there is no production backend yet.

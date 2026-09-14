@@ -1,0 +1,7 @@
+Build 2.8.6
+- Tree now renders one additional descendant level below each child family unit.
+- Children added as Child of Alexander/Heidrich/etc. can now appear beneath that person instead of being omitted because the overview previously stopped after one generation.
+- Focused family branches also show the next descendant level.
+- Added View member to the three-dot Members menu.
+- View Member opens a clean profile card with available birthday/contact/email and Edit Member action.
+- Existing Remove/Edit menu options retained.

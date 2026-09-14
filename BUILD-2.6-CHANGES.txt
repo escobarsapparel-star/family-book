@@ -1,0 +1,25 @@
+Family Book Build 2.6 — Relationship Engine v2
+
+FOUNDATION CHANGE
+- Parent/Child remains an explicit stored relationship.
+- Spouse/Partner remains explicit and NEVER implies parenthood.
+- Manual Sibling relationships remain supported.
+
+NEW AUTOMATIC / DERIVED RELATIONSHIPS
+- If two people share an explicit parent, Family Book derives Sibling of in both directions.
+- If A is parent of B and B is parent of C, Family Book derives:
+    A = Grandparent of C
+    C = Grandchild of A
+- Derived relationships are calculated dynamically and are not saved as duplicate manual records.
+- Existing manual relationships remain intact.
+- Duplicate effective relationships are suppressed.
+- Member relationship chips can mark calculated relationships as AUTO.
+
+TREE SAFETY
+- Tree still uses explicit Parent of links for ancestry placement.
+- Derived sibling/grandparent information cannot invent parent-child connections.
+- Spouses still cannot become parents through inference.
+
+BASE
+- Built from stable Build 2.4.1 visual tree base.
+- Experimental Build 2.5 compact tree was not used.

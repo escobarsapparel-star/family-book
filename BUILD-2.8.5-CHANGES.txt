@@ -1,0 +1,7 @@
+Build 2.8.5 — Remove Member without Sign-out
+- Fixed Remove Member so it changes family data only.
+- Removing another member no longer touches the login/session record.
+- The currently signed-in owner's member profile is protected from removal.
+- Relationships belonging to the removed member are cleaned up directly.
+- Returns to Members after deletion while keeping the user signed in.
+- Retains clickable couple blocks, centered branch lines, clean Member cards, three-dot menu, and contact number.

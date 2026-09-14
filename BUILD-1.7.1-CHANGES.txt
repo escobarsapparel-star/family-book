@@ -1,0 +1,8 @@
+Family Book Build 1.7.1
+- Header family name now comes from the signed-in family's data.
+- Removed hard-coded "The Willemse Family" from shared header/profile UI.
+- Avatar initials now come from the signed-in user's name.
+- Enlarged the supplied Family Book logo.
+- Corrected notification badge spacing.
+- Corrected clipping of the empty-state icon above "WELCOME TO FAMILY BOOK".
+- Login layout was not redesigned.

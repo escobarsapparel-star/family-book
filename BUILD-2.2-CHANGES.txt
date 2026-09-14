@@ -1,0 +1,9 @@
+Family Book Build 2.2
+- Multiple + Add relationship rows
+- Relationships connect a new member to existing family members
+- Reverse relationship records are automatically created
+- Spouse/partner links NEVER imply a parent-child relationship
+- Parent/child relationships must be explicitly added
+- Relationships are stored once at family level and appear from both profiles
+- Member cards show saved relationship chips
+- Existing Login and locked Home UI preserved

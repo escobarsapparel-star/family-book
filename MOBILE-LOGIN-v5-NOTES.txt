@@ -1,0 +1,23 @@
+Family Book Mobile Login v5
+
+This build starts from the clean Netlify Build 2.9 package, not the failed v3/v4 CSS experiments.
+
+LOCKED ASSET:
+assets/images/family-login-mobile.png
+This is a byte-for-byte copy of the approved generated background image. It was not regenerated, cropped, retouched or modified.
+
+Mobile:
+- approved image is the background
+- "Family is everything" comes only from the approved background image
+- exact existing Family Book logo is overlaid once
+- Sign In / Create Account are real HTML controls
+- compact bottom login layout
+- signup remains scrollable
+
+Desktop:
+- existing approved desktop login remains unchanged
+
+App:
+- Build 2.9 coordinate Family Tree retained
+- Members / View / Edit / Remove retained
+- existing localStorage test data/auth retained

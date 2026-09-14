@@ -1,0 +1,7 @@
+Build 2.6.2.1 — Contact Number Fix
+Clean rebuild from the last working Build 2.6.1.
+- Added optional Contact Number to Add Member.
+- Added Contact Number to Edit Member.
+- Contact number saves as member.phone.
+- No tree/relationship changes.
+- app.js passed JavaScript syntax validation.

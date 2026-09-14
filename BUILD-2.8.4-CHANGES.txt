@@ -1,0 +1,12 @@
+Build 2.8.4
+FAMILY TREE
+- In a focused family branch, clicking the darker/grey couple block returns to the full Family Tree overview.
+- Existing Back to Family Tree control remains available.
+
+MEMBERS
+- Replaced the pencil-only action with a three-dot options menu.
+- Menu includes Edit member and Remove member.
+- Remove asks for confirmation.
+- Removing a member also removes relationships connected to that member.
+- Signed-in family owner is protected from accidental removal.
+- Relationship chips remain hidden from Member cards.

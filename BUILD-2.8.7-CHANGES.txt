@@ -1,0 +1,17 @@
+Build 2.8.7
+TREE GEOMETRY
+- Rebuilt connector positioning around fixed branch-column centers.
+- Main sibling rail now starts/ends at the actual center of the first/last child family unit.
+- Every parent-to-child vertical drop uses that same center.
+- Descendant rails use the same rule.
+- Single-child branches no longer draw a meaningless horizontal stub.
+
+CLICK BEHAVIOUR
+- Grey/tan couple block or heart: opens that couple's focused family branch.
+- In a focused branch, grey/tan couple background: returns to the full Family Tree.
+- White person card/name inside a couple: opens that person's View Member/contact card.
+- Individual person card/name on the Tree: opens View Member, not Edit.
+- Members directory avatar/name: opens View Member.
+- Members three-dot menu remains the place for Edit Member and Remove Member.
+
+No relationship data was changed.

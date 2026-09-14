@@ -1,0 +1,41 @@
+FAMILY BOOK — BUILD 5.0.1
+Remove Family Access
+Date: 2026-09-14
+
+NEW ADMIN CONTROL
+- Family Admin can now remove a connected family account from:
+  Settings -> Invite & family access -> Connected accounts.
+- Each other account has a "Remove access" button.
+- A Family Admin cannot remove their own account from this screen.
+
+IMPORTANT SEPARATION
+Removing family access DOES NOT delete the person.
+It removes only the account/family-access layer:
+- removes the connected account from the family account registry
+- clears accountId from the linked Member profile
+- keeps the Member profile
+- keeps Family Tree relationships
+- keeps Memories/tags
+- keeps Wall posts, reactions and comments
+- keeps calendar/family history data
+
+WHY
+A person and an account are separate concepts in Family Book.
+If an account was created or linked by mistake, the safe first action is to
+disconnect it without destroying family data.
+
+IF THE MEMBER PROFILE WAS ALSO CREATED BY MISTAKE
+1. Remove access from Invite & family access.
+2. Go to Family -> Members.
+3. The profile is now unclaimed.
+4. Family Admin can use Remove member to delete that profile and its tree links.
+
+SESSION REVOCATION
+- A removed joined account can no longer sign back in through the local account registry.
+- If that account is currently open in another normal browser tab, the localStorage
+  account change is detected and that tab reloads to the signed-out state.
+
+FUTURE BACKEND
+Production terminology should remain "Remove family access" / "Remove from family",
+not "Delete account", because the person's global authentication account may belong
+to other families/services and should not be destroyed by a family admin.

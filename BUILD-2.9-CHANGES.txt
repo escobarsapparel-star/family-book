@@ -1,0 +1,10 @@
+Build 2.9 — Coordinate Tree Engine
+- Replaced the CSS/pseudo-element Family Tree connector system with a coordinate-based renderer.
+- Every family unit receives an exact x/y position.
+- SVG connector lines use the exact same calculated centers as the cards.
+- Parent trunk, sibling rail, and each child drop now meet mathematically instead of using percentages.
+- Tree width is calculated from descendants, so additional children/generations expand the canvas predictably.
+- Couple grey/tan block opens that couple's focused family branch.
+- Person name/card opens View Member/contact card.
+- In a focused branch, clicking the root grey/tan couple block returns to the full Family Tree.
+- Existing Members, contact fields, Edit/Remove menu, relationship data and login session logic are retained.

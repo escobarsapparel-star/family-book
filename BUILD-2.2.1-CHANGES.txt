@@ -1,0 +1,12 @@
+Family Book Build 2.2.1
+Relationship dropdown simplified to:
+- Parent of
+- Child of
+- Spouse / Partner of
+- Sibling of
+- Grandparent of
+- Grandchild of
+
+Reverse relationships are still created automatically.
+Spouse/partner relationships still never imply parenthood.
+Existing Login, locked Home, Members layout and Add Member layout preserved.

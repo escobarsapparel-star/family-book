@@ -1,0 +1,1 @@
+Removed the parent/spouse explanatory note from the Add/Edit Member UI. No relationship logic was changed.

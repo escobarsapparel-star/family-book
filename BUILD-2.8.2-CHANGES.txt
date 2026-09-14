@@ -1,0 +1,6 @@
+Build 2.8.2
+- Removed ALL relationship chips/titles/AUTO labels from Members cards.
+- Removed generic 'Family member' title from Members cards as requested.
+- Cards now show only name, avatar/photo, birthday if available, and edit pencil.
+- Relationship data remains untouched for Edit Member and Family Tree.
+- Retains Build 2.8.1 clickable couple blocks and contact number support.

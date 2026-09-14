@@ -1,0 +1,8 @@
+Family Book Build 2.4 — Family Tree v1
+- Added a working Family Tree screen.
+- Tree generations are calculated only from explicit Parent of / Child of relationships.
+- Spouse / Partner relationships display side-by-side but never create parent-child links.
+- Uses existing member initials/profile image if one exists.
+- Tree member cards open the existing Edit Member screen.
+- Added Manage Members shortcut.
+- Login, Home, Members and existing relationship logic were not redesigned.
