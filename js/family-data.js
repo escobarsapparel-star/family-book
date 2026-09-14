@@ -39,27 +39,25 @@
     return `${String(year).padStart(4,"0")}-${pad(p.birth_month)}-${pad(p.birth_day)}`;
   }
 
-  async function photoUrl(path){
-    if(!path)return "";
-    if(/^data:|^blob:|^https?:/i.test(path))return path;
-    try{
-      const data=await window.FB_MEDIA.download(path);
-      const url=URL.createObjectURL(data);
-      objectUrls.add(url);
-      return url;
-    }catch(err){
-      console.warn("Could not load profile photo",path,err);
-      return "";
+  async function signedPhotoMap(paths){
+    const unique=[...new Set((paths||[]).filter(path=>path&&!/^data:|^blob:|^https?:/i.test(path)))];
+    if(!unique.length)return new Map();
+    try{return await window.FB_MEDIA.signedUrlMap(unique,60*60*2)}
+    catch(err){
+      console.warn("Could not sign profile photos:",err);
+      return new Map();
     }
   }
 
-  async function personFromRow(p){
+  function personFromRow(p,urls){
+    const raw=p.photo_path||"";
+    const photo=raw&&/^data:|^blob:|^https?:/i.test(raw)?raw:(urls?.get(raw)||"");
     return {
       id:p.id,name:nameOf(p),profileType:p.profile_type||"member",
       relationship:p.profile_type==="history"?"Family history":"Family member",
       birthday:birthdayFrom(p),birthdayYearVisible:p.birth_year_visible!==false,
-      email:p.email||"",phone:p.phone||"",photo:await photoUrl(p.photo_path),
-      photoPath:p.photo_path||"",passedDate:p.passing_date||"",
+      email:p.email||"",phone:p.phone||"",photo,
+      photoPath:raw,passedDate:p.passing_date||"",
       inMemory:!!p.in_memory,story:p.biography||"",
       managedProfile:!!p.managed_profile,accountId:p.account_user_id||"",
       canViewEmail:p.can_view_email!==false,canViewPhone:p.can_view_phone!==false
@@ -155,11 +153,16 @@
     if(error)throw error;
 
     const storagePath=data?.storage_path?String(data.storage_path):"";
+    let storyUrl="";
+    if(storagePath){
+      try{storyUrl=await window.FB_MEDIA.getSignedUrl(storagePath,60*60*2)}
+      catch(err){console.warn("Could not sign Family Cover:",err)}
+    }
     storySettings={
       memoryId:data?.memory_id?String(data.memory_id):"",
       photoIndex:Number(data?.photo_index)||0,
       storagePath,
-      url:storagePath?await photoUrl(storagePath):"",
+      url:storyUrl,
       x:Number.isFinite(Number(data?.x))?Number(data.x):50,
       y:Number.isFinite(Number(data?.y))?Number(data.y):50
     };
@@ -245,9 +248,9 @@
     const {data,error}=await sb().rpc("get_family_people_bundle");
     if(error)throw error;
 
-    const nextPeople=[];
-    for(const row of (data?.people||[]))nextPeople.push(await personFromRow(row));
-    people=nextPeople;
+    const rows=data?.people||[];
+    const profileUrls=await signedPhotoMap(rows.map(row=>row.photo_path));
+    people=rows.map(row=>personFromRow(row,profileUrls));
     relationships=(data?.relationships||[]).map(relationshipLocal);
 
     writePrivacyToLocal(data?.privacy||{});

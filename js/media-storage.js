@@ -2,6 +2,52 @@
   const providers=new Map();
   let activeProvider="supabase";
   let config={provider:"supabase"};
+  const B2_URL_CACHE_KEY="fb_b2_signed_urls_v1";
+  const b2UrlCache=new Map();
+
+  function loadB2UrlCache(){
+    try{
+      const raw=JSON.parse(sessionStorage.getItem(B2_URL_CACHE_KEY)||"{}");
+      const now=Date.now();
+      Object.entries(raw||{}).forEach(([path,item])=>{
+        if(item?.url&&Number(item?.expiresAt)>now+60_000){
+          b2UrlCache.set(path,{url:String(item.url),expiresAt:Number(item.expiresAt)});
+        }
+      });
+    }catch(_){}
+  }
+
+  function saveB2UrlCache(){
+    try{
+      const now=Date.now(),out={};
+      b2UrlCache.forEach((item,path)=>{
+        if(item?.url&&Number(item.expiresAt)>now+60_000)out[path]=item;
+      });
+      sessionStorage.setItem(B2_URL_CACHE_KEY,JSON.stringify(out));
+    }catch(_){}
+  }
+
+  function getCachedB2Url(path){
+    const item=b2UrlCache.get(String(path));
+    if(!item)return "";
+    if(Number(item.expiresAt)<=Date.now()+60_000){
+      b2UrlCache.delete(String(path));
+      return "";
+    }
+    return item.url||"";
+  }
+
+  function cacheB2Urls(entries,expiresIn){
+    const ttl=Math.max(60,Number(expiresIn)||7200);
+    // Leave a five-minute safety margin before the server-side URL expiry.
+    const expiresAt=Date.now()+Math.max(60,ttl-300)*1000;
+    Object.entries(entries||{}).forEach(([path,url])=>{
+      if(url)b2UrlCache.set(path,{url:String(url),expiresAt});
+    });
+    saveB2UrlCache();
+  }
+
+  loadB2UrlCache();
 
   function uniquePaths(paths){
     return [...new Set((paths||[]).filter(Boolean).map(String))];
@@ -198,30 +244,24 @@
       const list=uniquePaths(paths);
       if(!list.length)return new Map();
 
-      const signed=await this.invoke("sign-downloads",{
-        paths:list,
-        expiresIn:Number(expiresIn)||60*60*2
+      const map=new Map();
+      const uncached=[];
+
+      list.forEach(path=>{
+        const cached=getCachedB2Url(path);
+        if(cached)map.set(path,cached);
+        else uncached.push(path);
       });
 
-      const map=new Map(Object.entries(signed?.urls||{}));
-      const missing=[
-        ...new Set([
-          ...(Array.isArray(signed?.missing)?signed.missing:[]),
-          ...list.filter(path=>!map.has(path))
-        ])
-      ];
-
-      // Temporary transition safety:
-      // media uploaded before the B2 switch can still load from Supabase.
-      if(missing.length){
-        try{
-          const legacy=await supabaseProvider.signedUrlMap(missing,expiresIn);
-          legacy.forEach((url,path)=>{
-            if(url)map.set(path,url);
-          });
-        }catch(err){
-          console.warn("Legacy Supabase media fallback:",err?.message||err);
-        }
+      if(uncached.length){
+        const signed=await this.invoke("sign-downloads",{
+          paths:uncached,
+          expiresIn:Number(expiresIn)||60*60*2
+        });
+        cacheB2Urls(signed?.urls||{},signed?.expiresIn||expiresIn||7200);
+        Object.entries(signed?.urls||{}).forEach(([path,url])=>{
+          if(url)map.set(path,String(url));
+        });
       }
 
       return map;
@@ -233,12 +273,7 @@
       if(!url)throw new Error("This family media file could not be found.");
 
       const response=await fetch(url);
-      if(!response.ok){
-        // A legacy Supabase URL may have expired or B2 may have changed
-        // between the existence check and fetch. Try Supabase once.
-        try{return await supabaseProvider.download(path)}
-        catch(_){throw new Error(`Could not download family media (${response.status}).`)}
-      }
+      if(!response.ok)throw new Error(`Could not download family media (${response.status}).`);
       return response.blob();
     },
 
@@ -248,10 +283,8 @@
 
       const result=await this.invoke("delete",{paths:list});
 
-      // While pre-B2 test media still exists, also clean the legacy bucket.
-      // This is best-effort and can be removed once Supabase Storage is empty.
-      try{await supabaseProvider.remove(list)}
-      catch(err){console.warn("Legacy Supabase media cleanup:",err?.message||err)}
+      list.forEach(path=>b2UrlCache.delete(path));
+      saveB2UrlCache();
 
       return {
         provider:"backblaze-b2",
@@ -267,6 +300,13 @@
 
   registerProvider("supabase",supabaseProvider);
   registerProvider("backblaze-b2",b2Provider);
+
+  api.rollbackToSupabase=()=>useProvider("supabase");
+  api.useBackblaze=()=>useProvider("backblaze-b2");
+  api.clearSignedUrlCache=()=>{
+    b2UrlCache.clear();
+    try{sessionStorage.removeItem(B2_URL_CACHE_KEY)}catch(_){}
+  };
 
   window.FB_MEDIA=api;
 
