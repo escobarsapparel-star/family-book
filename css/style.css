@@ -4221,3 +4221,84 @@ html[data-theme="dark"] .rel-chip{
   background:#292D27!important;
   color:#DDD3C3!important;
 }
+
+
+/* ==========================================================
+   Family Book Build 5.7.4 — Cover + Album Uploads
+   ========================================================== */
+.story-cover-upload-row{
+  display:flex;align-items:center;gap:12px;flex-wrap:wrap;
+  margin:14px 0 6px;padding:12px;border:1px solid var(--line,#ddd5c5);
+  border-radius:14px;background:rgba(255,255,255,.45)
+}
+.story-cover-upload-row small{opacity:.72;line-height:1.35}
+.story-cover-empty-preview{
+  position:absolute;inset:0;display:grid;place-items:center;
+  padding:28px;text-align:center;z-index:2;font-weight:700;
+  color:var(--muted,#746d62)
+}
+.story-source-heading{
+  display:flex;justify-content:space-between;align-items:end;gap:12px;
+  margin:0 0 12px
+}
+.story-source-heading small{opacity:.7}
+.story-cover-no-memories{
+  padding:30px;border:1px dashed var(--line,#d8d0c1);border-radius:16px;
+  text-align:center;opacity:.8
+}
+.album-upload-panel{
+  display:grid;grid-template-columns:1fr auto;gap:10px 16px;align-items:center;
+  padding:15px;margin:12px 0 20px;border:1px solid var(--line,#ddd5c5);
+  border-radius:16px;background:rgba(255,255,255,.42)
+}
+.album-upload-panel>div:first-child{display:grid;gap:4px}
+.album-upload-panel small{opacity:.72;line-height:1.35}
+.album-pending{grid-column:1/-1}
+.album-pending-list{display:flex;flex-wrap:wrap;gap:7px}
+.album-pending-list span{
+  display:inline-flex;align-items:center;gap:5px;padding:6px 9px;
+  border-radius:999px;background:rgba(49,92,67,.10);font-size:.82rem
+}
+.album-direct-card{position:relative}
+.album-direct-image{
+  width:100%;height:100%;padding:0;border:0;background:transparent;
+  text-align:left;color:inherit
+}
+.album-photo-remove{
+  position:absolute;right:8px;top:8px;z-index:3;width:34px;height:34px;
+  display:grid;place-items:center;border:0;border-radius:50%;
+  background:rgba(20,20,20,.72);color:#fff
+}
+.album-photo-viewer{
+  position:fixed;inset:0;z-index:9999;background:rgba(0,0,0,.82);
+  display:grid;place-items:center;padding:22px
+}
+.album-photo-viewer-card{
+  position:relative;max-width:min(1000px,96vw);max-height:92vh;
+  display:grid;gap:8px;color:#fff
+}
+.album-photo-viewer-card img{
+  display:block;max-width:100%;max-height:84vh;object-fit:contain;border-radius:12px
+}
+.album-viewer-close{
+  position:absolute;right:8px;top:8px;width:40px;height:40px;
+  display:grid;place-items:center;border:0;border-radius:50%;
+  background:rgba(0,0,0,.62);color:#fff;z-index:2
+}
+.album-empty-actions{display:flex;gap:10px;justify-content:center;flex-wrap:wrap}
+
+html[data-theme="dark"] .story-cover-upload-row,
+html[data-theme="dark"] .album-upload-panel{
+  background:#191d18;border-color:#3b4339;color:#f3ecdd
+}
+html[data-theme="dark"] .story-cover-no-memories{
+  border-color:#4a5548;color:#ddd3c3
+}
+
+@media(max-width:700px){
+  .album-upload-panel{grid-template-columns:1fr}
+  .album-upload-panel .secondary{width:100%}
+  .album-detail-toolbar>div{display:flex;flex-wrap:wrap;gap:8px}
+  .album-detail-toolbar>div button{flex:1 1 140px}
+  .story-cover-upload-row .primary{width:100%}
+}
