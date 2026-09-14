@@ -102,6 +102,7 @@
     const merged=mergeDefaults(value);
     localStorage.setItem(keyForMember(user().memberId||"owner"),JSON.stringify(merged));
     applyTheme(merged.appearance.theme);
+    window.FB_FAMILY_DATA?.syncPrivacy?.(merged);
     window.dispatchEvent(new CustomEvent("familybook:settings",{detail:merged}));
     return merged;
   }
@@ -238,7 +239,7 @@
       </section>
 
       <section class="settings-card settings-about-card">
-        <div class="settings-card-head"><span class="settings-card-icon"><i data-lucide="info"></i></span><div><p>APP</p><h2>Family Book</h2><span>Prototype Build 5.1</span></div></div>
+        <div class="settings-card-head"><span class="settings-card-icon"><i data-lucide="info"></i></span><div><p>APP</p><h2>Family Book</h2><span>Build 5.1.3 • Secure family access</span></div></div>
         <div class="settings-version-row"><span>Current build</span><strong>5.1 — Supabase Auth Foundation</strong></div>
       </section>
 

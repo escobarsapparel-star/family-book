@@ -120,7 +120,7 @@ function go(r){let navRoute=(r==="albums"||r==="new-album"||r.startsWith("album:
  if(add)add.onclick=()=>{rows.insertAdjacentHTML("beforeend",relationshipRow(Date.now(),ensureOwner()));bindRemove();refreshIcons()};
  bindRemove();bindMemberPhotoPicker("");
  if(f)f.onsubmit=e=>{e.preventDefault();clearFamilySafetyMessage(f);let first=$("#mfFirst").value.trim(),last=$("#mfLast").value.trim(),photo=$("#mfPhotoData")?.value||"";
-  let list=ensureOwner(),id="m"+Date.now(),name=`${first} ${last}`.trim(),birthday=$("#mfBirthday").value,plan=relationshipPlanRows(f);
+  let list=ensureOwner(),id=crypto.randomUUID(),name=`${first} ${last}`.trim(),birthday=$("#mfBirthday").value,plan=relationshipPlanRows(f);
   const guard=validateRelationshipPlan(id,plan,true);
   if(!guard.ok){showFamilySafetyMessage(f,guard.message);return}
   if(!confirmDuplicatePerson(name,birthday,""))return;
@@ -410,9 +410,9 @@ async function bindStorySlideshow(){
 function memberStoreKey(){let u=FB_AUTH.get()||{},k=window.FB_AUTH?.familyStorageKey?.()||(u.family||D.family||"family").toLowerCase().replace(/\s+/g,"_");return `fb_members_${k}`}
 function relationshipStoreKey(){let u=FB_AUTH.get()||{},k=window.FB_AUTH?.familyStorageKey?.()||(u.family||D.family||"family").toLowerCase().replace(/\s+/g,"_");return `fb_relationships_${k}`}
 function getMembers(){try{return JSON.parse(localStorage.getItem(memberStoreKey())||"[]")}catch(e){return []}}
-function saveMembers(v){localStorage.setItem(memberStoreKey(),JSON.stringify(v))}
+function saveMembers(v){localStorage.setItem(memberStoreKey(),JSON.stringify(v));window.FB_FAMILY_DATA?.syncMembers?.(v)}
 function getRelationships(){try{return JSON.parse(localStorage.getItem(relationshipStoreKey())||"[]")}catch(e){return []}}
-function saveRelationships(v){localStorage.setItem(relationshipStoreKey(),JSON.stringify(v))}
+function saveRelationships(v){localStorage.setItem(relationshipStoreKey(),JSON.stringify(v));window.FB_FAMILY_DATA?.syncRelationships?.(v)}
 function memberInitials(name){let p=(name||"Family Member").trim().split(/\s+/).filter(Boolean);return esc(((p[0]?.[0]||"F")+(p.length>1?(p.at(-1)?.[0]||""):"")).toUpperCase())}
 function memberPhotoPickerHtml(photo="",name="Family member"){
  let image=photo?`<img src="${photo}" alt="${esc(name)}">`:`<i data-lucide="user-round"></i>`;
@@ -464,7 +464,8 @@ function canSeeMemberField(memberId,field){return window.FB_SETTINGS?.canSee?.(m
 function memberBirthdayText(m){
  if(!m?.birthday)return "";
  const parts=String(m.birthday).split("-").map(Number),date=new Date(parts[0],(parts[1]||1)-1,parts[2]||1);
- const showYear=window.FB_SETTINGS?.canSeeBirthdayYear?.(m.id)??true;
+ const localPrivacy=window.FB_SETTINGS?.canSeeBirthdayYear?.(m.id)??true;
+ const showYear=m.birthdayYearVisible===false?false:localPrivacy;
  try{return new Intl.DateTimeFormat(undefined,showYear?{day:"numeric",month:"long",year:"numeric"}:{day:"numeric",month:"long"}).format(date)}catch(_){return showYear?m.birthday:String(m.birthday).slice(5)}
 }
 function normalizePhone(phone){
@@ -771,7 +772,7 @@ function bindHistoryForm(id=""){
  f.onsubmit=e=>{
    e.preventDefault();clearFamilySafetyMessage(f);
    const first=$("#hfFirst").value.trim(),last=$("#hfLast").value.trim(),photo=$("#mfPhotoData")?.value||"";
-   const list=ensureOwner(),personId=id||`h${Date.now()}`,idx=list.findIndex(x=>x.id===personId);
+   const list=ensureOwner(),personId=id||crypto.randomUUID(),idx=list.findIndex(x=>x.id===personId);
    const name=`${first} ${last}`.trim(),birthday=$("#hfBorn").value||"",plan=relationshipPlanRows(f);
    const guard=validateRelationshipPlan(personId,plan,true);
    if(!guard.ok){showFamilySafetyMessage(f,guard.message);return}
@@ -797,7 +798,7 @@ function historyRelationshipsHtml(id){
 }
 
 function historyNotesStorageKey(){
- const u=FB_AUTH.get()||{},family=String(u.family||familyLabel()||"family").toLowerCase().replace(/[^a-z0-9]+/g,"_");
+ const family=window.FB_AUTH?.familyStorageKey?.()||String((FB_AUTH.get()||{}).family||familyLabel()||"family").toLowerCase().replace(/[^a-z0-9]+/g,"_");
  return `fb_history_notes_${family}`;
 }
 function getAllHistoryNotes(){
@@ -1175,6 +1176,7 @@ async function routeAfterBackendAuth(){
  const u=FB_AUTH.get();
  if(!u){auth();return}
  if(FB_AUTH.needsSetup?.()){FB_AUTH.renderSetup(A,()=>routeAfterBackendAuth(),()=>auth());return}
+ await window.FB_FAMILY_DATA?.init?.();
  shell();
 }
 window.FB_APP_AUTH_CHANGED=event=>{
