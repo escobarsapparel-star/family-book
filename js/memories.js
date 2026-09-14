@@ -6,7 +6,6 @@
 
   const client=()=>window.FB_SUPABASE?.client;
   const auth=()=>window.FB_AUTH?.get?.()||{};
-  const bucket=()=>window.FB_SUPABASE_CONFIG?.mediaBucket||"family-media";
 
   function e(v=""){
     return String(v??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#039;"}[c]));
@@ -32,16 +31,7 @@
   }
 
   async function signedUrlMap(paths){
-    const unique=[...new Set((paths||[]).filter(Boolean))];
-    const map=new Map();
-    if(!unique.length)return map;
-    const {data,error}=await client().storage.from(bucket()).createSignedUrls(unique,60*60*2);
-    if(error)throw new Error(error.message||"Could not open private family media.");
-    (data||[]).forEach((item,i)=>{
-      const path=item.path||unique[i];
-      if(path)map.set(path,item.signedUrl||"");
-    });
-    return map;
+    return window.FB_MEDIA.signedUrlMap(paths,60*60*2);
   }
 
   async function loadCloud(force=false){
@@ -140,20 +130,16 @@
   }
 
   async function uploadObject(path,blob){
-    const {error}=await client().storage.from(bucket()).upload(path,blob,{
+    await window.FB_MEDIA.upload(path,blob,{
       contentType:blob.type||"application/octet-stream",
       upsert:false,
       cacheControl:"3600"
     });
-    if(error)throw new Error(error.message||"Could not upload family media.");
     return path;
   }
 
   async function removeStorage(paths){
-    const unique=[...new Set((paths||[]).filter(Boolean))];
-    if(!unique.length)return;
-    const {error}=await client().storage.from(bucket()).remove(unique);
-    if(error)console.warn("Family Book media cleanup:",error.message);
+    await window.FB_MEDIA.remove(paths,{silent:true});
   }
 
   async function uploadMemoryMedia(memoryId,photo,index){

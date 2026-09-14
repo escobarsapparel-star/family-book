@@ -8,7 +8,6 @@
 
   const sb=()=>window.FB_SUPABASE?.client;
   const user=()=>window.FB_AUTH?.get?.()||{};
-  const bucket=()=>window.FB_SUPABASE_CONFIG?.mediaBucket||"family-media";
 
   function members(){return window.FB_FAMILY_DATA?.getPeople?.()||[]}
   function memberMap(){return Object.fromEntries(members().map(m=>[m.id,m]))}
@@ -26,13 +25,7 @@
   }
 
   async function signedUrlMap(paths){
-    const list=[...new Set((paths||[]).filter(Boolean))];
-    const map=new Map();
-    if(!list.length)return map;
-    const {data,error}=await sb().storage.from(bucket()).createSignedUrls(list,60*60*2);
-    if(error)throw error;
-    (data||[]).forEach((x,i)=>map.set(x.path||list[i],x.signedUrl||""));
-    return map;
+    return window.FB_MEDIA.signedUrlMap(paths,60*60*2);
   }
 
   async function load(){
@@ -137,19 +130,15 @@
   }
 
   async function upload(path,blob){
-    const {error}=await sb().storage.from(bucket()).upload(path,blob,{
+    await window.FB_MEDIA.upload(path,blob,{
       contentType:blob.type||"application/octet-stream",
       upsert:false,
       cacheControl:"3600"
     });
-    if(error)throw error;
     return path;
   }
   async function removeFiles(paths){
-    const unique=[...new Set((paths||[]).filter(Boolean))];
-    if(!unique.length)return;
-    const {error}=await sb().storage.from(bucket()).remove(unique);
-    if(error)console.warn("Wall media cleanup:",error.message);
+    await window.FB_MEDIA.remove(paths,{silent:true});
   }
 
   async function savePost(post,attachment){

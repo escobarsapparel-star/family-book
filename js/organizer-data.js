@@ -6,7 +6,6 @@
 
   const sb=()=>window.FB_SUPABASE?.client;
   const user=()=>window.FB_AUTH?.get?.()||{};
-  const bucket=()=>window.FB_SUPABASE_CONFIG?.mediaBucket||"family-media";
 
   function enqueue(fn){
     const run=queue.then(fn);
@@ -15,16 +14,7 @@
   }
 
   async function signedUrlMap(paths){
-    const unique=[...new Set((paths||[]).filter(Boolean))];
-    const map=new Map();
-    if(!unique.length)return map;
-    const {data,error}=await sb().storage.from(bucket()).createSignedUrls(unique,60*60*2);
-    if(error)throw error;
-    (data||[]).forEach((row,i)=>{
-      const path=row.path||unique[i];
-      if(path)map.set(path,row.signedUrl||"");
-    });
-    return map;
+    return window.FB_MEDIA.signedUrlMap(paths,60*60*2);
   }
 
   function albumFrom(row,urls){
@@ -118,19 +108,15 @@
   }
 
   async function uploadObject(path,blob){
-    const {error}=await sb().storage.from(bucket()).upload(path,blob,{
+    await window.FB_MEDIA.upload(path,blob,{
       contentType:blob.type||"application/octet-stream",
       upsert:false,
       cacheControl:"3600"
     });
-    if(error)throw new Error(error.message||"Could not upload Album photo.");
   }
 
   async function removeStorage(paths){
-    const unique=[...new Set((paths||[]).filter(Boolean))];
-    if(!unique.length)return;
-    const {error}=await sb().storage.from(bucket()).remove(unique);
-    if(error)console.warn("Album media cleanup:",error.message);
+    await window.FB_MEDIA.remove(paths,{silent:true});
   }
 
   async function uploadAlbumPhotos(albumId,prepared){

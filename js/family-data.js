@@ -43,8 +43,7 @@
     if(!path)return "";
     if(/^data:|^blob:|^https?:/i.test(path))return path;
     try{
-      const {data,error}=await sb().storage.from(window.FB_SUPABASE_CONFIG.mediaBucket).download(path);
-      if(error)throw error;
+      const data=await window.FB_MEDIA.download(path);
       const url=URL.createObjectURL(data);
       objectUrls.add(url);
       return url;
@@ -133,12 +132,11 @@
     if(!blob)throw new Error("Choose a cover photo first.");
 
     const path=`${u.familyId}/${u.supabaseUserId}/covers/family-cover-${Date.now()}.webp`;
-    const {error}=await sb().storage.from(window.FB_SUPABASE_CONFIG.mediaBucket).upload(path,blob,{
+    await window.FB_MEDIA.upload(path,blob,{
       contentType:blob.type||"image/webp",
       upsert:false,
       cacheControl:"3600"
     });
-    if(error)throw new Error(error.message||"Could not upload the Family Cover.");
 
     try{
       await saveStory({memoryId:"",photoIndex:0,storagePath:path,x,y});
@@ -147,7 +145,7 @@
       storySettings={...storySettings,url};
       return {...storySettings};
     }catch(err){
-      try{await sb().storage.from(window.FB_SUPABASE_CONFIG.mediaBucket).remove([path])}catch(_){}
+      await window.FB_MEDIA.remove([path],{silent:true})
       throw err;
     }
   }
@@ -285,10 +283,7 @@
   }
 
   async function removeStorage(paths){
-    const unique=[...new Set((paths||[]).filter(Boolean))];
-    if(!unique.length)return;
-    const {error}=await sb().storage.from(window.FB_SUPABASE_CONFIG.mediaBucket).remove(unique);
-    if(error)console.warn("Profile media cleanup:",error.message);
+    await window.FB_MEDIA.remove(paths,{silent:true});
   }
 
   async function uploadPhoto(member){
@@ -299,10 +294,11 @@
     const response=await fetch(photo),blob=await response.blob();
     const ext=blob.type==="image/png"?"png":"jpg",u=auth();
     const path=`${u.familyId}/${u.supabaseUserId}/profiles/${member.id}-${Date.now()}.${ext}`;
-    const {error}=await sb().storage.from(window.FB_SUPABASE_CONFIG.mediaBucket).upload(path,blob,{
-      contentType:blob.type||"image/jpeg",upsert:false,cacheControl:"3600"
+    await window.FB_MEDIA.upload(path,blob,{
+      contentType:blob.type||"image/jpeg",
+      upsert:false,
+      cacheControl:"3600"
     });
-    if(error)throw error;
     return path;
   }
 
