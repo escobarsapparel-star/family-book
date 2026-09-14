@@ -1167,11 +1167,25 @@ async function routeAfterBackendAuth(){
  const u=FB_AUTH.get();
  if(!u){auth();return}
  if(FB_AUTH.needsSetup?.()){FB_AUTH.renderSetup(A,()=>routeAfterBackendAuth(),()=>auth());return}
+
+ // Core family/member data is required before Family Book opens.
  await window.FB_FAMILY_DATA?.init?.();
- await window.FB_SOCIAL_DATA?.init?.();
- await window.FB_ORGANIZER_DATA?.init?.();
- await window.FB_HISTORY_DATA?.init?.();
- await window.FB_NOTIFICATION_DATA?.init?.();
+
+ // Feature modules must never block sign-in if a newly deployed RPC
+ // is temporarily missing from PostgREST's schema cache.
+ const optionalInitializers=[
+   ["Family Wall",()=>window.FB_SOCIAL_DATA?.init?.()],
+   ["Albums & Calendar",()=>window.FB_ORGANIZER_DATA?.init?.()],
+   ["Family Voices",()=>window.FB_HISTORY_DATA?.init?.()],
+   ["Notifications",()=>window.FB_NOTIFICATION_DATA?.init?.()]
+ ];
+ const results=await Promise.allSettled(optionalInitializers.map(([,fn])=>Promise.resolve().then(fn)));
+ results.forEach((result,i)=>{
+   if(result.status==="rejected"){
+     console.warn(`${optionalInitializers[i][0]} did not initialize:`,result.reason);
+   }
+ });
+
  shell();
 }
 window.FB_APP_AUTH_CHANGED=event=>{
