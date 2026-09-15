@@ -1,0 +1,50 @@
+/* Family Book — marriage dates and automatic anniversaries */
+.relationship-marriage-extra{
+  grid-column:1 / -1;
+  display:grid;
+  grid-template-columns:minmax(0,220px) 1fr;
+  gap:8px 12px;
+  align-items:end;
+  margin:-2px 42px 4px 0;
+  padding:10px 12px;
+  border:1px solid rgba(166,107,56,.2);
+  border-radius:12px;
+  background:rgba(166,107,56,.06);
+}
+.relationship-marriage-extra[hidden]{display:none!important}
+.relationship-marriage-field{display:grid;gap:6px;font-size:.78rem;font-weight:800;color:var(--ink,#20251f)}
+.relationship-marriage-field span{display:flex;gap:5px;align-items:baseline}
+.relationship-marriage-field em{font-style:normal;font-weight:600;color:var(--muted,#6f756e);font-size:.7rem}
+.relationship-marriage-field input{width:100%;border:1px solid var(--line,#e5ddd1);background:#fff;border-radius:10px;padding:9px 10px;color:var(--ink,#20251f)}
+.relationship-marriage-extra>small{align-self:center;color:var(--muted,#6f756e);font-size:.7rem;line-height:1.4}
+
+.ct-couple{position:relative}
+.ct-marriage-date{
+  position:absolute;
+  left:50%;bottom:-18px;transform:translateX(-50%);
+  z-index:7;
+  max-width:150px;
+  padding:2px 7px;
+  border:1px solid rgba(166,107,56,.32);
+  border-radius:999px;
+  background:#fffaf1;
+  color:#7a532f;
+  font-size:9px;
+  font-weight:800;
+  line-height:1.25;
+  white-space:nowrap;
+  pointer-events:none;
+  box-shadow:0 3px 9px rgba(40,35,28,.08);
+}
+
+.marriage-auto-note{margin:16px 0 0;color:var(--muted,#6f756e);font-size:.82rem;line-height:1.5}
+.marriage-anniversary-detail .cal-detail-icon{background:#f6e5e6;color:#bd616b}
+
+html[data-theme="dark"] .relationship-marriage-extra{background:rgba(166,107,56,.12);border-color:rgba(207,159,111,.28)}
+html[data-theme="dark"] .relationship-marriage-field{color:#eef4ef}
+html[data-theme="dark"] .relationship-marriage-field input{background:#1f2923;border-color:#48564d;color:#eef4ef}
+html[data-theme="dark"] .ct-marriage-date{background:#2f2922;border-color:#6a5844;color:#f0cfae;box-shadow:0 3px 9px rgba(0,0,0,.25)}
+
+@media(max-width:640px){
+  .relationship-marriage-extra{grid-template-columns:1fr;margin-right:0}
+}
