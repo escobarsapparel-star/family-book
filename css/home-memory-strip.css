@@ -1,5 +1,16 @@
-/* Family Book Home memory strip - replaces the old cover hero */
+/* Family Book Home memory strip + Phase 1D Home order */
 #screen .home-hero{display:none!important}
+
+.home-status-composer-shell{
+  width:100%;
+  box-sizing:border-box;
+  margin:0 0 16px;
+}
+.home-status-composer-shell .wall-composer{
+  width:100%!important;
+  box-sizing:border-box!important;
+  margin:0!important;
+}
 
 .home-memory-strip-shell{
   width:100%;
@@ -55,7 +66,28 @@
 .home-memory-strip-video{position:absolute;right:8px;top:8px;z-index:4;width:28px;height:28px;border-radius:50%;display:grid;place-items:center;background:rgba(0,0,0,.58);color:#fff}
 .home-memory-strip-video svg{width:14px;height:14px;fill:currentColor}
 
-.home-memory-add-card{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:10px;background:var(--fb-shell-panel,#fffdf8);font-weight:800;font-size:.82rem}
+.home-memory-add-card{
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  justify-content:center;
+  gap:12px;
+  background:var(--fb-shell-panel,#fffdf8);
+  font-weight:800;
+  font-size:.82rem;
+}
+.home-memory-add-avatar{position:relative;width:64px;height:64px;display:block;overflow:visible}
+.home-memory-add-avatar-media{
+  width:64px;height:64px;border-radius:50%;overflow:hidden;display:grid;place-items:center;
+  background:transparent;color:var(--fb-shell-accent,#315c43);font-size:.9rem;font-weight:900;
+  border:2px solid color-mix(in srgb,var(--fb-shell-accent,#315c43) 45%,transparent);
+}
+.home-memory-add-avatar-media img{width:100%;height:100%;object-fit:cover;display:block}
+.home-memory-add-plus{
+  position:absolute;right:-3px;bottom:-2px;width:24px;height:24px;border-radius:50%;display:grid;place-items:center;
+  background:var(--fb-shell-accent,#315c43);color:#fff;border:2px solid var(--fb-shell-panel,#fffdf8);box-shadow:0 2px 8px rgba(0,0,0,.2)
+}
+.home-memory-add-plus svg{width:14px;height:14px;stroke-width:2.4}
 .home-memory-add-icon{width:44px;height:44px;border-radius:50%;display:grid;place-items:center;background:var(--fb-shell-accent-soft,#e7efe9);color:var(--fb-shell-accent,#315c43)}
 .home-memory-add-icon svg{width:22px;height:22px}
 .home-memory-strip-loading,.home-memory-strip-empty{
@@ -66,6 +98,7 @@
 .home-memory-strip-empty span{font-size:.76rem}
 
 @media (max-width:1179px){
+  .home-status-composer-shell{margin-bottom:14px}
   .home-memory-strip-shell{margin-bottom:14px}
   .home-memory-strip-head{margin-left:2px;margin-right:2px}
   .home-memory-strip-head h2{font-size:1.08rem}
@@ -75,4 +108,5 @@
   .home-memory-strip-loading,.home-memory-strip-empty{height:150px;flex-basis:190px}
   .home-memory-strip-author{width:30px;height:30px}
   .home-memory-strip-caption{font-size:.73rem}
+  .home-memory-add-avatar,.home-memory-add-avatar-media{width:56px;height:56px}
 }
