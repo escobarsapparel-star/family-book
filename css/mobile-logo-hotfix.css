@@ -1,48 +1,46 @@
-/* Mobile header logo hotfix — keep the Family Book brand visible beside header actions. */
+/* Mobile header logo hotfix — render the brand independently of legacy image visibility rules. */
 @media (max-width:759px){
   #app>.app>.topbar .brand-home{
     display:flex!important;
     flex:1 1 auto!important;
-    width:auto!important;
-    max-width:none!important;
-    min-width:0!important;
-    overflow:visible!important;
-  }
-
-  #app>.app>.topbar .brand-home .brand-logo-wrap{
-    display:flex!important;
     align-items:center!important;
     justify-content:flex-start!important;
-    flex:0 1 auto!important;
-    width:min(210px,calc(100vw - 105px))!important;
+    width:auto!important;
     min-width:0!important;
-    max-width:210px!important;
+    max-width:none!important;
     height:56px!important;
     overflow:visible!important;
   }
 
-  #app>.app>.topbar .brand-home .brand-logo-wrap .theme-logo{
-    width:100%!important;
-    max-width:210px!important;
-    height:auto!important;
-    max-height:43px!important;
-    object-fit:contain!important;
-    object-position:left center!important;
-    opacity:1!important;
-    visibility:visible!important;
+  #app>.app>.topbar .brand-home .brand-logo-wrap{
+    display:block!important;
+    flex:0 0 auto!important;
+    width:min(205px,calc(100vw - 112px))!important;
+    min-width:150px!important;
+    max-width:205px!important;
+    height:50px!important;
     margin:0!important;
+    overflow:visible!important;
+    background-image:url('../assets/logo/family-book-logo-header.png')!important;
+    background-repeat:no-repeat!important;
+    background-position:left center!important;
+    background-size:contain!important;
   }
 
-  #app>.app>.topbar .brand-home .theme-logo-light{display:block!important}
-  #app>.app>.topbar .brand-home .theme-logo-dark{display:none!important}
-  html[data-theme="dark"] #app>.app>.topbar .brand-home .theme-logo-light{display:none!important}
-  html[data-theme="dark"] #app>.app>.topbar .brand-home .theme-logo-dark{display:block!important}
+  /* The wrapper itself paints the logo on mobile so older theme/image rules cannot hide it. */
+  #app>.app>.topbar .brand-home .brand-logo-wrap .theme-logo{
+    display:none!important;
+  }
+
+  html[data-theme="dark"] #app>.app>.topbar .brand-home .brand-logo-wrap{
+    background-image:url('../assets/logo/family-book-logo-dark-header.png')!important;
+  }
 }
 
 @media (max-width:380px){
   #app>.app>.topbar .brand-home .brand-logo-wrap{
-    width:min(190px,calc(100vw - 101px))!important;
-    max-width:190px!important;
+    width:min(185px,calc(100vw - 106px))!important;
+    min-width:140px!important;
+    max-width:185px!important;
   }
-  #app>.app>.topbar .brand-home .brand-logo-wrap .theme-logo{max-width:190px!important}
 }
