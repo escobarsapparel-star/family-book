@@ -1,0 +1,49 @@
+/* Family Book website — rich Family Wall activity parity */
+body.web-wall-picker-open{overflow:hidden}
+.web-wall-picker[hidden]{display:none!important}
+.web-wall-picker{position:fixed;inset:0;z-index:7000;display:grid;place-items:center;padding:24px}
+.web-wall-picker-scrim{position:absolute;inset:0;border:0;background:rgba(0,0,0,.62)}
+.web-wall-picker-card{position:relative;z-index:1;width:min(620px,calc(100vw - 32px));max-height:min(760px,86dvh);overflow:hidden;border:1px solid var(--line);border-radius:24px;background:var(--paper);color:var(--ink);box-shadow:0 28px 90px rgba(0,0,0,.35);display:flex;flex-direction:column}
+.web-wall-picker-card>header{height:62px;display:grid;grid-template-columns:46px 1fr 46px;align-items:center;border-bottom:1px solid var(--line);padding:0 10px}
+.web-wall-picker-card>header strong{text-align:center;font-size:1.02rem}
+.web-wall-picker-card>header button{width:42px;height:42px;border:0;border-radius:50%;background:transparent;color:inherit;display:grid;place-items:center}
+.web-wall-picker-card>header button:hover{background:rgba(49,92,67,.1)}
+.web-wall-picker-card>header button svg{width:22px;height:22px}
+.web-wall-picker-card>[data-web-picker-body]{padding:16px;overflow:auto}
+.web-picker-search{height:48px;display:grid;grid-template-columns:22px 1fr;align-items:center;gap:8px;padding:0 14px;border-radius:999px;background:var(--cream);border:1px solid var(--line);margin-bottom:14px}
+.web-picker-search svg{width:18px;height:18px;color:var(--muted)}
+.web-picker-search input{width:100%;border:0;outline:0;background:transparent;color:var(--ink);font:inherit}
+.web-feeling-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:9px}
+.web-feeling-grid button{min-height:58px;border:1px solid var(--line);border-radius:14px;background:var(--paper);color:var(--ink);display:flex;align-items:center;gap:10px;padding:10px 13px;text-align:left}
+.web-feeling-grid button:hover{background:var(--cream)}
+.web-feeling-grid button>span{font-size:1.45rem;line-height:1}.web-feeling-grid button strong{font-size:.87rem}
+.web-feeling-emoji{font-size:1rem;line-height:1}
+.web-media-results{display:grid;gap:2px;max-height:520px;overflow:auto}
+.web-media-result{width:100%;display:grid;grid-template-columns:58px minmax(0,1fr) 22px;align-items:center;gap:11px;padding:10px;border:0;border-bottom:1px solid var(--line);background:transparent;color:inherit;text-align:left}
+.web-media-result:hover{background:var(--cream)}
+.web-media-result>img,.web-media-no-image{width:58px;height:82px;border-radius:9px;object-fit:cover;background:var(--cream)}
+.web-song-result>img,.web-song-result>.web-media-no-image{height:58px;border-radius:11px}
+.web-media-no-image{display:grid;place-items:center;color:var(--muted)}
+.web-media-result>span:nth-child(2){min-width:0;display:flex;flex-direction:column;gap:4px}
+.web-media-result strong{font-size:.92rem}.web-media-result small{font-size:.74rem;color:var(--muted);font-weight:800}.web-media-result em{font-size:.72rem;color:var(--muted);font-style:normal;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.web-media-result>svg{width:18px;height:18px;color:var(--muted)}
+.web-media-empty{min-height:180px;display:grid;place-items:center;align-content:center;gap:8px;text-align:center;color:var(--muted)}
+.web-media-empty svg{width:30px;height:30px;color:var(--green)}
+.web-media-credit{display:block;text-align:center;margin-top:12px;color:var(--muted);font-size:.67rem}
+.web-wall-selection{margin:0 0 10px}.web-wall-selection[hidden]{display:none!important}
+.web-selection-feeling{display:inline-flex;align-items:center;gap:9px;padding:9px 12px;border:1px solid var(--line);border-radius:14px;background:var(--cream)}
+.web-selection-feeling span{font-size:1.4rem}
+.web-wall-rich-card{margin:10px 0 4px;display:grid;grid-template-columns:70px minmax(0,1fr);gap:12px;align-items:center;padding:10px;border:1px solid var(--line);border-radius:16px;background:var(--cream);overflow:hidden}
+.web-wall-rich-card>img,.web-wall-rich-placeholder{width:70px;height:100px;border-radius:10px;object-fit:cover;background:var(--paper)}
+.web-wall-rich-placeholder{display:grid;place-items:center;color:var(--muted)}
+.web-wall-rich-card>div:last-child{min-width:0;display:flex;flex-direction:column;gap:4px}
+.web-wall-rich-card span{font-size:.66rem;text-transform:uppercase;letter-spacing:.08em;color:var(--green);font-weight:900}
+.web-wall-rich-card strong{font-size:1rem;line-height:1.18}.web-wall-rich-card small{font-size:.75rem;color:var(--muted);font-weight:700}
+.web-wall-listen-card>img,.web-wall-listen-card>.web-wall-rich-placeholder{height:70px;border-radius:12px}
+.web-wall-rich-card a{width:max-content;display:inline-flex;align-items:center;gap:5px;margin-top:3px;color:var(--green);font-size:.72rem;font-weight:850;text-decoration:none}
+.web-wall-rich-card a svg{width:14px;height:14px}
+html[data-theme="dark"] .web-wall-picker-card,html[data-theme="dark"] .web-feeling-grid button{background:#191d17;color:#f4efe7;border-color:#394037}
+html[data-theme="dark"] .web-picker-search,html[data-theme="dark"] .web-media-result:hover,html[data-theme="dark"] .web-selection-feeling,html[data-theme="dark"] .web-wall-rich-card{background:#20251f;border-color:#394037}
+html[data-theme="dark"] .web-wall-rich-card a{color:#b9d7a9}
+@media(max-width:700px){.web-wall-picker{padding:0;place-items:end center}.web-wall-picker-card{width:100%;max-height:88dvh;border-radius:24px 24px 0 0;border-bottom:0}.web-feeling-grid{grid-template-columns:1fr 1fr}.web-media-results{max-height:58dvh}}
+@media(max-width:420px){.web-wall-picker-card>[data-web-picker-body]{padding:12px}.web-media-result{grid-template-columns:52px minmax(0,1fr) 20px}.web-media-result>img,.web-media-no-image{width:52px;height:74px}.web-song-result>img,.web-song-result>.web-media-no-image{height:52px}.web-wall-rich-card{grid-template-columns:62px minmax(0,1fr)}.web-wall-rich-card>img,.web-wall-rich-placeholder{width:62px;height:88px}.web-wall-listen-card>img,.web-wall-listen-card>.web-wall-rich-placeholder{height:62px}}
