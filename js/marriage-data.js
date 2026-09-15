@@ -20,6 +20,20 @@
   const key=(a,b,t="spouse_of")=>`${String(a||"")}|${String(t||"")}|${String(b||"")}`;
   const isSpouse=r=>r&&r.type==="spouse_of"&&r.from&&r.to;
 
+  function mapsEqual(a,b){
+    if(a.size!==b.size)return false;
+    for(const [k,v] of a){if(b.get(k)!==v)return false;}
+    return true;
+  }
+
+  function commitDates(next){
+    const changed=!mapsEqual(dates,next);
+    dates=next;
+    migrationReady=true;
+    if(changed)window.dispatchEvent(new CustomEvent("familybook:marriage-data-updated"));
+    return changed;
+  }
+
   function currentPlan(){
     const p=window.__fbMarriagePlan;
     if(!p||Date.now()-(p.createdAt||0)>10000)return null;
@@ -51,7 +65,13 @@
 
   async function refreshDates(){
     const client=sb(),u=auth();
-    if(!client||!u.familyId){dates=new Map();return false;}
+    if(!client||!u.familyId){
+      const hadDates=dates.size>0;
+      dates=new Map();
+      migrationReady=false;
+      if(hadDates)window.dispatchEvent(new CustomEvent("familybook:marriage-data-updated"));
+      return false;
+    }
     const {data,error}=await client.rpc("get_relationship_marriage_dates");
     if(error){
       migrationReady=false;
@@ -64,9 +84,7 @@
         next.set(key(r.from,r.to,r.type),String(r.marriageDate));
       }
     });
-    dates=next;
-    migrationReady=true;
-    window.dispatchEvent(new CustomEvent("familybook:marriage-data-updated"));
+    commitDates(next);
     return true;
   }
 
@@ -114,9 +132,7 @@
       spousePayload.forEach(r=>{
         if(r.marriageDate)next.set(key(r.from,r.to,r.type),String(r.marriageDate));
       });
-      dates=next;
-      migrationReady=true;
-      window.dispatchEvent(new CustomEvent("familybook:marriage-data-updated"));
+      commitDates(next);
       return result;
     };
   }
