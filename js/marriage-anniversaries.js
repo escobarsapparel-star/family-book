@@ -85,7 +85,8 @@
       if(!badge){
         badge=document.createElement("span");badge.className="ct-marriage-date";couple.appendChild(badge);
       }
-      badge.textContent=`Married ${formatDate(date,true)}`;
+      const text=`Married ${formatDate(date,true)}`;
+      if(badge.textContent!==text)badge.textContent=text;
     });
   }
 
@@ -165,9 +166,20 @@
   wireRelationshipRows();decorateTree();
 
   const root=document.getElementById("app");
+  let observerScheduled=false;
   const observer=new MutationObserver(mutations=>{
-    if(!mutations.some(m=>m.addedNodes?.length))return;
-    wireRelationshipRows();decorateTree();
+    const relevant=mutations.some(m=>[...m.addedNodes].some(node=>{
+      if(node.nodeType!==1&&node.nodeType!==11)return false;
+      if(node.nodeType===1&&node.matches?.(".ct-marriage-date"))return false;
+      return node.matches?.("[data-rel-row],.ct-couple,.coordinate-tree-page,.tree-page")||node.querySelector?.("[data-rel-row],.ct-couple");
+    }));
+    if(!relevant||observerScheduled)return;
+    observerScheduled=true;
+    queueMicrotask(()=>{
+      observerScheduled=false;
+      wireRelationshipRows();
+      decorateTree();
+    });
   });
   if(root)observer.observe(root,{childList:true,subtree:true});
 
