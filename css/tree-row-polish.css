@@ -1,0 +1,52 @@
+/* Family Tree visual balance: center single cards beside married couple blocks and restore watermark. */
+.ct-node.ct-row-centered{
+  margin-top:var(--ct-row-nudge,0px);
+}
+.ct-node.ct-row-centered::before{
+  content:"";
+  position:absolute;
+  left:50%;
+  top:calc(-1 * var(--ct-row-nudge,0px));
+  width:2px;
+  height:var(--ct-row-nudge,0px);
+  transform:translateX(-50%);
+  background:rgba(151,136,112,.95);
+  pointer-events:none;
+}
+html[data-theme="dark"] .ct-node.ct-row-centered::before{
+  background:rgba(167,151,124,.9);
+}
+
+.full-tree-stage .ct-canvas{
+  position:relative;
+  isolation:isolate;
+}
+.ct-family-watermark{
+  position:absolute;
+  left:50%;
+  top:50%;
+  width:min(560px,58%);
+  transform:translate(-50%,-50%);
+  opacity:.055;
+  pointer-events:none;
+  user-select:none;
+  z-index:0;
+}
+.ct-family-watermark img{
+  display:block;
+  width:100%;
+  height:auto;
+  object-fit:contain;
+  filter:saturate(.75);
+}
+html[data-theme="dark"] .ct-family-watermark{
+  opacity:.09;
+}
+
+/* Keep tree content above the watermark without changing its layout. */
+.full-tree-stage .ct-canvas > svg,
+.full-tree-stage .ct-canvas > .ct-node,
+.full-tree-stage .ct-canvas > .ct-sibling-canvas,
+.full-tree-stage .ct-canvas > .ct-sibling-lines{
+  z-index:1;
+}
