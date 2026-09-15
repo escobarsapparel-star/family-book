@@ -47,3 +47,20 @@
   install();
   setInterval(update,1000);
 })();
+
+/* Global Lucide stability guard.
+   Several desktop widgets update every second. Once Lucide placeholders have
+   already been rendered, repeated full-page icon passes are unnecessary and
+   can create MutationObserver feedback loops on heavier pages like Settings. */
+(()=>{
+  if(window.__fbIconRenderStability)return;
+  window.__fbIconRenderStability=true;
+  const original=window.icons;
+  if(typeof original!=="function")return;
+  let rendering=false;
+  window.icons=function stableFamilyBookIcons(){
+    if(rendering||!document.querySelector('[data-lucide]'))return;
+    rendering=true;
+    try{original()}catch(err){console.warn('Family Book icon render skipped:',err)}finally{rendering=false}
+  };
+})();
