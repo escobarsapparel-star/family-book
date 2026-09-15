@@ -3,10 +3,12 @@
   window.__fbFamilySpotlight=true;
 
   const esc=v=>String(v??'').replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#039;"}[c]));
+  const isDesktop=()=>window.matchMedia?window.matchMedia('(min-width:1180px)').matches:window.innerWidth>=1180;
   let pool=[];
   let index=0;
   let mode='archive';
   let refreshing=false;
+  let wasDesktop=isDesktop();
 
   const memoryPhotos=m=>window.FB_MEMORIES?.getPhotos?.(m)||[];
   const firstVisual=m=>{
@@ -93,7 +95,7 @@
   function renderCurrent(summaryText){
     const old=document.querySelector('#familySpotlight');
     const rail=document.querySelector('.desktop-left-rail');
-    if(!rail)return;
+    if(!rail||!isDesktop())return;
     const summary=summaryText||old?.dataset.weekSummary||'';
     const wrap=document.createElement('div');
     wrap.innerHTML=cardHtml(pool[index]||null,summary||'No new memories yet');
@@ -105,7 +107,7 @@
   }
 
   async function refresh(){
-    if(refreshing)return;
+    if(refreshing||!isDesktop())return;
     const rail=document.querySelector('.desktop-left-rail');
     if(!rail||!window.FB_MEMORIES?.getAll)return;
     refreshing=true;
@@ -120,6 +122,7 @@
   }
 
   function mount(){
+    if(!isDesktop())return false;
     const rail=document.querySelector('.desktop-left-rail');
     if(!rail)return false;
     if(!rail.querySelector('#familySpotlight'))refresh();
@@ -127,9 +130,14 @@
   }
 
   const root=document.getElementById('app');
-  if(root)new MutationObserver(()=>{if(document.querySelector('.desktop-left-rail')&&!document.querySelector('#familySpotlight'))mount()}).observe(root,{childList:true,subtree:true});
+  if(root)new MutationObserver(()=>{if(isDesktop()&&document.querySelector('.desktop-left-rail')&&!document.querySelector('#familySpotlight'))mount()}).observe(root,{childList:true,subtree:true});
   mount();
   window.addEventListener('familybook:family-data-updated',refresh);
   window.addEventListener('familybook:reaction',refresh);
   window.addEventListener('hashchange',()=>setTimeout(refresh,80));
+  window.addEventListener('resize',()=>{
+    const desktop=isDesktop();
+    if(desktop&&!wasDesktop)setTimeout(mount,60);
+    wasDesktop=desktop;
+  },{passive:true});
 })();
