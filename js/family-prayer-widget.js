@@ -12,7 +12,12 @@
     {text:'The Lord is my shepherd; I shall not want.',ref:'Psalm 23:1',version:'KJV'},
     {text:'With God all things are possible.',ref:'Matthew 19:26',version:'KJV'},
     {text:'Pray without ceasing.',ref:'1 Thessalonians 5:17',version:'KJV'},
-    {text:'We love him, because he first loved us.',ref:'1 John 4:19',version:'KJV'}
+    {text:'We love him, because he first loved us.',ref:'1 John 4:19',version:'KJV'},
+    {text:'This is the day which the Lord hath made; we will rejoice and be glad in it.',ref:'Psalm 118:24',version:'KJV'},
+    {text:'Casting all your care upon him; for he careth for you.',ref:'1 Peter 5:7',version:'KJV'},
+    {text:'The Lord is my strength and my shield; my heart trusted in him, and I am helped.',ref:'Psalm 28:7',version:'KJV'},
+    {text:'And now abideth faith, hope, charity, these three; but the greatest of these is charity.',ref:'1 Corinthians 13:13',version:'KJV'},
+    {text:'The joy of the Lord is your strength.',ref:'Nehemiah 8:10',version:'KJV'}
   ];
 
   const ENCOURAGEMENTS=[
@@ -20,13 +25,21 @@
     'A small message of kindness can change someone’s whole day.',
     'Make space today for gratitude, patience and grace with one another.',
     'Remember one good thing your family has come through together.',
-    'Reach out to someone you have not checked in on for a while.'
+    'Reach out to someone you have not checked in on for a while.',
+    'Celebrate a small win today, even if it seems ordinary.',
+    'Give someone in the family your full attention for a few minutes today.',
+    'Choose a gentle response where it would be easy to react quickly.',
+    'Tell someone in the family one thing you appreciate about them.',
+    'Make room for laughter today; small joyful moments matter.',
+    'If today feels heavy, focus on the next small good thing you can do.',
+    'Family memories are built in ordinary moments too. Notice one today.'
   ];
 
   const esc=v=>String(v??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#039;'}[c]));
   const sb=()=>window.FB_SUPABASE?.client;
   const auth=()=>window.FB_AUTH?.get?.()||{};
   let shared=null,slideIndex=0,loading=false,rotationTimer=null,mountQueued=false;
+  let verseOffset=0,encouragementOffset=0;
 
   function prefKey(){
     const u=auth();
@@ -42,18 +55,18 @@
     const now=new Date(),start=new Date(now.getFullYear(),0,0);
     return Math.floor((now-start)/86400000);
   }
-  function dailyVerse(){return VERSES[dayOfYear()%VERSES.length]}
-  function dailyEncouragement(){return ENCOURAGEMENTS[(dayOfYear()+3)%ENCOURAGEMENTS.length]}
+  function currentVerse(){return VERSES[(dayOfYear()+verseOffset)%VERSES.length]}
+  function currentEncouragement(){return ENCOURAGEMENTS[(dayOfYear()+3+encouragementOffset)%ENCOURAGEMENTS.length]}
 
   function slides(){
-    const verse=dailyVerse();
+    const verse=currentVerse();
     const list=[{
-      kind:'scripture',label:'SCRIPTURE FOR TODAY',icon:'book-heart',
+      kind:'scripture',source:'scripture',label:verseOffset?'SCRIPTURE':'SCRIPTURE FOR TODAY',icon:'book-heart',
       text:verse.text,meta:`${verse.ref} · ${verse.version}`
     }];
     if(shared?.body){
       list.push({
-        kind:shared.kind,
+        kind:shared.kind,source:'shared',
         label:shared.kind==='prayer'?'FAMILY PRAYER REQUEST':'FAMILY ENCOURAGEMENT',
         icon:shared.kind==='prayer'?'heart-handshake':'sparkles',
         text:shared.body,
@@ -61,8 +74,8 @@
       });
     }
     list.push({
-      kind:'encouragement',label:'A LITTLE ENCOURAGEMENT',icon:'sun-medium',
-      text:dailyEncouragement(),meta:'Family Book'
+      kind:'encouragement',source:'encouragement',label:'A LITTLE ENCOURAGEMENT',icon:'sun-medium',
+      text:currentEncouragement(),meta:'Family Book'
     });
     return list;
   }
@@ -81,6 +94,14 @@
     </section>`;
   }
 
+  function updateNextControl(item){
+    const label=document.querySelector('[data-family-prayer-next] span');
+    if(!label)return;
+    if(item?.source==='scripture')label.textContent='Another Scripture';
+    else if(item?.source==='encouragement')label.textContent='Another Encouragement';
+    else label.textContent='Next';
+  }
+
   function renderSlide(animate=true){
     const stage=document.querySelector('#familyPrayerStage');
     const dots=document.querySelector('#familyPrayerDots');
@@ -94,6 +115,7 @@
       <p>${esc(item.text)}</p>
       <small>${esc(item.meta)}</small>
     </div>`;
+    updateNextControl(item);
     if(animate){
       stage.classList.add('switching');
       window.setTimeout(()=>{
@@ -115,9 +137,26 @@
     renderSlide(true);
   }
 
+  function manualNext(){
+    const list=slides();
+    if(!list.length)return;
+    const item=list[slideIndex];
+    if(item?.source==='scripture'){
+      verseOffset=(verseOffset+1)%VERSES.length;
+      renderSlide(true);
+      return;
+    }
+    if(item?.source==='encouragement'){
+      encouragementOffset=(encouragementOffset+1)%ENCOURAGEMENTS.length;
+      renderSlide(true);
+      return;
+    }
+    nextSlide();
+  }
+
   function bindCard(card){
     const next=card.querySelector('[data-family-prayer-next]');
-    if(next&&!next.dataset.bound){next.dataset.bound='1';next.addEventListener('click',nextSlide)}
+    if(next&&!next.dataset.bound){next.dataset.bound='1';next.addEventListener('click',manualNext)}
     const share=card.querySelector('[data-family-prayer-share]');
     if(share&&!share.dataset.bound){share.dataset.bound='1';share.addEventListener('click',openModal)}
   }
@@ -179,7 +218,7 @@
         <div class="family-prayer-modal-icon">🙏</div>
         <p class="eyebrow">OPTIONAL FAMILY SPACE</p>
         <h2 id="familyPrayerModalTitle">Share with the family</h2>
-        <p class="family-prayer-modal-intro">Add one current prayer request or a short encouragement. It will rotate gently with the daily Scripture.</p>
+        <p class="family-prayer-modal-intro">Add one current prayer request or a short encouragement. It will rotate gently with Scripture and Family Book encouragements.</p>
         <form id="familyPrayerForm">
           <label>Type
             <select id="familyPrayerKind">
@@ -251,7 +290,7 @@
       const html=`<section class="settings-card family-prayer-settings" id="settingsFamilyPrayer">
         <div class="settings-card-head"><span class="settings-card-icon"><span aria-hidden="true">🙏</span></span><div><p>FAMILY SPACE</p><h2>Prayer & Scripture</h2><span>Keep this optional widget visible on your Family Book home screen.</span></div></div>
         <label class="settings-toggle-row" for="setFamilyPrayerWidget">
-          <span><strong>Show Family Prayer / Scripture</strong><small>Rotate a daily Scripture, family prayer request and encouragement in the widget area.</small></span>
+          <span><strong>Show Family Prayer / Scripture</strong><small>Rotate Scripture, a family prayer request and encouragement in the widget area.</small></span>
           <span class="settings-switch"><input id="setFamilyPrayerWidget" type="checkbox" ${enabled()?'checked':''}><i></i></span>
         </label>
         <p class="settings-note"><i data-lucide="heart"></i>This setting only changes what you see. Other family members can choose for themselves.</p>
