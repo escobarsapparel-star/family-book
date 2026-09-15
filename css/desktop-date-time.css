@@ -1,0 +1,30 @@
+.desktop-date-time-card{
+  display:flex;
+  align-items:center;
+  gap:12px;
+  padding:14px 16px;
+}
+.desktop-date-time-icon{
+  width:42px;
+  height:42px;
+  border-radius:12px;
+  display:grid;
+  place-items:center;
+  flex:0 0 auto;
+  background:rgba(126,180,145,.14);
+  color:var(--accent,#8fbea0);
+}
+.desktop-date-time-icon svg{width:21px;height:21px}
+.desktop-date-time-copy{display:flex;flex-direction:column;min-width:0}
+.desktop-date-time-copy strong{
+  font-size:1.42rem;
+  line-height:1.05;
+  letter-spacing:.01em;
+  color:var(--text,#f4f4ef);
+}
+.desktop-date-time-copy span{
+  margin-top:4px;
+  font-size:.78rem;
+  line-height:1.25;
+  color:var(--muted,#aeb7ad);
+}
