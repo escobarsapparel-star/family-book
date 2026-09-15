@@ -23,7 +23,12 @@
   async function polish(id){
     const page=document.querySelector(`.memory-detail-page[data-memory-detail-id="${CSS.escape(String(id))}"]`);
     const mount=page?.querySelector("#memoryDetailMount.memory-detail-card");
-    if(!mount||mount.dataset.detailPolished===String(id))return;
+    if(!mount)return;
+    const alreadyPolished=mount.dataset.detailPolished===String(id)
+      && mount.classList.contains("memory-detail-polished")
+      && !!mount.querySelector(".memory-detail-intro")
+      && !!mount.querySelector(".memory-detail-head-actions");
+    if(alreadyPolished)return;
 
     const m=await api.getOne(id).catch(()=>null);
     if(!m||!document.body.contains(mount))return;
