@@ -1,0 +1,155 @@
+/* Family Book desktop header + search - Phase 1B */
+.desktop-header-left,.desktop-family-search{display:none}
+
+@media (min-width:1180px){
+  #app>.app{
+    grid-template-rows:56px minmax(calc(100vh - 56px),auto)!important;
+  }
+
+  #app>.app>.topbar{
+    min-height:56px!important;
+    height:56px!important;
+    padding-top:0!important;
+    padding-bottom:0!important;
+  }
+
+  .desktop-header-left{
+    display:flex!important;
+    align-items:center;
+    gap:10px;
+    min-width:0;
+    width:min(440px,34vw);
+    height:56px;
+    z-index:5;
+  }
+
+  #app>.app>.topbar .desktop-header-brand{
+    display:flex!important;
+    align-items:center!important;
+    justify-content:flex-start!important;
+    width:auto!important;
+    min-width:0!important;
+    max-width:none!important;
+    height:56px!important;
+    padding:2px 0!important;
+    margin:0!important;
+    border:0!important;
+    background:transparent!important;
+    overflow:visible!important;
+    flex:0 0 auto;
+  }
+
+  .desktop-brand-logo{
+    display:block;
+    width:auto;
+    height:50px;
+    max-width:176px;
+    object-fit:contain;
+    object-position:left center;
+  }
+
+  .desktop-family-search{
+    display:block!important;
+    position:relative;
+    flex:1 1 290px;
+    min-width:170px;
+    max-width:320px;
+  }
+
+  .desktop-family-search-box{
+    height:38px;
+    border:1px solid var(--fb-shell-border);
+    border-radius:999px;
+    background:var(--fb-shell-panel-2);
+    display:flex;
+    align-items:center;
+    gap:8px;
+    padding:0 11px;
+    color:var(--fb-shell-muted);
+    transition:border-color .16s ease,box-shadow .16s ease,background .16s ease;
+  }
+  .desktop-family-search-box:focus-within{
+    border-color:color-mix(in srgb,var(--fb-shell-accent) 55%,transparent);
+    background:var(--fb-shell-panel);
+    box-shadow:0 0 0 3px color-mix(in srgb,var(--fb-shell-accent) 14%,transparent);
+  }
+  .desktop-family-search-box>svg{width:18px;height:18px;flex:0 0 18px}
+  .desktop-family-search-box input{
+    width:100%;min-width:0;border:0!important;outline:0!important;background:transparent!important;
+    color:var(--fb-shell-text)!important;font:inherit;font-size:.88rem;padding:0!important;box-shadow:none!important;
+  }
+  .desktop-family-search-box input::placeholder{color:var(--fb-shell-muted);opacity:.9}
+  .desktop-family-search-box input::-webkit-search-cancel-button{display:none}
+  #desktopFamilySearchClear{
+    border:0;background:transparent;color:var(--fb-shell-muted);padding:4px;margin:-4px;display:grid;place-items:center;cursor:pointer;border-radius:50%;
+  }
+  #desktopFamilySearchClear:hover{background:var(--fb-shell-accent-soft);color:var(--fb-shell-accent)}
+  #desktopFamilySearchClear svg{width:16px;height:16px}
+
+  .desktop-family-search-results{
+    position:absolute;left:0;top:45px;width:min(390px,calc(100vw - 28px));max-height:min(560px,calc(100vh - 80px));overflow:auto;
+    padding:8px;background:var(--fb-shell-panel);border:1px solid var(--fb-shell-border);border-radius:14px;box-shadow:0 16px 42px rgba(0,0,0,.24);z-index:250;
+  }
+  .desktop-family-search-results[hidden]{display:none!important}
+  .desktop-family-search-results section+section{border-top:1px solid var(--fb-shell-border);margin-top:7px;padding-top:7px}
+  .desktop-family-search-results section>p{margin:5px 8px 6px;color:var(--fb-shell-muted);font-size:.72rem;font-weight:800;letter-spacing:.07em;text-transform:uppercase}
+  .desktop-search-result{
+    width:100%;border:0;background:transparent;color:var(--fb-shell-text);border-radius:10px;padding:8px;display:flex;align-items:center;gap:10px;text-align:left;cursor:pointer;
+  }
+  .desktop-search-result:hover{background:var(--fb-shell-panel-2)}
+  .desktop-search-result>svg{width:16px;height:16px;margin-left:auto;flex:0 0 auto;color:var(--fb-shell-muted)}
+  .desktop-search-avatar,.desktop-search-post-icon{
+    width:38px;height:38px;flex:0 0 38px;border-radius:50%;display:grid;place-items:center;overflow:hidden;background:var(--fb-shell-accent-soft);color:var(--fb-shell-accent);font-size:.78rem;font-weight:900;
+  }
+  .desktop-search-avatar img{width:100%;height:100%;object-fit:cover}
+  .desktop-search-post-icon{border-radius:11px}
+  .desktop-search-post-icon svg{width:18px;height:18px}
+  .desktop-search-copy{display:block;min-width:0;flex:1}
+  .desktop-search-copy strong,.desktop-search-copy small{display:block;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .desktop-search-copy strong{font-size:.86rem;color:var(--fb-shell-text)}
+  .desktop-search-copy small{font-size:.74rem;color:var(--fb-shell-muted);margin-top:2px}
+  .desktop-search-empty{padding:18px 12px;text-align:center;color:var(--fb-shell-muted);display:grid;justify-items:center;gap:4px}
+  .desktop-search-empty svg{width:25px;height:25px;margin-bottom:2px}
+  .desktop-search-empty strong{color:var(--fb-shell-text)}
+  .desktop-search-empty small{font-size:.78rem}
+
+  .desktop-top-nav{
+    top:4px!important;
+    height:48px!important;
+  }
+  .desktop-top-nav button{
+    min-width:68px!important;
+    border-radius:10px!important;
+  }
+  .desktop-top-nav svg{width:21px!important;height:21px!important}
+
+  .desktop-left-rail,.desktop-right-rail{
+    top:68px!important;
+    max-height:calc(100vh - 78px)!important;
+  }
+
+  #app>.app>.screen{padding-top:12px!important}
+
+  .desktop-search-highlight{
+    outline:2px solid var(--fb-shell-accent)!important;
+    outline-offset:3px;
+    animation:desktopSearchPulse .75s ease 2;
+  }
+  @keyframes desktopSearchPulse{
+    0%,100%{box-shadow:0 0 0 0 color-mix(in srgb,var(--fb-shell-accent) 0%,transparent)}
+    50%{box-shadow:0 0 0 7px color-mix(in srgb,var(--fb-shell-accent) 18%,transparent)}
+  }
+}
+
+@media (min-width:1180px) and (max-width:1320px){
+  .desktop-header-left{width:330px;gap:7px}
+  .desktop-brand-logo{height:46px;max-width:142px}
+  .desktop-family-search{max-width:180px}
+  .desktop-family-search-box{padding:0 9px}
+  .desktop-family-search-box input{font-size:.8rem}
+  .desktop-top-nav button{min-width:60px!important}
+}
+
+@media (max-width:1179px){
+  .desktop-header-left,.desktop-family-search{display:none!important}
+}
