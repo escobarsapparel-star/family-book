@@ -42,6 +42,15 @@
     dateGrid.classList.add('memory-clean-hidden-fields');
     dateGrid.setAttribute('aria-hidden','true');
 
+    const tags=card.querySelector('.memory-tags');
+    if(tags){
+      tags.classList.add('memory-tags-clean');
+      const intro=tags.querySelector(':scope > p');
+      if(intro)intro.textContent='Choose the people who are in this memory. Family History tags link the photo to their profile.';
+      const legend=tags.querySelector('legend');
+      if(legend)legend.childNodes[0].textContent='People in this memory ';
+    }
+
     const initialDate=dateInput.value||'';
     const state={updating:false};
 
@@ -65,7 +74,6 @@
       dateInput.value='';
       timeInput.value='';
       const ev=()=>dateInput.dispatchEvent(new Event('change',{bubbles:true}));
-      // Two passes also normalize the legacy "camera -> edited" source back to manual.
       ev();
       ev();
       note.classList.add('memory-meta-clean-hidden');
@@ -84,8 +92,6 @@
       note.classList.add('memory-meta-clean-hidden');
       note.classList.remove('memory-meta-compact');
 
-      // memories.js can use File.lastModified for video or "now" for camera capture.
-      // Those are not original capture metadata, so keep them out of the Memory date/time.
       if(fromMutation)clearGeneratedFallback();
     }
 
