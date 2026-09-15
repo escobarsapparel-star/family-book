@@ -1,0 +1,6 @@
+.ct-sibling-canvas{position:relative}
+.ct-sibling-branch{position:absolute}
+.ct-sibling-branch>.ct-canvas{margin:0!important}
+.ct-sibling-lines{position:absolute;inset:0;pointer-events:none;color:rgba(151,136,112,.95)}
+.ct-sibling-line{stroke:currentColor;stroke-width:2;fill:none;stroke-linecap:round}
+html[data-theme="dark"] .ct-sibling-lines{color:rgba(167,151,124,.9)}
