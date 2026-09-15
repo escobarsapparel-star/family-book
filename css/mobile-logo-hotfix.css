@@ -1,0 +1,48 @@
+/* Mobile header logo hotfix — keep the Family Book brand visible beside header actions. */
+@media (max-width:759px){
+  #app>.app>.topbar .brand-home{
+    display:flex!important;
+    flex:1 1 auto!important;
+    width:auto!important;
+    max-width:none!important;
+    min-width:0!important;
+    overflow:visible!important;
+  }
+
+  #app>.app>.topbar .brand-home .brand-logo-wrap{
+    display:flex!important;
+    align-items:center!important;
+    justify-content:flex-start!important;
+    flex:0 1 auto!important;
+    width:min(210px,calc(100vw - 105px))!important;
+    min-width:0!important;
+    max-width:210px!important;
+    height:56px!important;
+    overflow:visible!important;
+  }
+
+  #app>.app>.topbar .brand-home .brand-logo-wrap .theme-logo{
+    width:100%!important;
+    max-width:210px!important;
+    height:auto!important;
+    max-height:43px!important;
+    object-fit:contain!important;
+    object-position:left center!important;
+    opacity:1!important;
+    visibility:visible!important;
+    margin:0!important;
+  }
+
+  #app>.app>.topbar .brand-home .theme-logo-light{display:block!important}
+  #app>.app>.topbar .brand-home .theme-logo-dark{display:none!important}
+  html[data-theme="dark"] #app>.app>.topbar .brand-home .theme-logo-light{display:none!important}
+  html[data-theme="dark"] #app>.app>.topbar .brand-home .theme-logo-dark{display:block!important}
+}
+
+@media (max-width:380px){
+  #app>.app>.topbar .brand-home .brand-logo-wrap{
+    width:min(190px,calc(100vw - 101px))!important;
+    max-width:190px!important;
+  }
+  #app>.app>.topbar .brand-home .brand-logo-wrap .theme-logo{max-width:190px!important}
+}
