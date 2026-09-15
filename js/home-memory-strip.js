@@ -29,7 +29,7 @@
   }
 
   function addCard(){
-    return `<button class="home-memory-add-card" type="button" data-home-memory-route="add-memory">${currentUserAvatar()}<span>Add memory</span></button>`;
+    return `<button class="home-memory-add-card" type="button" data-home-memory-action="quick-add">${currentUserAvatar()}<span>Add memory</span></button>`;
   }
 
   function memoryCard(memory){
@@ -63,6 +63,14 @@
       btn.dataset.homeMemoryBound="1";
       btn.addEventListener("click",()=>window.go?.(btn.dataset.homeMemoryRoute));
     });
+    root.querySelectorAll('[data-home-memory-action="quick-add"]').forEach(btn=>{
+      if(btn.dataset.homeMemoryBound)return;
+      btn.dataset.homeMemoryBound="1";
+      btn.addEventListener("click",()=>{
+        if(window.FB_QUICK_MEMORY?.open)window.FB_QUICK_MEMORY.open();
+        else window.go?.("add-memory");
+      });
+    });
   }
 
   async function populate(root){
@@ -85,6 +93,14 @@
         window.icons?.();
       }
     }
+  }
+
+  function refreshVisible(){
+    const strip=document.querySelector("#screen .home-memory-strip-shell");
+    if(!strip)return;
+    const track=strip.querySelector("#homeMemoryStripTrack");
+    if(track)delete track.dataset.loaded;
+    populate(strip);
   }
 
   function removeDuplicateFamilyCards(screen){
@@ -137,12 +153,7 @@
   if(app)observer.observe(app,{childList:true,subtree:true});
   install();
 
-  window.addEventListener("familybook:family-data-updated",()=>{
-    const strip=document.querySelector("#screen .home-memory-strip-shell");
-    if(strip){
-      const track=strip.querySelector("#homeMemoryStripTrack");
-      if(track)delete track.dataset.loaded;
-      populate(strip);
-    }
-  });
+  window.addEventListener("familybook:family-data-updated",refreshVisible);
+  window.addEventListener("familybook:memories-updated",refreshVisible);
+  window.FB_HOME_MEMORY_STRIP={refresh:refreshVisible};
 })();
