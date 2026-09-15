@@ -1,0 +1,97 @@
+.family-prayer-widget{
+  position:relative;
+  overflow:hidden;
+  background:
+    radial-gradient(circle at 88% 12%,rgba(166,107,56,.11),transparent 32%),
+    linear-gradient(145deg,#fffdf8,#f7f3eb);
+}
+.family-prayer-widget:after{
+  content:"";
+  position:absolute;
+  right:-34px;bottom:-44px;
+  width:118px;height:118px;
+  border:1px solid rgba(49,92,67,.08);
+  border-radius:50%;
+  box-shadow:0 0 0 26px rgba(49,92,67,.035),0 0 0 52px rgba(166,107,56,.018);
+  pointer-events:none;
+}
+.family-prayer-head{position:relative;z-index:2}
+.family-prayer-head h3{display:flex;align-items:center;gap:8px}
+.family-prayer-emoji{font-size:1.05rem;line-height:1}
+.family-prayer-stage{
+  min-height:142px;
+  position:relative;z-index:2;
+  transition:opacity .18s ease,transform .18s ease;
+}
+.family-prayer-stage.switching{opacity:.22;transform:translateY(3px)}
+.family-prayer-slide{
+  border:1px solid rgba(49,92,67,.10);
+  border-radius:16px;
+  padding:15px 15px 14px;
+  background:rgba(255,255,255,.68);
+  box-shadow:0 7px 22px rgba(31,43,34,.035);
+}
+.family-prayer-slide.prayer{background:linear-gradient(145deg,rgba(255,250,248,.95),rgba(250,241,241,.9));border-color:rgba(177,91,102,.15)}
+.family-prayer-slide.encouragement{background:linear-gradient(145deg,rgba(255,253,246,.96),rgba(248,244,229,.92));border-color:rgba(166,107,56,.14)}
+.family-prayer-label{display:flex;align-items:center;gap:7px;color:#8b633f;font-size:.66rem;font-weight:900;letter-spacing:.09em;margin-bottom:9px}
+.family-prayer-label span{width:25px;height:25px;border-radius:8px;background:#eef4ee;color:#315c43;display:grid;place-items:center}
+.family-prayer-label svg{width:14px;height:14px}
+.family-prayer-slide p{margin:0;color:#2b332d;font-size:.93rem;font-weight:650;line-height:1.55}
+.family-prayer-slide.scripture p{font-size:.98rem;font-weight:700}
+.family-prayer-slide small{display:block;margin-top:10px;color:#7a817b;font-size:.72rem;font-weight:650}
+.family-prayer-footer{position:relative;z-index:2;display:flex;align-items:center;justify-content:space-between;margin-top:10px}
+.family-prayer-dots{display:flex;gap:5px;align-items:center}
+.family-prayer-dots i{width:6px;height:6px;border-radius:50%;background:#d2d6d1;transition:all .18s ease}
+.family-prayer-dots i.active{width:17px;border-radius:999px;background:#315c43}
+.family-prayer-next{border:0;background:transparent;color:#315c43;display:flex;align-items:center;gap:5px;padding:5px 2px;font-size:.72rem;font-weight:800}
+.family-prayer-next svg{width:14px;height:14px}
+.family-prayer-next:hover{text-decoration:underline}
+
+.family-prayer-modal-backdrop{position:fixed;inset:0;z-index:1200;background:rgba(18,24,20,.48);backdrop-filter:blur(4px);display:grid;place-items:center;padding:20px}
+.family-prayer-modal{position:relative;width:min(520px,100%);background:#fffdfa;border:1px solid #e7ded2;border-radius:24px;padding:28px;box-shadow:0 30px 90px rgba(16,24,18,.26)}
+.family-prayer-modal-close{position:absolute;right:16px;top:16px;width:38px;height:38px;border-radius:50%;border:1px solid #e4ddd2;background:#fff;color:#4f5d53;display:grid;place-items:center}
+.family-prayer-modal-close svg{width:18px;height:18px}
+.family-prayer-modal-icon{width:54px;height:54px;border-radius:17px;background:#edf3ee;display:grid;place-items:center;font-size:1.55rem;margin-bottom:15px}
+.family-prayer-modal h2{margin:2px 0 8px;color:#315c43;font-size:1.55rem}
+.family-prayer-modal-intro{margin:0 0 20px;color:#6f756e;line-height:1.5;font-size:.9rem}
+.family-prayer-modal form{display:grid;gap:15px}
+.family-prayer-modal label{display:grid;gap:7px;font-size:.8rem;font-weight:800;color:#303a33}
+.family-prayer-modal select,.family-prayer-modal textarea{width:100%;border:1px solid #dcd4c8;background:#fff;border-radius:13px;padding:12px 13px;outline:none;font:inherit;color:#20251f;resize:vertical}
+.family-prayer-modal select:focus,.family-prayer-modal textarea:focus{border-color:#315c43;box-shadow:0 0 0 3px rgba(49,92,67,.10)}
+.family-prayer-modal-message{border-radius:11px;padding:10px 12px;background:#fff0ee;color:#9c4138;font-size:.78rem;font-weight:700}
+.family-prayer-modal-message[data-type="success"]{background:#edf7ef;color:#315c43}
+.family-prayer-modal-actions{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-top:3px}
+.family-prayer-modal-actions>div{display:flex;gap:8px}
+.family-prayer-clear{border:0;background:transparent;color:#9a514c;font-size:.75rem;font-weight:800;padding:8px 0}
+.family-prayer-clear:hover{text-decoration:underline}
+
+.family-prayer-settings .settings-card-icon>span{font-size:1.2rem}
+
+html[data-theme="dark"] .family-prayer-widget{
+  background:radial-gradient(circle at 88% 12%,rgba(182,132,86,.10),transparent 32%),linear-gradient(145deg,#202720,#1a211b);
+}
+html[data-theme="dark"] .family-prayer-slide{background:rgba(35,43,36,.82);border-color:#38453b;box-shadow:none}
+html[data-theme="dark"] .family-prayer-slide.prayer{background:linear-gradient(145deg,#2b2526,#292225);border-color:#553c41}
+html[data-theme="dark"] .family-prayer-slide.encouragement{background:linear-gradient(145deg,#29271f,#25241d);border-color:#4e4637}
+html[data-theme="dark"] .family-prayer-slide p{color:#eef3ef}
+html[data-theme="dark"] .family-prayer-slide small{color:#aeb8b0}
+html[data-theme="dark"] .family-prayer-label{color:#d0a273}
+html[data-theme="dark"] .family-prayer-label span{background:#304036;color:#b9d5c0}
+html[data-theme="dark"] .family-prayer-dots i{background:#4c554e}
+html[data-theme="dark"] .family-prayer-dots i.active{background:#9fc2a7}
+html[data-theme="dark"] .family-prayer-next{color:#b9d5c0}
+html[data-theme="dark"] .family-prayer-modal{background:#1b211c;border-color:#39423b;color:#eef3ef}
+html[data-theme="dark"] .family-prayer-modal h2{color:#b9d5c0}
+html[data-theme="dark"] .family-prayer-modal-intro{color:#aab4ac}
+html[data-theme="dark"] .family-prayer-modal label{color:#dfe7e1}
+html[data-theme="dark"] .family-prayer-modal select,html[data-theme="dark"] .family-prayer-modal textarea{background:#252d27;border-color:#465047;color:#eef3ef}
+html[data-theme="dark"] .family-prayer-modal-close{background:#242c26;border-color:#465047;color:#c9d3cb}
+html[data-theme="dark"] .family-prayer-modal-icon{background:#2e3a31}
+
+@media(max-width:760px){
+  .family-prayer-modal-backdrop{align-items:end;padding:0}
+  .family-prayer-modal{width:100%;border-radius:24px 24px 0 0;padding:24px 18px max(24px,env(safe-area-inset-bottom))}
+  .family-prayer-modal-actions{align-items:flex-end;flex-direction:column-reverse}
+  .family-prayer-modal-actions>div{width:100%;display:grid;grid-template-columns:1fr 1fr}
+  .family-prayer-clear{align-self:flex-start}
+}
