@@ -39,7 +39,7 @@
 .memories-polished .memory-card-tags{margin-top:2px;font-size:.62rem;color:#7f776e}
 .memories-polished .memory-photo-count,.memories-polished .memory-card-play{backdrop-filter:blur(8px)}
 
-html[data-theme="dark"] .memories-polished .memories-head h1{color:#2f6848}
+html[data-theme="dark"] .memories-polished .memories-head h1{color:#a7cbb0}
 html[data-theme="dark"] .memories-polished .memories-head p{color:#ab8f7c}
 html[data-theme="dark"] .memories-polished .memory-filter-panel{background:#171d17;border-color:#343d34}
 html[data-theme="dark"] .memories-polished .memory-search-box{background:#131813;border-color:#384138}
@@ -80,8 +80,8 @@ html[data-theme="dark"] .memories-polished .memory-card-tags{color:#a5a099}
  .memories-polished .memory-card-copy{min-height:59px;padding:9px 10px 10px}
  .memories-polished .memory-card-copy strong{font-size:.82rem}
 }
-@media(max-width:390px){
- .memories-polished .memory-gallery{grid-template-columns:1fr 1fr}
+@media(max-width:380px){
+ .memories-polished .memory-gallery{grid-template-columns:1fr}
  .memory-gallery-count{font-size:.64rem}
  .memory-gallery-sort select{max-width:124px}
 }
