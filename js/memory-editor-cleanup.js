@@ -3,6 +3,26 @@
   window.__fbMemoryEditorCleanup=true;
 
   let scanQueued=false;
+  let memoryAddOrigin='memories';
+
+  document.addEventListener('click',event=>{
+    const trigger=event.target?.closest?.('[data-r="add-memory"]');
+    if(!trigger)return;
+    const active=document.querySelector('.bottom [data-r].active, .bottom-nav [data-r].active');
+    memoryAddOrigin=active?.dataset?.r==='home'?'home':'memories';
+  },true);
+
+  if(window.FB_MEMORIES?.editorShell){
+    const originalEditorShell=window.FB_MEMORIES.editorShell.bind(window.FB_MEMORIES);
+    window.FB_MEMORIES.editorShell=function(id=''){
+      let html=originalEditorShell(id);
+      if(id)return html;
+      const target=memoryAddOrigin==='home'?'home':'memories';
+      html=html.replaceAll('data-r="memories"',`data-r="${target}"`);
+      if(target==='home')html=html.replace('Back to memories','Back to home');
+      return html;
+    };
+  }
 
   function formatCapture(dateValue,timeValue){
     if(!dateValue)return '';
