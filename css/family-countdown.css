@@ -1,4 +1,4 @@
-/* Family Book — Family Countdown widget */
+/* Family Book — animated Family Countdown widget */
 .family-countdown-widget{overflow:hidden}
 .family-countdown-widget .family-countdown-head{margin-bottom:10px}
 .family-countdown-widget .family-countdown-head h3{display:flex;align-items:center;gap:7px}
@@ -7,25 +7,34 @@
 .family-countdown-hero{
   width:100%;border:0;border-radius:14px;padding:13px;text-align:left;cursor:pointer;
   background:linear-gradient(135deg,var(--fb-shell-accent-soft,#e7efe9),var(--fb-shell-panel-2,#f7f4ec));
-  color:var(--fb-shell-text,#1f2a22);display:grid;grid-template-columns:42px minmax(0,1fr) auto;gap:10px;align-items:center;
+  color:var(--fb-shell-text,#1f2a22);display:grid;gap:12px;
 }
 .family-countdown-hero:hover{filter:brightness(.985)}
+.family-countdown-hero-top{display:grid;grid-template-columns:42px minmax(0,1fr);gap:10px;align-items:center}
 .family-countdown-icon{
-  width:42px;height:42px;border-radius:13px;display:grid;place-items:center;flex:0 0 42px;
+  width:42px;height:42px;border-radius:13px;display:grid;place-items:center;
   background:var(--fb-shell-panel,#fffdf8);color:var(--fb-shell-accent,#315c43);
   border:1px solid var(--fb-shell-border,rgba(49,92,67,.16));
 }
 .family-countdown-icon svg{width:21px;height:21px}
 .family-countdown-copy{min-width:0}
-.family-countdown-copy strong{display:block;font-size:.9rem;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.family-countdown-copy strong{display:block;font-size:.92rem;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .family-countdown-copy small{display:block;margin-top:3px;color:var(--fb-shell-muted,#738076);font-size:.72rem;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.family-countdown-value{min-width:62px;text-align:right}
-.family-countdown-value strong{display:block;font-size:1.55rem;line-height:1;color:var(--fb-shell-accent,#315c43);font-weight:900}
-.family-countdown-value span{display:block;margin-top:3px;font-size:.62rem;color:var(--fb-shell-muted,#738076);font-weight:700;white-space:nowrap}
-.family-countdown-value.is-today strong{font-size:.94rem;line-height:1.15}
-.family-countdown-value.is-tomorrow strong{font-size:.88rem;line-height:1.15}
 
-.family-countdown-more{display:grid;gap:7px;margin-top:8px}
+.family-countdown-clock{
+  display:grid;grid-template-columns:1fr auto 1fr auto 1fr auto 1fr;align-items:start;gap:5px;
+  padding:10px 9px 8px;border-radius:12px;background:color-mix(in srgb,var(--fb-shell-panel,#fffdf8) 78%,transparent);
+  border:1px solid var(--fb-shell-border,rgba(49,92,67,.16));
+}
+.family-countdown-unit{text-align:center;min-width:0}
+.family-countdown-unit strong{display:block;color:var(--fb-shell-accent,#315c43);font-size:1.24rem;line-height:1;font-weight:900;font-variant-numeric:tabular-nums}
+.family-countdown-unit small{display:block;margin-top:5px;color:var(--fb-shell-muted,#738076);font-size:.58rem;text-transform:uppercase;letter-spacing:.05em;font-weight:800}
+.family-countdown-sep{font-size:1.05rem;line-height:1;color:var(--fb-shell-muted,#738076);font-weight:800;padding-top:1px}
+.family-countdown-seconds.tick strong{animation:familyCountdownTick .24s ease-out}
+@keyframes familyCountdownTick{0%{transform:translateY(-2px);opacity:.45}100%{transform:none;opacity:1}}
+
+.family-countdown-next-wrap{margin-top:10px;padding-top:9px;border-top:1px solid var(--fb-shell-border,rgba(49,92,67,.16))}
+.family-countdown-next-label{display:block;margin:0 4px 5px;color:var(--fb-shell-muted,#738076);font-size:.65rem;text-transform:uppercase;letter-spacing:.08em;font-weight:900}
 .family-countdown-row{
   width:100%;border:0;background:transparent;color:var(--fb-shell-text,#1f2a22);border-radius:10px;
   display:grid;grid-template-columns:30px minmax(0,1fr) auto;gap:8px;align-items:center;padding:7px 6px;text-align:left;cursor:pointer;
@@ -35,11 +44,12 @@
 .family-countdown-row-icon svg{width:15px;height:15px}
 .family-countdown-row-copy{min-width:0}
 .family-countdown-row-copy strong{display:block;font-size:.8rem;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.family-countdown-row-copy small{display:block;font-size:.68rem;color:var(--fb-shell-muted,#738076);margin-top:1px}
-.family-countdown-row-days{font-size:.74rem;color:var(--fb-shell-accent,#315c43);font-weight:800;white-space:nowrap}
+.family-countdown-row-copy small{display:block;font-size:.68rem;color:var(--fb-shell-muted,#738076);margin-top:1px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.family-countdown-row-days{font-size:.72rem;color:var(--fb-shell-accent,#315c43);font-weight:800;white-space:nowrap}
 .family-countdown-empty{margin:0;color:var(--fb-shell-muted,#738076);font-size:.8rem;line-height:1.45}
 .family-countdown-empty-action{margin-top:9px;border:0;border-radius:9px;padding:8px 10px;background:var(--fb-shell-accent-soft,#e7efe9);color:var(--fb-shell-accent,#315c43);font-weight:800;font-size:.76rem;cursor:pointer}
 
 @media (min-width:760px) and (max-width:1179px){
-  .compact-widgets-drawer .family-countdown-hero{grid-template-columns:42px minmax(0,1fr) auto}
+  .compact-widgets-drawer .family-countdown-clock{padding:11px 10px 9px}
+  .compact-widgets-drawer .family-countdown-unit strong{font-size:1.3rem}
 }
