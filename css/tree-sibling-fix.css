@@ -4,3 +4,16 @@
 .ct-sibling-lines{position:absolute;inset:0;pointer-events:none;color:rgba(151,136,112,.95)}
 .ct-sibling-line{stroke:currentColor;stroke-width:2;fill:none;stroke-linecap:round}
 html[data-theme="dark"] .ct-sibling-lines{color:rgba(167,151,124,.9)}
+
+/* Keep the full-tree viewer consistent with the active theme. */
+.full-tree-viewport{
+  background:var(--fb-shell-panel-2,#f4eee4)!important;
+  border-color:var(--fb-shell-border,#dfd4c6)!important;
+}
+html[data-theme="dark"] .full-tree-viewport{
+  background:#151a16!important;
+  border-color:rgba(207,224,211,.14)!important;
+}
+html[data-theme="dark"] .full-tree-hint{color:#9ca79f!important}
+html[data-theme="dark"] .full-tree-stage,
+html[data-theme="dark"] .full-tree-stage .ct-canvas{background:transparent!important}
