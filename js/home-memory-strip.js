@@ -1,5 +1,6 @@
 (()=>{
   const esc=v=>String(v??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#039;"}[c]));
+  const auth=()=>window.FB_AUTH?.get?.()||{};
 
   function initials(name){
     const p=String(name||"Family").trim().split(/\s+/).filter(Boolean);
@@ -16,6 +17,19 @@
   function authorAvatar(memory){
     const name=memory?.authorName||"Family member",photo=memory?.authorPhoto||"";
     return photo?`<img src="${esc(photo)}" alt="">`:`<span>${esc(initials(name))}</span>`;
+  }
+
+  function currentUserAvatar(){
+    const u=auth();
+    const name=u.name||"Family member";
+    let photo=u.photo||"";
+    try{photo=window.currentUserPhoto?.()||photo}catch(_){ }
+    const face=photo?`<img src="${esc(photo)}" alt="${esc(name)}">`:`<span>${esc(initials(name))}</span>`;
+    return `<span class="home-memory-add-avatar"><span class="home-memory-add-avatar-media">${face}</span><span class="home-memory-add-plus"><i data-lucide="plus"></i></span></span>`;
+  }
+
+  function addCard(){
+    return `<button class="home-memory-add-card" type="button" data-home-memory-route="add-memory">${currentUserAvatar()}<span>Add memory</span></button>`;
   }
 
   function memoryCard(memory){
@@ -37,10 +51,7 @@
         <button type="button" class="home-memory-strip-viewall" data-home-memory-route="memories">View all</button>
       </div>
       <div class="home-memory-strip-track" id="homeMemoryStripTrack">
-        <button class="home-memory-add-card" type="button" data-home-memory-route="add-memory">
-          <span class="home-memory-add-icon"><i data-lucide="plus"></i></span>
-          <span>Add memory</span>
-        </button>
+        ${addCard()}
         <div class="home-memory-strip-loading"><span class="memory-spinner small"></span><span>Loading memories…</span></div>
       </div>
     </section>`;
@@ -62,18 +73,43 @@
       const list=await window.FB_MEMORIES?.getAll?.();
       if(!document.body.contains(track))return;
       const memories=Array.isArray(list)?list.slice(0,16):[];
-      track.innerHTML=`<button class="home-memory-add-card" type="button" data-home-memory-route="add-memory"><span class="home-memory-add-icon"><i data-lucide="plus"></i></span><span>Add memory</span></button>${memories.length?memories.map(memoryCard).join(""):`<div class="home-memory-strip-empty"><i data-lucide="images"></i><strong>No memories yet</strong><span>Add the first family memory.</span></div>`}`;
+      track.innerHTML=`${addCard()}${memories.length?memories.map(memoryCard).join(""):`<div class="home-memory-strip-empty"><i data-lucide="images"></i><strong>No memories yet</strong><span>Add the first family memory.</span></div>`}`;
       bindRoutes(root);
       track.querySelectorAll("[data-home-memory-id]").forEach(card=>card.addEventListener("click",()=>window.go?.(`view-memory:${card.dataset.homeMemoryId}`)));
       window.icons?.();
     }catch(err){
       console.warn("Home memories strip:",err);
       if(document.body.contains(track)){
-        track.innerHTML=`<button class="home-memory-add-card" type="button" data-home-memory-route="add-memory"><span class="home-memory-add-icon"><i data-lucide="plus"></i></span><span>Add memory</span></button><div class="home-memory-strip-empty"><i data-lucide="triangle-alert"></i><strong>Could not load memories</strong><span>Try again in a moment.</span></div>`;
+        track.innerHTML=`${addCard()}<div class="home-memory-strip-empty"><i data-lucide="triangle-alert"></i><strong>Could not load memories</strong><span>Try again in a moment.</span></div>`;
         bindRoutes(root);
         window.icons?.();
       }
     }
+  }
+
+  function removeDuplicateFamilyCards(screen){
+    const quick=screen.querySelector(".quick");
+    if(!quick)return;
+    const heading=quick.previousElementSibling;
+    if(heading?.classList?.contains("section-head")&&/your\s+family/i.test(heading.textContent||""))heading.remove();
+    quick.remove();
+  }
+
+  function moveComposerAboveMemories(screen,strip){
+    if(!strip||screen.querySelector(".home-status-composer-shell"))return;
+    const wallPanel=screen.querySelector(".family-wall-panel");
+    const composer=wallPanel?.querySelector(".wall-composer");
+    if(!composer)return;
+    const holder=document.createElement("section");
+    holder.className="home-status-composer-shell";
+    holder.setAttribute("aria-label","Create a Family Wall post");
+    holder.appendChild(composer);
+    strip.insertAdjacentElement("beforebegin",holder);
+  }
+
+  function reshapeHome(screen,strip){
+    removeDuplicateFamilyCards(screen);
+    moveComposerAboveMemories(screen,strip);
   }
 
   function install(){
@@ -86,6 +122,7 @@
     const strip=screen.querySelector(".home-memory-strip-shell");
     hero.remove();
     if(strip){
+      reshapeHome(screen,strip);
       bindRoutes(strip);
       populate(strip);
       window.icons?.();
