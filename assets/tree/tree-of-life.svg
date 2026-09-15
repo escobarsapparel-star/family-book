@@ -1,0 +1,58 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1600 900" role="img" aria-label="Decorative tree of life">
+  <defs>
+    <linearGradient id="trunk" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#c8ae7a"/>
+      <stop offset=".5" stop-color="#8d7451"/>
+      <stop offset="1" stop-color="#d9c28d"/>
+    </linearGradient>
+    <radialGradient id="glow" cx="50%" cy="43%" r="55%">
+      <stop offset="0" stop-color="#f5e8b8" stop-opacity=".42"/>
+      <stop offset="1" stop-color="#f5e8b8" stop-opacity="0"/>
+    </radialGradient>
+    <filter id="soft" x="-20%" y="-20%" width="140%" height="140%">
+      <feGaussianBlur stdDeviation="1.2"/>
+    </filter>
+  </defs>
+  <ellipse cx="800" cy="430" rx="620" ry="380" fill="url(#glow)"/>
+  <g opacity=".34" fill="none" stroke="url(#trunk)" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M800 820 C760 730 770 640 795 555 C820 470 805 382 800 305" stroke-width="54"/>
+    <path d="M793 535 C690 485 605 404 535 310 C475 230 418 170 338 124" stroke-width="22"/>
+    <path d="M805 515 C925 452 1000 365 1065 272 C1120 194 1192 146 1280 110" stroke-width="22"/>
+    <path d="M777 468 C680 420 560 418 432 450 C335 475 255 466 170 430" stroke-width="15"/>
+    <path d="M823 455 C938 405 1065 410 1200 448 C1300 476 1380 458 1450 418" stroke-width="15"/>
+    <path d="M785 390 C735 322 690 252 655 180 C630 126 600 90 560 60" stroke-width="13"/>
+    <path d="M817 382 C855 310 900 238 946 175 C985 120 1015 78 1040 42" stroke-width="13"/>
+    <path d="M795 820 C690 850 595 858 505 844 C430 832 365 842 300 875" stroke-width="15"/>
+    <path d="M805 820 C910 852 1000 858 1092 842 C1170 828 1240 840 1310 875" stroke-width="15"/>
+  </g>
+  <g fill="#7f9f72" opacity=".29">
+    <ellipse cx="286" cy="122" rx="32" ry="16" transform="rotate(26 286 122)"/><ellipse cx="350" cy="154" rx="34" ry="17" transform="rotate(-18 350 154)"/>
+    <ellipse cx="416" cy="196" rx="38" ry="18" transform="rotate(30 416 196)"/><ellipse cx="478" cy="252" rx="35" ry="17" transform="rotate(-25 478 252)"/>
+    <ellipse cx="548" cy="306" rx="39" ry="18" transform="rotate(20 548 306)"/><ellipse cx="610" cy="352" rx="34" ry="17" transform="rotate(-20 610 352)"/>
+    <ellipse cx="226" cy="392" rx="39" ry="18" transform="rotate(18 226 392)"/><ellipse cx="305" cy="425" rx="36" ry="17" transform="rotate(-17 305 425)"/>
+    <ellipse cx="392" cy="444" rx="42" ry="19" transform="rotate(12 392 444)"/><ellipse cx="520" cy="415" rx="37" ry="18" transform="rotate(-26 520 415)"/>
+    <ellipse cx="560" cy="92" rx="36" ry="17" transform="rotate(58 560 92)"/><ellipse cx="628" cy="150" rx="36" ry="17" transform="rotate(-44 628 150)"/>
+    <ellipse cx="1310" cy="104" rx="32" ry="16" transform="rotate(-24 1310 104)"/><ellipse cx="1245" cy="146" rx="34" ry="17" transform="rotate(18 1245 146)"/>
+    <ellipse cx="1175" cy="190" rx="38" ry="18" transform="rotate(-29 1175 190)"/><ellipse cx="1100" cy="246" rx="35" ry="17" transform="rotate(24 1100 246)"/>
+    <ellipse cx="1040" cy="310" rx="39" ry="18" transform="rotate(-20 1040 310)"/><ellipse cx="980" cy="350" rx="34" ry="17" transform="rotate(20 980 350)"/>
+    <ellipse cx="1370" cy="382" rx="39" ry="18" transform="rotate(-18 1370 382)"/><ellipse cx="1290" cy="420" rx="36" ry="17" transform="rotate(17 1290 420)"/>
+    <ellipse cx="1205" cy="444" rx="42" ry="19" transform="rotate(-12 1205 444)"/><ellipse cx="1080" cy="410" rx="37" ry="18" transform="rotate(26 1080 410)"/>
+    <ellipse cx="1035" cy="82" rx="36" ry="17" transform="rotate(-58 1035 82)"/><ellipse cx="965" cy="145" rx="36" ry="17" transform="rotate(44 965 145)"/>
+  </g>
+  <g fill="#c9aa5d" opacity=".22">
+    <ellipse cx="390" cy="118" rx="27" ry="13" transform="rotate(18 390 118)"/><ellipse cx="492" cy="174" rx="29" ry="14" transform="rotate(-21 492 174)"/>
+    <ellipse cx="278" cy="468" rx="28" ry="14" transform="rotate(12 278 468)"/><ellipse cx="595" cy="280" rx="28" ry="14" transform="rotate(-28 595 280)"/>
+    <ellipse cx="1210" cy="110" rx="27" ry="13" transform="rotate(-18 1210 110)"/><ellipse cx="1110" cy="170" rx="29" ry="14" transform="rotate(21 1110 170)"/>
+    <ellipse cx="1320" cy="468" rx="28" ry="14" transform="rotate(-12 1320 468)"/><ellipse cx="1000" cy="280" rx="28" ry="14" transform="rotate(28 1000 280)"/>
+  </g>
+  <g opacity=".18" filter="url(#soft)" fill="none" stroke="#8f7752" stroke-linecap="round">
+    <path d="M760 812 C688 792 620 785 540 812 C482 831 420 830 350 807" stroke-width="8"/>
+    <path d="M840 812 C912 790 980 783 1062 810 C1125 831 1190 828 1250 806" stroke-width="8"/>
+    <path d="M785 818 C735 860 688 880 620 890" stroke-width="7"/>
+    <path d="M815 818 C865 860 912 880 980 890" stroke-width="7"/>
+  </g>
+  <g opacity=".12" fill="#315c43" font-family="Georgia, serif" text-anchor="middle">
+    <text x="800" y="710" font-size="92" font-weight="700">Family Book</text>
+    <text x="800" y="752" font-size="20" letter-spacing="8">OUR ROOTS • OUR STORY • TOGETHER</text>
+  </g>
+</svg>
