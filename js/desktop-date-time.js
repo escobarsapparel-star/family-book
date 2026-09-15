@@ -6,7 +6,7 @@
     return `<section class="desktop-widget desktop-date-time-card" id="desktopDateTimeCard" aria-label="Current date and time">
       <div class="desktop-date-time-icon"><i data-lucide="clock-3"></i></div>
       <div class="desktop-date-time-copy">
-        <strong id="desktopLiveTime">--:--</strong>
+        <strong id="desktopLiveTime">--:--:--</strong>
         <span id="desktopLiveDate">Loading date…</span>
       </div>
     </section>`;
@@ -18,10 +18,10 @@
     if(!time||!date)return;
     const now=new Date();
     try{
-      time.textContent=new Intl.DateTimeFormat(undefined,{hour:'2-digit',minute:'2-digit'}).format(now);
+      time.textContent=new Intl.DateTimeFormat(undefined,{hour:'2-digit',minute:'2-digit',second:'2-digit'}).format(now);
       date.textContent=new Intl.DateTimeFormat(undefined,{weekday:'long',day:'numeric',month:'long',year:'numeric'}).format(now);
     }catch(_){
-      time.textContent=now.toLocaleTimeString([], {hour:'2-digit',minute:'2-digit'});
+      time.textContent=now.toLocaleTimeString([], {hour:'2-digit',minute:'2-digit',second:'2-digit'});
       date.textContent=now.toDateString();
     }
   }
@@ -45,5 +45,5 @@
   });
   if(root)observer.observe(root,{childList:true,subtree:true});
   install();
-  setInterval(update,30000);
+  setInterval(update,1000);
 })();
