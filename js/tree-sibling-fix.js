@@ -43,9 +43,8 @@
     return [...seen];
   }
 
-  // If one sibling already has explicit parent links, use those same parents
-  // for the other sibling in the DISPLAY graph only. Nothing is written back
-  // to Supabase, so the saved relationship data remains exactly as entered.
+  // If one sibling already has an explicit parent, use that same parent for
+  // sibling positioning in the DISPLAY graph only. Saved Supabase data is untouched.
   window.familyGraph=function(){
     const G=originalFamilyGraph();
     if(!G)return G;
@@ -81,31 +80,75 @@
     return String(html||"").includes(`data-view-member="${safe}"`);
   }
 
-  function branchDrawing(id,baseRootId,baseDrawing){
-    return String(id)===String(baseRootId)?baseDrawing:originalBuild(id,false);
+  // The original tree engine always returns at least a 900px canvas. That is
+  // correct for a standalone tree but far too wide when several sibling branches
+  // are combined. Crop the logical canvas to the actual node bounds first.
+  function compactDrawing(drawing){
+    if(!drawing?.html)return drawing;
+    const host=document.createElement("div");
+    host.innerHTML=drawing.html;
+    const canvas=host.querySelector(".ct-canvas");
+    if(!canvas)return drawing;
+
+    const nodes=[...canvas.querySelectorAll(".ct-node")];
+    if(!nodes.length)return drawing;
+    const boxes=nodes.map(node=>({
+      left:Number.parseFloat(node.style.left)||0,
+      width:Number.parseFloat(node.style.width)||176
+    }));
+    const minLeft=Math.min(...boxes.map(b=>b.left));
+    const maxRight=Math.max(...boxes.map(b=>b.left+b.width));
+    const PAD=20;
+    const shift=Math.max(0,minLeft-PAD);
+    const width=Math.max(216,Math.ceil(maxRight-minLeft+PAD*2));
+
+    nodes.forEach(node=>{
+      const left=Number.parseFloat(node.style.left)||0;
+      node.style.left=`${left-shift}px`;
+    });
+
+    const svg=canvas.querySelector(".ct-lines");
+    if(svg&&shift){
+      svg.innerHTML=`<g transform="translate(${-shift} 0)">${svg.innerHTML}</g>`;
+      svg.setAttribute("width",String(width));
+      const height=Number.parseFloat(svg.getAttribute("height"))||Number(drawing.height)||260;
+      svg.setAttribute("viewBox",`0 0 ${width} ${height}`);
+    }else if(svg){
+      svg.setAttribute("width",String(width));
+      const height=Number.parseFloat(svg.getAttribute("height"))||Number(drawing.height)||260;
+      svg.setAttribute("viewBox",`0 0 ${width} ${height}`);
+    }
+
+    canvas.style.width=`${width}px`;
+    return {...drawing,width,html:canvas.outerHTML};
   }
 
-  // When a sibling group has no parent at all, there is no natural parent node
-  // for the existing tree engine to hang them from. In that case, display each
-  // sibling as a parallel branch on the same generation, connected by a sibling bar.
+  function branchDrawing(id,baseRootId,baseDrawing){
+    const drawing=String(id)===String(baseRootId)?baseDrawing:originalBuild(id,false);
+    return compactDrawing(drawing);
+  }
+
+  // When siblings have no recorded parent yet, show each sibling as a compact,
+  // parallel branch on the same generation. Their own children/spouses stay attached.
   window.buildCoordinateTree=function(rootId,focused=false){
-    const base=originalBuild(rootId,focused);
-    if(focused||!base?.html)return base;
+    const rawBase=originalBuild(rootId,focused);
+    if(focused||!rawBase?.html)return rawBase;
+    const base=compactDrawing(rawBase);
 
     const group=siblingComponent(rootId);
-    if(group.length<2)return base;
+    if(group.length<2)return rawBase;
 
     const memberOrder=new Map(members().map((m,i)=>[String(m.id),i]));
     const missing=group
-      .filter(id=>String(id)!==String(rootId)&&!containsPerson(base.html,id))
+      .filter(id=>String(id)!==String(rootId)&&!containsPerson(rawBase.html,id))
       .sort((a,b)=>(memberOrder.get(a)??9999)-(memberOrder.get(b)??9999));
-    if(!missing.length)return base;
+    if(!missing.length)return rawBase;
 
     const ids=[String(rootId),...missing];
     const branches=ids.map(id=>({id,drawing:branchDrawing(id,rootId,base)})).filter(x=>x.drawing?.html);
-    if(branches.length<2)return base;
+    if(branches.length<2)return rawBase;
 
-    const GAP=54,PAD=34,TOP_BAND=34;
+    const GAP=44,PAD=34,TOP_BAND=38;
     let x=PAD,maxH=0;
     branches.forEach((b,i)=>{
       b.left=x;
@@ -113,11 +156,17 @@
       maxH=Math.max(maxH,Number(b.drawing.height)||0);
       x+=(Number(b.drawing.width)||0)+(i<branches.length-1?GAP:0);
     });
-    const width=Math.max(900,x+PAD);
+
+    const contentWidth=x+PAD;
+    const width=Math.max(900,contentWidth);
+    const centerOffset=Math.max(0,(width-contentWidth)/2);
+    if(centerOffset){
+      branches.forEach(b=>{b.left+=centerOffset;b.center+=centerOffset});
+    }
+
     const height=Math.max(260,maxH+TOP_BAND);
     const centers=branches.map(b=>b.center);
-    const railY=18,stemBottom=TOP_BAND+24;
-    const lineColor="currentColor";
+    const railY=20,stemBottom=TOP_BAND+24;
     const siblingLines=`<line x1="${Math.min(...centers)}" y1="${railY}" x2="${Math.max(...centers)}" y2="${railY}" class="ct-sibling-line"/>${centers.map(cx=>`<line x1="${cx}" y1="${railY}" x2="${cx}" y2="${stemBottom}" class="ct-sibling-line"/>`).join("")}`;
     const branchHtml=branches.map(b=>`<div class="ct-sibling-branch" style="left:${b.left}px;top:${TOP_BAND}px;width:${b.drawing.width}px;height:${b.drawing.height}px">${b.drawing.html}</div>`).join("");
 
