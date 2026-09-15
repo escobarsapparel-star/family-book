@@ -1,6 +1,5 @@
 (()=>{
   const esc=v=>String(v??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#039;"}[c]));
-  const auth=()=>window.FB_AUTH?.get?.()||{};
 
   function initials(name){
     const p=String(name||"Family").trim().split(/\s+/).filter(Boolean);
@@ -71,7 +70,8 @@
       console.warn("Home memories strip:",err);
       if(document.body.contains(track)){
         track.innerHTML=`<button class="home-memory-add-card" type="button" data-home-memory-route="add-memory"><span class="home-memory-add-icon"><i data-lucide="plus"></i></span><span>Add memory</span></button><div class="home-memory-strip-empty"><i data-lucide="triangle-alert"></i><strong>Could not load memories</strong><span>Try again in a moment.</span></div>`;
-        bindRoutes(root);window.icons?.();
+        bindRoutes(root);
+        window.icons?.();
       }
     }
   }
@@ -80,28 +80,32 @@
     const screen=document.querySelector("#screen");
     if(!screen)return false;
     const hero=screen.querySelector(".home-hero");
-    const existing=screen.querySelector(".home-memory-strip-shell");
-    if(!hero&&!existing)return false;
+    if(!hero)return false;
 
-    let strip=existing;
-    if(!strip){
-      hero.insertAdjacentHTML("beforebegin",shell());
-      strip=screen.querySelector(".home-memory-strip-shell");
+    hero.insertAdjacentHTML("beforebegin",shell());
+    const strip=screen.querySelector(".home-memory-strip-shell");
+    hero.remove();
+    if(strip){
+      bindRoutes(strip);
+      populate(strip);
+      window.icons?.();
     }
-    hero?.remove();
-    if(strip){bindRoutes(strip);populate(strip);window.icons?.();}
     return true;
   }
 
   const app=document.getElementById("app");
   const observer=new MutationObserver(()=>{
-    if(document.querySelector("#screen .home-hero")||document.querySelector("#screen .home-memory-strip-shell"))install();
+    if(document.querySelector("#screen .home-hero"))install();
   });
   if(app)observer.observe(app,{childList:true,subtree:true});
   install();
 
   window.addEventListener("familybook:family-data-updated",()=>{
     const strip=document.querySelector("#screen .home-memory-strip-shell");
-    if(strip){const track=strip.querySelector("#homeMemoryStripTrack");if(track)delete track.dataset.loaded;populate(strip);}
+    if(strip){
+      const track=strip.querySelector("#homeMemoryStripTrack");
+      if(track)delete track.dataset.loaded;
+      populate(strip);
+    }
   });
 })();
