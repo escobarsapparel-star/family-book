@@ -1,0 +1,119 @@
+/* Family Book Phase 1E: compact social composer + split-screen desktop header */
+
+.home-status-composer-shell{margin:0 0 14px}
+.home-social-compact{
+  display:flex;align-items:center;gap:10px;width:100%;box-sizing:border-box;padding:10px 12px;
+  border:1px solid var(--fb-shell-border,rgba(49,92,67,.16));border-radius:15px;
+  background:var(--fb-shell-panel,#fffdf8);box-shadow:var(--fb-shell-shadow,0 8px 30px rgba(35,53,42,.08));
+}
+.home-social-compact-avatar{
+  width:42px;height:42px;flex:0 0 42px;border-radius:50%;overflow:hidden;display:grid;place-items:center;
+  background:var(--fb-shell-accent-soft,#e7efe9);color:var(--fb-shell-accent,#315c43);font-weight:900;font-size:.8rem;
+}
+.home-social-compact-avatar img{width:100%;height:100%;object-fit:cover}
+.home-social-compact-prompt{
+  min-width:0;flex:1;height:42px;border:0;border-radius:999px;padding:0 16px;
+  background:var(--fb-shell-panel-2,#f7f4ec);color:var(--fb-shell-muted,#738076);
+  text-align:left;font:inherit;font-size:.94rem;cursor:pointer;overflow:hidden;white-space:nowrap;text-overflow:ellipsis;
+}
+.home-social-compact-prompt:hover{filter:brightness(.98)}
+.home-social-compact-actions{display:flex;align-items:center;gap:4px}
+.home-social-compact-action{
+  width:38px;height:38px;border:0;border-radius:10px;background:transparent;
+  display:grid;place-items:center;color:var(--fb-shell-accent,#315c43);cursor:pointer;
+}
+.home-social-compact-action:hover{background:var(--fb-shell-accent-soft,#e7efe9)}
+.home-social-compact-action svg{width:20px;height:20px}
+
+.home-composer-modal{
+  position:fixed;inset:0;z-index:420;display:grid;place-items:center;padding:18px;
+  background:rgba(0,0,0,.58);backdrop-filter:blur(3px);
+}
+.home-composer-modal[hidden]{display:none!important}
+.home-composer-modal-card{
+  width:min(650px,calc(100vw - 28px));max-height:min(760px,calc(100vh - 28px));overflow:auto;
+  border:1px solid var(--fb-shell-border,rgba(49,92,67,.16));border-radius:18px;
+  background:var(--fb-shell-panel,#fffdf8);box-shadow:0 24px 70px rgba(0,0,0,.34);
+}
+.home-composer-modal-head{
+  position:sticky;top:0;z-index:2;display:flex;align-items:center;justify-content:space-between;
+  padding:13px 15px;border-bottom:1px solid var(--fb-shell-border,rgba(49,92,67,.16));
+  background:var(--fb-shell-panel,#fffdf8);
+}
+.home-composer-modal-head strong{font-size:1.02rem;color:var(--fb-shell-text,#1f2a22)}
+.home-composer-modal-close{
+  width:36px;height:36px;border:0;border-radius:50%;display:grid;place-items:center;
+  background:var(--fb-shell-panel-2,#f7f4ec);color:var(--fb-shell-text,#1f2a22);cursor:pointer;
+}
+.home-composer-modal-close svg{width:19px;height:19px}
+.home-composer-modal-body{padding:14px}
+.home-composer-modal-body .wall-composer{margin:0!important;border:0!important;padding:0!important;background:transparent!important;box-shadow:none!important}
+body.home-composer-open{overflow:hidden!important}
+
+#screen .family-wall-panel>.section-head.wall-head{margin-top:8px}
+
+/* Split-screen / small desktop: preserve useful top chrome from 760px upward. */
+@media (min-width:760px) and (max-width:1179px){
+  #app>.app{grid-template-rows:64px minmax(calc(100vh - 64px),auto)!important}
+  #app>.app>.topbar{
+    min-height:64px!important;height:64px!important;padding:0 12px!important;
+    position:sticky!important;top:0!important;z-index:180!important;
+    background:color-mix(in srgb,var(--fb-shell-panel,#fffdf8) 96%,transparent)!important;
+    border-bottom:1px solid var(--fb-shell-border,rgba(49,92,67,.16))!important;
+    backdrop-filter:blur(16px)!important;
+  }
+  .desktop-header-left{
+    display:flex!important;align-items:center;gap:8px;min-width:0;width:min(350px,41vw);height:64px;z-index:5;
+  }
+  #app>.app>.topbar .desktop-header-brand{
+    display:flex!important;align-items:center!important;justify-content:flex-start!important;width:auto!important;height:64px!important;
+    padding:3px 0!important;margin:0!important;border:0!important;background:transparent!important;flex:0 0 auto;
+  }
+  .desktop-brand-logo{display:block!important;width:auto!important;height:54px!important;max-width:180px!important;object-fit:contain!important;object-position:left center!important}
+  .desktop-family-search{display:block!important;position:relative;flex:1 1 155px;min-width:120px;max-width:180px}
+  .desktop-family-search-box{
+    height:38px;border:1px solid var(--fb-shell-border,rgba(49,92,67,.16));border-radius:999px;
+    background:var(--fb-shell-panel-2,#f7f4ec);display:flex;align-items:center;gap:7px;padding:0 9px;color:var(--fb-shell-muted,#738076);
+  }
+  .desktop-family-search-box>svg{width:17px;height:17px;flex:0 0 17px}
+  .desktop-family-search-box input{width:100%;min-width:0;border:0!important;outline:0!important;background:transparent!important;color:var(--fb-shell-text,#1f2a22)!important;font:inherit;font-size:.8rem;padding:0!important}
+  #desktopFamilySearchClear{border:0;background:transparent;color:var(--fb-shell-muted,#738076);display:grid;place-items:center;padding:2px;cursor:pointer}
+  #desktopFamilySearchClear svg{width:15px;height:15px}
+  .desktop-family-search-results{
+    position:absolute;left:0;top:44px;width:min(360px,calc(100vw - 24px));max-height:min(520px,calc(100vh - 86px));overflow:auto;
+    padding:8px;background:var(--fb-shell-panel,#fffdf8);border:1px solid var(--fb-shell-border,rgba(49,92,67,.16));border-radius:14px;box-shadow:0 16px 42px rgba(0,0,0,.24);z-index:250;
+  }
+  .desktop-family-search-results[hidden]{display:none!important}
+
+  .desktop-top-nav{
+    display:flex!important;position:absolute!important;left:53%!important;top:7px!important;transform:translateX(-50%)!important;
+    height:50px!important;align-items:stretch!important;gap:2px!important;
+  }
+  .desktop-top-nav button{
+    min-width:46px!important;width:46px!important;border:0!important;border-radius:10px!important;background:transparent!important;
+    color:var(--fb-shell-muted,#738076)!important;display:flex!important;align-items:center!important;justify-content:center!important;cursor:pointer!important;
+  }
+  .desktop-top-nav button.active{background:var(--fb-shell-accent-soft,#e7efe9)!important;color:var(--fb-shell-accent,#315c43)!important}
+  .desktop-top-nav button:hover{background:var(--fb-shell-panel-2,#f7f4ec)!important;color:var(--fb-shell-accent,#315c43)!important}
+  .desktop-top-nav svg{width:20px!important;height:20px!important}
+  #app>.app>.topbar .actions{margin-left:auto!important;z-index:6!important}
+
+  .desktop-left-rail,.desktop-right-rail{display:none!important}
+  #app>.app>.screen{padding-top:14px!important}
+  #app>.app>.bottom{display:none!important}
+}
+
+@media (min-width:760px) and (max-width:930px){
+  .desktop-header-left{width:285px;gap:6px}
+  .desktop-brand-logo{height:49px!important;max-width:150px!important}
+  .desktop-family-search{max-width:128px;min-width:105px}
+  .desktop-top-nav{left:58%!important}
+  .desktop-top-nav button{min-width:40px!important;width:40px!important}
+}
+
+@media (max-width:759px){
+  .home-social-compact{border-radius:13px;padding:8px 9px;gap:8px}
+  .home-social-compact-avatar{width:38px;height:38px;flex-basis:38px}
+  .home-social-compact-prompt{height:38px;font-size:.86rem;padding:0 13px}
+  .home-social-compact-action{width:34px;height:34px}
+}
