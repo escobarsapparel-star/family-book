@@ -1,0 +1,105 @@
+/* Family Book appearance pack: site colour themes + export-ready tree styles */
+
+/* ---------- Site themes ---------- */
+html[data-site-theme="family-dark"]{
+  color-scheme:dark;
+  --green:#82b392;--green2:#5f8f70;--brown:#d7af72;--cream:#111512;--paper:#181e19;--ink:#eef4ef;--muted:#a4afa7;--line:#323b34;
+  --fb-shell-bg:#111512;--fb-shell-panel:#181e19;--fb-shell-panel-2:#202721;--fb-shell-border:rgba(207,224,211,.12);--fb-shell-text:#eef4ef;--fb-shell-muted:#a4afa7;--fb-shell-accent:#82b392;--fb-shell-accent-soft:#233127;
+}
+html[data-site-theme="forest-sage"]{
+  color-scheme:dark;
+  --green:#9cc8a8;--green2:#6d9f7d;--brown:#d4bd86;--cream:#132018;--paper:#19271e;--ink:#edf5ef;--muted:#aab9ad;--line:#34473a;
+  --fb-shell-bg:#101b14;--fb-shell-panel:#18261d;--fb-shell-panel-2:#203126;--fb-shell-border:rgba(178,211,187,.16);--fb-shell-text:#edf5ef;--fb-shell-muted:#aab9ad;--fb-shell-accent:#9cc8a8;--fb-shell-accent-soft:#263b2d;
+}
+html[data-site-theme="warm-ivory"]{
+  color-scheme:light;
+  --green:#4d6b53;--green2:#394f3e;--brown:#aa7d43;--cream:#f4eddf;--paper:#fffaf0;--ink:#302d27;--muted:#756f64;--line:#dfd2bf;
+  --fb-shell-bg:#f3ecdf;--fb-shell-panel:#fffaf1;--fb-shell-panel-2:#f7efe2;--fb-shell-border:rgba(115,93,61,.16);--fb-shell-text:#302d27;--fb-shell-muted:#766e62;--fb-shell-accent:#58745e;--fb-shell-accent-soft:#e7eee4;
+}
+html[data-site-theme="midnight-blue"]{
+  color-scheme:dark;
+  --green:#8ab7c9;--green2:#6392a6;--brown:#d3b77e;--cream:#0e1720;--paper:#14212d;--ink:#edf4f7;--muted:#9aabb5;--line:#2c3d49;
+  --fb-shell-bg:#0c151d;--fb-shell-panel:#13212b;--fb-shell-panel-2:#192b37;--fb-shell-border:rgba(164,202,218,.14);--fb-shell-text:#edf4f7;--fb-shell-muted:#9aabb5;--fb-shell-accent:#8ab7c9;--fb-shell-accent-soft:#203541;
+}
+
+html[data-site-theme="family-dark"] body,html[data-site-theme="family-dark"] #app>.app,
+html[data-site-theme="forest-sage"] body,html[data-site-theme="forest-sage"] #app>.app,
+html[data-site-theme="midnight-blue"] body,html[data-site-theme="midnight-blue"] #app>.app{background:var(--fb-shell-bg)!important;color:var(--fb-shell-text)!important}
+html[data-site-theme="warm-ivory"] body,html[data-site-theme="warm-ivory"] #app>.app{background:var(--fb-shell-bg)!important;color:var(--fb-shell-text)!important}
+
+html[data-site-theme] #app>.app>.topbar{background:color-mix(in srgb,var(--fb-shell-panel) 96%,transparent)!important;border-color:var(--fb-shell-border)!important}
+html[data-site-theme] .desktop-widget,
+html[data-site-theme] .profile-popover,
+html[data-site-theme] .settings-card,
+html[data-site-theme] .settings-account-summary,
+html[data-site-theme] .family-wall-panel,
+html[data-site-theme] .wall-post,
+html[data-site-theme] .panel,
+html[data-site-theme] .placeholder{background:var(--fb-shell-panel)!important;border-color:var(--fb-shell-border)!important;color:var(--fb-shell-text)!important}
+html[data-site-theme] .desktop-side-link,
+html[data-site-theme] .desktop-profile-card,
+html[data-site-theme] .profile-popover-menu button{color:var(--fb-shell-text)!important}
+html[data-site-theme] .desktop-side-link span:first-child,
+html[data-site-theme] .desktop-profile-avatar,
+html[data-site-theme] .desktop-top-nav button.active{background:var(--fb-shell-accent-soft)!important;color:var(--fb-shell-accent)!important}
+html[data-site-theme] .desktop-side-caption,
+html[data-site-theme] .desktop-profile-card small,
+html[data-site-theme] .desktop-widget-row small,
+html[data-site-theme] .settings-card-head span,
+html[data-site-theme] .settings-note{color:var(--fb-shell-muted)!important}
+html[data-site-theme] .desktop-widget-head button,
+html[data-site-theme] .link,
+html[data-site-theme] .section-head h2,
+html[data-site-theme] .page-title h1,
+html[data-site-theme] .family-wall-panel h2{color:var(--fb-shell-accent)!important}
+html[data-site-theme] .primary{background:var(--fb-shell-accent)!important;color:#fff!important}
+html[data-site-theme] input,html[data-site-theme] select,html[data-site-theme] textarea{background:var(--fb-shell-panel-2)!important;color:var(--fb-shell-text)!important;border-color:var(--fb-shell-border)!important}
+
+/* Theme chooser injected into Settings > Appearance. */
+.site-theme-pack{margin-top:18px;padding-top:17px;border-top:1px solid var(--fb-shell-border,var(--line))}
+.site-theme-pack-head{display:flex;align-items:end;justify-content:space-between;gap:12px;margin-bottom:11px}
+.site-theme-pack-head strong{display:block;color:var(--fb-shell-text,var(--ink));font-size:.95rem}.site-theme-pack-head small{display:block;color:var(--fb-shell-muted,var(--muted));margin-top:3px}
+.site-theme-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:9px}
+.site-theme-choice{min-width:0;border:1px solid var(--fb-shell-border,var(--line));border-radius:13px;background:var(--fb-shell-panel-2,var(--paper));padding:8px;text-align:left;color:var(--fb-shell-text,var(--ink));transition:.16s ease;cursor:pointer}
+.site-theme-choice:hover{transform:translateY(-1px);border-color:var(--fb-shell-accent,var(--green))}.site-theme-choice.active{outline:2px solid var(--fb-shell-accent,var(--green));outline-offset:1px}
+.site-theme-swatch{display:block;height:34px;border-radius:9px;margin-bottom:7px;border:1px solid rgba(255,255,255,.12)}
+.site-theme-choice strong{display:block;font-size:.76rem;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.site-theme-choice small{display:block;font-size:.64rem;color:var(--fb-shell-muted,var(--muted));margin-top:2px}
+.site-theme-choice[data-site-theme-choice="family-dark"] .site-theme-swatch{background:linear-gradient(135deg,#111512 0 48%,#82b392 48% 68%,#202721 68%)}
+.site-theme-choice[data-site-theme-choice="forest-sage"] .site-theme-swatch{background:linear-gradient(135deg,#101b14 0 48%,#9cc8a8 48% 68%,#263b2d 68%)}
+.site-theme-choice[data-site-theme-choice="warm-ivory"] .site-theme-swatch{background:linear-gradient(135deg,#f3ecdf 0 48%,#58745e 48% 68%,#fffaf1 68%)}
+.site-theme-choice[data-site-theme-choice="midnight-blue"] .site-theme-swatch{background:linear-gradient(135deg,#0c151d 0 48%,#8ab7c9 48% 68%,#192b37 68%)}
+@media(max-width:700px){.site-theme-grid{grid-template-columns:repeat(2,1fr)}}
+
+/* ---------- Full Tree style picker ---------- */
+.tree-style-picker{margin:-2px 0 12px;padding:10px;border:1px solid var(--fb-shell-border,var(--line));border-radius:16px;background:var(--fb-shell-panel,var(--paper));box-shadow:0 8px 24px rgba(0,0,0,.05)}
+.tree-style-picker-head{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:8px}.tree-style-picker-head strong{font-size:.85rem;color:var(--fb-shell-text,var(--ink))}.tree-style-picker-head span{font-size:.69rem;color:var(--fb-shell-muted,var(--muted))}
+.tree-style-options{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:8px}
+.tree-style-option{border:1px solid var(--fb-shell-border,var(--line));background:var(--fb-shell-panel-2,var(--cream));color:var(--fb-shell-text,var(--ink));border-radius:12px;padding:7px;text-align:left;min-width:0;cursor:pointer;transition:.15s ease}
+.tree-style-option:hover{transform:translateY(-1px)}.tree-style-option.active{outline:2px solid var(--fb-shell-accent,var(--green));outline-offset:1px}
+.tree-style-thumb{height:38px;border-radius:8px;margin-bottom:6px;display:block;position:relative;overflow:hidden}.tree-style-thumb:before{content:"";position:absolute;left:50%;bottom:-10px;width:25px;height:54px;transform:translateX(-50%);border-radius:60% 60% 20% 20%;background:currentColor;opacity:.33}.tree-style-thumb:after{content:"";position:absolute;left:18%;right:18%;top:9px;height:18px;border-radius:50%;background:currentColor;opacity:.18;box-shadow:-18px 5px 0 currentColor,18px 3px 0 currentColor}
+.tree-style-option strong{display:block;font-size:.73rem;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.tree-style-option small{display:block;font-size:.61rem;color:var(--fb-shell-muted,var(--muted));margin-top:2px}
+.tree-style-option[data-tree-style-choice="heritage"] .tree-style-thumb{background:#f5eddd;color:#60795e}
+.tree-style-option[data-tree-style-choice="family-dark"] .tree-style-thumb{background:#111713;color:#8ab394}
+.tree-style-option[data-tree-style-choice="ancestry"] .tree-style-thumb{background:#eee0c4;color:#8d7147}
+.tree-style-option[data-tree-style-choice="luxury-gold"] .tree-style-thumb{background:#121612;color:#cba85c}
+
+/* Tree art is a real image element, so html2canvas includes it in PNG export. */
+.ct-canvas[data-tree-style]{overflow:hidden!important;isolation:isolate}
+.ct-tree-art{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;z-index:0;pointer-events:none;user-select:none}
+.ct-canvas[data-tree-style] .ct-lines{z-index:1!important}.ct-canvas[data-tree-style] .ct-node{z-index:3!important}
+.ct-canvas[data-tree-style]>.ct-family-watermark{display:none!important}
+.ct-export-mark{position:absolute;right:5.5%;bottom:5%;z-index:1;pointer-events:none;text-align:right;line-height:.9;font-family:Georgia,serif;font-weight:700;font-size:clamp(26px,5.4vw,78px);opacity:.13;letter-spacing:-.045em}.ct-export-mark small{display:block;margin-top:12px;font-family:Arial,sans-serif;font-size:10px;letter-spacing:.28em;font-weight:800;text-transform:uppercase}
+
+/* Heritage Botanical */
+.ct-canvas[data-tree-style="heritage"]{background:#f8f1e3!important}.ct-canvas[data-tree-style="heritage"] .ct-tree-art{opacity:.82}.ct-canvas[data-tree-style="heritage"] .ct-lines path{stroke:#9b7b4c!important;stroke-width:2.2!important}.ct-canvas[data-tree-style="heritage"] .ct-person{background:#183025!important;color:#fff!important;border:1px solid #c6a65b!important;box-shadow:0 5px 14px rgba(60,46,24,.14)}.ct-canvas[data-tree-style="heritage"] .ct-couple{background:#d7c49a!important;border-color:#aa8955!important}.ct-canvas[data-tree-style="heritage"] .ct-avatar{background:#2a4939!important;color:#f5ead2!important}.ct-canvas[data-tree-style="heritage"] .ct-heart{background:#4f3924!important;color:#f0c76c!important;border:1px solid #caa45c}.ct-canvas[data-tree-style="heritage"] .ct-export-mark{color:#315c43}
+
+/* Family Book Dark */
+.ct-canvas[data-tree-style="family-dark"]{background:radial-gradient(circle at 50% 42%,#223127,#101512 70%)!important}.ct-canvas[data-tree-style="family-dark"] .ct-tree-art{opacity:.2;filter:grayscale(.1) brightness(.7) sepia(.2)}.ct-canvas[data-tree-style="family-dark"] .ct-lines path{stroke:#789080!important}.ct-canvas[data-tree-style="family-dark"] .ct-person{background:#1e2821!important;color:#f2f6f3!important;border-color:#405346!important;box-shadow:0 6px 18px rgba(0,0,0,.24)}.ct-canvas[data-tree-style="family-dark"] .ct-couple{background:#26352b!important;border-color:#526b59!important}.ct-canvas[data-tree-style="family-dark"] .ct-avatar{background:#30473a!important;color:#b9dec4!important}.ct-canvas[data-tree-style="family-dark"] .ct-export-mark{color:#a6cfb1;opacity:.09}
+
+/* Classic Ancestry */
+.ct-canvas[data-tree-style="ancestry"]{background:linear-gradient(120deg,#f1e5cd,#fbf4e6 55%,#ead9b8)!important}.ct-canvas[data-tree-style="ancestry"] .ct-tree-art{opacity:.34;filter:sepia(.55) saturate(.7)}.ct-canvas[data-tree-style="ancestry"] .ct-lines path{stroke:#846944!important}.ct-canvas[data-tree-style="ancestry"] .ct-person{background:#f9eedb!important;color:#493a28!important;border:1px solid #a88758!important;box-shadow:0 4px 12px rgba(89,62,30,.12);font-family:Georgia,serif}.ct-canvas[data-tree-style="ancestry"] .ct-couple{background:#e8d4b0!important;border-color:#9b7849!important}.ct-canvas[data-tree-style="ancestry"] .ct-avatar{background:#d9c39e!important;color:#59452c!important}.ct-canvas[data-tree-style="ancestry"] .ct-heart{background:#7b563f!important;color:#f8dec4!important}.ct-canvas[data-tree-style="ancestry"] .ct-export-mark{color:#755734}
+
+/* Luxury Gold */
+.ct-canvas[data-tree-style="luxury-gold"]{background:radial-gradient(circle at 50% 43%,#273126 0,#121712 64%,#090c09 100%)!important}.ct-canvas[data-tree-style="luxury-gold"] .ct-tree-art{opacity:.31;filter:sepia(.65) saturate(1.4) brightness(.75)}.ct-canvas[data-tree-style="luxury-gold"] .ct-lines path{stroke:#c3a35d!important;stroke-width:2.2!important}.ct-canvas[data-tree-style="luxury-gold"] .ct-person{background:linear-gradient(145deg,#172018,#0e150f)!important;color:#fff8e9!important;border:1px solid #b89852!important;box-shadow:0 8px 22px rgba(0,0,0,.32)}.ct-canvas[data-tree-style="luxury-gold"] .ct-couple{background:#2b2a20!important;border-color:#b99a56!important}.ct-canvas[data-tree-style="luxury-gold"] .ct-avatar{background:#24342a!important;color:#f0d58b!important;border:1px solid #806d3f}.ct-canvas[data-tree-style="luxury-gold"] .ct-heart{background:#4b3820!important;color:#f3cc68!important;border:1px solid #b38d42}.ct-canvas[data-tree-style="luxury-gold"] .ct-export-mark{color:#d1b260;opacity:.11}
+
+@media(max-width:700px){.tree-style-picker{margin-top:4px;padding:8px}.tree-style-options{display:flex;overflow-x:auto;gap:7px;scrollbar-width:none}.tree-style-options::-webkit-scrollbar{display:none}.tree-style-option{flex:0 0 132px}.tree-style-picker-head span{display:none}}
