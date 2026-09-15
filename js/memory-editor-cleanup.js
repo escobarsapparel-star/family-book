@@ -16,7 +16,11 @@
     const originalEditorShell=window.FB_MEMORIES.editorShell.bind(window.FB_MEMORIES);
     window.FB_MEMORIES.editorShell=function(id=''){
       let html=originalEditorShell(id);
-      if(id)return html;
+      if(id){
+        html=html.replaceAll('data-r="memories"',`data-r="view-memory:${id}"`);
+        html=html.replace('Back to memories','Back to memory');
+        return html;
+      }
       const target=memoryAddOrigin==='home'?'home':'memories';
       html=html.replaceAll('data-r="memories"',`data-r="${target}"`);
       if(target==='home')html=html.replace('Back to memories','Back to home');
@@ -54,8 +58,23 @@
 
     card.dataset.memoryCleanupReady='1';
 
-    const titleCopy=card.querySelector('.memory-editor-title p');
-    if(titleCopy)titleCopy.textContent='Add photos or video clips from a family moment. Original capture date and time are kept automatically when available.';
+    const page=card.closest('.memory-editor-page');
+    const editId=String(page?.dataset?.memoryEditorId||'').trim();
+    const editMode=Boolean(editId);
+    const title=card.querySelector('.memory-editor-title h1');
+    const eyebrow=card.querySelector('.memory-editor-title .eyebrow');
+    const titleCopy=card.querySelector('.memory-editor-title p:not(.eyebrow)');
+
+    if(editMode){
+      card.classList.add('memory-edit-mode');
+      page?.classList.add('memory-edit-page');
+      if(eyebrow)eyebrow.textContent='EDIT MEMORY';
+      if(title)title.textContent='Edit memory';
+      if(titleCopy)titleCopy.textContent='Update the caption, people or media for this memory.';
+    }else{
+      if(eyebrow)eyebrow.textContent='NEW MEMORY';
+      if(titleCopy)titleCopy.textContent='Add photos or video clips from a family moment. Original capture date and time are kept automatically when available.';
+    }
 
     const galleryButton=card.querySelector('#memoryGalleryBtn');
     galleryButton?.classList.add('memory-gallery-primary');
@@ -69,6 +88,46 @@
       if(intro)intro.textContent='Choose the people who are in this memory. Family History tags link the photo to their profile.';
       const legend=tags.querySelector('legend');
       if(legend)legend.childNodes[0].textContent='People in this memory ';
+    }
+
+    if(editMode){
+      const form=card.querySelector('#memoryForm');
+      const photoSection=card.querySelector('.memory-photo-section');
+      const preview=card.querySelector('#memoryPhotoPreview');
+      const mediaActions=card.querySelector('.memory-photo-actions');
+      const videoNote=card.querySelector('.memory-video-note');
+      const captionLabel=card.querySelector('label:has(#memoryCaption)');
+      const formActions=card.querySelector('.memory-form-actions');
+
+      if(form&&captionLabel)form.insertBefore(captionLabel,form.firstChild);
+      if(form&&tags&&photoSection)form.insertBefore(tags,photoSection);
+
+      if(photoSection&&preview&&mediaActions&&!photoSection.querySelector('.memory-edit-media-head')){
+        const head=document.createElement('div');
+        head.className='memory-edit-media-head';
+        head.innerHTML=`<div><strong>Media</strong><span>Keep the current photo or manage the media attached to this memory.</span></div><button type="button" class="secondary memory-manage-media" aria-expanded="false"><i data-lucide="images"></i><span>Manage media</span></button>`;
+        photoSection.insertBefore(head,preview);
+        mediaActions.classList.add('memory-edit-media-controls');
+        videoNote?.classList.add('memory-edit-media-note');
+
+        const toggle=head.querySelector('.memory-manage-media');
+        const setExpanded=expanded=>{
+          card.classList.toggle('memory-edit-media-open',expanded);
+          toggle?.setAttribute('aria-expanded',expanded?'true':'false');
+          const text=toggle?.querySelector('span');
+          if(text)text.textContent=expanded?'Done':'Manage media';
+          const icon=toggle?.querySelector('svg');
+          if(icon)icon.setAttribute('data-lucide',expanded?'check':'images');
+          window.icons?.();
+        };
+        toggle?.addEventListener('click',()=>setExpanded(!card.classList.contains('memory-edit-media-open')));
+        setExpanded(false);
+      }
+
+      if(formActions){
+        const cancel=formActions.querySelector('[data-r="memories"]');
+        if(cancel)cancel.dataset.r=`view-memory:${editId}`;
+      }
     }
 
     const initialDate=dateInput.value||'';

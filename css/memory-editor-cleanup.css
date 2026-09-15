@@ -56,6 +56,32 @@
 
 .memory-form-actions{padding-top:2px;border-top:1px solid #ece4da;margin-top:2px;padding-top:13px}
 
+/* Edit mode: prioritize story and people, keep media compact until requested. */
+.memory-edit-mode .memory-editor-title{margin-bottom:14px}
+.memory-edit-mode .memory-editor-title .eyebrow{margin-bottom:4px}
+.memory-edit-mode .memory-editor-title h1{font-size:1.85rem;margin-bottom:4px}
+.memory-edit-mode #memoryCaption{min-height:108px!important}
+.memory-edit-mode .memory-photo-section{border:1px solid #ddd5ca;border-radius:16px;padding:12px;background:#fbf8f2;gap:10px}
+.memory-edit-media-head{display:flex;align-items:center;justify-content:space-between;gap:14px}
+.memory-edit-media-head>div{display:grid;gap:2px;min-width:0}
+.memory-edit-media-head strong{font-size:.78rem;color:#3f493f}
+.memory-edit-media-head span{font-size:.64rem;color:#837a70;line-height:1.35}
+.memory-manage-media{display:inline-flex;align-items:center;gap:7px;flex:0 0 auto;min-height:36px!important;padding:8px 10px!important;border-radius:10px!important;font-size:.68rem;font-weight:800}
+.memory-manage-media svg{width:15px;height:15px}
+.memory-edit-mode .memory-photo-preview{min-height:0;padding:10px!important;border-radius:13px}
+.memory-edit-mode .memory-photo-preview.has-photo{background:#171a16}
+.memory-edit-mode .memory-selected-head{display:none!important}
+.memory-edit-mode .memory-selected-grid{display:flex!important;gap:10px!important;overflow-x:auto!important;padding:0!important;scrollbar-width:thin}
+.memory-edit-mode .memory-selected-photo{width:150px!important;min-width:150px!important;max-width:150px!important;aspect-ratio:1/1!important;border-radius:12px!important;overflow:hidden!important}
+.memory-edit-mode .memory-selected-photo img{width:100%!important;height:100%!important;object-fit:cover!important}
+.memory-edit-mode .memory-edit-media-controls,
+.memory-edit-mode .memory-edit-media-note{display:none!important}
+.memory-edit-mode.memory-edit-media-open .memory-edit-media-controls{display:flex!important}
+.memory-edit-mode.memory-edit-media-open .memory-edit-media-note{display:block!important}
+.memory-edit-mode:not(.memory-edit-media-open) .memory-photo-remove{display:none!important}
+.memory-edit-mode .memory-meta-note.memory-meta-compact{margin-top:-2px}
+.memory-edit-mode .memory-form-actions{position:sticky;bottom:0;z-index:2;background:inherit;margin:2px -2px -2px;padding:13px 2px 2px}
+
 html[data-theme="dark"] .memory-editor-card{background:#1e231d;border-color:#394037;box-shadow:0 10px 30px rgba(0,0,0,.22);color:#f4efe7}
 html[data-theme="dark"] .memory-editor-title{border-color:#343a31}
 html[data-theme="dark"] .memory-editor-title h1{color:#a7cbb0}
@@ -82,6 +108,9 @@ html[data-theme="dark"] .memory-meta-note.memory-meta-compact{background:#1d2a20
 html[data-theme="dark"] .memory-meta-note.memory-meta-compact strong{color:#a7cbb0}
 html[data-theme="dark"] .memory-meta-note.memory-meta-compact span{color:#b8b2a8}
 html[data-theme="dark"] .memory-form-actions{border-color:#343a31}
+html[data-theme="dark"] .memory-edit-mode .memory-photo-section{background:#181d18;border-color:#374038}
+html[data-theme="dark"] .memory-edit-media-head strong{color:#dce8de}
+html[data-theme="dark"] .memory-edit-media-head span{color:#a9a39a}
 
 @media(max-width:700px){
   .memory-editor-page{max-width:none;padding-bottom:96px}
@@ -100,7 +129,16 @@ html[data-theme="dark"] .memory-form-actions{border-color:#343a31}
   .memory-tag-choice{min-height:42px!important;grid-template-columns:28px minmax(0,1fr) 15px!important;padding:6px 7px!important;font-size:.66rem!important}
   .memory-tag-avatar{width:28px!important;height:28px!important}
   #memoryCaption{min-height:76px!important}
+  .memory-edit-mode #memoryCaption{min-height:94px!important}
+  .memory-edit-media-head{align-items:flex-start}
+  .memory-edit-media-head>div span{max-width:210px}
+  .memory-edit-mode .memory-selected-photo{width:118px!important;min-width:118px!important;max-width:118px!important}
+  .memory-edit-mode.memory-edit-media-open .memory-edit-media-controls{display:grid!important;grid-template-columns:1fr 1fr}
+  .memory-edit-mode.memory-edit-media-open .memory-edit-media-controls #memoryGalleryBtn{grid-column:1/-1}
 }
 @media(max-width:420px){
   .memory-tag-grid{grid-template-columns:1fr!important}
+  .memory-edit-media-head{display:grid;grid-template-columns:1fr auto}
+  .memory-manage-media span{display:none}
+  .memory-manage-media{width:38px;padding:0!important;display:grid;place-items:center}
 }
