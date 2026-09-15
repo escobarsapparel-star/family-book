@@ -1,0 +1,78 @@
+/* Family Book Home memory strip - replaces the old cover hero */
+#screen .home-hero{display:none!important}
+
+.home-memory-strip-shell{
+  width:100%;
+  box-sizing:border-box;
+  margin:0 0 18px;
+}
+.home-memory-strip-head{
+  display:flex;
+  align-items:flex-end;
+  justify-content:space-between;
+  gap:14px;
+  margin:0 2px 10px;
+}
+.home-memory-strip-head h2{margin:0;color:var(--fb-shell-text,#1f2a22);font-size:1.24rem}
+.home-memory-strip-head p{margin:3px 0 0;color:var(--fb-shell-muted,#738076);font-size:.83rem}
+.home-memory-strip-viewall{
+  border:0;background:transparent;color:var(--fb-shell-accent,#315c43);font-weight:800;cursor:pointer;padding:6px 4px;white-space:nowrap
+}
+.home-memory-strip-track{
+  display:flex;
+  gap:10px;
+  overflow-x:auto;
+  overflow-y:hidden;
+  padding:2px 2px 7px;
+  scroll-snap-type:x proximity;
+  scrollbar-width:thin;
+}
+.home-memory-strip-card,.home-memory-add-card{
+  position:relative;
+  flex:0 0 128px;
+  width:128px;
+  height:176px;
+  border:1px solid var(--fb-shell-border,rgba(49,92,67,.16));
+  border-radius:15px;
+  overflow:hidden;
+  padding:0;
+  background:var(--fb-shell-panel,#fffdf8);
+  color:var(--fb-shell-text,#1f2a22);
+  cursor:pointer;
+  scroll-snap-align:start;
+  box-shadow:0 4px 18px rgba(0,0,0,.08);
+  transition:transform .16s ease,border-color .16s ease,box-shadow .16s ease;
+}
+.home-memory-strip-card:hover,.home-memory-add-card:hover{transform:translateY(-2px);border-color:color-mix(in srgb,var(--fb-shell-accent,#315c43) 50%,transparent);box-shadow:0 8px 24px rgba(0,0,0,.13)}
+.home-memory-strip-media{position:absolute;inset:0;display:block;background:var(--fb-shell-panel-2,#f7f4ec)}
+.home-memory-strip-media>img{width:100%;height:100%;display:block;object-fit:cover}
+.home-memory-strip-placeholder{width:100%;height:100%;display:grid;place-items:center;color:var(--fb-shell-muted,#738076)}
+.home-memory-strip-placeholder svg{width:28px;height:28px}
+.home-memory-strip-shade{position:absolute;inset:35% 0 0;background:linear-gradient(transparent,rgba(0,0,0,.72));pointer-events:none}
+.home-memory-strip-caption{position:absolute;left:10px;right:9px;bottom:9px;z-index:3;color:#fff;font-weight:800;font-size:.78rem;line-height:1.2;text-align:left;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;text-shadow:0 1px 3px rgba(0,0,0,.55)}
+.home-memory-strip-author{position:absolute;top:8px;left:8px;z-index:4;width:34px;height:34px;border-radius:50%;overflow:hidden;display:grid;place-items:center;background:var(--fb-shell-accent,#315c43);color:#fff;border:2px solid rgba(255,255,255,.88);font-size:.65rem;font-weight:900;box-shadow:0 2px 8px rgba(0,0,0,.28)}
+.home-memory-strip-author img{width:100%;height:100%;object-fit:cover}
+.home-memory-strip-video{position:absolute;right:8px;top:8px;z-index:4;width:28px;height:28px;border-radius:50%;display:grid;place-items:center;background:rgba(0,0,0,.58);color:#fff}
+.home-memory-strip-video svg{width:14px;height:14px;fill:currentColor}
+
+.home-memory-add-card{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:10px;background:var(--fb-shell-panel,#fffdf8);font-weight:800;font-size:.82rem}
+.home-memory-add-icon{width:44px;height:44px;border-radius:50%;display:grid;place-items:center;background:var(--fb-shell-accent-soft,#e7efe9);color:var(--fb-shell-accent,#315c43)}
+.home-memory-add-icon svg{width:22px;height:22px}
+.home-memory-strip-loading,.home-memory-strip-empty{
+  flex:0 0 220px;height:176px;border:1px dashed var(--fb-shell-border,rgba(49,92,67,.16));border-radius:15px;display:grid;place-items:center;align-content:center;gap:7px;color:var(--fb-shell-muted,#738076);font-size:.8rem;text-align:center;padding:12px;box-sizing:border-box
+}
+.home-memory-strip-empty svg{width:25px;height:25px;color:var(--fb-shell-accent,#315c43)}
+.home-memory-strip-empty strong{color:var(--fb-shell-text,#1f2a22)}
+.home-memory-strip-empty span{font-size:.76rem}
+
+@media (max-width:1179px){
+  .home-memory-strip-shell{margin-bottom:14px}
+  .home-memory-strip-head{margin-left:2px;margin-right:2px}
+  .home-memory-strip-head h2{font-size:1.08rem}
+  .home-memory-strip-head p{display:none}
+  .home-memory-strip-track{margin-left:-2px;margin-right:-2px;padding-left:2px;padding-right:2px}
+  .home-memory-strip-card,.home-memory-add-card{flex-basis:108px;width:108px;height:150px;border-radius:13px}
+  .home-memory-strip-loading,.home-memory-strip-empty{height:150px;flex-basis:190px}
+  .home-memory-strip-author{width:30px;height:30px}
+  .home-memory-strip-caption{font-size:.73rem}
+}
