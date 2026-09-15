@@ -122,22 +122,33 @@
     if(share&&!share.dataset.bound){share.dataset.bound='1';share.addEventListener('click',openModal)}
   }
 
+  function placeUnderClock(card,rail){
+    const clock=rail.querySelector('#desktopDateTimeCard');
+    if(!clock)return false;
+    if(clock.nextElementSibling!==card)clock.insertAdjacentElement('afterend',card);
+    return true;
+  }
+
   function mountWidget(){
     if(!enabled()){
       document.querySelector('#familyPrayerWidget')?.remove();
       return false;
     }
-    let card=document.querySelector('#familyPrayerWidget');
-    if(card){bindCard(card);return true}
-    const countdown=document.querySelector('#familyCountdownWidget');
     const rail=document.querySelector('.desktop-right-rail');
     if(!rail)return false;
-    const anchor=countdown||rail.querySelector('.desktop-widget');
-    if(!anchor)return false;
-    anchor.insertAdjacentHTML('afterend',cardHtml());
-    card=document.querySelector('#familyPrayerWidget');
-    if(card){bindCard(card);renderSlide(false);window.icons?.();return true}
-    return false;
+    const clock=rail.querySelector('#desktopDateTimeCard');
+    if(!clock)return false;
+
+    let card=document.querySelector('#familyPrayerWidget');
+    if(!card){
+      clock.insertAdjacentHTML('afterend',cardHtml());
+      card=document.querySelector('#familyPrayerWidget');
+      if(card){renderSlide(false);window.icons?.()}
+    }
+    if(!card)return false;
+    placeUnderClock(card,rail);
+    bindCard(card);
+    return true;
   }
 
   function applyVisibility(){
