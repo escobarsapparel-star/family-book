@@ -1,0 +1,74 @@
+/* Family Book — consistent main-tab page headers.
+   Calendar is the visual reference for Members, Family Tree and Memories. */
+
+/* Shared eyebrow treatment */
+.calendar-title-row .eyebrow,
+.members-head .eyebrow,
+.tree-head .eyebrow,
+.memories-polished .memories-head .eyebrow{
+  margin:0 0 4px!important;
+  color:#997354!important;
+  font-size:.68rem!important;
+  font-weight:900!important;
+  letter-spacing:.08em!important;
+}
+
+/* Shared main title treatment */
+.calendar-title-row h1,
+.members-head h1,
+.tree-head h1,
+.memories-polished .memories-head h1{
+  margin:0!important;
+  color:#315c43!important;
+  font-size:clamp(2.2rem,4vw,3.6rem)!important;
+  line-height:1.05!important;
+  font-weight:800!important;
+  letter-spacing:-.02em!important;
+}
+
+/* Shared supporting-copy treatment */
+.calendar-title-row p:last-child,
+.members-head>div>p:last-child,
+.tree-head>div>p:last-child,
+.memories-polished .memories-head p{
+  margin:7px 0 0!important;
+  max-width:720px!important;
+  color:#756c63!important;
+  font-size:.92rem!important;
+  line-height:1.5!important;
+  font-weight:400!important;
+}
+
+/* Match Calendar's dark-theme title colour exactly. */
+html[data-theme="dark"] .calendar-title-row h1,
+html[data-theme="dark"] .members-head h1,
+html[data-theme="dark"] .tree-head h1,
+html[data-theme="dark"] .memories-polished .memories-head h1{
+  color:#a7cbb0!important;
+}
+
+/* Keep the description warm/muted in dark mode instead of near-white. */
+html[data-theme="dark"] .calendar-title-row p:last-child,
+html[data-theme="dark"] .members-head>div>p:last-child,
+html[data-theme="dark"] .tree-head>div>p:last-child,
+html[data-theme="dark"] .memories-polished .memories-head p{
+  color:#8f796b!important;
+}
+
+@media(max-width:620px){
+  .calendar-title-row h1,
+  .members-head h1,
+  .tree-head h1,
+  .memories-polished .memories-head h1{
+    font-size:2rem!important;
+    line-height:1.08!important;
+  }
+
+  .calendar-title-row p:last-child,
+  .members-head>div>p:last-child,
+  .tree-head>div>p:last-child,
+  .memories-polished .memories-head p{
+    font-size:.74rem!important;
+    line-height:1.4!important;
+  }
+}
