@@ -19,7 +19,12 @@
   document.addEventListener('click',ev=>{
     const target=ev.target.closest?.('[data-r],[data-profile-route],[data-desktop-route],#topProfileButton');
     if(!target)return;
-    const ownProfileTrigger=target.matches?.('#topProfileButton,[data-r="profile"],[data-profile-route="profile"],[data-desktop-route="profile"]');
+
+    // The top-right avatar now owns its own menus:
+    // mobile = full-screen Family Book menu; desktop = compact profile popover.
+    if(target.matches?.('#topProfileButton'))return;
+
+    const ownProfileTrigger=target.matches?.('[data-r="profile"],[data-profile-route="profile"],[data-desktop-route="profile"]');
     if(!ownProfileTrigger)return;
     const id=ownMemberId();
     if(!id)return;
