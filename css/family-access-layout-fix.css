@@ -1,0 +1,37 @@
+/* Family Book — isolated Invite & Family Access layout repair */
+.family-access-page{max-width:980px!important;margin:0 auto!important;padding:10px 0 110px!important}
+.family-access-head{display:grid!important;grid-template-columns:auto minmax(0,1fr)!important;grid-template-areas:'back eyebrow' 'title title' 'desc desc'!important;align-items:center!important;gap:8px 16px!important;margin:0 0 18px!important}
+.family-access-head>.back-link{grid-area:back!important;justify-self:start!important;margin:0!important}
+.family-access-head>.eyebrow{grid-area:eyebrow!important;margin:0!important;align-self:center!important}
+.family-access-head>h1{grid-area:title!important;margin:2px 0 0!important;font:800 clamp(2rem,3.3vw,3rem)/1.04 Inter,system-ui,sans-serif!important;letter-spacing:-.035em!important;max-width:760px!important}
+.family-access-head>p:last-child{grid-area:desc!important;margin:0!important;max-width:720px!important;font-size:.95rem!important;line-height:1.45!important}
+
+.family-access-card{margin-top:14px!important;padding:16px!important;border-radius:18px!important;gap:14px!important}
+.family-access-card-head{align-items:center!important}
+.family-access-card-head>span{flex:0 0 40px!important}
+.family-access-card-head>div{min-width:0!important}
+.family-access-card-head h2{font:800 1.05rem/1.2 Inter,system-ui,sans-serif!important}
+.family-access-card-head p{font-size:.7rem!important;line-height:1.35!important;letter-spacing:.035em!important}
+#backendInviteResult:empty{display:none!important}
+.backend-created-invite{margin-top:2px!important}
+.family-account-list,.family-invite-history{min-width:0!important}
+.family-account-row{min-width:0!important}
+.family-account-avatar img{width:100%!important;height:100%!important;object-fit:cover!important;object-position:center!important;display:block!important}
+
+@media(max-width:759px){
+  .family-access-page{max-width:none!important;padding:6px 0 96px!important}
+  .family-access-head{grid-template-columns:auto minmax(0,1fr)!important;grid-template-areas:'back eyebrow' 'title title' 'desc desc'!important;gap:7px 10px!important;margin-bottom:14px!important;padding:0 2px!important}
+  .family-access-head>h1{font-size:1.8rem!important;line-height:1.06!important;letter-spacing:-.025em!important}
+  .family-access-head>p:last-child{font-size:.8rem!important;line-height:1.4!important}
+  .family-access-head>.eyebrow{font-size:.62rem!important}
+  .family-access-card{padding:13px!important;border-radius:15px!important;margin-top:10px!important;gap:12px!important}
+  .family-access-card-head{gap:9px!important;align-items:flex-start!important}
+  .family-access-card-head>span{width:38px!important;height:38px!important;flex-basis:38px!important}
+  .family-access-card-head h2{font-size:.96rem!important}
+  .family-access-card-head p{font-size:.63rem!important}
+  #createBackendInvite{min-height:46px!important;width:100%!important}
+  .backend-created-invite>div:last-child{display:grid!important;grid-template-columns:1fr 1fr!important;gap:7px!important}
+  .backend-created-invite>div:last-child button{width:100%!important;min-width:0!important}
+  .family-account-row{grid-template-columns:42px minmax(0,1fr)!important;gap:8px!important;align-items:center!important}
+  .family-account-row>.account-role-badge,.family-account-row>.family-account-controls{grid-column:2!important;justify-self:start!important}
+}
