@@ -5,6 +5,7 @@
   const SITE_KEY='fb_site_theme_v2';
   const TREE_KEY='fb_tree_style_v2';
   const POSTER_W=1600,POSTER_H=900;
+  const TREE_EXPORT_BACKGROUND='assets/tree/tree-export-background.png';
 
   const SITE_THEMES=[
     {id:'classic',name:'Family Book',desc:'Original Family Book palette'},
@@ -82,7 +83,7 @@
 
     const art=document.createElement('img');
     art.className='ct-tree-art';
-    art.src='assets/tree/tree-of-life-poster.svg';
+    art.src=TREE_EXPORT_BACKGROUND;
     art.alt='';
     art.setAttribute('aria-hidden','true');
 
