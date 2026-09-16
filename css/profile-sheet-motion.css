@@ -1,0 +1,41 @@
+/* Profile/cover photo action-sheet motion. Isolated so profile routing/layout stays untouched. */
+.photo-action-backdrop{animation:fb-photo-backdrop-in .16s ease-out both}
+.photo-action-sheet.fb-profile-action-sheet{transform-origin:bottom center;animation:fb-photo-sheet-in .24s cubic-bezier(.22,.8,.24,1) both;will-change:transform,opacity}
+.photo-action-sheet.fb-profile-action-sheet .photo-sheet-handle,
+.photo-action-sheet.fb-profile-action-sheet h3,
+.photo-action-sheet.fb-profile-action-sheet button{opacity:0;animation:fb-photo-item-in .2s ease-out both}
+.photo-action-sheet.fb-profile-action-sheet .photo-sheet-handle{animation-delay:.05s}
+.photo-action-sheet.fb-profile-action-sheet h3{animation-delay:.075s}
+.photo-action-sheet.fb-profile-action-sheet button:nth-of-type(1){animation-delay:.10s}
+.photo-action-sheet.fb-profile-action-sheet button:nth-of-type(2){animation-delay:.125s}
+.photo-action-sheet.fb-profile-action-sheet button:nth-of-type(3){animation-delay:.15s}
+.photo-action-sheet.fb-profile-action-sheet button:nth-of-type(4){animation-delay:.175s}
+.photo-action-sheet.fb-profile-action-sheet button:nth-of-type(5){animation-delay:.20s}
+.photo-action-sheet.fb-profile-action-sheet button:active{transform:scale(.985);background:#f0ebe3}
+
+@keyframes fb-photo-backdrop-in{
+  from{background:rgba(24,22,19,0);backdrop-filter:blur(0)}
+  to{background:rgba(24,22,19,.48);backdrop-filter:blur(3px)}
+}
+@keyframes fb-photo-sheet-in{
+  0%{opacity:0;transform:translateY(34px) scale(.985)}
+  70%{opacity:1;transform:translateY(-2px) scale(1)}
+  100%{opacity:1;transform:translateY(0) scale(1)}
+}
+@keyframes fb-photo-item-in{
+  from{opacity:0;transform:translateY(8px)}
+  to{opacity:1;transform:translateY(0)}
+}
+
+@media(max-width:759px){
+  .photo-action-backdrop{padding:0!important}
+  .photo-action-sheet.fb-profile-action-sheet{width:100%!important;max-width:none!important;border-radius:24px 24px 0 0!important;padding:10px 14px calc(16px + env(safe-area-inset-bottom))!important}
+}
+
+@media(prefers-reduced-motion:reduce){
+  .photo-action-backdrop,
+  .photo-action-sheet.fb-profile-action-sheet,
+  .photo-action-sheet.fb-profile-action-sheet .photo-sheet-handle,
+  .photo-action-sheet.fb-profile-action-sheet h3,
+  .photo-action-sheet.fb-profile-action-sheet button{animation:none!important;transition:none!important;opacity:1!important;transform:none!important}
+}
