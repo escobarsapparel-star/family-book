@@ -1,5 +1,4 @@
 (()=>{
-  const isMobile=()=>window.matchMedia?.('(max-width:759px)')?.matches;
   const sb=()=>window.FB_SUPABASE?.client;
   const auth=()=>window.FB_AUTH?.get?.()||{};
   const num=(v,f=50)=>{const n=Number(v);return Number.isFinite(n)?n:f};
@@ -78,9 +77,8 @@
   }
 
   function enhanceCoverSheet(root=document){
-    if(!isMobile())return;
     root.querySelectorAll?.('.photo-action-sheet').forEach(sheet=>{
-      if(sheet.dataset.mobilePositionReady==='1')return;
+      if(sheet.dataset.coverPositionReady==='1')return;
       const heading=sheet.querySelector('h3');
       if(String(heading?.textContent||'').trim().toLowerCase()!=='cover photo')return;
       const remove=sheet.querySelector('[data-cover-action="remove"]');
@@ -92,7 +90,7 @@
       button.innerHTML='<i data-lucide="move"></i><span>Change position</span>';
       const view=sheet.querySelector('[data-cover-action="view"]');
       sheet.insertBefore(button,view||remove);
-      sheet.dataset.mobilePositionReady='1';
+      sheet.dataset.coverPositionReady='1';
       button.onclick=()=>{
         sheet.closest('.photo-action-backdrop')?.remove();
         openPositionEditor();
