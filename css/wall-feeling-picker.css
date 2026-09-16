@@ -1,0 +1,42 @@
+.wall-feeling-picker{
+  margin:10px 0 12px;
+  padding:14px;
+  border:1px solid rgba(126,166,137,.28);
+  border-radius:18px;
+  background:rgba(126,166,137,.08);
+}
+.wall-feeling-head{display:flex;align-items:flex-start;justify-content:space-between;gap:12px;margin-bottom:10px}
+.wall-feeling-head strong{display:block;font-size:.9rem;color:inherit}
+.wall-feeling-head span{display:block;margin-top:2px;font-size:.72rem;opacity:.72;line-height:1.35}
+.wall-feeling-grid{display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:8px}
+.wall-feeling-option{
+  min-width:0;
+  border:1px solid rgba(126,166,137,.24);
+  background:rgba(255,255,255,.04);
+  color:inherit;
+  border-radius:14px;
+  padding:9px 6px;
+  display:grid;
+  place-items:center;
+  gap:4px;
+  transition:.15s ease;
+}
+.wall-feeling-option>span{font-size:1.25rem;line-height:1}
+.wall-feeling-option>strong{font-size:.68rem;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:100%}
+.wall-feeling-option:hover{border-color:#84b794;background:rgba(132,183,148,.12)}
+.wall-feeling-option.active{border-color:#8fc3a0;background:rgba(132,183,148,.20);box-shadow:0 0 0 2px rgba(132,183,148,.08)}
+.wall-feeling-message{display:block;margin-top:9px;color:#d8897f;font-weight:700;font-size:.72rem}
+.wall-feeling-picker.needs-choice{animation:fbFeelingNudge .28s ease}
+@keyframes fbFeelingNudge{0%,100%{transform:translateX(0)}30%{transform:translateX(-4px)}70%{transform:translateX(4px)}}
+
+html:not([data-theme="dark"]) .wall-feeling-picker{background:#f4f8f4;border-color:#d7e5d9}
+html:not([data-theme="dark"]) .wall-feeling-option{background:#fff;border-color:#d7e5d9;color:#315c43}
+html:not([data-theme="dark"]) .wall-feeling-option.active{background:#e6f1e8}
+
+@media(max-width:700px){
+  .wall-feeling-picker{margin:8px 0 10px;padding:12px;border-radius:16px}
+  .wall-feeling-grid{grid-template-columns:repeat(3,minmax(0,1fr));gap:7px}
+  .wall-feeling-option{padding:10px 5px;min-height:58px}
+  .wall-feeling-option>span{font-size:1.35rem}
+  .wall-feeling-option>strong{font-size:.7rem}
+}
