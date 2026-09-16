@@ -125,3 +125,40 @@
 @media(prefers-reduced-motion:reduce){
   #profilePopover.profile-popover{animation:none!important}
 }
+
+/* Help & About header repair. The enhancement script previously targeted the icon span for the long description. */
+.settings-about-card.fb-help-ready .settings-card-head>.settings-card-icon{
+  font-size:0!important;
+  overflow:hidden;
+  position:relative;
+}
+.settings-about-card.fb-help-ready .settings-card-head>.settings-card-icon::before{
+  content:'?';
+  font-size:18px;
+  font-weight:900;
+  line-height:1;
+  color:var(--accent);
+}
+.settings-about-card.fb-help-ready .settings-card-head>div{min-width:0}
+.settings-about-card.fb-help-ready .settings-card-head>div>span{
+  font-size:0!important;
+  line-height:1.35;
+}
+.settings-about-card.fb-help-ready .settings-card-head>div>span::before{
+  content:'What Family Book is for, how to connect your family, and how the main features work.';
+  font-size:.8rem;
+  line-height:1.35;
+  color:var(--muted);
+}
+@media(max-width:759px){
+  .settings-about-card.fb-help-ready .settings-card-head{
+    grid-template-columns:40px minmax(0,1fr)!important;
+    align-items:start!important;
+    gap:10px!important;
+  }
+  .settings-about-card.fb-help-ready .settings-card-head>.settings-card-icon{
+    width:40px!important;
+    min-width:40px!important;
+    height:40px!important;
+  }
+}
