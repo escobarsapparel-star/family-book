@@ -6,14 +6,19 @@
   color:var(--fb-shell-text,var(--ink));
 }
 .members-head .eyebrow{
-  color:var(--brown)!important;
+  color:#997354!important;
+  font-weight:900!important;
+  letter-spacing:.08em!important;
 }
 .members-head h1{
   color:var(--fb-shell-accent,var(--green))!important;
   letter-spacing:-.02em;
 }
 .members-head>div>p:last-child{
-  color:var(--fb-shell-muted,var(--muted))!important;
+  color:#756c63!important;
+}
+html[data-theme="dark"] .members-head h1{
+  color:#a7cbb0!important;
 }
 .member-card{
   background:var(--fb-shell-panel,#fff)!important;
@@ -49,14 +54,23 @@
   background:var(--fb-shell-accent-soft,#e7efe9)!important;
 }
 
-/* Desktop: retain card directory, but make it match the shell rather than the legacy Members page. */
+/* Desktop: match Calendar page-heading hierarchy, keep compact directory cards. */
 @media (min-width:761px){
+  .members-head .eyebrow{
+    margin:0 0 4px!important;
+    font-size:.68rem!important;
+  }
   .members-head h1{
-    font-size:2rem!important;
+    margin:0!important;
+    font-size:clamp(2.2rem,4vw,3.6rem)!important;
     font-weight:800!important;
+    line-height:1.02!important;
   }
   .members-head>div>p:last-child{
-    font-size:.88rem!important;
+    margin:7px 0 0!important;
+    max-width:720px!important;
+    font-size:1rem!important;
+    line-height:1.5!important;
   }
   .member-card{
     min-height:98px!important;
@@ -94,14 +108,21 @@
   .members-head{
     margin-bottom:12px!important;
   }
+  .members-head .eyebrow{
+    margin:0 0 4px!important;
+    font-size:.68rem!important;
+  }
   .members-head h1{
-    font-size:1.62rem!important;
+    margin:0!important;
+    font-size:2rem!important;
     font-weight:800!important;
+    line-height:1.08!important;
   }
   .members-head>div>p:last-child{
-    color:var(--fb-shell-muted,var(--muted))!important;
-    font-size:.75rem!important;
-    line-height:1.35!important;
+    margin:7px 0 0!important;
+    color:#756c63!important;
+    font-size:.74rem!important;
+    line-height:1.4!important;
   }
 
   .members-grid{
