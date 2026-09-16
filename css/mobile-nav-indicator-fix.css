@@ -1,0 +1,13 @@
+/* Mobile navigation active indicator — keep the underline centered under its icon. */
+@media (max-width:759px){
+  #app>.app>.bottom .nav{
+    position:relative;
+  }
+
+  #app>.app>.bottom .nav.active::after{
+    left:50%!important;
+    right:auto!important;
+    transform:translateX(-50%)!important;
+    margin:0!important;
+  }
+}
