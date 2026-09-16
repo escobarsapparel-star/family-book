@@ -32,15 +32,27 @@
     margin-top:0!important;
     margin-bottom:12px!important;
   }
+
+  /* Keep the OUTER directory aligned with Calendar, but retain a small inner gutter so rows do not look clipped by the rounded frame. */
   .members-page .members-grid{
-    padding-left:0!important;
-    padding-right:0!important;
+    width:100%!important;
+    max-width:100%!important;
+    box-sizing:border-box!important;
+    margin:0!important;
+    padding:4px 10px!important;
+    border-radius:18px!important;
   }
   .members-page .member-card,
   .members-page .member-card.has-contact{
     min-height:76px!important;
     padding-top:9px!important;
     padding-bottom:9px!important;
+  }
+  .members-page .member-card:first-child{
+    padding-top:10px!important;
+  }
+  .members-page .member-card:last-child{
+    padding-bottom:10px!important;
   }
   .members-page .member-card-view{
     min-height:58px!important;
