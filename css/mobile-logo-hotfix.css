@@ -1,29 +1,28 @@
-/* Mobile Family Book header logo — painted directly on the topbar so legacy
-   desktop/theme brand rules cannot hide, collapse or replace it. */
+/* Mobile Family Book header logo — use the full dark PNG with tagline and fit it
+   cleanly inside the fixed mobile brand row without disturbing desktop. */
 @media (max-width:759px){
   #app>.app>.topbar{
     position:relative!important;
-    min-height:72px!important;
-    padding-left:16px!important;
+    min-height:56px!important;
+    padding-left:12px!important;
   }
 
-  /* The original desktop brand block is not needed on mobile. */
+  /* The desktop/theme brand block is replaced by the dedicated mobile artwork. */
   #app>.app>.topbar>.brand-home{
     display:none!important;
   }
 
-  /* Use the real repository logo asset, independently of all legacy logo DOM. */
   #app>.app>.topbar::before{
     content:""!important;
     display:block!important;
     position:absolute!important;
     z-index:20!important;
-    left:14px!important;
+    left:12px!important;
     top:50%!important;
     transform:translateY(-50%)!important;
-    width:min(196px,calc(100vw - 118px))!important;
+    width:min(220px,calc(100vw - 112px))!important;
     height:52px!important;
-    background-image:url('../assets/logo/family-book-logo-dark-header.png')!important;
+    background-image:url('../assets/logo/family-book-logo-dark.png')!important;
     background-repeat:no-repeat!important;
     background-position:left center!important;
     background-size:contain!important;
@@ -32,7 +31,7 @@
     pointer-events:none!important;
   }
 
-  /* Keep notification/avatar controls safely on the right of the logo. */
+  /* Keep notification/avatar controls safely clear of the logo. */
   #app>.app>.topbar>.actions{
     position:relative!important;
     z-index:25!important;
@@ -42,8 +41,8 @@
 
 @media (max-width:380px){
   #app>.app>.topbar::before{
-    width:min(172px,calc(100vw - 112px))!important;
-    height:48px!important;
-    left:12px!important;
+    width:min(204px,calc(100vw - 108px))!important;
+    height:50px!important;
+    left:10px!important;
   }
 }
