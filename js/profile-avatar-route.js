@@ -17,9 +17,12 @@
     document.body.classList.remove('fb-mobile-menu-open');
     document.querySelector('#topProfileButton')?.setAttribute('aria-expanded','false');
   }
-  function routeFromMenu(route){
+  function routeFromMenu(route,{about=false}={}){
     closeMenu();
     if(typeof window.go==='function')window.go(route);
+    if(about){
+      setTimeout(()=>document.querySelector('.settings-about-card')?.scrollIntoView({behavior:'smooth',block:'start'}),90);
+    }
   }
   function openMobileMenu(){
     closeMenu();
@@ -49,6 +52,7 @@
           <button type="button" class="mobile-profile-menu-card" data-mobile-menu-route="notifications"><span class="mobile-profile-menu-card-icon"><i data-lucide="bell-ring"></i></span><span><strong>Notifications</strong><small>Family activity and reminders</small></span></button>
           <button type="button" class="mobile-profile-menu-card" data-mobile-menu-route="settings"><span class="mobile-profile-menu-card-icon"><i data-lucide="settings"></i></span><span><strong>Settings</strong><small>Privacy and preferences</small></span></button>
         </div>
+        <button type="button" class="mobile-profile-menu-wide" data-mobile-help-about><span><i data-lucide="circle-help"></i></span><span><strong>Help & About</strong><small>Help, app information and support</small></span><i data-lucide="chevron-right"></i></button>
         ${admin?'<button type="button" class="mobile-profile-menu-admin" data-mobile-menu-route="family-access"><span><i data-lucide="user-plus"></i></span><span>Invite & family access</span><i data-lucide="chevron-right"></i></button>':''}
       </div>`;
     document.body.appendChild(menu);
@@ -56,17 +60,21 @@
     document.querySelector('#topProfileButton')?.setAttribute('aria-expanded','true');
     menu.querySelector('.mobile-profile-menu-close')?.addEventListener('click',closeMenu);
     menu.querySelectorAll('[data-mobile-menu-route]').forEach(btn=>btn.addEventListener('click',()=>routeFromMenu(btn.dataset.mobileMenuRoute)));
+    menu.querySelector('[data-mobile-help-about]')?.addEventListener('click',()=>routeFromMenu('settings',{about:true}));
     window.lucide?.createIcons?.();
   }
   function openOwnProfile(ev){
     const target=ev.target.closest?.('#topProfileButton,[data-r="profile"],[data-profile-route="profile"],[data-desktop-route="profile"]');
     if(!target||typeof window.go!=='function')return;
 
-    if(target.matches('#topProfileButton')&&mobile()){
-      ev.preventDefault();
-      ev.stopPropagation();
-      ev.stopImmediatePropagation();
-      openMobileMenu();
+    if(target.matches('#topProfileButton')){
+      if(mobile()){
+        ev.preventDefault();
+        ev.stopPropagation();
+        ev.stopImmediatePropagation();
+        openMobileMenu();
+      }
+      // Desktop deliberately falls through to the existing profile-popover menu.
       return;
     }
 
