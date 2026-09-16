@@ -1,3 +1,5 @@
+@import url("members-directory-refresh.css?v=members-directory-refresh-1");
+
 /* Family Book — desktop Members directory polish.
    Matches the compact mobile directory while preserving all member actions/permissions. */
 @media (min-width:761px){
@@ -95,11 +97,6 @@
     margin-top:4px!important;
     font-size:.69rem!important;
     line-height:1.2!important;
-  }
-  .member-info small svg{
-    width:12px!important;
-    height:12px!important;
-    flex:0 0 12px;
   }
   .member-linked-account,
   .member-managed-profile{
