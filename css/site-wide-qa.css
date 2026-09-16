@@ -37,8 +37,13 @@
   .settings-page{padding-bottom:30px}
   .settings-page .settings-card{padding:14px!important;border-radius:17px!important}
   .settings-page .settings-account-summary{padding:12px!important;border-radius:15px!important}
+  .settings-page-head{align-items:flex-start!important;gap:10px!important}
+  .settings-page-head h1{font-size:2rem!important}
+  .theme-choice-grid{grid-template-columns:1fr!important}
   .site-theme-grid{grid-template-columns:repeat(2,minmax(0,1fr))!important}
   .site-theme-choice{min-width:0!important}
+  .settings-select-row,.settings-toggle-row{gap:10px!important}
+  .settings-select-row>span,.settings-toggle-row>span:first-child{min-width:0!important}
 }
 
 /* -------- Full tree poster: mobile must remain scrollable and controls reachable -------- */
@@ -51,18 +56,138 @@
   .full-tree-page .tree-style-options::-webkit-scrollbar{display:none}
   .full-tree-page .tree-style-option{flex:0 0 154px!important;scroll-snap-align:start}
   .full-tree-page #fullTreeViewport{width:100%!important;max-width:100vw!important}
+  .full-tree-top{align-items:flex-start!important}
 }
 
-/* -------- Theme consistency -------- */
-html[data-site-theme] .memory-filter-panel,
-html[data-site-theme] .memory-card,
-html[data-site-theme] .profile-status-card,
-html[data-site-theme] .profile-view-card,
-html[data-site-theme] .member-card,
-html[data-site-theme] .album-card,
-html[data-site-theme] .calendar-panel{
-  border-color:var(--fb-shell-border,var(--line))!important;
+/* -------- Calendar -------- */
+.calendar-page,.calendar-editor-page,.calendar-detail-page{min-width:0}
+.calendar-layout>*{min-width:0}
+.calendar-day{min-width:0}
+.calendar-chip{max-width:100%;overflow:hidden}
+.calendar-chip span{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+@media(max-width:900px){
+  .calendar-layout{grid-template-columns:1fr!important}
+  .calendar-upcoming-card{position:static!important;max-height:none!important}
 }
+@media(max-width:620px){
+  .calendar-title-row{align-items:flex-start!important;gap:10px!important}
+  .calendar-title-row h1{font-size:1.8rem!important}
+  .calendar-title-row>button{flex:0 0 auto!important}
+  .calendar-card{padding:10px!important;border-radius:16px!important}
+  .calendar-weekdays span{font-size:.62rem!important}
+  .calendar-day{min-height:72px!important;padding:5px!important}
+  .calendar-day-num{font-size:.75rem!important}
+  .calendar-chip{padding:3px 4px!important;font-size:.58rem!important}
+  .calendar-chip svg{width:11px!important;height:11px!important}
+  .cal-form-grid{grid-template-columns:1fr!important}
+  .cal-span-2{grid-column:auto!important}
+  .cal-editor-actions{align-items:stretch!important;gap:10px!important;flex-direction:column!important}
+  .cal-editor-actions>div{display:grid!important;grid-template-columns:1fr 1fr!important;gap:8px!important}
+}
+
+/* -------- Albums -------- */
+.albums-page,.album-editor-page,.album-detail-page{min-width:0}
+.album-grid{grid-template-columns:repeat(3,minmax(0,1fr))!important;gap:12px!important}
+.album-card{min-width:0}
+.album-card-copy span,.album-card-copy strong{overflow-wrap:anywhere}
+@media(max-width:900px){.album-grid{grid-template-columns:repeat(2,minmax(0,1fr))!important}}
+@media(max-width:600px){
+  .albums-head{align-items:flex-start!important;gap:10px!important}
+  .albums-head h1{font-size:1.85rem!important}
+  .albums-head-actions{gap:6px!important}
+  .albums-head-actions .secondary{width:42px!important;padding:0!important;font-size:0!important;display:grid!important;place-items:center!important}
+  .albums-head-actions .secondary svg{width:18px!important;height:18px!important}
+  .album-grid{grid-template-columns:1fr 1fr!important;gap:8px!important}
+  .album-card-copy{padding:9px!important}
+  .album-editor-card{padding:14px!important;border-radius:17px!important}
+  .album-picker-head{align-items:stretch!important;flex-direction:column!important}
+}
+
+/* -------- Notifications -------- */
+.notifications-page{min-width:0}
+.notification-item{width:100%;min-width:0}
+.notification-copy{min-width:0}
+.notification-copy strong,.notification-copy small{overflow-wrap:anywhere}
+@media(max-width:650px){
+  .notifications-head{align-items:flex-start!important;gap:10px!important}
+  .notifications-head h1{font-size:1.9rem!important}
+  .notifications-head>.secondary{width:42px!important;height:42px!important;padding:0!important;font-size:0!important;display:grid!important;place-items:center!important}
+  .notifications-toolbar{gap:8px!important}
+  .notification-mark-all{white-space:nowrap!important}
+  .notification-item{padding:11px!important;gap:9px!important}
+}
+
+/* -------- Family access -------- */
+.family-access-page,.family-access-card{min-width:0}
+.family-account-row,.family-invite-history-row{min-width:0}
+.family-account-row>div,.family-invite-history-row>div{min-width:0}
+.family-account-row strong,.family-account-row small,.family-invite-history-row small{overflow-wrap:anywhere}
+@media(max-width:720px){
+  .family-access-card{padding:14px!important;border-radius:17px!important}
+  .family-account-row{align-items:flex-start!important;flex-wrap:wrap!important}
+  .family-account-controls{width:100%!important;display:grid!important;grid-template-columns:1fr!important;gap:7px!important;padding-left:0!important}
+  .family-account-controls select,.family-account-controls button{width:100%!important}
+  .family-invite-history-row{grid-template-columns:1fr!important;gap:6px!important}
+  .backend-created-invite>div{display:grid!important;grid-template-columns:1fr!important;gap:7px!important}
+}
+
+/* -------- Members/profile -------- */
+.member-profile-view,.members-page{min-width:0}
+.profile-details,.account-profile-actions{min-width:0}
+@media(max-width:650px){
+  .profile-view-card{padding:16px!important;border-radius:18px!important}
+  .profile-view-card h1{font-size:1.65rem!important;line-height:1.1!important}
+  .account-profile-actions{display:grid!important;grid-template-columns:1fr!important;gap:8px!important}
+  .account-profile-actions button{width:100%!important}
+}
+
+/* -------- Theme consistency across every major route -------- */
+html[data-site-theme]:not([data-site-theme="classic"]) .calendar-card,
+html[data-site-theme]:not([data-site-theme="classic"]) .calendar-upcoming-card,
+html[data-site-theme]:not([data-site-theme="classic"]) .calendar-editor-card,
+html[data-site-theme]:not([data-site-theme="classic"]) .calendar-detail-card,
+html[data-site-theme]:not([data-site-theme="classic"]) .album-card,
+html[data-site-theme]:not([data-site-theme="classic"]) .album-editor-card,
+html[data-site-theme]:not([data-site-theme="classic"]) .album-detail-card,
+html[data-site-theme]:not([data-site-theme="classic"]) .family-access-card,
+html[data-site-theme]:not([data-site-theme="classic"]) .notifications-toolbar,
+html[data-site-theme]:not([data-site-theme="classic"]) .notification-item,
+html[data-site-theme]:not([data-site-theme="classic"]) .notification-empty,
+html[data-site-theme]:not([data-site-theme="classic"]) .profile-status-card,
+html[data-site-theme]:not([data-site-theme="classic"]) .profile-view-card,
+html[data-site-theme]:not([data-site-theme="classic"]) .member-card{
+  background:var(--theme-panel)!important;
+  color:var(--theme-text)!important;
+  border-color:var(--theme-border)!important;
+}
+html[data-site-theme]:not([data-site-theme="classic"]) .calendar-day,
+html[data-site-theme]:not([data-site-theme="classic"]) .album-upload-panel,
+html[data-site-theme]:not([data-site-theme="classic"]) .album-memory-choice,
+html[data-site-theme]:not([data-site-theme="classic"]) .family-account-row,
+html[data-site-theme]:not([data-site-theme="classic"]) .family-invite-history-row{
+  background:var(--theme-panel2)!important;
+  color:var(--theme-text)!important;
+  border-color:var(--theme-border)!important;
+}
+html[data-site-theme]:not([data-site-theme="classic"]) .calendar-title-row h1,
+html[data-site-theme]:not([data-site-theme="classic"]) .albums-head h1,
+html[data-site-theme]:not([data-site-theme="classic"]) .notifications-head h1,
+html[data-site-theme]:not([data-site-theme="classic"]) .family-access-head h1,
+html[data-site-theme]:not([data-site-theme="classic"]) .profile-view-card h1{
+  color:var(--theme-accent)!important;
+}
+html[data-site-theme]:not([data-site-theme="classic"]) .calendar-title-row p,
+html[data-site-theme]:not([data-site-theme="classic"]) .albums-head p,
+html[data-site-theme]:not([data-site-theme="classic"]) .notifications-head p,
+html[data-site-theme]:not([data-site-theme="classic"]) .family-access-head p,
+html[data-site-theme]:not([data-site-theme="classic"]) .notification-copy small{
+  color:var(--theme-muted)!important;
+}
+
+/* Broken media should not leave the browser's broken-image icon floating. */
+.image-load-failed{background:var(--fb-shell-panel-2,#202721)!important;position:relative}
+.image-load-failed:after{content:"Image unavailable";position:absolute;inset:0;display:grid;place-items:center;padding:8px;text-align:center;color:var(--fb-shell-muted,#a4afa7);font-size:.68rem;font-weight:700}
+.image-load-failed>img{opacity:0!important}
 
 /* Keep long names/statuses from blowing out cards. */
 .profile-view-card h1,.member-card strong,.wall-post-head strong,.memory-card-copy strong{overflow-wrap:anywhere}
