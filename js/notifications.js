@@ -5,7 +5,8 @@
     if(item.targetType==="memory"&&item.targetId)return `view-memory:${item.targetId}`;
     if(item.targetType==="event"&&item.targetId)return `view-event:${item.targetId}`;
     if(item.targetType==="person"&&item.targetId)return `view-member:${item.targetId}`;
-    if(item.targetType==="post")return "wall";
+    // Family Wall lives on Home; "wall" is not a real app route.
+    if(item.targetType==="post")return "home";
     return "";
   }
 
