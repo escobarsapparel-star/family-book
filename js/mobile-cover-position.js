@@ -1,14 +1,38 @@
 (()=>{
+  const isMobile=()=>window.matchMedia?.('(max-width:759px)')?.matches;
   const sb=()=>window.FB_SUPABASE?.client;
   const auth=()=>window.FB_AUTH?.get?.()||{};
   const num=(v,f=50)=>{const n=Number(v);return Number.isFinite(n)?n:f};
+  const clamp=v=>Math.max(0,Math.min(100,v));
 
   function pageInfo(){
     const page=document.querySelector('.member-profile-view:not(.history-profile-view):not(.account-profile-view)');
     const profile=page?.querySelector('.fb-member-profile');
     const cover=page?.querySelector('[data-basic-cover]');
-    const img=cover?.querySelector('.fb-cover-open img');
-    return {page,profile,cover,img,id:profile?.dataset.profileMemberId||''};
+    const open=cover?.querySelector('.fb-cover-open');
+    const img=open?.querySelector('img');
+    return {page,profile,cover,open,img,id:profile?.dataset.profileMemberId||''};
+  }
+
+  async function coverPosition(id){
+    const client=sb();
+    if(!client)return null;
+    const {data,error}=await client.from('person_covers').select('person_id,position_x,position_y').eq('person_id',id).maybeSingle();
+    if(error)throw error;
+    return data||null;
+  }
+
+  async function savePosition(id,x,y){
+    const client=sb();
+    if(!client)throw new Error('Cover storage is unavailable.');
+    const u=auth();
+    const {error}=await client.from('person_covers').update({
+      position_x:Number(x),
+      position_y:Number(y),
+      updated_by_user_id:u.supabaseUserId||null,
+      updated_at:new Date().toISOString()
+    }).eq('person_id',id);
+    if(error)throw error;
   }
 
   async function openPositionEditor(){
@@ -17,8 +41,8 @@
     const client=sb();
     if(!client)return;
 
-    const {data,error}=await client.from('person_covers').select('person_id,position_x,position_y').eq('person_id',id).maybeSingle();
-    if(error){alert(error.message||'Could not load the cover position.');return}
+    let data;
+    try{data=await coverPosition(id)}catch(error){alert(error.message||'Could not load the cover position.');return}
 
     document.querySelector('.member-cover-editor')?.remove();
     const modal=document.createElement('div');
@@ -56,14 +80,7 @@
       save.textContent='Saving…';
       status.hidden=true;
       try{
-        const u=auth();
-        const {error:saveError}=await client.from('person_covers').update({
-          position_x:Number(x.value),
-          position_y:Number(y.value),
-          updated_by_user_id:u.supabaseUserId||null,
-          updated_at:new Date().toISOString()
-        }).eq('person_id',id);
-        if(saveError)throw saveError;
+        await savePosition(id,x.value,y.value);
         img.style.objectPosition=`${x.value}% ${y.value}%`;
         close();
         window.dispatchEvent(new CustomEvent('familybook:basic-member-profile-ready',{detail:{memberId:id,reason:'cover-position-updated'}}));
@@ -76,13 +93,107 @@
     };
   }
 
+  async function startDesktopDrag(){
+    const {id,cover,open,img}=pageInfo();
+    if(!id||!cover||!open||!img)return;
+
+    let data;
+    try{data=await coverPosition(id)}catch(error){alert(error.message||'Could not load the cover position.');return}
+
+    document.querySelector('.fb-cover-drag-toolbar')?.remove();
+    document.querySelector('.fb-cover-drag-mode')?.classList.remove('fb-cover-drag-mode','fb-cover-dragging');
+
+    const originalX=num(data?.position_x);
+    const originalY=num(data?.position_y);
+    let x=originalX,y=originalY;
+    let active=false,startClientX=0,startClientY=0,startX=x,startY=y,pointerId=null;
+
+    const toolbar=document.createElement('div');
+    toolbar.className='fb-cover-drag-toolbar';
+    toolbar.innerHTML='<span><i data-lucide="move"></i>Drag photo to reposition</span><div><button type="button" class="secondary" data-cover-drag-cancel>Cancel</button><button type="button" class="primary" data-cover-drag-save>Save</button></div>';
+    cover.appendChild(toolbar);
+    cover.classList.add('fb-cover-drag-mode');
+    window.lucide?.createIcons?.();
+
+    const apply=()=>{img.style.objectPosition=`${x}% ${y}%`};
+    const stopPointer=()=>{
+      active=false;
+      cover.classList.remove('fb-cover-dragging');
+      if(pointerId!==null){try{open.releasePointerCapture(pointerId)}catch(_){}}
+      pointerId=null;
+    };
+    const finish=restore=>{
+      stopPointer();
+      open.removeEventListener('pointerdown',onDown);
+      open.removeEventListener('pointermove',onMove);
+      open.removeEventListener('pointerup',onUp);
+      open.removeEventListener('pointercancel',onUp);
+      cover.removeEventListener('click',blockClick,true);
+      document.removeEventListener('keydown',onKey);
+      cover.classList.remove('fb-cover-drag-mode','fb-cover-dragging');
+      toolbar.remove();
+      if(restore){x=originalX;y=originalY;apply()}
+    };
+    const blockClick=e=>{
+      if(e.target.closest?.('.fb-cover-drag-toolbar'))return;
+      e.preventDefault();
+      e.stopPropagation();
+      e.stopImmediatePropagation();
+    };
+    const onDown=e=>{
+      if(e.button!==0||e.target.closest?.('.fb-cover-drag-toolbar'))return;
+      e.preventDefault();
+      active=true;
+      pointerId=e.pointerId;
+      startClientX=e.clientX;startClientY=e.clientY;startX=x;startY=y;
+      cover.classList.add('fb-cover-dragging');
+      try{open.setPointerCapture(e.pointerId)}catch(_){}
+    };
+    const onMove=e=>{
+      if(!active||e.pointerId!==pointerId)return;
+      const rect=cover.getBoundingClientRect();
+      if(!rect.width||!rect.height)return;
+      const dx=e.clientX-startClientX,dy=e.clientY-startClientY;
+      x=clamp(startX-(dx/rect.width)*100);
+      y=clamp(startY-(dy/rect.height)*100);
+      apply();
+    };
+    const onUp=e=>{if(active&&e.pointerId===pointerId)stopPointer()};
+    const onKey=e=>{if(e.key==='Escape')finish(true)};
+
+    cover.addEventListener('click',blockClick,true);
+    open.addEventListener('pointerdown',onDown);
+    open.addEventListener('pointermove',onMove);
+    open.addEventListener('pointerup',onUp);
+    open.addEventListener('pointercancel',onUp);
+    document.addEventListener('keydown',onKey);
+
+    toolbar.querySelector('[data-cover-drag-cancel]').onclick=e=>{e.stopPropagation();finish(true)};
+    toolbar.querySelector('[data-cover-drag-save]').onclick=async e=>{
+      e.stopPropagation();
+      const save=e.currentTarget;
+      save.disabled=true;
+      const old=save.textContent;
+      save.textContent='Saving…';
+      try{
+        await savePosition(id,x,y);
+        finish(false);
+        window.dispatchEvent(new CustomEvent('familybook:basic-member-profile-ready',{detail:{memberId:id,reason:'cover-position-updated'}}));
+      }catch(err){
+        save.disabled=false;
+        save.textContent=old;
+        alert(err?.message||'Could not save the cover position.');
+      }
+    };
+  }
+
   function enhanceCoverSheet(root=document){
     root.querySelectorAll?.('.photo-action-sheet').forEach(sheet=>{
       if(sheet.dataset.coverPositionReady==='1')return;
       const heading=sheet.querySelector('h3');
       if(String(heading?.textContent||'').trim().toLowerCase()!=='cover photo')return;
       const remove=sheet.querySelector('[data-cover-action="remove"]');
-      if(!remove)return; // Existing cover + editable member only.
+      if(!remove)return;
 
       const button=document.createElement('button');
       button.type='button';
@@ -93,7 +204,8 @@
       sheet.dataset.coverPositionReady='1';
       button.onclick=()=>{
         sheet.closest('.photo-action-backdrop')?.remove();
-        openPositionEditor();
+        if(isMobile())openPositionEditor();
+        else startDesktopDrag();
       };
       window.lucide?.createIcons?.();
     });
