@@ -1,0 +1,40 @@
+/* Mobile member profile: remove accidental gap below the fixed nav and provide a native-style pull-to-refresh cue. */
+@media(max-width:759px){
+  body.fb-member-profile-mobile{overscroll-behavior-y:contain}
+  .member-profile-view:not(.history-profile-view):not(.account-profile-view){
+    margin-top:calc(-1 * var(--fb-profile-gap-fix,0px))!important;
+    will-change:transform;
+  }
+  .fb-profile-refresh-indicator{
+    position:fixed;
+    z-index:999;
+    top:var(--fb-mobile-header-h,102px);
+    left:50%;
+    min-width:116px;
+    height:38px;
+    padding:0 14px;
+    border-radius:999px;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    gap:8px;
+    transform:translate(-50%,-48px) scale(.94);
+    opacity:0;
+    pointer-events:none;
+    background:color-mix(in srgb,var(--paper,#fffdfa) 94%,transparent);
+    color:var(--ink,#20251f);
+    border:1px solid var(--line,#e5ddd1);
+    box-shadow:0 7px 24px rgba(0,0,0,.18);
+    backdrop-filter:blur(12px);
+    transition:opacity .16s ease,transform .16s ease;
+  }
+  .fb-profile-refresh-indicator svg{width:18px;height:18px;color:var(--accent,var(--green,#315c43))}
+  .fb-profile-refresh-indicator.is-visible{opacity:1}
+  .fb-profile-refresh-indicator.is-ready{font-weight:800}
+  .fb-profile-refresh-indicator.is-refreshing svg{animation:fbProfileRefreshSpin .8s linear infinite}
+  @keyframes fbProfileRefreshSpin{to{transform:rotate(360deg)}}
+}
+@media(prefers-reduced-motion:reduce){
+  .fb-profile-refresh-indicator{transition:none}
+  .fb-profile-refresh-indicator.is-refreshing svg{animation:none}
+}
