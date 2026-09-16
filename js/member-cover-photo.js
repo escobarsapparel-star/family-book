@@ -30,28 +30,66 @@
     if(typeof window.FB_PROFILE_MEDIA_VIEWER==='function')return window.FB_PROFILE_MEDIA_VIEWER(url,'Cover photo');
   }
 
+  async function removeCover(id,current){
+    const client=sb();
+    if(!client)throw new Error('Cover storage is unavailable.');
+    const {error}=await client.from('person_covers').delete().eq('person_id',id);
+    if(error)throw error;
+    if(current?.storage_path)await window.FB_MEDIA.remove([current.storage_path],{silent:true});
+    await load(true);
+  }
+
+  function openCoverMenu(page,id,current){
+    document.querySelector('.photo-action-backdrop')?.remove();
+    const editable=canEdit(id);
+    const d=document.createElement('div');
+    d.className='photo-action-backdrop';
+    d.innerHTML=`<div class="photo-action-sheet fb-profile-action-sheet" role="dialog" aria-modal="true"><div class="photo-sheet-handle"></div><h3>Cover photo</h3>${editable?'<button data-cover-action="gallery"><i data-lucide="folder-open"></i><span>Upload photo</span></button><button data-cover-action="camera"><i data-lucide="camera"></i><span>Take photo</span></button>':''}${current?.url?'<button data-cover-action="view"><i data-lucide="image"></i><span>See cover photo</span></button>':''}${editable&&current?'<button class="photo-remove" data-cover-action="remove"><i data-lucide="trash-2"></i><span>Remove cover photo</span></button>':''}<button class="photo-cancel" data-cover-action="cancel">Cancel</button></div>`;
+    document.body.appendChild(d);window.lucide?.createIcons?.();
+    const close=()=>d.remove();
+    d.addEventListener('click',e=>{if(e.target===d)close()});
+    d.querySelectorAll('[data-cover-action]').forEach(btn=>btn.onclick=async()=>{
+      const action=btn.dataset.coverAction;
+      if(action==='cancel')return close();
+      if(action==='view'){close();return openViewer(current?.url)}
+      if(action==='gallery'||action==='camera'){close();return pickerModal(page,id,current,action)}
+      if(action==='remove'){
+        close();
+        if(!confirm('Remove this cover photo?'))return;
+        try{await removeCover(id,current)}catch(err){alert(err?.message||'Could not remove the cover photo.')}
+      }
+    });
+  }
+
   function renderCover(page,id,current){
     const cover=page?.querySelector('[data-basic-cover]');
     if(!cover)return;
     cover.dataset.loadedFor=id;
     cover.innerHTML='';
+    cover.classList.toggle('has-cover-photo',!!current?.url);
 
     if(current?.url){
       const open=document.createElement('button');
       open.type='button';
       open.className='fb-cover-open';
-      open.setAttribute('aria-label','View cover photo');
+      open.setAttribute('aria-label',canEdit(id)?'Cover photo options':'View cover photo');
       const img=document.createElement('img');
       img.src=current.url;
       img.alt='Cover photo';
       img.style.objectPosition=`${numberOr(current.position_x)}% ${numberOr(current.position_y)}%`;
       open.appendChild(img);
-      open.onclick=()=>openViewer(current.url);
+      open.onclick=()=>canEdit(id)?openCoverMenu(page,id,current):openViewer(current.url);
       cover.appendChild(open);
     }else{
       const empty=document.createElement('div');
       empty.className='fb-basic-cover-empty';
-      empty.innerHTML='<i data-lucide="camera"></i><span>No cover photo yet</span>';
+      empty.innerHTML='<i data-lucide="camera"></i><span>Add cover photo</span>';
+      if(canEdit(id)){
+        empty.tabIndex=0;
+        empty.setAttribute('role','button');
+        empty.onclick=()=>openCoverMenu(page,id,current);
+        empty.onkeydown=e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();openCoverMenu(page,id,current)}};
+      }
       cover.appendChild(empty);
     }
 
@@ -59,34 +97,32 @@
       const edit=document.createElement('button');
       edit.type='button';
       edit.className='fb-cover-edit';
-      edit.innerHTML=`<i data-lucide="camera"></i><span>${current?'Change cover':'Add cover'}</span>`;
-      edit.onclick=e=>{e.stopPropagation();pickerModal(page,id,current)};
+      edit.setAttribute('aria-label','Cover photo options');
+      edit.innerHTML='<i data-lucide="camera"></i><span>Cover photo</span>';
+      edit.onclick=e=>{e.stopPropagation();openCoverMenu(page,id,current)};
       cover.appendChild(edit);
-      if(!current){
-        cover.querySelector('.fb-basic-cover-empty')?.addEventListener('click',()=>pickerModal(page,id,current));
-        cover.classList.add('is-editable-empty');
-      }
+      if(!current)cover.classList.add('is-editable-empty');
     }else{
       cover.classList.remove('is-editable-empty');
     }
     window.lucide?.createIcons?.();
   }
 
-  function pickerModal(page,id,current){
+  function pickerModal(page,id,current,startMode=''){
     document.querySelector('.member-cover-editor')?.remove();
     const modal=document.createElement('div');
     modal.className='member-cover-editor';
     modal.innerHTML=`<div class="member-cover-editor-card" role="dialog" aria-modal="true" aria-label="Cover photo editor">
-      <div class="member-cover-editor-head"><div><span>Profile</span><strong>Cover photo</strong></div><button type="button" data-cover-close aria-label="Close"><i data-lucide="x"></i></button></div>
+      <div class="member-cover-editor-head"><div><span>Profile</span><strong>Position cover photo</strong></div><button type="button" data-cover-close aria-label="Close"><i data-lucide="x"></i></button></div>
       <div class="member-cover-preview"><img alt="Cover preview" hidden><div class="member-cover-preview-empty"><i data-lucide="image"></i><span>Choose a photo to preview</span></div></div>
       <input type="file" accept="image/*" data-cover-file hidden>
       <input type="file" accept="image/*" capture="environment" data-cover-camera hidden>
-      <div class="member-cover-pick-actions"><button type="button" class="secondary" data-cover-choose><i data-lucide="image"></i>Gallery</button><button type="button" class="secondary" data-cover-camera-btn><i data-lucide="camera"></i>Camera</button></div>
+      <div class="member-cover-pick-actions"><button type="button" class="secondary" data-cover-choose><i data-lucide="folder-open"></i>Upload photo</button><button type="button" class="secondary" data-cover-camera-btn><i data-lucide="camera"></i>Take photo</button></div>
       <div class="member-cover-position-grid">
-        <label>Horizontal<input type="range" min="0" max="100" value="${numberOr(current?.position_x)}" data-cover-x></label>
-        <label>Vertical<input type="range" min="0" max="100" value="${numberOr(current?.position_y)}" data-cover-y></label>
+        <label>Move left / right<input type="range" min="0" max="100" value="${numberOr(current?.position_x)}" data-cover-x></label>
+        <label>Move up / down<input type="range" min="0" max="100" value="${numberOr(current?.position_y)}" data-cover-y></label>
       </div>
-      <div class="member-cover-editor-actions">${current?'<button type="button" class="secondary danger" data-cover-remove><i data-lucide="trash-2"></i>Remove</button>':''}<button type="button" class="primary" data-cover-save ${current?'':'disabled'}>Save cover</button></div>
+      <div class="member-cover-editor-actions"><button type="button" class="primary" data-cover-save ${current?'':'disabled'}>Save cover</button></div>
       <div class="member-cover-status" data-cover-status hidden></div>
     </div>`;
 
@@ -95,7 +131,7 @@
 
     const preview=modal.querySelector('.member-cover-preview');
     const previewImg=preview.querySelector('img');
-    const previewEmpty=preview.querySelector('.member-cover-preview-empty');
+    const previewEmpty=modal.querySelector('.member-cover-preview-empty');
     const fileInput=modal.querySelector('[data-cover-file]');
     const cameraInput=modal.querySelector('[data-cover-camera]');
     const save=modal.querySelector('[data-cover-save]');
@@ -106,7 +142,7 @@
     let objectUrl='';
 
     const showStatus=(text,type='error')=>{status.hidden=!text;status.textContent=text||'';status.dataset.type=type};
-    const showPreview=(url)=>{
+    const showPreview=url=>{
       if(!url)return;
       previewImg.src=url;
       previewImg.hidden=false;
@@ -116,8 +152,7 @@
     if(current?.url)showPreview(current.url);
 
     const updatePos=()=>{if(!previewImg.hidden)previewImg.style.objectPosition=`${x.value}% ${y.value}%`;if(current||blob)save.disabled=false};
-    x.oninput=updatePos;
-    y.oninput=updatePos;
+    x.oninput=updatePos;y.oninput=updatePos;
 
     const loadFile=file=>{
       if(!file)return;
@@ -157,26 +192,14 @@
         }
         const client=sb();
         if(!client)throw new Error('Cover storage is unavailable.');
-        const {error}=await client.from('person_covers').upsert({
-          person_id:id,
-          family_id:u.familyId,
-          storage_path:path,
-          position_x:Number(x.value),
-          position_y:Number(y.value),
-          updated_by_user_id:u.supabaseUserId,
-          updated_at:new Date().toISOString()
-        },{onConflict:'person_id'});
+        const {error}=await client.from('person_covers').upsert({person_id:id,family_id:u.familyId,storage_path:path,position_x:Number(x.value),position_y:Number(y.value),updated_by_user_id:u.supabaseUserId,updated_at:new Date().toISOString()},{onConflict:'person_id'});
         if(error)throw error;
-        if(blob&&current?.storage_path&&current.storage_path!==path){
-          await window.FB_MEDIA.remove([current.storage_path],{silent:true});
-        }
+        if(blob&&current?.storage_path&&current.storage_path!==path)await window.FB_MEDIA.remove([current.storage_path],{silent:true});
         close();
         await load(true);
       }catch(err){
         console.error('Cover save:',err);
-        if(uploadedPath&&uploadedPath!==current?.storage_path){
-          try{await window.FB_MEDIA.remove([uploadedPath],{silent:true})}catch(_){}
-        }
+        if(uploadedPath&&uploadedPath!==current?.storage_path){try{await window.FB_MEDIA.remove([uploadedPath],{silent:true})}catch(_){}}
         showStatus(err?.message||'Could not save the cover photo.');
         save.disabled=false;
         save.innerHTML=oldHtml;
@@ -184,18 +207,8 @@
       }
     };
 
-    modal.querySelector('[data-cover-remove]')?.addEventListener('click',async()=>{
-      if(!confirm('Remove this cover photo?'))return;
-      try{
-        const client=sb();
-        if(!client)throw new Error('Cover storage is unavailable.');
-        const {error}=await client.from('person_covers').delete().eq('person_id',id);
-        if(error)throw error;
-        if(current?.storage_path)await window.FB_MEDIA.remove([current.storage_path],{silent:true});
-        close();
-        await load(true);
-      }catch(err){showStatus(err?.message||'Could not remove the cover photo.')}
-    });
+    if(startMode==='gallery')setTimeout(()=>fileInput.click(),0);
+    if(startMode==='camera')setTimeout(()=>cameraInput.click(),0);
   }
 
   async function load(force=false){
