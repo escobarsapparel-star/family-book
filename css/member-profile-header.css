@@ -1,0 +1,45 @@
+/* Compact profile sub-header: back arrow + current member name. */
+.member-profile-view:not(.history-profile-view):not(.account-profile-view)>.fb-member-profile-header{
+  width:100%;
+  min-height:54px;
+  margin:0 0 10px!important;
+  padding:0 8px!important;
+  display:flex!important;
+  align-items:center;
+  gap:10px;
+  border:0!important;
+  border-bottom:1px solid var(--line)!important;
+  border-radius:0!important;
+  background:transparent!important;
+  color:var(--ink)!important;
+  font-size:1rem!important;
+  font-weight:850!important;
+  text-decoration:none!important;
+  box-shadow:none!important;
+  text-align:left;
+}
+.member-profile-view:not(.history-profile-view):not(.account-profile-view)>.fb-member-profile-header svg{
+  width:24px;height:24px;flex:0 0 auto;color:var(--ink);
+}
+.member-profile-view:not(.history-profile-view):not(.account-profile-view)>.fb-member-profile-header span{
+  min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;
+}
+@media(hover:hover) and (pointer:fine){
+  .member-profile-view:not(.history-profile-view):not(.account-profile-view)>.fb-member-profile-header:hover{
+    background:rgba(127,127,127,.055)!important;
+  }
+}
+@media(max-width:759px){
+  .member-profile-view:not(.history-profile-view):not(.account-profile-view)>.fb-member-profile-header{
+    width:100vw;
+    margin:0 0 0 calc(50% - 50vw)!important;
+    min-height:56px;
+    padding:0 16px!important;
+    background:var(--paper)!important;
+    border-top:0!important;
+    border-bottom:1px solid var(--line)!important;
+    font-size:1.06rem!important;
+    position:relative;
+    z-index:8;
+  }
+}
