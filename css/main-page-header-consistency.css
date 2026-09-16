@@ -37,13 +37,17 @@
   font-weight:400!important;
 }
 
-/* Memories: preserve its existing approved sizing; align colours only. */
+/* Memories: preserve its existing approved sizing; align colours only.
+   Target the real page wrapper directly so this works before/after polish classes mount. */
+.memories-page .memories-head .eyebrow,
 .memories-polished .memories-head .eyebrow{
   color:#997354!important;
 }
+.memories-page .memories-head h1,
 .memories-polished .memories-head h1{
   color:#315c43!important;
 }
+.memories-page .memories-head p,
 .memories-polished .memories-head p{
   color:#756c63!important;
 }
@@ -52,16 +56,26 @@
 html[data-theme="dark"] .calendar-title-row h1,
 html[data-theme="dark"] .members-head h1,
 html[data-theme="dark"] .tree-head h1,
+html[data-theme="dark"] .memories-page .memories-head h1,
 html[data-theme="dark"] .memories-polished .memories-head h1{
   color:#a7cbb0!important;
 }
 
-/* Keep descriptions warm/muted in dark mode instead of near-white. */
+/* Keep Calendar/Members/Tree descriptions warm and muted. */
 html[data-theme="dark"] .calendar-title-row p:last-child,
 html[data-theme="dark"] .members-head>div>p:last-child,
-html[data-theme="dark"] .tree-head>div>p:last-child,
-html[data-theme="dark"] .memories-polished .memories-head p{
+html[data-theme="dark"] .tree-head>div>p:last-child{
   color:#8f796b!important;
+}
+
+/* Memories dark-mode colours matched to the Calendar screenshot, without changing scale. */
+html[data-theme="dark"] .memories-page .memories-head .eyebrow,
+html[data-theme="dark"] .memories-polished .memories-head .eyebrow{
+  color:#d7b48d!important;
+}
+html[data-theme="dark"] .memories-page .memories-head p,
+html[data-theme="dark"] .memories-polished .memories-head p{
+  color:#ab8f7c!important;
 }
 
 @media(max-width:620px){
