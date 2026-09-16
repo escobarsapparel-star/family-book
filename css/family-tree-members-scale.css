@@ -33,7 +33,7 @@
     margin-bottom:12px!important;
   }
 
-  /* Keep the OUTER directory aligned with Calendar, but retain a small inner gutter so rows do not look clipped by the rounded frame. */
+  /* Keep the OUTER rounded directory container, with a small inner gutter. */
   .members-page .members-grid{
     width:100%!important;
     max-width:100%!important;
@@ -42,11 +42,17 @@
     padding:4px 10px!important;
     border-radius:18px!important;
   }
+
+  /* Remove the square inner green row fill while preserving dividers and the rounded outer container. */
   .members-page .member-card,
-  .members-page .member-card.has-contact{
+  .members-page .member-card.has-contact,
+  html[data-theme="dark"] .members-page .member-card,
+  html[data-theme="dark"] .members-page .member-card.has-contact{
     min-height:76px!important;
     padding-top:9px!important;
     padding-bottom:9px!important;
+    background:transparent!important;
+    box-shadow:none!important;
   }
   .members-page .member-card:first-child{
     padding-top:10px!important;
@@ -101,7 +107,7 @@
     width:21px!important;
     height:21px!important;
     margin:0!important;
-    transform:translateY(4px)!important;
+    transform:translateY(6px)!important;
   }
 }
 
