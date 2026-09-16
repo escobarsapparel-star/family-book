@@ -1,28 +1,15 @@
-/* Family Book member profile — social profile blended into the normal site flow. */
+/* Clean member-profile rebuild: only cover + avatar + name for the first pass. */
 .member-profile-view:not(.history-profile-view):not(.account-profile-view){max-width:760px;margin:0 auto}
-.member-profile-view:not(.history-profile-view):not(.account-profile-view)>.fu-back{position:relative;z-index:3;margin:0 0 10px}
-.member-profile-view:not(.history-profile-view):not(.account-profile-view) .profile-view-card{position:relative;overflow:visible;padding:0 0 26px!important;border:0!important;border-radius:0!important;box-shadow:none!important;background:transparent!important;text-align:left!important}
-.member-profile-view:not(.history-profile-view):not(.account-profile-view) .profile-view-card:before{content:"";display:block;height:210px;background:linear-gradient(135deg,rgba(49,92,67,.82),rgba(166,107,56,.55)),url('../assets/images/family-album.jpg') center/cover no-repeat;border:1px solid var(--line);border-radius:18px}
-.member-profile-view:not(.history-profile-view):not(.account-profile-view) .profile-view-avatar{width:154px!important;height:154px!important;margin:-76px 0 0 28px!important;border:5px solid var(--paper)!important;box-shadow:0 8px 24px rgba(0,0,0,.22);position:relative;z-index:2}
-.member-profile-view:not(.history-profile-view):not(.account-profile-view) .profile-view-card>h1{margin:14px 28px 4px!important;text-align:left!important;font-size:clamp(2rem,6vw,3rem)!important;line-height:1.05}
-.member-profile-view:not(.history-profile-view):not(.account-profile-view) .member-contact-actions{margin:18px 28px 0!important;justify-content:flex-start!important;max-width:430px}
-.member-profile-view:not(.history-profile-view):not(.account-profile-view) .profile-details{margin:22px 28px 0!important;display:grid!important;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px}
-.member-profile-view:not(.history-profile-view):not(.account-profile-view) .profile-detail{min-width:0}.member-profile-view:not(.history-profile-view):not(.account-profile-view) .profile-detail strong{overflow-wrap:anywhere}
-.member-profile-view:not(.history-profile-view):not(.account-profile-view) .member-activity-card{margin:0 28px!important;border:0!important;padding:0!important;background:transparent!important}
-.member-profile-view:not(.history-profile-view):not(.account-profile-view) .profile-view-card>[data-edit-member]{position:absolute;right:28px;top:228px;z-index:4;margin:0!important;width:auto!important;min-height:46px;border-radius:999px!important;padding:0 18px!important}
-.fb-member-profile-tabs{display:flex;margin:24px 28px 18px;border-bottom:1px solid var(--line);gap:4px}.fb-member-profile-tabs button{flex:1;border:0;background:transparent;color:var(--muted);font-weight:800;padding:13px 8px;border-bottom:3px solid transparent}.fb-member-profile-tabs button.active{color:var(--green);border-bottom-color:var(--green)}.fb-member-about-title{margin:0 28px 10px;font-size:1.1rem}.fb-member-tab-hidden{display:none!important}
-@media(max-width:759px){
- .member-profile-view:not(.history-profile-view):not(.account-profile-view){margin:-2px -11px 0;max-width:none}
- .member-profile-view:not(.history-profile-view):not(.account-profile-view)>.fu-back{margin:8px 18px 10px}
- .member-profile-view:not(.history-profile-view):not(.account-profile-view) .profile-view-card{margin:0 18px!important}
- .member-profile-view:not(.history-profile-view):not(.account-profile-view) .profile-view-card:before{height:190px;border-radius:16px}
- .member-profile-view:not(.history-profile-view):not(.account-profile-view) .profile-view-avatar{width:132px!important;height:132px!important;margin:-64px 0 0 20px!important;border-width:4px!important}
- .member-profile-view:not(.history-profile-view):not(.account-profile-view) .profile-view-card>h1{margin:12px 20px 2px!important;font-size:2.25rem!important;max-width:calc(100% - 40px)}
- .member-profile-view:not(.history-profile-view):not(.account-profile-view) .profile-view-card>[data-edit-member]{top:205px;right:18px;width:48px!important;height:48px;min-height:48px;padding:0!important;font-size:0;display:grid;place-items:center}
- .member-profile-view:not(.history-profile-view):not(.account-profile-view) .profile-view-card>[data-edit-member] svg{width:22px;height:22px}
- .member-profile-view:not(.history-profile-view):not(.account-profile-view) .member-contact-actions{margin:18px 0 0!important;max-width:none;display:grid!important;grid-template-columns:1fr 1fr;gap:10px}
- .member-profile-view:not(.history-profile-view):not(.account-profile-view) .member-contact-actions a{justify-content:center}
- .member-profile-view:not(.history-profile-view):not(.account-profile-view) .profile-details{margin:16px 0 0!important;grid-template-columns:1fr!important;gap:8px}
- .member-profile-view:not(.history-profile-view):not(.account-profile-view) .member-activity-card{margin:0!important}
- .fb-member-profile-tabs{margin:22px 0 18px}.fb-member-about-title{margin:0 0 10px}
-}
+.member-profile-view:not(.history-profile-view):not(.account-profile-view)>.fu-back{margin:8px 0 16px}
+.fb-basic-member-profile{position:relative!important;overflow:visible!important;padding:0 0 30px!important;margin:0!important;border:0!important;border-radius:0!important;box-shadow:none!important;background:transparent!important;text-align:center!important}
+.fb-basic-member-profile:before{display:none!important;content:none!important}
+.fb-basic-cover{position:relative;width:100%;height:300px;overflow:hidden;border-radius:18px;background:rgba(255,255,255,.045);border:1px solid var(--line)}
+.fb-basic-cover>img{display:block;width:100%;height:100%;object-fit:cover;object-position:50% 50%}
+.fb-basic-cover-empty{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:8px;color:var(--muted);font-weight:800}.fb-basic-cover-empty svg{width:30px;height:30px}
+.fb-basic-avatar-slot{position:relative;z-index:3;width:max-content;margin:-82px auto 0}
+.fb-basic-member-profile .profile-view-avatar{width:164px!important;height:164px!important;margin:0!important;border:5px solid var(--paper)!important;border-radius:50%!important;overflow:hidden;box-shadow:0 4px 16px rgba(0,0,0,.22);background:var(--paper)!important}
+.fb-basic-member-profile .profile-view-avatar img{width:100%;height:100%;object-fit:cover}
+.fb-basic-name{position:relative;margin:18px auto 0;padding:0 70px;display:flex;align-items:center;justify-content:center;gap:12px;min-height:56px}
+.fb-basic-member-profile .fb-basic-name>h1{margin:0!important;text-align:center!important;font-size:clamp(2rem,6vw,2.75rem)!important;line-height:1.08}
+.fb-basic-member-profile .fb-basic-name>[data-edit-member]{position:absolute!important;right:14px!important;top:50%!important;transform:translateY(-50%);margin:0!important;width:48px!important;height:48px!important;min-height:48px!important;padding:0!important;border-radius:50%!important;font-size:0;display:grid;place-items:center}.fb-basic-member-profile .fb-basic-name>[data-edit-member] svg{width:21px;height:21px}
+@media(max-width:759px){.member-profile-view:not(.history-profile-view):not(.account-profile-view){margin:0 -11px;max-width:none}.member-profile-view:not(.history-profile-view):not(.account-profile-view)>.fu-back{margin:10px 20px 16px}.fb-basic-cover{height:235px;border-left:0;border-right:0;border-radius:0}.fb-basic-avatar-slot{margin-top:-72px}.fb-basic-member-profile .profile-view-avatar{width:144px!important;height:144px!important;border-width:4px!important}.fb-basic-name{margin-top:16px;padding:0 64px}.fb-basic-member-profile .fb-basic-name>h1{font-size:2.2rem!important}.fb-basic-member-profile .fb-basic-name>[data-edit-member]{right:18px!important}}
