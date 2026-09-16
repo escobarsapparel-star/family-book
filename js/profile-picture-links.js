@@ -12,6 +12,11 @@
     '.settings-account-avatar'
   ].join(',');
 
+  const NAME_SELECTOR=[
+    '.wall-post-head > div:nth-child(2) > strong',
+    '.comment-meta strong'
+  ].join(',');
+
   const norm=v=>String(v||'').trim().replace(/\s+/g,' ').toLowerCase();
   const currentId=()=>String(window.FB_AUTH?.get?.()?.memberId||'');
   const people=()=>window.FB_FAMILY_DATA?.getPeople?.()||[];
@@ -67,6 +72,22 @@
     return '';
   }
 
+  function resolveNameMemberId(nameEl){
+    const postHead=nameEl.closest('.wall-post-head');
+    if(postHead){
+      const avatar=postHead.querySelector('.wall-avatar');
+      const explicit=avatar?.dataset.profileMember;
+      if(explicit)return String(explicit);
+    }
+    const comment=nameEl.closest('.comment-item');
+    if(comment){
+      const avatar=comment.querySelector('.comment-avatar');
+      const explicit=avatar?.dataset.profileMember;
+      if(explicit)return String(explicit);
+    }
+    return uniqueMemberIdByName(nameEl.textContent||'');
+  }
+
   function excluded(avatar){
     // On the profile itself the round photo intentionally opens the
     // upload/take/view/remove photo menu instead of navigating away.
@@ -86,29 +107,54 @@
         avatar.setAttribute('aria-label',`Open ${displayNameForAvatar(avatar)} profile`);
       }
     });
+
+    root.querySelectorAll?.(NAME_SELECTOR).forEach(nameEl=>{
+      const id=resolveNameMemberId(nameEl);
+      if(!id)return;
+      nameEl.classList.add('fb-profile-name-link');
+      nameEl.dataset.profileMember=id;
+      nameEl.tabIndex=0;
+      nameEl.setAttribute('role','link');
+      nameEl.setAttribute('aria-label',`Open ${nameEl.textContent.trim()} profile`);
+    });
   }
 
-  function openFromAvatar(avatar,event){
-    if(!avatar||excluded(avatar))return false;
-    const id=resolveMemberId(avatar);
+  function openMember(id,event){
     if(!id||typeof window.go!=='function')return false;
-
-    // Member cards already navigate correctly through their parent button.
-    if(avatar.closest('[data-view-member]'))return false;
-
     event?.preventDefault?.();
     event?.stopPropagation?.();
     window.go(`view-member:${id}`);
     return true;
   }
 
+  function openFromAvatar(avatar,event){
+    if(!avatar||excluded(avatar))return false;
+    const id=resolveMemberId(avatar);
+    if(!id)return false;
+
+    // Member cards already navigate correctly through their parent button.
+    if(avatar.closest('[data-view-member]'))return false;
+    return openMember(id,event);
+  }
+
   document.addEventListener('click',event=>{
+    const nameEl=event.target.closest?.(NAME_SELECTOR);
+    if(nameEl){
+      const id=nameEl.dataset.profileMember||resolveNameMemberId(nameEl);
+      if(openMember(id,event))return;
+    }
     const avatar=event.target.closest?.(AVATAR_SELECTOR);
     if(avatar)openFromAvatar(avatar,event);
   },true);
 
   document.addEventListener('keydown',event=>{
     if(event.key!=='Enter'&&event.key!==' ')return;
+    const nameEl=event.target.closest?.(NAME_SELECTOR);
+    if(nameEl){
+      const id=nameEl.dataset.profileMember||resolveNameMemberId(nameEl);
+      if(openMember(id,event))event.preventDefault();
+      return;
+    }
     const avatar=event.target.closest?.(AVATAR_SELECTOR);
     if(!avatar||avatar.closest('button,a'))return;
     if(openFromAvatar(avatar,event))event.preventDefault();
