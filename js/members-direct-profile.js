@@ -2,8 +2,9 @@
   if(window.__fbMembersDirectProfile)return;
   window.__fbMembersDirectProfile=true;
 
-  // Current members should open the newer member profile/wall directly.
-  // Keep historical/biography profiles on the existing view-member route.
+  // Keep the Members directory, but open a member through the canonical
+  // view-member route so member-profile-social.js can replace the legacy
+  // profile card with the clean cover/avatar/name presentation.
   document.addEventListener('click',ev=>{
     const trigger=ev.target.closest('.members-page [data-view-member]');
     if(!trigger)return;
@@ -17,6 +18,6 @@
     ev.preventDefault();
     ev.stopPropagation();
     ev.stopImmediatePropagation();
-    window.go?.(`member-wall:${id}`);
+    window.go?.(`view-member:${id}`);
   },true);
 })();
