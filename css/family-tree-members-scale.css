@@ -22,12 +22,19 @@
 }
 
 @media (max-width:560px){
+  /* Match Calendar's page edge and top spacing: the shared .screen already supplies the mobile gutter. */
   .members-page{
-    padding-left:16px!important;
-    padding-right:16px!important;
+    padding:0 0 92px!important;
+  }
+  .members-page .members-head{
+    padding-left:0!important;
+    padding-right:0!important;
+    margin-top:0!important;
+    margin-bottom:12px!important;
   }
   .members-page .members-grid{
-    padding:0 11px!important;
+    padding-left:0!important;
+    padding-right:0!important;
   }
   .members-page .member-card,
   .members-page .member-card.has-contact{
