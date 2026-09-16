@@ -1,0 +1,155 @@
+/* Family Book — Family Tree + Members scale alignment.
+   Calendar remains the visual reference. Presentation only. */
+
+/* Members: make the directory feel like the same app scale as Calendar. */
+@media (min-width:561px){
+  .members-page .member-avatar{
+    width:60px!important;
+    height:60px!important;
+    flex:0 0 60px!important;
+  }
+  .members-page .member-info h3{
+    font-size:1.02rem!important;
+    line-height:1.2!important;
+  }
+  .members-page .member-info small{
+    font-size:.72rem!important;
+    line-height:1.25!important;
+  }
+  .members-page .member-card-view{
+    gap:14px!important;
+  }
+}
+
+@media (max-width:560px){
+  .members-page{
+    padding-left:16px!important;
+    padding-right:16px!important;
+  }
+  .members-page .members-grid{
+    padding:0 11px!important;
+  }
+  .members-page .member-card,
+  .members-page .member-card.has-contact{
+    min-height:76px!important;
+    padding-top:9px!important;
+    padding-bottom:9px!important;
+  }
+  .members-page .member-card-view{
+    min-height:58px!important;
+    gap:11px!important;
+  }
+  .members-page .member-avatar{
+    width:50px!important;
+    height:50px!important;
+    flex:0 0 50px!important;
+    font-size:.8rem!important;
+  }
+  .members-page .member-info h3{
+    font-size:.96rem!important;
+    line-height:1.18!important;
+  }
+  .members-page .member-info small{
+    font-size:.64rem!important;
+    line-height:1.2!important;
+  }
+  .members-page .member-info .member-linked-account,
+  .members-page .member-info .member-managed-profile{
+    font-size:.6rem!important;
+  }
+  .members-page .member-contact-actions.compact a{
+    width:34px!important;
+    height:34px!important;
+    min-width:34px!important;
+    min-height:34px!important;
+  }
+  .members-page .member-contact-actions.compact a svg{
+    width:15px!important;
+    height:15px!important;
+  }
+
+  /* Exact optical centering for the round Add Member control. */
+  .members-head .member-add{
+    display:grid!important;
+    place-items:center!important;
+    align-content:center!important;
+    justify-content:center!important;
+    line-height:0!important;
+    padding:0!important;
+  }
+  .members-head .member-add svg{
+    display:block!important;
+    width:21px!important;
+    height:21px!important;
+    margin:0!important;
+    transform:translateX(1px);
+  }
+}
+
+/* Family Tree: enlarge the readable content while preserving the coordinate geometry. */
+.coordinate-tree-page .ct-person strong{
+  font-size:.88rem!important;
+  line-height:1.12!important;
+  font-weight:750!important;
+}
+.coordinate-tree-page .ct-avatar{
+  width:42px!important;
+  height:42px!important;
+  flex:0 0 42px!important;
+  font-size:.76rem!important;
+}
+.coordinate-tree-page .ct-person{
+  gap:10px!important;
+  padding-left:9px!important;
+  padding-right:9px!important;
+}
+.coordinate-tree-page .ct-heart{
+  width:30px!important;
+  height:30px!important;
+}
+.coordinate-tree-page .ct-heart svg{
+  width:15px!important;
+  height:15px!important;
+}
+
+@media (max-width:650px){
+  .tree-page{
+    padding-left:16px!important;
+    padding-right:16px!important;
+  }
+  .tree-head{
+    margin-bottom:18px!important;
+  }
+  .tree-head-actions{
+    gap:8px!important;
+  }
+  .tree-head-actions .tree-history-add,
+  .tree-head-actions .tree-full-btn,
+  .tree-head-actions .tree-manage{
+    width:46px!important;
+    height:46px!important;
+    min-width:46px!important;
+    min-height:46px!important;
+    padding:0!important;
+    display:grid!important;
+    place-items:center!important;
+    border-radius:50%!important;
+  }
+  .tree-head-actions button svg{
+    width:21px!important;
+    height:21px!important;
+    margin:0!important;
+  }
+  .coordinate-tree-page .ct-person strong{
+    font-size:.92rem!important;
+  }
+  .coordinate-tree-page .ct-avatar{
+    width:44px!important;
+    height:44px!important;
+    flex-basis:44px!important;
+  }
+  .coordinate-tree-page .ct-board{
+    padding:14px!important;
+    border-radius:20px!important;
+  }
+}
