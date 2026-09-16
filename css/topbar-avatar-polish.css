@@ -1,0 +1,45 @@
+/* Keep the signed-in user's topbar profile photo perfectly framed on mobile and desktop. */
+#app>.app>.topbar .profile-actions{display:flex;align-items:center}
+#app>.app>.topbar .avatar{
+  padding:0!important;
+  overflow:hidden!important;
+  border-radius:50%!important;
+  display:grid!important;
+  place-items:center!important;
+  flex:0 0 auto!important;
+  line-height:1!important;
+  background:var(--fb-shell-accent-soft,var(--green))!important;
+}
+#app>.app>.topbar .avatar img{
+  display:block!important;
+  width:100%!important;
+  height:100%!important;
+  max-width:none!important;
+  object-fit:cover!important;
+  object-position:center center!important;
+  border-radius:50%!important;
+}
+
+/* Desktop: a little larger, Facebook-style, without enlarging the bell. */
+@media (min-width:760px){
+  #app>.app>.topbar .profile-actions{gap:10px!important;padding-right:2px}
+  #app>.app>.topbar .avatar{
+    width:48px!important;
+    height:48px!important;
+    min-width:48px!important;
+    min-height:48px!important;
+    border:2px solid var(--fb-shell-border,var(--line))!important;
+    box-shadow:0 0 0 2px color-mix(in srgb,var(--fb-shell-panel,#fff) 80%,transparent)!important;
+  }
+}
+
+/* Mobile: slightly larger than before while staying balanced with the 56px brand row. */
+@media (max-width:759px){
+  #app>.app>.topbar .avatar{
+    width:38px!important;
+    height:38px!important;
+    min-width:38px!important;
+    min-height:38px!important;
+    border:1px solid var(--fb-shell-border,var(--line))!important;
+  }
+}
