@@ -11,21 +11,22 @@
     const u=window.FB_AUTH?.get?.()||{};
     if(!u.familyId)return;
 
-    // Keep the existing Family Admin path exactly as-is.
+    // Family Admins keep the existing full-tree save path.
     if(u.role==='admin')return original?.(rows);
 
-    // Connected family members must also be able to save relationships
-    // from their own editable profile. The profile form already limits
-    // non-admin members to their own profile; the backend remains the
-    // authority for family membership and relationship permissions.
     const client=window.FB_SUPABASE?.client;
     if(!client)throw new Error('Family Book is not connected to the family database yet.');
+    if(!u.memberId)throw new Error('Your family profile is not linked to this account yet.');
 
+    // A connected member saves only relationships attached to their own
+    // Person profile. The backend adds/replaces the reverse relationship too,
+    // so the shared tree stays consistent for everybody in the family.
+    const myId=String(u.memberId);
     const copy=(Array.isArray(rows)?rows:[])
-      .filter(r=>r&&r.from&&r.to&&r.type)
+      .filter(r=>r&&r.from&&r.to&&r.type&&(String(r.from)===myId||String(r.to)===myId))
       .map(r=>({from:String(r.from),to:String(r.to),type:String(r.type)}));
 
-    const {error}=await client.rpc('replace_family_relationships',{
+    const {error}=await client.rpc('replace_my_family_relationships',{
       p_relationships:copy
     });
 
@@ -34,8 +35,6 @@
       throw new Error(error.message||'Could not save your family relationship. Please try again.');
     }
 
-    // Pull the shared tree back from Supabase so the member immediately
-    // sees the same relationship state as the rest of the family.
     try{await familyData.reload?.()}catch(err){
       console.warn('Relationship saved, but family refresh failed:',err);
     }
