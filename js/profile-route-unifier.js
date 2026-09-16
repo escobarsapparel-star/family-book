@@ -18,10 +18,19 @@
   }
   function ownMemberRoute(){return `view-member:${ownMemberId()}`;}
 
+  // Replace the legacy profile renderer itself. This catches app.js's private
+  // lexical go('profile') path without modifying the large app.js file.
+  if(typeof window.viewMember==='function'){
+    window.profilePage=function(){return window.viewMember(ownMemberId());};
+  }
+
+  // Also normalize public navigation calls.
   window.go=function(route,...args){
     return originalGo(route==='profile'?ownMemberRoute():route,...args);
   };
 
+  // Header avatar, mobile Profile nav, Settings My profile, and desktop
+  // profile card all open the same member profile.
   document.addEventListener('click',ev=>{
     const target=ev.target.closest?.('#topProfileButton,[data-r="profile"],[data-profile-route="profile"],[data-desktop-route="profile"]');
     if(!target)return;
@@ -30,8 +39,7 @@
     window.go(ownMemberRoute());
   },true);
 
-  // Final guard: the retired account-profile screen must never remain rendered,
-  // even if older app code reaches its private lexical `go("profile")` route.
+  // Safety net for any legacy profile markup rendered by stale handlers.
   let redirecting=false;
   const guard=()=>{
     if(redirecting||!document.querySelector('.account-profile-view'))return;
@@ -39,8 +47,15 @@
     window.go(ownMemberRoute());
     setTimeout(()=>{redirecting=false},0);
   };
-  const screen=document.querySelector('#screen');
-  if(screen)new MutationObserver(guard).observe(screen,{childList:true,subtree:true});
-  document.addEventListener('DOMContentLoaded',guard,{once:true});
-  guard();
+  const observeScreen=()=>{
+    const screen=document.querySelector('#screen');
+    if(screen&&!screen.dataset.profileGuard){
+      screen.dataset.profileGuard='1';
+      new MutationObserver(guard).observe(screen,{childList:true,subtree:true});
+    }
+    guard();
+  };
+  document.addEventListener('DOMContentLoaded',observeScreen,{once:true});
+  window.addEventListener('load',observeScreen,{once:true});
+  observeScreen();
 })();
