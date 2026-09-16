@@ -1,0 +1,146 @@
+/* Family Book — mobile Members directory polish.
+   Presentation only: preserves profile routing, permissions, menus and contact actions. */
+@media (max-width:560px){
+  .members-page{
+    padding:16px 10px 94px!important;
+  }
+
+  .members-head{
+    position:relative;
+    align-items:flex-start!important;
+    gap:12px!important;
+    margin-bottom:16px!important;
+    padding:0 2px;
+  }
+  .members-head>div{
+    min-width:0;
+    padding-right:48px;
+  }
+  .members-head .eyebrow{
+    margin-bottom:4px!important;
+    font-size:.66rem!important;
+    letter-spacing:.11em!important;
+  }
+  .members-head h1{
+    margin:0 0 5px!important;
+    font-size:1.68rem!important;
+    line-height:1.08!important;
+  }
+  .members-head>div>p:last-child{
+    max-width:360px;
+    font-size:.78rem!important;
+    line-height:1.35!important;
+  }
+  .members-head .member-add{
+    position:absolute;
+    right:2px;
+    top:18px;
+    width:42px!important;
+    height:42px!important;
+    min-width:42px!important;
+    padding:0!important;
+    border-radius:50%!important;
+    box-shadow:none!important;
+  }
+  .members-head .member-add svg{width:20px;height:20px}
+
+  .members-grid{
+    grid-template-columns:1fr!important;
+    gap:10px!important;
+  }
+
+  .member-card{
+    display:block!important;
+    min-height:82px;
+    padding:12px 42px 12px 12px!important;
+    border-radius:17px!important;
+    box-shadow:none!important;
+  }
+  .member-card.has-contact{
+    min-height:108px;
+    padding-bottom:42px!important;
+  }
+
+  .member-card-view{
+    width:100%!important;
+    min-height:58px;
+    gap:11px!important;
+    padding:0!important;
+    padding-right:0!important;
+    align-items:center!important;
+  }
+  .member-avatar{
+    width:54px!important;
+    height:54px!important;
+    flex:0 0 54px!important;
+    font-size:.82rem;
+  }
+  .member-info{
+    min-width:0!important;
+    padding-right:2px;
+  }
+  .member-info h3{
+    margin:0 0 3px!important;
+    font-size:.98rem!important;
+    line-height:1.18!important;
+  }
+  .member-info small{
+    gap:5px!important;
+    margin-top:3px!important;
+    font-size:.66rem!important;
+    line-height:1.2!important;
+  }
+  .member-info small svg{
+    width:12px!important;
+    height:12px!important;
+    flex:0 0 12px;
+  }
+  .member-linked-account,
+  .member-managed-profile{
+    opacity:.82;
+    font-size:.61rem!important;
+  }
+
+  .member-actions{
+    top:7px!important;
+    right:5px!important;
+  }
+  .member-menu-btn{
+    width:36px!important;
+    height:36px!important;
+    display:grid!important;
+    place-items:center!important;
+    padding:0!important;
+    border-radius:50%!important;
+  }
+  .member-menu-btn svg{width:20px;height:20px}
+  .member-menu{
+    top:38px!important;
+    right:3px!important;
+    width:178px!important;
+  }
+
+  .member-contact-actions.compact{
+    left:77px!important;
+    right:42px!important;
+    bottom:9px!important;
+    width:auto!important;
+    gap:6px!important;
+    justify-content:flex-start!important;
+  }
+  .member-contact-actions.compact a{
+    min-height:28px!important;
+    padding:4px 9px!important;
+    border-radius:9px!important;
+    gap:5px!important;
+    font-size:.64rem!important;
+  }
+  .member-contact-actions.compact a svg{
+    width:13px!important;
+    height:13px!important;
+  }
+
+  .member-card:active{
+    transform:scale(.997);
+  }
+}
