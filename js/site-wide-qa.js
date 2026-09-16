@@ -68,6 +68,20 @@
     page.querySelectorAll('.memory-card-tags').forEach(el=>{if(!el.hidden)el.hidden=true});
   }
 
+  function cleanUnknownDates(){
+    document.querySelectorAll('.album-memory-choice-copy small,.memory-card-copy small').forEach(el=>{
+      if(/^date unknown$/i.test(String(el.textContent||'').trim())){
+        if(!el.hidden)el.hidden=true;
+      }
+    });
+  }
+
+  function fixNotificationRoutes(){
+    document.querySelectorAll('[data-notification-route="wall"]').forEach(btn=>{
+      btn.dataset.notificationRoute='home';
+    });
+  }
+
   function healTreeArt(){
     document.querySelectorAll('#fullTreeStage .ct-tree-art').forEach(img=>{
       if(img.dataset.qaTreeBound==='1')return;
@@ -97,6 +111,8 @@
   function run(){
     cleanProfileStatus();
     polishMemoriesRuntime();
+    cleanUnknownDates();
+    fixNotificationRoutes();
     healTreeArt();
     removeBrokenImagePlaceholders();
   }
