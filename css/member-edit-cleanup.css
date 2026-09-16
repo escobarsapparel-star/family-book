@@ -1,0 +1,210 @@
+/* Family Book — compact member editor polish
+   Scoped to Edit Family Member / Edit Family Details only. */
+
+.member-form-card:has(#editMemberForm){
+  max-width:820px;
+  padding:24px;
+  border-radius:22px;
+}
+.member-form-card:has(#editMemberForm) .form-title{
+  display:grid;
+  grid-template-columns:68px minmax(0,1fr);
+  gap:16px;
+  align-items:center;
+  margin-bottom:20px;
+}
+.member-form-card:has(#editMemberForm) .form-title>div:last-child{min-width:0}
+.member-form-card:has(#editMemberForm) .form-title .eyebrow{margin-bottom:3px;font-size:.66rem}
+.member-form-card:has(#editMemberForm) .form-title h1{
+  font-size:1.78rem;
+  line-height:1.08;
+  margin:0 0 6px;
+}
+.member-form-card:has(#editMemberForm) .form-title p{
+  max-width:610px;
+  font-size:.84rem;
+  line-height:1.42;
+}
+.member-form-card:has(#editMemberForm) .member-static-avatar{
+  width:64px;
+  height:64px;
+  border-radius:50%;
+  box-shadow:0 0 0 3px #f0e9de;
+}
+.member-form-card:has(#editMemberForm) .member-static-avatar img{
+  width:100%;
+  height:100%;
+  object-fit:cover;
+  object-position:center;
+  border-radius:50%;
+}
+
+#editMemberForm{
+  gap:12px;
+}
+#editMemberForm .field-row{
+  gap:12px;
+}
+#editMemberForm label{
+  gap:5px;
+  font-size:.8rem;
+}
+#editMemberForm input,
+#editMemberForm select{
+  min-height:44px;
+  padding:10px 12px;
+  border-radius:11px;
+}
+
+#editMemberForm .locked-member-field{
+  min-height:58px;
+  padding:8px 11px;
+  gap:2px;
+  border-radius:11px;
+}
+#editMemberForm .locked-member-field>span{font-size:.66rem}
+#editMemberForm .locked-member-field>strong{font-size:.78rem}
+#editMemberForm .locked-member-field>small{font-size:.58rem}
+
+#editMemberForm .relationship-section{
+  margin-top:2px;
+  padding:16px;
+  border-radius:16px;
+}
+#editMemberForm .relationship-title h3{
+  font-size:1.02rem;
+  margin-bottom:3px;
+}
+#editMemberForm .relationship-title p{
+  margin-bottom:11px!important;
+  font-size:.75rem;
+  line-height:1.4;
+}
+#editMemberForm .relationship-row{
+  margin-bottom:7px;
+}
+#editMemberForm .relationship-field{
+  font-size:.68rem!important;
+}
+#editMemberForm .add-rel{
+  padding:5px 2px;
+  font-size:.78rem;
+}
+#editMemberForm .form-actions{
+  margin-top:3px;
+}
+
+/* Dark theme keeps the same compact hierarchy without changing Family Book colours. */
+html[data-theme="dark"] .member-form-card:has(#editMemberForm) .member-static-avatar{
+  box-shadow:0 0 0 3px #31382f;
+}
+
+@media(max-width:560px){
+  .member-form-page:has(#editMemberForm){
+    padding:14px 8px 96px!important;
+  }
+  .member-form-page:has(#editMemberForm)>.back-link{
+    margin:0 6px 10px;
+    font-size:.78rem;
+  }
+  .member-form-card:has(#editMemberForm){
+    width:100%;
+    padding:15px 13px;
+    border-radius:18px;
+  }
+  .member-form-card:has(#editMemberForm) .form-title{
+    grid-template-columns:54px minmax(0,1fr);
+    gap:11px;
+    align-items:start;
+    margin-bottom:15px;
+  }
+  .member-form-card:has(#editMemberForm) .member-static-avatar{
+    width:52px;
+    height:52px;
+    box-shadow:0 0 0 2px #f0e9de;
+  }
+  html[data-theme="dark"] .member-form-card:has(#editMemberForm) .member-static-avatar{
+    box-shadow:0 0 0 2px #31382f;
+  }
+  .member-form-card:has(#editMemberForm) .form-title .eyebrow{
+    font-size:.58rem;
+    letter-spacing:.11em;
+  }
+  .member-form-card:has(#editMemberForm) .form-title h1{
+    font-size:1.42rem;
+    line-height:1.06;
+    margin-bottom:5px;
+  }
+  .member-form-card:has(#editMemberForm) .form-title p{
+    font-size:.73rem;
+    line-height:1.35;
+  }
+  #editMemberForm{
+    gap:10px;
+  }
+  #editMemberForm .field-row{
+    gap:10px;
+  }
+  #editMemberForm label{
+    font-size:.76rem;
+  }
+  #editMemberForm input,
+  #editMemberForm select{
+    min-height:43px;
+    padding:9px 11px;
+    border-radius:10px;
+    font-size:16px;
+  }
+  #editMemberForm .locked-member-field{
+    min-height:52px;
+    padding:8px 10px;
+  }
+  #editMemberForm .relationship-section{
+    margin-top:1px;
+    padding:12px!important;
+    border-radius:15px;
+  }
+  #editMemberForm .relationship-title h3{
+    font-size:.96rem;
+  }
+  #editMemberForm .relationship-title p{
+    font-size:.71rem;
+    margin-bottom:8px!important;
+  }
+  #editMemberForm .relationship-row{
+    padding:7px 0!important;
+    gap:7px!important;
+    margin-bottom:0;
+  }
+  #editMemberForm .relationship-row select{
+    min-height:42px;
+    padding:9px 10px!important;
+  }
+  #editMemberForm .remove-rel{
+    width:34px;
+    height:34px;
+  }
+  #editMemberForm .form-actions{
+    position:sticky;
+    bottom:calc(8px + env(safe-area-inset-bottom));
+    z-index:6;
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:8px;
+    margin:8px -3px 0;
+    padding:8px;
+    border:1px solid rgba(127,145,126,.24);
+    border-radius:15px;
+    background:rgba(248,243,233,.94);
+    backdrop-filter:blur(12px);
+    -webkit-backdrop-filter:blur(12px);
+  }
+  html[data-theme="dark"] #editMemberForm .form-actions{
+    background:rgba(24,29,23,.94);
+    border-color:#394037;
+  }
+  #editMemberForm .form-actions button{
+    min-height:44px;
+    padding:10px 12px;
+  }
+}
