@@ -1,7 +1,6 @@
 (()=>{
   const sb=()=>window.FB_SUPABASE?.client;
   const auth=()=>window.FB_AUTH?.get?.()||{};
-  const esc=v=>String(v??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#039;'}[c]));
   let lastRouteKey='';
 
   function memberIdFromPage(page){
@@ -40,29 +39,52 @@
     const modal=document.createElement('div');
     modal.className='member-cover-editor';
     modal.innerHTML=`<div class="member-cover-editor-card">
-      <div class="member-cover-editor-head"><strong>Cover photo</strong><button type="button" data-cover-close aria-label="Close"><i data-lucide="x"></i></button></div>
-      <div class="member-cover-preview ${current?.url?'has-image':''}" style="${current?.url?`background-image:url('${esc(current.url)}');background-position:${Number(current.position_x)||50}% ${Number(current.position_y)||50}%`:''}"><span>${current?.url?'Drag the position sliders below':'Choose a photo to preview it here'}</span></div>
+      <div class="member-cover-editor-head"><div><strong>Cover photo</strong><small>Choose a wide photo and adjust what shows.</small></div><button type="button" data-cover-close aria-label="Close"><i data-lucide="x"></i></button></div>
+      <div class="member-cover-preview ${current?.url?'has-image':''}"><span>${current?.url?'Adjust the photo position':'Choose a photo'}</span></div>
       <input type="file" accept="image/*" data-cover-file hidden>
       <input type="file" accept="image/*" capture="environment" data-cover-camera hidden>
-      <div class="member-cover-pick-actions"><button type="button" class="secondary" data-cover-choose><i data-lucide="image"></i>Choose photo</button><button type="button" class="secondary" data-cover-camera-btn><i data-lucide="camera"></i>Take photo</button></div>
-      <label class="member-cover-position">Horizontal position<input type="range" min="0" max="100" value="${Number(current?.position_x)||50}" data-cover-x></label>
-      <label class="member-cover-position">Vertical position<input type="range" min="0" max="100" value="${Number(current?.position_y)||50}" data-cover-y></label>
-      <div class="member-cover-editor-actions">${current?'<button type="button" class="secondary danger" data-cover-remove><i data-lucide="trash-2"></i>Remove</button>':''}<button type="button" class="primary" data-cover-save disabled>Save cover</button></div>
+      <div class="member-cover-pick-actions"><button type="button" class="secondary" data-cover-choose><i data-lucide="image"></i><span>Gallery</span></button><button type="button" class="secondary" data-cover-camera-btn><i data-lucide="camera"></i><span>Camera</span></button></div>
+      <div class="member-cover-position-wrap">
+        <label class="member-cover-position"><span>Left / right</span><input type="range" min="0" max="100" value="${Number(current?.position_x)||50}" data-cover-x></label>
+        <label class="member-cover-position"><span>Up / down</span><input type="range" min="0" max="100" value="${Number(current?.position_y)||50}" data-cover-y></label>
+      </div>
+      <div class="member-cover-status" data-cover-status aria-live="polite"></div>
+      <div class="member-cover-editor-actions">${current?'<button type="button" class="secondary danger" data-cover-remove><i data-lucide="trash-2"></i><span>Remove</span></button>':'<span></span>'}<button type="button" class="primary" data-cover-save><i data-lucide="check"></i><span>Save cover</span></button></div>
     </div>`;
     document.body.appendChild(modal);window.lucide?.createIcons?.();
-    const preview=modal.querySelector('.member-cover-preview'),fileInput=modal.querySelector('[data-cover-file]'),cameraInput=modal.querySelector('[data-cover-camera]'),save=modal.querySelector('[data-cover-save]');
+    const preview=modal.querySelector('.member-cover-preview'),fileInput=modal.querySelector('[data-cover-file]'),cameraInput=modal.querySelector('[data-cover-camera]'),save=modal.querySelector('[data-cover-save]'),status=modal.querySelector('[data-cover-status]');
     let blob=null,objectUrl='';
     const x=modal.querySelector('[data-cover-x]'),y=modal.querySelector('[data-cover-y]');
+    if(current?.url){preview.style.backgroundImage=`url("${String(current.url).replace(/"/g,'%22')}")`;preview.style.backgroundPosition=`${Number(current.position_x)||50}% ${Number(current.position_y)||50}%`;}
     const updatePos=()=>preview.style.backgroundPosition=`${x.value}% ${y.value}%`;
     x.oninput=updatePos;y.oninput=updatePos;
-    const loadFile=file=>{if(!file)return;if(!file.type.startsWith('image/'))return alert('Please choose an image.');blob=file;if(objectUrl)URL.revokeObjectURL(objectUrl);objectUrl=URL.createObjectURL(file);preview.style.backgroundImage=`url("${objectUrl}")`;preview.classList.add('has-image');preview.querySelector('span').textContent='Adjust the position, then save';save.disabled=false;};
+    const setStatus=(message,isError=false)=>{status.textContent=message||'';status.classList.toggle('error',!!isError)};
+    const loadFile=file=>{if(!file)return;if(!file.type.startsWith('image/')){setStatus('Please choose an image.',true);return;}blob=file;if(objectUrl)URL.revokeObjectURL(objectUrl);objectUrl=URL.createObjectURL(file);preview.style.backgroundImage=`url("${objectUrl}")`;preview.classList.add('has-image');preview.querySelector('span').textContent='Adjust the photo position';setStatus('Photo ready to save.');};
     fileInput.onchange=()=>loadFile(fileInput.files?.[0]);cameraInput.onchange=()=>loadFile(cameraInput.files?.[0]);
     modal.querySelector('[data-cover-choose]').onclick=()=>fileInput.click();
     modal.querySelector('[data-cover-camera-btn]').onclick=()=>cameraInput.click();
     const close=()=>{if(objectUrl)URL.revokeObjectURL(objectUrl);modal.remove()};
     modal.querySelector('[data-cover-close]').onclick=close;modal.addEventListener('click',e=>{if(e.target===modal)close()});
-    save.onclick=async()=>{if(!blob)return;save.disabled=true;save.textContent='Saving…';const u=auth();const ext=blob.type==='image/png'?'png':blob.type==='image/webp'?'webp':'jpg';const path=`${u.familyId}/${u.supabaseUserId}/covers/member-${id}-${Date.now()}.${ext}`;try{await window.FB_MEDIA.upload(path,blob,{contentType:blob.type||'image/jpeg',upsert:false,cacheControl:'3600'});const {error}=await sb().from('person_covers').upsert({person_id:id,family_id:u.familyId,storage_path:path,position_x:Number(x.value),position_y:Number(y.value),updated_by_user_id:u.supabaseUserId,updated_at:new Date().toISOString()},{onConflict:'person_id'});if(error)throw error;if(current?.storage_path&&current.storage_path!==path)await window.FB_MEDIA.remove([current.storage_path],{silent:true});close();await enhance(true);}catch(err){console.error(err);alert(err?.message||'Could not save the cover photo.');save.disabled=false;save.textContent='Save cover';}};
-    modal.querySelector('[data-cover-remove]')?.addEventListener('click',async()=>{if(!confirm('Remove this cover photo?'))return;try{const {error}=await sb().from('person_covers').delete().eq('person_id',id);if(error)throw error;if(current?.storage_path)await window.FB_MEDIA.remove([current.storage_path],{silent:true});close();await enhance(true);}catch(err){alert(err?.message||'Could not remove the cover photo.')}});
+    save.onclick=async()=>{
+      if(!blob&&current){
+        save.disabled=true;setStatus('Saving position…');
+        try{const {error}=await sb().from('person_covers').update({position_x:Number(x.value),position_y:Number(y.value),updated_at:new Date().toISOString()}).eq('person_id',id);if(error)throw error;close();await enhance(true);}catch(err){console.error(err);setStatus(err?.message||'Could not save the cover position.',true);save.disabled=false;}return;
+      }
+      if(!blob){setStatus('Choose a photo first.',true);return;}
+      save.disabled=true;setStatus('Uploading cover…');
+      const u=auth();const userId=u.supabaseUserId||sb()?.auth?.getUser?._currentUser?.id||'';const ext=blob.type==='image/png'?'png':blob.type==='image/webp'?'webp':'jpg';const path=`${u.familyId}/${userId||'member'}/covers/member-${id}-${Date.now()}.${ext}`;
+      try{
+        await window.FB_MEDIA.upload(path,blob,{contentType:blob.type||'image/jpeg',upsert:false,cacheControl:'3600'});
+        setStatus('Saving cover…');
+        const row={person_id:id,family_id:u.familyId,storage_path:path,position_x:Number(x.value),position_y:Number(y.value),updated_at:new Date().toISOString()};
+        if(userId)row.updated_by_user_id=userId;
+        const {error}=await sb().from('person_covers').upsert(row,{onConflict:'person_id'});
+        if(error)throw error;
+        if(current?.storage_path&&current.storage_path!==path)await window.FB_MEDIA.remove([current.storage_path],{silent:true});
+        close();await enhance(true);
+      }catch(err){console.error('Cover save failed:',err);setStatus(err?.message||'Could not save the cover photo.',true);save.disabled=false;}
+    };
+    modal.querySelector('[data-cover-remove]')?.addEventListener('click',async()=>{if(!confirm('Remove this cover photo?'))return;try{setStatus('Removing cover…');const {error}=await sb().from('person_covers').delete().eq('person_id',id);if(error)throw error;if(current?.storage_path)await window.FB_MEDIA.remove([current.storage_path],{silent:true});close();await enhance(true);}catch(err){setStatus(err?.message||'Could not remove the cover photo.',true)}});
   }
   async function enhance(force=false){
     const page=document.querySelector('.member-profile-view:not(.history-profile-view):not(.account-profile-view)');
