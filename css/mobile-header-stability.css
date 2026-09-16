@@ -1,0 +1,50 @@
+/* Family Book mobile header stability — keep the brand row + route row together while scrolling. */
+@media (max-width:759px){
+  :root{--fb-mobile-brand-h:56px;--fb-mobile-nav-h:46px;--fb-mobile-header-h:102px}
+
+  #app>.app>.topbar{
+    position:fixed!important;
+    top:0!important;
+    left:0!important;
+    right:0!important;
+    width:100%!important;
+    height:var(--fb-mobile-brand-h)!important;
+    min-height:var(--fb-mobile-brand-h)!important;
+    z-index:1001!important;
+    margin:0!important;
+    transform:none!important;
+    overflow:visible!important;
+  }
+
+  #app>.app>.bottom{
+    position:fixed!important;
+    top:var(--fb-mobile-brand-h)!important;
+    left:0!important;
+    right:0!important;
+    bottom:auto!important;
+    width:100%!important;
+    height:var(--fb-mobile-nav-h)!important;
+    min-height:var(--fb-mobile-nav-h)!important;
+    z-index:1000!important;
+    margin:0!important;
+    transform:none!important;
+  }
+
+  /* Both fixed rows are outside normal flow, so reserve their combined height once. */
+  #app>.app>.screen{
+    padding-top:calc(var(--fb-mobile-header-h) + 10px)!important;
+  }
+
+  /* Keep the forced logo fully inside the brand row on narrow phones. */
+  #app>.app>.topbar .brand-home{
+    height:var(--fb-mobile-brand-h)!important;
+    min-height:var(--fb-mobile-brand-h)!important;
+    overflow:visible!important;
+  }
+  #app>.app>.topbar .brand-home .brand-logo-wrap{
+    height:48px!important;
+    max-height:48px!important;
+    background-position:left center!important;
+    background-size:contain!important;
+  }
+}
