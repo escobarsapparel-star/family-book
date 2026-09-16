@@ -16,46 +16,32 @@
     }catch(_){}
     return 'owner';
   }
-  function ownMemberRoute(){return `view-member:${ownMemberId()}`;}
 
-  // Replace the legacy profile renderer itself. This catches app.js's private
-  // lexical go('profile') path without modifying the large app.js file.
-  if(typeof window.viewMember==='function'){
-    window.profilePage=function(){return window.viewMember(ownMemberId());};
+  function normalizeRoute(route){
+    const value=String(route||'');
+    if(value.startsWith('view-member:')){
+      const id=value.slice('view-member:'.length);
+      if(String(id)===ownMemberId())return 'profile';
+    }
+    return route;
   }
 
-  // Also normalize public navigation calls.
+  // Public navigation: any attempt to open the signed-in person's legacy
+  // member page is redirected to the dedicated account Profile page.
   window.go=function(route,...args){
-    return originalGo(route==='profile'?ownMemberRoute():route,...args);
+    return originalGo(normalizeRoute(route),...args);
   };
 
-  // Header avatar, mobile Profile nav, Settings My profile, and desktop
-  // profile card all open the same member profile.
+  // Catch already-rendered route buttons before their older handlers run.
   document.addEventListener('click',ev=>{
-    const target=ev.target.closest?.('#topProfileButton,[data-r="profile"],[data-profile-route="profile"],[data-desktop-route="profile"]');
+    const target=ev.target.closest?.('[data-r],[data-profile-route],[data-desktop-route]');
     if(!target)return;
+    const route=target.dataset.r||target.dataset.profileRoute||target.dataset.desktopRoute||'';
+    const normalized=normalizeRoute(route);
+    const ownProfileTrigger=target.matches?.('#topProfileButton,[data-r="profile"],[data-profile-route="profile"],[data-desktop-route="profile"]');
+    if(normalized===route&&!ownProfileTrigger)return;
     ev.preventDefault();
     ev.stopImmediatePropagation();
-    window.go(ownMemberRoute());
+    originalGo('profile');
   },true);
-
-  // Safety net for any legacy profile markup rendered by stale handlers.
-  let redirecting=false;
-  const guard=()=>{
-    if(redirecting||!document.querySelector('.account-profile-view'))return;
-    redirecting=true;
-    window.go(ownMemberRoute());
-    setTimeout(()=>{redirecting=false},0);
-  };
-  const observeScreen=()=>{
-    const screen=document.querySelector('#screen');
-    if(screen&&!screen.dataset.profileGuard){
-      screen.dataset.profileGuard='1';
-      new MutationObserver(guard).observe(screen,{childList:true,subtree:true});
-    }
-    guard();
-  };
-  document.addEventListener('DOMContentLoaded',observeScreen,{once:true});
-  window.addEventListener('load',observeScreen,{once:true});
-  observeScreen();
 })();
