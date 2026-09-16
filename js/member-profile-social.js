@@ -38,6 +38,15 @@
     return u.role==='admin'&&!!member&&!member.accountId;
   }
 
+  function visibleEmailFromDetails(details){
+    if(!details)return '';
+    for(const row of details.querySelectorAll('.profile-detail')){
+      const label=row.querySelector('span')?.textContent?.trim().toLowerCase()||'';
+      if(label==='email')return row.querySelector('strong')?.textContent?.trim()||'';
+    }
+    return '';
+  }
+
   async function saveProfilePhoto(id,photo){
     const api=familyData();
     if(!api?.getPeople||!api?.syncMembers)throw new Error('Profile storage is unavailable.');
@@ -129,6 +138,7 @@
     const id=memberIdFromLegacy(old,edit,activity);
     const isOwn=!!id&&String(auth().memberId||'')===String(id);
     const photoEditable=canManagePhoto(id);
+    const visibleEmail=visibleEmailFromDetails(details);
 
     rebuilding=true;
     try{
@@ -167,10 +177,24 @@
       avatar.addEventListener('keydown',e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();photoEditable?openPhotoOptions():openMediaViewer(currentSrc(),`${name.textContent.trim()} profile photo`)}});
       shell.querySelector('.fb-profile-photo-edit')?.addEventListener('click',e=>{e.stopPropagation();openPhotoOptions()});
 
+      let contactActions=contact;
+      if(!contactActions&&visibleEmail){
+        contactActions=document.createElement('div');
+        contactActions.className='member-contact-actions';
+      }
+      if(visibleEmail&&contactActions&&!contactActions.querySelector('.fb-email-action')){
+        const emailAction=document.createElement('a');
+        emailAction.className='fb-email-action';
+        emailAction.href=`mailto:${visibleEmail}`;
+        emailAction.setAttribute('aria-label',`Email ${name.textContent.trim()}`);
+        emailAction.innerHTML='<i data-lucide="mail"></i><span>Email</span>';
+        contactActions.appendChild(emailAction);
+      }
+
       const actionHost=shell.querySelector('.fb-profile-actions');
-      if(contact&&contact.children.length){
+      if(contactActions&&contactActions.children.length){
         actionHost.hidden=false;
-        actionHost.appendChild(contact);
+        actionHost.appendChild(contactActions);
       }
 
       const content=shell.querySelector('.fb-profile-content');
