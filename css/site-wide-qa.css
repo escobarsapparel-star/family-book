@@ -1,0 +1,68 @@
+/* Family Book site-wide QA pass 1
+   Loaded last so it can safely correct legacy page-specific styling without
+   changing the data layer. */
+
+/* Keep route pages from inheriting stale fixed widths/overflow. */
+#screen>section{max-width:100%;box-sizing:border-box}
+#screen img,#screen video{max-width:100%}
+
+/* -------- Memories library: compact gallery requested for desktop -------- */
+.memories-polished .memory-gallery-meta{margin:7px 2px 9px!important;min-height:30px!important}
+.memories-polished .memory-gallery-count{display:none!important}
+.memories-polished .memory-gallery{grid-template-columns:repeat(4,minmax(0,1fr))!important;gap:11px!important}
+.memories-polished .memory-card{border-radius:15px!important;box-shadow:none!important}
+.memories-polished .memory-card:hover{transform:translateY(-2px)!important}
+.memories-polished .memory-card-photo{aspect-ratio:4/3!important}
+.memories-polished .memory-card-copy{min-height:55px!important;padding:9px 11px 10px!important;gap:2px!important}
+.memories-polished .memory-card-copy strong{font-size:.82rem!important;line-height:1.22!important}
+.memories-polished .memory-card-copy small{font-size:.59rem!important;line-height:1.2!important}
+.memories-polished .memory-card-tags{display:none!important}
+.memories-polished .memory-filter-panel{margin-bottom:0!important}
+.memories-polished .memory-gallery-sort[hidden]{display:none!important}
+
+@media(max-width:1100px){
+  .memories-polished .memory-gallery{grid-template-columns:repeat(3,minmax(0,1fr))!important}
+}
+@media(max-width:760px){
+  .memories-polished .memory-gallery{grid-template-columns:repeat(2,minmax(0,1fr))!important;gap:8px!important}
+  .memories-polished .memory-card-copy{min-height:51px!important;padding:8px 9px 9px!important}
+  .memories-polished .memory-gallery-meta{margin:6px 1px 8px!important}
+}
+
+/* -------- Settings: prevent controls/cards from spilling on smaller screens -------- */
+.settings-page,.settings-page *{box-sizing:border-box}
+.settings-page .settings-card,.settings-page .settings-account-summary{max-width:100%}
+.settings-page input,.settings-page select,.settings-page textarea{max-width:100%}
+@media(max-width:700px){
+  .settings-page{padding-bottom:30px}
+  .settings-page .settings-card{padding:14px!important;border-radius:17px!important}
+  .settings-page .settings-account-summary{padding:12px!important;border-radius:15px!important}
+  .site-theme-grid{grid-template-columns:repeat(2,minmax(0,1fr))!important}
+  .site-theme-choice{min-width:0!important}
+}
+
+/* -------- Full tree poster: mobile must remain scrollable and controls reachable -------- */
+.full-tree-page .tree-style-picker{max-width:100%;overflow:hidden}
+.full-tree-page .tree-style-options{min-width:0}
+.full-tree-page #fullTreeViewport{overscroll-behavior:contain}
+@media(max-width:759px){
+  .full-tree-page{min-width:0!important}
+  .full-tree-page .tree-style-options{display:flex!important;overflow-x:auto!important;scroll-snap-type:x proximity;scrollbar-width:none;padding-bottom:2px}
+  .full-tree-page .tree-style-options::-webkit-scrollbar{display:none}
+  .full-tree-page .tree-style-option{flex:0 0 154px!important;scroll-snap-align:start}
+  .full-tree-page #fullTreeViewport{width:100%!important;max-width:100vw!important}
+}
+
+/* -------- Theme consistency -------- */
+html[data-site-theme] .memory-filter-panel,
+html[data-site-theme] .memory-card,
+html[data-site-theme] .profile-status-card,
+html[data-site-theme] .profile-view-card,
+html[data-site-theme] .member-card,
+html[data-site-theme] .album-card,
+html[data-site-theme] .calendar-panel{
+  border-color:var(--fb-shell-border,var(--line))!important;
+}
+
+/* Keep long names/statuses from blowing out cards. */
+.profile-view-card h1,.member-card strong,.wall-post-head strong,.memory-card-copy strong{overflow-wrap:anywhere}
