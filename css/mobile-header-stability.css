@@ -47,4 +47,15 @@
     background-position:left center!important;
     background-size:contain!important;
   }
+
+  /* Center the active route indicator directly beneath its icon. */
+  #app>.app>.bottom .nav{
+    position:relative!important;
+  }
+  #app>.app>.bottom .nav.active::after{
+    left:50%!important;
+    right:auto!important;
+    transform:translateX(-50%)!important;
+    margin:0!important;
+  }
 }
