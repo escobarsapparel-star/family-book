@@ -51,6 +51,7 @@
   }
   .mobile-profile-menu-profile{
     width:100%;
+    margin-top:10px;
     border:1px solid var(--fb-shell-border,rgba(49,92,67,.16));
     border-radius:17px;
     background:var(--fb-shell-panel,#fffdf8);
