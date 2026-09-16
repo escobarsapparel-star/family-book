@@ -1,0 +1,8 @@
+/* Round family avatars act as profile links across mobile and desktop. */
+.fb-profile-picture-link{cursor:pointer;touch-action:manipulation;transition:transform .14s ease,filter .14s ease,box-shadow .14s ease}
+.fb-profile-picture-link:active{transform:scale(.96)}
+.fb-profile-picture-link:focus-visible{outline:3px solid var(--accent,var(--green));outline-offset:3px}
+@media(hover:hover) and (pointer:fine){
+  .fb-profile-picture-link:hover{filter:brightness(.96);box-shadow:0 0 0 3px rgba(49,92,67,.12)}
+}
+@media(prefers-reduced-motion:reduce){.fb-profile-picture-link{transition:none}}
