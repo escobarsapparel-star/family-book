@@ -4,7 +4,7 @@
   body.fb-mobile-menu-open{overflow:hidden!important}
   .mobile-profile-menu{
     position:fixed;
-    inset:0;
+    inset:var(--fb-mobile-header-h,102px) 0 0 0;
     z-index:900;
     display:flex;
     flex-direction:column;
@@ -14,8 +14,8 @@
     animation:fbMenuFade .16s ease-out both;
   }
   .mobile-profile-menu-head{
-    flex:0 0 62px;
-    min-height:62px;
+    flex:0 0 58px;
+    min-height:58px;
     display:flex;
     align-items:center;
     gap:12px;
@@ -47,11 +47,11 @@
     flex:1 1 auto;
     overflow:auto;
     overscroll-behavior:contain;
-    padding:14px 14px calc(24px + env(safe-area-inset-bottom));
+    padding:12px 14px calc(24px + env(safe-area-inset-bottom));
   }
   .mobile-profile-menu-profile{
     width:100%;
-    margin-top:10px;
+    margin-top:0;
     border:1px solid var(--fb-shell-border,rgba(49,92,67,.16));
     border-radius:17px;
     background:var(--fb-shell-panel,#fffdf8);
