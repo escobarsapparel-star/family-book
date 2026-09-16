@@ -68,12 +68,27 @@
     page.querySelectorAll('.memory-card-tags').forEach(el=>{if(!el.hidden)el.hidden=true});
   }
 
+  function healTreeArt(){
+    document.querySelectorAll('#fullTreeStage .ct-tree-art').forEach(img=>{
+      if(img.dataset.qaTreeBound==='1')return;
+      img.dataset.qaTreeBound='1';
+      const fallback=()=>{
+        if(img.dataset.qaFallback==='1')return;
+        img.dataset.qaFallback='1';
+        img.src='assets/tree/tree-of-life-poster.svg';
+      };
+      img.addEventListener('error',fallback,{once:true});
+      if(img.complete&&!img.naturalWidth)fallback();
+      else setTimeout(()=>{if(img.complete&&!img.naturalWidth)fallback()},350);
+    });
+  }
+
   function removeBrokenImagePlaceholders(){
-    document.querySelectorAll('#screen img').forEach(img=>{
+    document.querySelectorAll('#screen img:not(.ct-tree-art)').forEach(img=>{
       if(img.dataset.qaErrorBound==='1')return;
       img.dataset.qaErrorBound='1';
       img.addEventListener('error',()=>{
-        const wrap=img.closest('.memory-card-photo,.wall-memory-photo,.member-photo,.profile-view-avatar');
+        const wrap=img.closest('.memory-card-photo,.wall-memory-photo,.member-photo,.profile-view-avatar,.album-card-cover');
         if(wrap)wrap.classList.add('image-load-failed');
       });
     });
@@ -82,6 +97,7 @@
   function run(){
     cleanProfileStatus();
     polishMemoriesRuntime();
+    healTreeArt();
     removeBrokenImagePlaceholders();
   }
 
