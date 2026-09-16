@@ -1,48 +1,25 @@
 (()=>{
-  function enhance(){
+  function rebuild(){
     const page=document.querySelector('.member-profile-view:not(.history-profile-view):not(.account-profile-view)');
-    const card=page?.querySelector('.profile-view-card');
-    if(!card||card.dataset.socialProfileReady==='1')return;
-    const details=card.querySelector('.profile-details');
-    const activity=card.querySelector('.member-activity-card');
-    if(!details||!activity)return;
-    card.dataset.socialProfileReady='1';
+    const old=page?.querySelector('.profile-view-card');
+    if(!page||!old||old.dataset.basicProfileReady==='1')return;
+    const avatar=old.querySelector('.profile-view-avatar');
+    const name=old.querySelector(':scope > h1');
+    const edit=old.querySelector('[data-edit-member]');
+    if(!avatar||!name)return;
 
-    const title=document.createElement('h2');
-    title.className='fb-member-about-title';
-    title.textContent='About';
-    details.before(title);
-
-    const tabs=document.createElement('div');
-    tabs.className='fb-member-profile-tabs';
-    tabs.setAttribute('role','tablist');
-    tabs.innerHTML='<button type="button" class="active" data-member-tab="overview">Overview</button><button type="button" data-member-tab="activity">Memories & activity</button>';
-    title.before(tabs);
-
-    const activityHead=activity.querySelector('.member-activity-head');
-    if(activityHead){
-      const label=activityHead.querySelector('h2');
-      if(label)label.textContent='Recent memories & activity';
-    }
-
-    function select(tab){
-      tabs.querySelectorAll('[data-member-tab]').forEach(b=>b.classList.toggle('active',b.dataset.memberTab===tab));
-      const activityOnly=tab==='activity';
-      title.classList.toggle('fb-member-tab-hidden',activityOnly);
-      details.classList.toggle('fb-member-tab-hidden',activityOnly);
-      activity.classList.remove('fb-member-tab-hidden');
-      if(!activityOnly){
-        const posts=activity.querySelectorAll('.wall-post');
-        posts.forEach((post,i)=>post.classList.toggle('fb-member-tab-hidden',i>1));
-      }else{
-        activity.querySelectorAll('.wall-post').forEach(post=>post.classList.remove('fb-member-tab-hidden'));
-      }
-    }
-    tabs.addEventListener('click',e=>{const b=e.target.closest('[data-member-tab]');if(b)select(b.dataset.memberTab)});
-    select('overview');
+    const shell=document.createElement('div');
+    shell.className='profile-view-card fb-basic-member-profile';
+    shell.dataset.basicProfileReady='1';
+    shell.innerHTML='<div class="fb-basic-cover" data-basic-cover><div class="fb-basic-cover-empty"><i data-lucide="camera"></i><span>Add cover photo</span></div></div><div class="fb-basic-avatar-slot"></div><div class="fb-basic-name"></div>';
+    shell.querySelector('.fb-basic-avatar-slot').appendChild(avatar);
+    shell.querySelector('.fb-basic-name').appendChild(name);
+    if(edit)shell.querySelector('.fb-basic-name').appendChild(edit);
+    old.replaceWith(shell);
+    window.lucide?.createIcons?.();
+    window.dispatchEvent(new CustomEvent('familybook:basic-member-profile-ready'));
   }
-
-  // Route rendering is synchronous. Enhance after Family Book navigation clicks settle.
-  document.addEventListener('click',()=>setTimeout(enhance,0));
-  window.addEventListener('load',()=>setTimeout(enhance,0));
+  document.addEventListener('click',()=>setTimeout(rebuild,0));
+  window.addEventListener('load',()=>setTimeout(rebuild,0));
+  window.addEventListener('familybook:family-data-updated',()=>setTimeout(rebuild,0));
 })();
