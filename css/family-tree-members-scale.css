@@ -120,11 +120,12 @@
 }
 
 @media (max-width:650px){
+  /* Match Calendar: rely on the shared mobile .screen gutter instead of adding a second page inset. */
   .tree-page{
-    padding-left:16px!important;
-    padding-right:16px!important;
+    padding:0 0 100px!important;
   }
   .tree-head{
+    margin-top:4px!important;
     margin-bottom:18px!important;
   }
   .tree-head-actions{
