@@ -101,7 +101,7 @@
     width:21px!important;
     height:21px!important;
     margin:0!important;
-    transform:translateX(1px);
+    transform:translateY(4px)!important;
   }
 }
 
