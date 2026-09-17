@@ -3,6 +3,7 @@
   window.__fbDesktopProfileSocialLayout=true;
 
   const mq=window.matchMedia('(min-width: 900px)');
+  const auth=()=>window.FB_AUTH?.get?.()||{};
 
   function rememberText(el,key){
     if(el&&!el.dataset[key])el.dataset[key]=el.textContent||'';
@@ -14,6 +15,15 @@
     }
   }
 
+  function profileMemberId(profile){
+    return String(profile?.dataset?.profileMemberId||'');
+  }
+
+  function isOwnProfile(profile){
+    const id=profileMemberId(profile);
+    return !!id&&id===String(auth().memberId||'');
+  }
+
   function scrollToSection(page,selector,button){
     const section=page.querySelector(selector);
     if(!section)return;
@@ -21,22 +31,52 @@
     section.scrollIntoView({behavior:'smooth',block:'start'});
   }
 
+  function openOwnMemories(){
+    window.go?.('memories');
+    let tries=0;
+    const selectMine=()=>{
+      const mine=document.querySelector('[data-memory-contributor="mine"]');
+      if(mine){mine.click();return}
+      if(++tries<30)setTimeout(selectMine,100);
+    };
+    setTimeout(selectMine,80);
+  }
+
   function buildTabs(page,profile){
     let tabs=profile.querySelector('.fb-desktop-profile-tabs');
-    if(tabs)return tabs;
+    const own=isOwnProfile(profile);
+
+    if(tabs){
+      const hasMemories=!!tabs.querySelector('[data-profile-action="memories"]');
+      if(own&&!hasMemories){
+        const btn=document.createElement('button');
+        btn.type='button';
+        btn.className='fb-desktop-profile-tab';
+        btn.dataset.profileAction='memories';
+        btn.textContent='Memories';
+        tabs.appendChild(btn);
+      }else if(!own&&hasMemories){
+        tabs.querySelector('[data-profile-action="memories"]')?.remove();
+      }
+      return tabs;
+    }
 
     tabs=document.createElement('nav');
     tabs.className='fb-desktop-profile-tabs';
     tabs.setAttribute('aria-label','Profile sections');
     tabs.innerHTML=`
       <button type="button" class="fb-desktop-profile-tab is-active" data-profile-section="posts">Posts</button>
-      <button type="button" class="fb-desktop-profile-tab" data-profile-section="about">About</button>`;
+      <button type="button" class="fb-desktop-profile-tab" data-profile-section="about">About</button>
+      ${own?'<button type="button" class="fb-desktop-profile-tab" data-profile-action="memories">Memories</button>':''}`;
 
     const content=profile.querySelector('.fb-profile-content');
     if(content)profile.insertBefore(tabs,content);
     else profile.appendChild(tabs);
 
     tabs.addEventListener('click',e=>{
+      const memoryBtn=e.target.closest('[data-profile-action="memories"]');
+      if(memoryBtn){openOwnMemories();return}
+
       const btn=e.target.closest('[data-profile-section]');
       if(!btn)return;
       const selector=btn.dataset.profileSection==='about'?'.fb-profile-about':'.fb-profile-activity';
