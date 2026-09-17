@@ -2,6 +2,8 @@
   if(window.__fbDesktopDateTime)return;
   window.__fbDesktopDateTime=true;
 
+  const DISPLAY_LOCALE="en-ZA";
+
   function markup(){
     return `<section class="desktop-widget desktop-date-time-card" id="desktopDateTimeCard" aria-label="Current date and time">
       <div class="desktop-date-time-icon"><i data-lucide="clock-3"></i></div>
@@ -18,11 +20,11 @@
     if(!time||!date)return;
     const now=new Date();
     try{
-      time.textContent=new Intl.DateTimeFormat(undefined,{hour:'2-digit',minute:'2-digit',second:'2-digit'}).format(now);
-      date.textContent=new Intl.DateTimeFormat(undefined,{weekday:'long',day:'numeric',month:'long',year:'numeric'}).format(now);
+      time.textContent=new Intl.DateTimeFormat(DISPLAY_LOCALE,{hour:'2-digit',minute:'2-digit',second:'2-digit',hourCycle:'h23'}).format(now);
+      date.textContent=new Intl.DateTimeFormat(DISPLAY_LOCALE,{weekday:'long',day:'numeric',month:'long',year:'numeric'}).format(now);
     }catch(_){
-      time.textContent=now.toLocaleTimeString([], {hour:'2-digit',minute:'2-digit',second:'2-digit'});
-      date.textContent=now.toDateString();
+      time.textContent=now.toLocaleTimeString(DISPLAY_LOCALE,{hour:'2-digit',minute:'2-digit',second:'2-digit',hour12:false});
+      date.textContent=now.toLocaleDateString(DISPLAY_LOCALE,{weekday:'long',day:'numeric',month:'long',year:'numeric'});
     }
   }
 
