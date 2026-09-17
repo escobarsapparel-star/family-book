@@ -22,7 +22,11 @@
   padding-right:12px!important;
   border-top-right-radius:0!important;
   border-bottom-right-radius:0!important;
-  cursor:pointer;
+  cursor:text;
+}
+.fb-date-display.fb-date-invalid{
+  border-color:#c96b6b!important;
+  box-shadow:0 0 0 1px rgba(201,107,107,.3)!important;
 }
 .fb-date-button{
   min-width:46px;
@@ -44,11 +48,10 @@
   display:grid;
   place-items:center;
   padding:18px;
-  background:rgba(0,0,0,.58);
-  backdrop-filter:blur(5px);
-  -webkit-backdrop-filter:blur(5px);
+  background:rgba(0,0,0,.52);
+  backdrop-filter:blur(2px);
+  -webkit-backdrop-filter:blur(2px);
 }
-/* Critical: author-level display rules must never override the native hidden state. */
 .fb-date-overlay[hidden]{
   display:none!important;
 }
@@ -103,21 +106,85 @@ html[data-theme="dark"] .fb-date-dialog{
 }
 .fb-date-nav{
   display:grid;
-  grid-template-columns:42px 1fr 42px;
+  grid-template-columns:42px minmax(0,1fr) 42px;
   align-items:center;
   gap:8px;
   margin:8px 0 14px;
 }
-.fb-date-nav button{
+.fb-date-nav>button:not(.fb-date-month){
   width:42px;
   height:42px;
   border-radius:12px;
 }
 .fb-date-month{
-  text-align:center;
+  width:100%!important;
+  min-width:0;
+  min-height:42px;
+  border-radius:12px;
+  display:flex!important;
+  align-items:center;
+  justify-content:center;
+  gap:7px;
+  padding:8px 12px;
   font-weight:800;
   font-size:1rem;
 }
+.fb-date-month svg{
+  width:16px;
+  height:16px;
+  opacity:.68;
+}
+.fb-date-month[aria-expanded="true"] svg{transform:rotate(180deg)}
+
+.fb-date-jump{
+  display:grid;
+  grid-template-columns:1fr 120px;
+  gap:12px;
+  padding:14px;
+  margin:0 0 14px;
+  border:1px solid rgba(110,135,113,.24);
+  border-radius:16px;
+  background:rgba(123,170,137,.07);
+}
+.fb-date-jump[hidden],
+.fb-date-calendar[hidden]{display:none!important}
+.fb-date-jump label{
+  display:grid;
+  gap:6px;
+  min-width:0;
+}
+.fb-date-jump label span{
+  font-size:.68rem;
+  font-weight:800;
+  text-transform:uppercase;
+  letter-spacing:.06em;
+  opacity:.62;
+}
+.fb-date-jump select,
+.fb-date-jump input{
+  width:100%;
+  min-width:0;
+  min-height:44px;
+  padding:9px 10px;
+  border:1px solid rgba(100,125,103,.34);
+  border-radius:11px;
+  background:transparent;
+  color:inherit;
+  font:inherit;
+  font-weight:700;
+}
+.fb-date-jump-apply{
+  grid-column:1/-1;
+  min-height:42px;
+  border:1px solid rgba(100,125,103,.34);
+  border-radius:11px;
+  background:#7faf8b;
+  color:#102016;
+  font:inherit;
+  font-weight:800;
+  cursor:pointer;
+}
+
 .fb-date-weekdays,
 .fb-date-grid{
   display:grid;
@@ -186,4 +253,7 @@ html[data-theme="dark"] .fb-date-dialog{
     padding:20px 18px calc(22px + env(safe-area-inset-bottom));
   }
   .fb-date-day{border-radius:11px}
+  .fb-date-jump{
+    grid-template-columns:1fr 110px;
+  }
 }
