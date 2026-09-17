@@ -95,4 +95,4 @@ fbLoadStyle('css/full-tree-dark.css?v=3','full-tree-dark-style');
 fbLoadScript('js/full-tree-polish.js?v=4','full-tree-polish-script');
 fbLoadStyle('css/relationship-context.css?v=1','relationship-context-style');
 fbLoadScript('js/person-sex.js?v=1','person-sex-script');
-fbLoadScript('js/relationship-context.js?v=2','relationship-context-script');
+fbLoadScript('js/relationship-context.js?v=3','relationship-context-script');
