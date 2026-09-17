@@ -18,25 +18,29 @@
 
   function setInitials(avatar,name){
     const initials=memberInitialsSafe(name);
-    if(avatar.querySelector('img')||avatar.textContent.trim()!==initials){
-      avatar.textContent=initials;
-    }
+    if(avatar.querySelector('img')||avatar.textContent.trim()!==initials)avatar.textContent=initials;
   }
 
-  function syncTreePhotos(root=document){
+  async function resolvePhoto(person){
+    const direct=String(person?.photo||'').trim();
+    if(direct)return direct;
+    const path=String(person?.photoPath||'').trim();
+    if(!path||!window.FB_MEDIA?.getSignedUrl)return '';
+    try{return await window.FB_MEDIA.getSignedUrl(path,7200)}catch(_){return ''}
+  }
+
+  async function syncTreePhotos(root=document){
     const page=root.querySelector?.('.full-tree-page')||document.querySelector('.full-tree-page');
-    if(!page)return;
+    if(!page||!page.isConnected)return;
     const byId=new Map(people().map(p=>[String(p.id),p]));
-    page.querySelectorAll('.ct-person[data-view-member]').forEach(card=>{
+    const cards=[...page.querySelectorAll('.ct-person[data-view-member]')];
+    await Promise.allSettled(cards.map(async card=>{
       const person=byId.get(String(card.dataset.viewMember||''));
       if(!person)return;
       const avatar=card.querySelector('.ct-avatar');
       if(!avatar)return;
-      const photo=String(person.photo||'').trim();
-      if(!photo){
-        setInitials(avatar,person.name);
-        return;
-      }
+      const photo=await resolvePhoto(person);
+      if(!photo){setInitials(avatar,person.name);return}
       let img=avatar.querySelector('img');
       if(!img){
         img=document.createElement('img');
@@ -46,11 +50,8 @@
         avatar.replaceChildren(img);
       }
       if(img.getAttribute('src')!==photo)img.setAttribute('src',photo);
-      img.onerror=()=>{
-        if(!avatar.isConnected)return;
-        setInitials(avatar,person.name);
-      };
-    });
+      img.onerror=()=>{if(avatar.isConnected)setInitials(avatar,person.name)};
+    }));
   }
 
   function waitForTreeImages(canvas){
@@ -63,8 +64,12 @@
       const done=()=>resolve();
       img.addEventListener('load',done,{once:true});
       img.addEventListener('error',done,{once:true});
-      setTimeout(done,2500);
+      setTimeout(done,3000);
     })));
+  }
+
+  function schedulePhotoPasses(page){
+    [0,300,1000].forEach(delay=>setTimeout(()=>{if(page?.isConnected)syncTreePhotos(page)},delay));
   }
 
   function installExport(){
@@ -81,14 +86,14 @@
       const oldTransform=canvas.style.transform;
       canvas.style.transform='none';
       try{
-        syncTreePhotos(page);
+        await syncTreePhotos(page);
         await waitForTreeImages(canvas);
         if(!window.html2canvas)throw new Error('Image export library is still loading. Try again in a moment.');
         const width=Number(stage.dataset.width)||canvas.scrollWidth||canvas.offsetWidth;
         const height=Number(stage.dataset.height)||canvas.scrollHeight||canvas.offsetHeight;
         const dark=document.documentElement.dataset.theme==='dark';
         const out=await html2canvas(canvas,{
-          backgroundColor:dark?'#101713':'#f5efe4',
+          backgroundColor:dark?'#0b130e':'#f5efe4',
           scale:2,
           useCORS:true,
           logging:false,
@@ -117,12 +122,15 @@
     const page=document.querySelector('.full-tree-page');
     if(!page||page.dataset.fullTreePolishInstalled==='1')return;
     page.dataset.fullTreePolishInstalled='1';
-    syncTreePhotos(page);
     installExport();
+    schedulePhotoPasses(page);
   }
 
-  const app=document.getElementById('app');
-  if(app)new MutationObserver(()=>install()).observe(app,{childList:true,subtree:true});
-  window.addEventListener('familybook:family-data-updated',()=>setTimeout(()=>syncTreePhotos(document),0));
+  const screen=document.getElementById('screen');
+  if(screen)new MutationObserver(()=>install()).observe(screen,{childList:true});
+  window.addEventListener('familybook:family-data-updated',()=>{
+    const page=document.querySelector('.full-tree-page');
+    if(page)schedulePhotoPasses(page);
+  });
   install();
 })();
