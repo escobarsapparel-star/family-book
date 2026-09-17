@@ -48,6 +48,10 @@
   backdrop-filter:blur(5px);
   -webkit-backdrop-filter:blur(5px);
 }
+/* Critical: author-level display rules must never override the native hidden state. */
+.fb-date-overlay[hidden]{
+  display:none!important;
+}
 .fb-date-dialog{
   width:min(420px,100%);
   border:1px solid rgba(132,161,136,.34);
