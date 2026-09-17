@@ -92,6 +92,36 @@ html[data-theme="dark"] .fb-composer-link-copy strong{color:#f1eadf}
 html[data-theme="dark"] .fb-composer-link-copy small{color:#aca499}
 html[data-theme="dark"] .fb-composer-link-copy>span:first-child{background:#27372d;color:#b9d7a9}
 
+/* Visible composer actions */
+.home-composer-modal .wall-compose-actions{
+  display:flex!important;
+  align-items:center!important;
+  justify-content:flex-end!important;
+  gap:10px!important;
+  flex-wrap:wrap!important;
+}
+.home-composer-modal .wall-compose-actions>small{margin-right:auto}
+.home-composer-cancel{
+  min-height:44px!important;
+  padding:10px 16px!important;
+  border-radius:13px!important;
+  display:inline-flex!important;
+  align-items:center!important;
+  justify-content:center!important;
+  gap:7px!important;
+  border:1px solid rgba(104,126,111,.48)!important;
+  background:transparent!important;
+  color:inherit!important;
+  font-weight:800!important;
+}
+.home-composer-cancel svg{width:16px;height:16px}
+html[data-theme="dark"] .home-composer-cancel{
+  border-color:#3c4a40!important;
+  color:#e8e0d3!important;
+  background:#151d16!important;
+}
+html[data-theme="dark"] .home-composer-cancel:hover{background:#1d271f!important}
+
 @media(max-width:700px){
   .home-composer-modal #wallHomeText,
   .home-composer-modal .wall-compose-main textarea#wallHomeText{
@@ -103,4 +133,17 @@ html[data-theme="dark"] .fb-composer-link-copy>span:first-child{background:#2737
   .fb-composer-link-card{border-radius:14px}
   .fb-composer-link-media{max-height:190px!important}
   .home-composer-modal-card{overflow-y:auto!important;overflow-x:hidden!important}
+  .home-composer-modal .wall-compose-actions{
+    display:grid!important;
+    grid-template-columns:1fr 1fr!important;
+    gap:10px!important;
+    margin-top:12px!important;
+  }
+  .home-composer-modal .wall-compose-actions>small{display:none!important}
+  .home-composer-modal .wall-compose-actions .home-composer-cancel,
+  .home-composer-modal .wall-compose-actions #wallHomePost{
+    width:100%!important;
+    min-height:48px!important;
+    margin:0!important;
+  }
 }
