@@ -86,5 +86,5 @@ function fbLoadScript(src,key){
 // Do not load a second date-picker implementation here.
 
 fbLoadStyle('css/member-edit-desktop-fix.css?v=1','member-edit-desktop-fix');
-fbLoadStyle('css/member-relationship-manager.css?v=2','member-relationship-manager-style');
-fbLoadScript('js/member-relationship-manager.js?v=3','member-relationship-manager-script');
+fbLoadStyle('css/member-relationship-manager.css?v=3','member-relationship-manager-style');
+fbLoadScript('js/member-relationship-manager.js?v=4','member-relationship-manager-script');
