@@ -1,0 +1,192 @@
+/* Family Book — individual Family Tree inside desktop profiles */
+@media (min-width:900px){
+  .fb-profile-tree-panel{
+    width:100%;
+    box-sizing:border-box;
+    margin:20px 0 0;
+    padding:0;
+  }
+
+  .fb-profile-tree-panel[hidden]{display:none!important}
+  .fb-profile-show-tree .fb-profile-content{display:none!important}
+
+  .fb-profile-tree-head{
+    margin:0 0 16px;
+    padding:0 2px;
+  }
+
+  .fb-profile-tree-head span{
+    display:block;
+    margin-bottom:3px;
+    color:var(--muted);
+    font-size:.72rem;
+    font-weight:900;
+    letter-spacing:.08em;
+  }
+
+  .fb-profile-tree-head h2{
+    margin:0;
+    font-size:1.55rem;
+    line-height:1.15;
+  }
+
+  .fb-profile-tree-head p{
+    margin:5px 0 0;
+    color:var(--muted);
+    font-size:.9rem;
+  }
+
+  .fb-profile-tree-canvas{
+    min-height:320px;
+    border:1px solid var(--line);
+    border-radius:20px;
+    background:var(--paper);
+    padding:28px 26px 32px;
+    box-sizing:border-box;
+    overflow-x:auto;
+  }
+
+  .fb-profile-tree-level,
+  .fb-profile-tree-focus{
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    justify-content:center;
+  }
+
+  .fb-profile-tree-level-label{
+    display:block;
+    margin-bottom:10px;
+    color:var(--muted);
+    font-size:.72rem;
+    font-weight:900;
+    letter-spacing:.08em;
+    text-transform:uppercase;
+  }
+
+  .fb-profile-tree-row,
+  .fb-profile-tree-focus-row{
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    flex-wrap:wrap;
+    gap:12px;
+  }
+
+  .fb-profile-tree-focus-row{gap:10px}
+
+  .fb-profile-tree-person{
+    width:190px;
+    min-height:84px;
+    padding:10px 12px;
+    border:1px solid var(--line);
+    border-radius:16px;
+    background:rgba(127,127,127,.035);
+    color:var(--ink);
+    display:flex;
+    align-items:center;
+    gap:11px;
+    text-align:left;
+    cursor:pointer;
+  }
+
+  .fb-profile-tree-person:hover{
+    border-color:color-mix(in srgb,var(--accent) 45%,var(--line));
+    background:color-mix(in srgb,var(--accent) 7%,var(--paper));
+  }
+
+  .fb-profile-tree-person.is-focus{
+    border-color:color-mix(in srgb,var(--accent) 55%,var(--line));
+    background:color-mix(in srgb,var(--accent) 9%,var(--paper));
+    cursor:default;
+  }
+
+  .fb-profile-tree-avatar{
+    width:58px;
+    height:58px;
+    flex:0 0 58px;
+    border-radius:50%;
+    overflow:hidden;
+    display:grid;
+    place-items:center;
+    background:rgba(127,127,127,.09);
+    border:2px solid var(--line);
+    font-weight:900;
+  }
+
+  .fb-profile-tree-avatar img{
+    width:100%;
+    height:100%;
+    object-fit:cover;
+  }
+
+  .fb-profile-tree-copy{
+    min-width:0;
+    display:flex;
+    flex-direction:column;
+    gap:2px;
+  }
+
+  .fb-profile-tree-copy small{
+    color:var(--muted);
+    font-size:.7rem;
+    font-weight:800;
+    text-transform:uppercase;
+    letter-spacing:.05em;
+  }
+
+  .fb-profile-tree-copy strong{
+    font-size:.92rem;
+    line-height:1.18;
+    overflow-wrap:anywhere;
+  }
+
+  .fb-profile-tree-heart{
+    width:34px;
+    height:34px;
+    border-radius:50%;
+    display:grid;
+    place-items:center;
+    color:var(--accent);
+    border:1px solid var(--line);
+    background:var(--paper);
+  }
+
+  .fb-profile-tree-heart svg{width:17px;height:17px}
+
+  .fb-profile-tree-connector{
+    display:block;
+    width:2px;
+    height:28px;
+    margin:8px auto;
+    border-radius:999px;
+    background:var(--line);
+  }
+
+  .fb-profile-tree-level.is-siblings{
+    margin-top:26px;
+    padding-top:20px;
+    border-top:1px dashed var(--line);
+  }
+
+  .fb-profile-tree-level.is-children{margin-top:0}
+
+  .fb-profile-tree-empty{
+    margin:28px auto 0;
+    max-width:520px;
+    min-height:150px;
+    border:1px dashed var(--line);
+    border-radius:16px;
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    justify-content:center;
+    gap:7px;
+    padding:22px;
+    text-align:center;
+    color:var(--muted);
+  }
+
+  .fb-profile-tree-empty strong{color:var(--ink)}
+  .fb-profile-tree-empty svg{width:30px;height:30px;color:var(--accent)}
+}
