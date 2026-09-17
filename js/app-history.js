@@ -70,3 +70,21 @@
     home:()=>goWithHistory("home")
   };
 })();
+
+// Family Book date entry uses DD/MM/YYYY everywhere while preserving ISO
+// YYYY-MM-DD values internally for the existing save/database logic.
+(()=>{
+  if(!document.querySelector('link[data-fb-date-dmy]')){
+    const link=document.createElement('link');
+    link.rel='stylesheet';
+    link.href='css/date-picker-ddmmyyyy.css?v=1';
+    link.dataset.fbDateDmy='1';
+    document.head.appendChild(link);
+  }
+  if(!document.querySelector('script[data-fb-date-dmy]')){
+    const script=document.createElement('script');
+    script.src='js/date-picker-ddmmyyyy.js?v=1';
+    script.dataset.fbDateDmy='1';
+    document.body.appendChild(script);
+  }
+})();
