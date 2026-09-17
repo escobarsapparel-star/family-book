@@ -48,7 +48,10 @@
   background:rgba(255,255,255,.025);
 }
 #editMemberForm .relationship-summary-label{
-  display:block;
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:8px;
   margin-bottom:7px;
   font-size:.67rem;
   font-weight:900;
@@ -56,12 +59,25 @@
   text-transform:uppercase;
   opacity:.72;
 }
+#editMemberForm .relationship-summary-label small{
+  min-width:22px;
+  height:22px;
+  padding:0 6px;
+  border-radius:999px;
+  display:inline-grid;
+  place-items:center;
+  background:rgba(128,188,151,.12);
+  font-size:.62rem;
+  letter-spacing:0;
+  opacity:.95;
+}
 #editMemberForm .relationship-summary-people{
   display:flex;
   flex-wrap:wrap;
   gap:6px;
 }
-#editMemberForm .relationship-person-chip{
+#editMemberForm .relationship-person-chip,
+#editMemberForm .relationship-more-chip{
   display:inline-flex;
   align-items:center;
   max-width:100%;
@@ -70,12 +86,31 @@
   border-radius:999px;
   background:rgba(128,188,151,.13);
   border:1px solid rgba(128,188,151,.18);
+  color:inherit;
+  font:inherit;
   font-size:.73rem;
   font-weight:750;
   line-height:1.2;
+}
+#editMemberForm .relationship-person-chip{
   overflow:hidden;
   text-overflow:ellipsis;
   white-space:nowrap;
+}
+#editMemberForm .relationship-person-overflow{
+  display:none;
+}
+#editMemberForm .relationship-group-expanded .relationship-person-overflow{
+  display:inline-flex;
+}
+#editMemberForm .relationship-more-chip{
+  cursor:pointer;
+  background:rgba(128,188,151,.06);
+  border-style:dashed;
+  opacity:.9;
+}
+#editMemberForm .relationship-more-chip:hover{
+  background:rgba(128,188,151,.13);
 }
 #editMemberForm .relationship-empty-summary{
   grid-column:1/-1;
