@@ -16,6 +16,13 @@
     return [];
   }
 
+  function setInitials(avatar,name){
+    const initials=memberInitialsSafe(name);
+    if(avatar.querySelector('img')||avatar.textContent.trim()!==initials){
+      avatar.textContent=initials;
+    }
+  }
+
   function syncTreePhotos(root=document){
     const page=root.querySelector?.('.full-tree-page')||document.querySelector('.full-tree-page');
     if(!page)return;
@@ -27,7 +34,7 @@
       if(!avatar)return;
       const photo=String(person.photo||'').trim();
       if(!photo){
-        if(!avatar.querySelector('img'))avatar.textContent=memberInitialsSafe(person.name);
+        setInitials(avatar,person.name);
         return;
       }
       let img=avatar.querySelector('img');
@@ -38,10 +45,10 @@
         img.loading='eager';
         avatar.replaceChildren(img);
       }
-      if(img.src!==photo)img.src=photo;
+      if(img.getAttribute('src')!==photo)img.setAttribute('src',photo);
       img.onerror=()=>{
         if(!avatar.isConnected)return;
-        avatar.textContent=memberInitialsSafe(person.name);
+        setInitials(avatar,person.name);
       };
     });
   }
@@ -108,13 +115,14 @@
 
   function install(){
     const page=document.querySelector('.full-tree-page');
-    if(!page)return;
+    if(!page||page.dataset.fullTreePolishInstalled==='1')return;
+    page.dataset.fullTreePolishInstalled='1';
     syncTreePhotos(page);
     installExport();
   }
 
   const app=document.getElementById('app');
   if(app)new MutationObserver(()=>install()).observe(app,{childList:true,subtree:true});
-  window.addEventListener('familybook:family-data-updated',()=>setTimeout(install,0));
+  window.addEventListener('familybook:family-data-updated',()=>setTimeout(()=>syncTreePhotos(document),0));
   install();
 })();
