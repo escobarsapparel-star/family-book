@@ -35,6 +35,7 @@
     overlay=document.createElement("div");
     overlay.className="fb-date-overlay";
     overlay.hidden=true;
+    overlay.style.display="none";
     overlay.innerHTML=`<section class="fb-date-dialog" role="dialog" aria-modal="true" aria-labelledby="fbDateTitle">
       <div class="fb-date-dialog-head">
         <div><p>Family Book</p><h2 id="fbDateTitle">Select date</h2></div>
@@ -106,6 +107,7 @@
     const selected=parseISO(source.value)||new Date();
     cursor=new Date(selected.getFullYear(),selected.getMonth(),1);
     const root=ensureOverlay();
+    root.style.display="";
     root.hidden=false;
     document.documentElement.classList.add("fb-date-open");
     render();
@@ -113,7 +115,10 @@
   }
 
   function closePicker(){
-    if(overlay)overlay.hidden=true;
+    if(overlay){
+      overlay.hidden=true;
+      overlay.style.display="none";
+    }
     document.documentElement.classList.remove("fb-date-open");
     activeSource=null;
   }
@@ -183,4 +188,5 @@
     }
   }).observe(app,{childList:true,subtree:true});
   document.addEventListener("keydown",e=>{if(e.key==="Escape"&&overlay&&!overlay.hidden)closePicker()});
+  window.addEventListener("popstate",()=>{if(overlay&&!overlay.hidden)closePicker()});
 })();
