@@ -3,8 +3,9 @@
 .home-composer-modal .wall-compose-main textarea#wallHomeText{
   display:block!important;
   width:100%!important;
+  max-width:100%!important;
   min-height:118px!important;
-  resize:vertical!important;
+  resize:none!important;
   box-sizing:border-box!important;
   margin:10px 0 12px!important;
   padding:15px 16px!important;
@@ -16,6 +17,8 @@
   font-size:1rem!important;
   line-height:1.5!important;
   outline:none!important;
+  overflow-wrap:anywhere!important;
+  word-break:break-word!important;
   box-shadow:inset 0 1px 0 rgba(255,255,255,.45)!important;
 }
 .home-composer-modal #wallHomeText::placeholder{color:#777d76!important;opacity:1!important}
@@ -36,18 +39,54 @@ html[data-theme="dark"] .home-composer-modal #wallHomeText:focus{
   box-shadow:0 0 0 3px rgba(128,185,154,.13)!important;
 }
 
+/* Keep the composer inside its modal even when a pasted URL is very long. */
+.home-composer-modal-card,
+.home-composer-modal-body,
+.home-composer-modal .wall-composer,
+.home-composer-modal .wall-compose-main{
+  max-width:100%!important;
+  box-sizing:border-box!important;
+  overflow-x:hidden!important;
+}
+.home-composer-modal .wall-composer{
+  grid-template-columns:auto minmax(0,1fr)!important;
+}
+.home-composer-modal .wall-compose-main{
+  min-width:0!important;
+  width:100%!important;
+}
+
 .fb-composer-link-preview[hidden]{display:none!important}
-.fb-composer-link-preview{margin:-2px 0 14px}
-.fb-composer-link-card{display:block;overflow:hidden;border:1px solid var(--line);border-radius:16px;background:var(--cream);color:inherit;text-decoration:none}
-.fb-composer-link-media{position:relative;aspect-ratio:16/9;background:#101310;overflow:hidden}
+.fb-composer-link-preview{
+  width:100%!important;
+  max-width:100%!important;
+  min-width:0!important;
+  box-sizing:border-box!important;
+  margin:-2px 0 14px;
+  overflow:hidden!important;
+}
+.fb-composer-link-card{
+  display:block;
+  width:100%!important;
+  max-width:100%!important;
+  min-width:0!important;
+  box-sizing:border-box!important;
+  overflow:hidden;
+  border:1px solid var(--line);
+  border-radius:16px;
+  background:var(--cream);
+  color:inherit;
+  text-decoration:none;
+}
+.fb-composer-link-media{position:relative;width:100%;max-width:100%;aspect-ratio:16/9;background:#101310;overflow:hidden}
 .fb-composer-link-media img{display:block;width:100%;height:100%;object-fit:cover}
 .fb-composer-link-play{position:absolute;inset:50% auto auto 50%;width:48px;height:48px;transform:translate(-50%,-50%);border-radius:50%;background:rgba(0,0,0,.68);display:grid;place-items:center;box-shadow:0 6px 20px rgba(0,0,0,.28)}
 .fb-composer-link-play:after{content:"";width:0;height:0;border-top:8px solid transparent;border-bottom:8px solid transparent;border-left:13px solid #fff;margin-left:3px}
-.fb-composer-link-copy{display:flex;align-items:center;gap:10px;padding:10px 12px;min-width:0}
+.fb-composer-link-copy{display:flex;align-items:center;gap:10px;padding:10px 12px;min-width:0;max-width:100%;overflow:hidden}
 .fb-composer-link-copy>span:first-child{width:32px;height:32px;flex:0 0 32px;border-radius:9px;background:rgba(49,92,67,.12);display:grid;place-items:center;color:var(--green);font-weight:900}
-.fb-composer-link-copy>span:last-child{min-width:0;display:flex;flex-direction:column;gap:2px}
+.fb-composer-link-copy>span:last-child{min-width:0;max-width:100%;display:flex;flex-direction:column;gap:2px;overflow:hidden}
 .fb-composer-link-copy strong{font-size:.82rem;line-height:1.2}
-.fb-composer-link-copy small{font-size:.68rem;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.fb-composer-link-copy small{display:block;max-width:100%;font-size:.68rem;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 html[data-theme="dark"] .fb-composer-link-card{background:#1d251e;border-color:#3b473e}
 html[data-theme="dark"] .fb-composer-link-copy strong{color:#f1eadf}
 html[data-theme="dark"] .fb-composer-link-copy small{color:#aca499}
@@ -56,10 +95,12 @@ html[data-theme="dark"] .fb-composer-link-copy>span:first-child{background:#2737
 @media(max-width:700px){
   .home-composer-modal #wallHomeText,
   .home-composer-modal .wall-compose-main textarea#wallHomeText{
-    min-height:132px!important;
+    min-height:116px!important;
     margin-top:12px!important;
     padding:14px!important;
     border-radius:14px!important;
   }
   .fb-composer-link-card{border-radius:14px}
+  .fb-composer-link-media{max-height:190px!important}
+  .home-composer-modal-card{overflow-y:auto!important;overflow-x:hidden!important}
 }
