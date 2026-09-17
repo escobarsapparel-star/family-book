@@ -1,0 +1,144 @@
+#editMemberForm .relationship-compact-manager{
+  display:block;
+}
+#editMemberForm .relationship-compact-controls{
+  display:flex;
+  justify-content:flex-end;
+  margin:4px 0 12px;
+}
+#editMemberForm .relationship-manage-toggle{
+  display:inline-flex;
+  align-items:center;
+  gap:8px;
+  min-height:40px;
+  padding:8px 12px;
+  border-radius:12px;
+  border:1px solid rgba(120,145,125,.28);
+  background:rgba(125,180,145,.10);
+  color:inherit;
+  font:inherit;
+  font-size:.78rem;
+  font-weight:800;
+  cursor:pointer;
+}
+#editMemberForm .relationship-manage-toggle svg{
+  width:16px;
+  height:16px;
+}
+#editMemberForm .relationship-count{
+  min-width:24px;
+  height:24px;
+  padding:0 7px;
+  border-radius:999px;
+  display:inline-grid;
+  place-items:center;
+  background:rgba(125,180,145,.18);
+  font-size:.7rem;
+}
+#editMemberForm .relationship-compact-summary{
+  display:grid;
+  grid-template-columns:repeat(auto-fit,minmax(190px,1fr));
+  gap:10px;
+}
+#editMemberForm .relationship-summary-group{
+  min-width:0;
+  padding:11px 12px;
+  border:1px solid rgba(120,145,125,.18);
+  border-radius:12px;
+  background:rgba(255,255,255,.025);
+}
+#editMemberForm .relationship-summary-label{
+  display:block;
+  margin-bottom:7px;
+  font-size:.67rem;
+  font-weight:900;
+  letter-spacing:.08em;
+  text-transform:uppercase;
+  opacity:.72;
+}
+#editMemberForm .relationship-summary-people{
+  display:flex;
+  flex-wrap:wrap;
+  gap:6px;
+}
+#editMemberForm .relationship-person-chip{
+  display:inline-flex;
+  align-items:center;
+  max-width:100%;
+  min-height:28px;
+  padding:5px 9px;
+  border-radius:999px;
+  background:rgba(128,188,151,.13);
+  border:1px solid rgba(128,188,151,.18);
+  font-size:.73rem;
+  font-weight:750;
+  line-height:1.2;
+  overflow:hidden;
+  text-overflow:ellipsis;
+  white-space:nowrap;
+}
+#editMemberForm .relationship-empty-summary{
+  grid-column:1/-1;
+  display:flex;
+  align-items:center;
+  gap:10px;
+  min-height:58px;
+  padding:11px 12px;
+  border:1px dashed rgba(120,145,125,.26);
+  border-radius:12px;
+  opacity:.8;
+}
+#editMemberForm .relationship-empty-summary svg{width:20px;height:20px;flex:0 0 20px}
+#editMemberForm .relationship-empty-summary span{display:grid;gap:2px}
+#editMemberForm .relationship-empty-summary strong{font-size:.78rem}
+#editMemberForm .relationship-empty-summary small{font-size:.68rem;opacity:.75}
+
+#editMemberForm .relationship-compact-manager:not(.relationship-manager-open) #relationshipRows,
+#editMemberForm .relationship-compact-manager:not(.relationship-manager-open) #addRelationship{
+  display:none!important;
+}
+#editMemberForm .relationship-compact-manager.relationship-manager-open .relationship-compact-summary{
+  display:none!important;
+}
+#editMemberForm .relationship-compact-manager.relationship-manager-open #relationshipRows{
+  display:block;
+  max-height:330px;
+  overflow:auto;
+  overscroll-behavior:contain;
+  padding:2px 6px 2px 0;
+  margin-top:2px;
+  scrollbar-gutter:stable;
+}
+#editMemberForm .relationship-compact-manager.relationship-manager-open #addRelationship{
+  display:inline-flex;
+  position:sticky;
+  bottom:0;
+  margin-top:10px;
+}
+
+@media(min-width:561px){
+  #editMemberForm .relationship-compact-manager.relationship-manager-open .relationship-row{
+    display:grid;
+    grid-template-columns:minmax(0,.8fr) minmax(0,1.2fr) 38px;
+    align-items:end;
+    gap:10px;
+    padding:9px 0!important;
+    margin:0!important;
+  }
+}
+
+@media(max-width:560px){
+  #editMemberForm .relationship-compact-controls{
+    justify-content:stretch;
+  }
+  #editMemberForm .relationship-manage-toggle{
+    width:100%;
+    justify-content:center;
+  }
+  #editMemberForm .relationship-compact-summary{
+    grid-template-columns:1fr;
+  }
+  #editMemberForm .relationship-compact-manager.relationship-manager-open #relationshipRows{
+    max-height:52vh;
+  }
+}
