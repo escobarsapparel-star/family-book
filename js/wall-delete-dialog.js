@@ -4,8 +4,10 @@
 
   const STYLE_ID='fb-wall-delete-dialog-style';
   const DIALOG_ID='fbWallDeleteDialog';
+  const nativeConfirm=typeof window.confirm==='function'?window.confirm.bind(window):null;
   let currentId='';
   let currentTrigger=null;
+  let lastDeleteTrigger=null;
   let busy=false;
 
   function ensureStyle(){
@@ -136,14 +138,36 @@
     }
   }
 
+  /* Track the delete control before the legacy onclick runs. Some mobile browsers
+     still execute the original confirm() handler despite click interception, so
+     this gives the confirm shim the exact post id to open in our in-app dialog. */
+  document.addEventListener('pointerdown',event=>{
+    const trigger=event.target.closest?.('[data-wall-delete]');
+    if(trigger)lastDeleteTrigger=trigger;
+  },true);
+
   document.addEventListener('click',event=>{
     const trigger=event.target.closest?.('[data-wall-delete]');
     if(!trigger)return;
+    lastDeleteTrigger=trigger;
     event.preventDefault();
     event.stopPropagation();
     event.stopImmediatePropagation();
     openDialog(trigger.dataset.wallDelete,trigger);
   },true);
+
+  /* Final safety net for the legacy Wall code. Only replace this one exact
+     confirmation; every other site/browser confirm keeps its native behavior. */
+  if(nativeConfirm){
+    window.confirm=function(message){
+      if(String(message||'').trim()==='Delete this family update?'){
+        const trigger=lastDeleteTrigger||document.activeElement?.closest?.('[data-wall-delete]')||null;
+        if(trigger?.dataset?.wallDelete)openDialog(trigger.dataset.wallDelete,trigger);
+        return false;
+      }
+      return nativeConfirm(message);
+    };
+  }
 
   document.addEventListener('keydown',event=>{
     if(event.key!=='Escape')return;
