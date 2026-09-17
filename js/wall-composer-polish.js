@@ -63,6 +63,14 @@
       .replace(/^\s+|\s+$/g,'');
   }
 
+  function removePreview(input,mount){
+    if(!input||!mount)return;
+    delete input.dataset.fbPreviewUrl;
+    mount.hidden=true;
+    mount.innerHTML='';
+    input.focus({preventScroll:true});
+  }
+
   function renderPreview(input){
     if(!input)return;
     const mount=previewMount(input);
@@ -81,6 +89,9 @@
     if(!info){mount.hidden=true;mount.innerHTML='';return}
 
     const id=youtubeId(info.url);
+    const shell=document.createElement('div');
+    shell.className='fb-composer-link-shell';
+
     const card=document.createElement('a');
     card.className='fb-composer-link-card';
     card.href=info.raw;
@@ -115,8 +126,21 @@
     copy.append(icon,text);
     card.appendChild(copy);
 
+    const remove=document.createElement('button');
+    remove.type='button';
+    remove.className='fb-composer-link-remove';
+    remove.setAttribute('aria-label','Remove link preview');
+    remove.setAttribute('title','Remove link preview');
+    remove.innerHTML='&times;';
+    remove.addEventListener('click',ev=>{
+      ev.preventDefault();
+      ev.stopPropagation();
+      removePreview(input,mount);
+    });
+
+    shell.append(card,remove);
     mount.innerHTML='';
-    mount.appendChild(card);
+    mount.appendChild(shell);
     mount.hidden=false;
   }
 
