@@ -12,7 +12,7 @@
 
   function canEdit(id){
     const u=auth();
-    return !!id&&(String(u.memberId||'')===String(id)||u.role==='admin');
+    return !!id&&String(u.memberId||'')===String(id);
   }
 
   async function getCover(id){
@@ -64,6 +64,7 @@
   function renderCover(page,id,current){
     const cover=page?.querySelector('[data-basic-cover]');
     if(!cover)return;
+    const editable=canEdit(id);
     cover.dataset.loadedFor=id;
     cover.innerHTML='';
     cover.classList.toggle('has-cover-photo',!!current?.url);
@@ -72,28 +73,26 @@
       const open=document.createElement('button');
       open.type='button';
       open.className='fb-cover-open';
-      open.setAttribute('aria-label',canEdit(id)?'Cover photo options':'View cover photo');
+      open.setAttribute('aria-label',editable?'Cover photo options':'View cover photo');
       const img=document.createElement('img');
       img.src=current.url;
       img.alt='Cover photo';
       img.style.objectPosition=`${numberOr(current.position_x)}% ${numberOr(current.position_y)}%`;
       open.appendChild(img);
-      open.onclick=()=>canEdit(id)?openCoverMenu(page,id,current):openViewer(current.url);
+      open.onclick=()=>editable?openCoverMenu(page,id,current):openViewer(current.url);
       cover.appendChild(open);
-    }else{
+    }else if(editable){
       const empty=document.createElement('div');
       empty.className='fb-basic-cover-empty';
       empty.innerHTML='<i data-lucide="camera"></i><span>Add cover photo</span>';
-      if(canEdit(id)){
-        empty.tabIndex=0;
-        empty.setAttribute('role','button');
-        empty.onclick=()=>openCoverMenu(page,id,current);
-        empty.onkeydown=e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();openCoverMenu(page,id,current)}};
-      }
+      empty.tabIndex=0;
+      empty.setAttribute('role','button');
+      empty.onclick=()=>openCoverMenu(page,id,current);
+      empty.onkeydown=e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();openCoverMenu(page,id,current)}};
       cover.appendChild(empty);
     }
 
-    if(canEdit(id)){
+    if(editable){
       const edit=document.createElement('button');
       edit.type='button';
       edit.className='fb-cover-edit';
