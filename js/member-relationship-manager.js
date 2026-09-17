@@ -12,6 +12,7 @@
   };
   const ORDER=['Parents','Partner','Children','Siblings','Grandparents','Grandchildren'];
   const MEMBER_EDITABLE=new Set(['child_of','parent_of','sibling_of','spouse_of']);
+  const SUMMARY_LIMIT=3;
 
   function escapeHtml(v){
     return String(v??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#039;'}[c]));
@@ -39,6 +40,14 @@
     return {groups,count};
   }
 
+  function groupMarkup(label,names){
+    const unique=[...new Set(names)];
+    const hidden=Math.max(0,unique.length-SUMMARY_LIMIT);
+    const chips=unique.map((name,index)=>`<span class="relationship-person-chip ${index>=SUMMARY_LIMIT?'relationship-person-overflow':''}">${escapeHtml(name)}</span>`).join('');
+    const more=hidden?`<button type="button" class="relationship-more-chip" data-rel-more aria-expanded="false" data-more-count="${hidden}">+${hidden} more</button>`:'';
+    return `<div class="relationship-summary-group"><span class="relationship-summary-label"><span>${escapeHtml(label)}</span><small>${unique.length}</small></span><div class="relationship-summary-people">${chips}${more}</div></div>`;
+  }
+
   function render(section){
     const summary=section.querySelector('.relationship-compact-summary');
     const button=section.querySelector('.relationship-manage-toggle');
@@ -51,10 +60,7 @@
     if(!labels.length){
       summary.innerHTML='<div class="relationship-empty-summary"><span><strong>No family connections added yet</strong><small>Use Manage relationships to add your immediate family connections.</small></span></div>';
     }else{
-      summary.innerHTML=labels.map(label=>{
-        const names=[...new Set(groups[label])];
-        return `<div class="relationship-summary-group"><span class="relationship-summary-label">${escapeHtml(label)}</span><div class="relationship-summary-people">${names.map(name=>`<span class="relationship-person-chip">${escapeHtml(name)}</span>`).join('')}</div></div>`;
-      }).join('');
+      summary.innerHTML=labels.map(label=>groupMarkup(label,groups[label])).join('');
     }
   }
 
@@ -101,7 +107,6 @@
       const ownProfile=!!memberId&&String(auth.memberId||'')===memberId;
       const isAdmin=String(auth.role||'').toLowerCase()==='admin';
 
-      // Non-admins can only manage relationships attached to their own profile.
       if(!isAdmin&&!ownProfile){
         section.dataset.compactManager='member-view';
         section.style.display='none';
@@ -136,6 +141,17 @@
       rows.classList.add('relationship-editor-scroll');
 
       if(limitedMember)applyMemberLimits(section);
+
+      summary.addEventListener('click',event=>{
+        const more=event.target.closest('[data-rel-more]');
+        if(!more)return;
+        const group=more.closest('.relationship-summary-group');
+        if(!group)return;
+        const expanded=group.classList.toggle('relationship-group-expanded');
+        more.setAttribute('aria-expanded',expanded?'true':'false');
+        const hidden=Number(more.dataset.moreCount||0);
+        more.textContent=expanded?'Show less':`+${hidden} more`;
+      });
 
       controls.querySelector('.relationship-manage-toggle')?.addEventListener('click',()=>{
         if(limitedMember)applyMemberLimits(section);
