@@ -10,9 +10,17 @@
     grandson_of:'grandchild_of',granddaughter_of:'grandchild_of'
   };
 
-  const LABELS={
+  const GENERIC={
     spouse:'Spouse',parent:'Parent',child:'Child',sibling:'Sibling',
     grandparent:'Grandparent',grandchild:'Grandchild',family:'Family member'
+  };
+  const MALE={
+    spouse:'Husband',parent:'Father',child:'Son',sibling:'Brother',
+    grandparent:'Grandfather',grandchild:'Grandson',family:'Family member'
+  };
+  const FEMALE={
+    spouse:'Wife',parent:'Mother',child:'Daughter',sibling:'Sister',
+    grandparent:'Grandmother',grandchild:'Granddaughter',family:'Family member'
   };
 
   function people(){
@@ -23,6 +31,12 @@
   }
   function viewerId(){return String(window.FB_AUTH?.get?.()?.memberId||'owner')}
   function norm(v){return String(v||'').trim().toLowerCase().replace(/\s+/g,' ')}
+  function sexFor(id){
+    const direct=window.FB_PERSON_SEX?.get?.(id);
+    if(direct==='male'||direct==='female')return direct;
+    const person=people().find(p=>String(p.id)===String(id));
+    return person?.sex==='male'||person?.sex==='female'?person.sex:'';
+  }
 
   function parentGraph(){
     const parentsOf={};
@@ -67,7 +81,6 @@
     if(targetParents.includes(viewer))return 'child';
     if(viewerParents.includes(target))return 'parent';
     if(viewerParents.some(id=>targetParents.includes(id)))return 'sibling';
-
     if(viewerParents.some(parent=>(parentsOf[parent]||[]).includes(target)))return 'grandparent';
     if(targetParents.some(parent=>(parentsOf[parent]||[]).includes(viewer)))return 'grandchild';
     return '';
@@ -83,7 +96,10 @@
   function labelFor(targetId,fromViewer=viewerId()){
     const kind=kindFor(targetId,fromViewer);
     if(kind==='self')return '';
-    return LABELS[kind]||LABELS.family;
+    const sex=sexFor(targetId);
+    if(sex==='male')return MALE[kind]||GENERIC[kind]||GENERIC.family;
+    if(sex==='female')return FEMALE[kind]||GENERIC[kind]||GENERIC.family;
+    return GENERIC[kind]||GENERIC.family;
   }
 
   function sentenceLabel(targetId,fromViewer=viewerId()){
@@ -107,13 +123,13 @@
   }
 
   function decorateNotificationItem(item){
-    if(!item||item.__fbRelationshipDecorated)return item;
+    if(!item)return item;
     const person=item.actorId?people().find(p=>String(p.id)===String(item.actorId)):mentionedPerson(`${item.title||''} ${item.text||''}`);
     if(!person)return {...item,__fbRelationshipDecorated:true};
     const relation=labelFor(person.id);
     if(!relation)return {...item,__fbRelationshipDecorated:true};
 
-    const original=String(item.text||'');
+    const original=String(item.originalRelationshipText??item.text||'');
     const name=String(person.name||'').trim();
     let text=original;
     if(name&&norm(original).startsWith(norm(name))){
@@ -123,7 +139,7 @@
     }else{
       text=relation;
     }
-    return {...item,text,relationship:relation,actorId:String(person.id),__fbRelationshipDecorated:true};
+    return {...item,text,originalRelationshipText:original,relationship:relation,actorId:String(person.id),__fbRelationshipDecorated:true};
   }
 
   function decorateWall(root=document){
@@ -182,6 +198,7 @@
   if(app)new MutationObserver(scheduleDecorate).observe(app,{childList:true,subtree:true});
   window.addEventListener('familybook:family-data-updated',scheduleDecorate);
   window.addEventListener('familybook:notifications-changed',scheduleDecorate);
+  window.addEventListener('familybook:person-sex-updated',scheduleDecorate);
 
   window.FB_RELATIONSHIP_CONTEXT={
     kindFor,labelFor,sentenceLabel,personByName,decorateNotificationItem,decorateWall
