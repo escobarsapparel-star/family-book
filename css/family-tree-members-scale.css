@@ -111,6 +111,38 @@
   }
 }
 
+/* Members action dropdown: keep the popover in the same visual theme as the directory. */
+.members-page .member-menu{
+  z-index:80!important;
+  overflow:hidden;
+}
+html[data-theme="dark"] .members-page .member-menu{
+  background:#18231d!important;
+  border-color:#3b4a40!important;
+  box-shadow:0 16px 34px rgba(0,0,0,.42)!important;
+}
+html[data-theme="dark"] .members-page .member-menu button{
+  color:#f3ecdd!important;
+  background:transparent!important;
+}
+html[data-theme="dark"] .members-page .member-menu button:hover,
+html[data-theme="dark"] .members-page .member-menu button:focus-visible{
+  background:#223128!important;
+  color:#b9d5c0!important;
+}
+html[data-theme="dark"] .members-page .member-menu button.danger{
+  color:#e49a9f!important;
+}
+html[data-theme="dark"] .members-page .member-menu button.danger:hover,
+html[data-theme="dark"] .members-page .member-menu button.danger:focus-visible{
+  background:#352327!important;
+  color:#f2b0b5!important;
+}
+html[data-theme="dark"] .members-page .member-menu button svg{
+  color:currentColor!important;
+  stroke:currentColor!important;
+}
+
 /* Family Tree: enlarge the readable content while preserving the coordinate geometry. */
 .coordinate-tree-page .ct-person strong{
   font-size:.88rem!important;
