@@ -11,6 +11,7 @@
     grandparent_of:'Grandchildren'
   };
   const ORDER=['Parents','Partner','Children','Siblings','Grandparents','Grandchildren'];
+  const MEMBER_EDITABLE=new Set(['child_of','parent_of','sibling_of','spouse_of']);
 
   function escapeHtml(v){
     return String(v??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#039;'}[c]));
@@ -48,7 +49,7 @@
 
     const labels=[...ORDER.filter(x=>groups[x]?.length),...Object.keys(groups).filter(x=>!ORDER.includes(x))];
     if(!labels.length){
-      summary.innerHTML='<div class="relationship-empty-summary"><span><strong>No family connections added yet</strong><small>Use Manage relationships to add one.</small></span></div>';
+      summary.innerHTML='<div class="relationship-empty-summary"><span><strong>No family connections added yet</strong><small>Use Manage relationships to add your immediate family connections.</small></span></div>';
     }else{
       summary.innerHTML=labels.map(label=>{
         const names=[...new Set(groups[label])];
@@ -68,6 +69,25 @@
     if(!open)render(section);
   }
 
+  function applyMemberLimits(section){
+    rowsOf(section).forEach(row=>{
+      const type=row.querySelector('.mfRelType');
+      const current=type?.value||'';
+      const systemOnly=!!current&&!MEMBER_EDITABLE.has(current);
+      row.classList.toggle('relationship-system-row',systemOnly);
+      if(type){
+        [...type.options].forEach(option=>{
+          if(!option.value)return;
+          const allowed=MEMBER_EDITABLE.has(option.value);
+          option.disabled=!allowed;
+          option.hidden=!allowed;
+        });
+      }
+      const remove=row.querySelector('.remove-rel');
+      if(remove&&systemOnly)remove.style.display='none';
+    });
+  }
+
   function install(){
     try{
       const form=document.querySelector('#editMemberForm');
@@ -81,32 +101,29 @@
       const ownProfile=!!memberId&&String(auth.memberId||'')===memberId;
       const isAdmin=String(auth.role||'').toLowerCase()==='admin';
 
-      // A normal member's Edit Profile page is for personal details only.
-      // Keep the existing relationship inputs in the DOM so the current save
-      // logic preserves them, but do not expose family-graph editing here.
-      if(ownProfile&&!isAdmin){
-        section.dataset.compactManager='self-profile';
-        section.style.display='none';
-        form.classList.add('member-self-profile-editor');
-        const heading=form.closest('.member-form-card')?.querySelector('.form-title h1');
-        const copy=form.closest('.member-form-card')?.querySelector('.form-title p');
-        if(heading)heading.textContent='Edit Profile';
-        if(copy)copy.textContent='Update your personal profile details.';
-        return true;
-      }
-
-      // Non-admins should never manage another member's graph from this page.
-      if(!isAdmin){
+      // Non-admins can only manage relationships attached to their own profile.
+      if(!isAdmin&&!ownProfile){
         section.dataset.compactManager='member-view';
         section.style.display='none';
         return true;
       }
 
-      section.dataset.compactManager='admin';
+      const limitedMember=ownProfile&&!isAdmin;
+      section.dataset.compactManager=limitedMember?'member-self':'admin';
       section.classList.add('relationship-compact-manager');
+      if(limitedMember){
+        section.classList.add('relationship-member-limited');
+        form.classList.add('member-self-profile-editor');
+        const heading=form.closest('.member-form-card')?.querySelector('.form-title h1');
+        const copy=form.closest('.member-form-card')?.querySelector('.form-title p');
+        if(heading)heading.textContent='Edit Profile';
+        if(copy)copy.textContent='Update your profile details and your immediate family connections.';
+      }
 
       const titleText=section.querySelector('.relationship-title p');
-      if(titleText)titleText.textContent='Family connections are grouped below. Open Manage relationships only when you need to make changes.';
+      if(titleText)titleText.textContent=limitedMember
+        ? 'Manage relationships connected directly to you. Other family-tree structure remains protected.'
+        : 'Family connections are grouped below. Open Manage relationships only when you need to make changes.';
 
       const controls=document.createElement('div');
       controls.className='relationship-compact-controls';
@@ -118,13 +135,22 @@
       section.insertBefore(summary,rows);
       rows.classList.add('relationship-editor-scroll');
 
+      if(limitedMember)applyMemberLimits(section);
+
       controls.querySelector('.relationship-manage-toggle')?.addEventListener('click',()=>{
+        if(limitedMember)applyMemberLimits(section);
         setOpen(section,!section.classList.contains('relationship-manager-open'));
       });
-      section.addEventListener('change',()=>render(section));
+      section.addEventListener('change',()=>{
+        if(limitedMember)applyMemberLimits(section);
+        render(section);
+      });
       section.addEventListener('click',event=>{
         if(event.target.closest('#addRelationship,.remove-rel')){
-          setTimeout(()=>render(section),0);
+          setTimeout(()=>{
+            if(limitedMember)applyMemberLimits(section);
+            render(section);
+          },0);
         }
       });
 
