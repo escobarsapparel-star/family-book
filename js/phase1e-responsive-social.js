@@ -48,6 +48,35 @@
     document.body.classList.remove("home-composer-open");
   }
 
+  function closeAfterSuccessfulPost(holder){
+    const postButton=holder.querySelector("#wallHomePost");
+    if(!postButton||postButton.dataset.closeAfterPostBound==="1")return;
+    postButton.dataset.closeAfterPostBound="1";
+
+    postButton.addEventListener("click",()=>{
+      const modal=holder.querySelector("[data-home-composer-modal]");
+      if(!modal||modal.hidden)return;
+
+      let finished=false;
+      const stop=()=>{
+        if(finished)return;
+        finished=true;
+        observer.disconnect();
+        clearTimeout(timeout);
+      };
+      const observer=new MutationObserver(()=>{
+        const currentModal=holder.querySelector("[data-home-composer-modal]");
+        if(!currentModal||currentModal.hidden){stop();return}
+        const input=holder.querySelector("#wallHomeText");
+        if(input&&input.value!=="")return;
+        stop();
+        closeModal(holder);
+      });
+      observer.observe(holder,{childList:true,subtree:true});
+      const timeout=setTimeout(stop,15000);
+    },true);
+  }
+
   function install(holder){
     if(!holder||holder.dataset.socialCompact==="1")return false;
     const composer=holder.querySelector(".wall-composer");
@@ -65,6 +94,7 @@
     holder.querySelector("[data-home-close-composer]")?.addEventListener("click",()=>closeModal(holder));
     const modal=holder.querySelector("[data-home-composer-modal]");
     modal?.addEventListener("pointerdown",e=>{if(e.target===modal)closeModal(holder)});
+    closeAfterSuccessfulPost(holder);
     window.icons?.();
     return true;
   }
