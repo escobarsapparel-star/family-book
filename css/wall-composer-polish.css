@@ -65,6 +65,12 @@ html[data-theme="dark"] .home-composer-modal #wallHomeText:focus{
   margin:-2px 0 14px;
   overflow:hidden!important;
 }
+.fb-composer-link-shell{
+  position:relative;
+  width:100%;
+  max-width:100%;
+  min-width:0;
+}
 .fb-composer-link-card{
   display:block;
   width:100%!important;
@@ -78,6 +84,28 @@ html[data-theme="dark"] .home-composer-modal #wallHomeText:focus{
   color:inherit;
   text-decoration:none;
 }
+.fb-composer-link-remove{
+  position:absolute;
+  top:10px;
+  right:10px;
+  z-index:4;
+  width:40px;
+  height:40px;
+  margin:0;
+  padding:0;
+  border:1px solid rgba(255,255,255,.24);
+  border-radius:50%;
+  background:rgba(15,19,16,.84);
+  color:#fff;
+  display:grid;
+  place-items:center;
+  font:700 27px/1 Arial,sans-serif;
+  cursor:pointer;
+  box-shadow:0 4px 14px rgba(0,0,0,.28);
+  -webkit-tap-highlight-color:transparent;
+}
+.fb-composer-link-remove:hover,
+.fb-composer-link-remove:focus-visible{background:rgba(15,19,16,.96);outline:2px solid rgba(128,185,154,.72);outline-offset:2px}
 .fb-composer-link-media{position:relative;width:100%;max-width:100%;aspect-ratio:16/9;background:#101310;overflow:hidden}
 .fb-composer-link-media img{display:block;width:100%;height:100%;object-fit:cover}
 .fb-composer-link-play{position:absolute;inset:50% auto auto 50%;width:48px;height:48px;transform:translate(-50%,-50%);border-radius:50%;background:rgba(0,0,0,.68);display:grid;place-items:center;box-shadow:0 6px 20px rgba(0,0,0,.28)}
@@ -132,6 +160,7 @@ html[data-theme="dark"] .home-composer-cancel:hover{background:#1d271f!important
   }
   .fb-composer-link-card{border-radius:14px}
   .fb-composer-link-media{max-height:190px!important}
+  .fb-composer-link-remove{top:8px;right:8px;width:42px;height:42px;font-size:28px}
   .home-composer-modal-card{overflow-y:auto!important;overflow-x:hidden!important}
   .home-composer-modal .wall-compose-actions{
     display:grid!important;
