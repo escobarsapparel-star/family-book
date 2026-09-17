@@ -96,4 +96,4 @@ fbLoadScript('js/date-picker-ddmmyyyy.js?v=2','date-dmy-script');
 // relationship save/RPC logic; they only make large families easier to manage.
 fbLoadStyle('css/member-edit-desktop-fix.css?v=1','member-edit-desktop-fix');
 fbLoadStyle('css/member-relationship-manager.css?v=1','member-relationship-manager-style');
-fbLoadScript('js/member-relationship-manager.js?v=1','member-relationship-manager-script');
+fbLoadScript('js/member-relationship-manager.js?v=2','member-relationship-manager-script');
