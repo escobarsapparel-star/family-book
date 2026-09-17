@@ -10,15 +10,7 @@
     grandchild_of:'Grandparents',
     grandparent_of:'Grandchildren'
   };
-  const ORDER=['Partner','Parents','Children','Siblings','Grandparents','Grandchildren'];
-  const ROW_PRIORITY={
-    spouse_of:0,
-    child_of:1,
-    parent_of:2,
-    sibling_of:3,
-    grandchild_of:4,
-    grandparent_of:5
-  };
+  const ORDER=['Parents','Partner','Children','Siblings','Grandparents','Grandchildren'];
   const MEMBER_EDITABLE=new Set(['child_of','parent_of','sibling_of','spouse_of']);
   const SUMMARY_LIMIT=2;
 
@@ -28,23 +20,6 @@
 
   function rowsOf(section){
     return [...section.querySelectorAll('#relationshipRows [data-rel-row]')];
-  }
-
-  function sortEditorRows(section){
-    const container=section.querySelector('#relationshipRows');
-    if(!container)return;
-    rowsOf(section)
-      .map((row,index)=>({
-        row,
-        index,
-        type:row.querySelector('.mfRelType')?.value||''
-      }))
-      .sort((a,b)=>{
-        const ap=Object.prototype.hasOwnProperty.call(ROW_PRIORITY,a.type)?ROW_PRIORITY[a.type]:99;
-        const bp=Object.prototype.hasOwnProperty.call(ROW_PRIORITY,b.type)?ROW_PRIORITY[b.type]:99;
-        return ap-bp||a.index-b.index;
-      })
-      .forEach(({row})=>container.appendChild(row));
   }
 
   function read(section){
@@ -166,7 +141,6 @@
       rows.classList.add('relationship-editor-scroll');
 
       if(limitedMember)applyMemberLimits(section);
-      sortEditorRows(section);
 
       summary.addEventListener('click',event=>{
         const more=event.target.closest('[data-rel-more]');
@@ -181,19 +155,16 @@
 
       controls.querySelector('.relationship-manage-toggle')?.addEventListener('click',()=>{
         if(limitedMember)applyMemberLimits(section);
-        sortEditorRows(section);
         setOpen(section,!section.classList.contains('relationship-manager-open'));
       });
       section.addEventListener('change',()=>{
         if(limitedMember)applyMemberLimits(section);
-        sortEditorRows(section);
         render(section);
       });
       section.addEventListener('click',event=>{
         if(event.target.closest('#addRelationship,.remove-rel')){
           setTimeout(()=>{
             if(limitedMember)applyMemberLimits(section);
-            sortEditorRows(section);
             render(section);
           },0);
         }
