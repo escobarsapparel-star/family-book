@@ -13,9 +13,6 @@
     fbRoute:String(route||"home")
   });
 
-  // Make the page entry itself the Family Book Home entry. Subsequent in-app
-  // navigation gets pushed on top of this, so browser/Android Back walks the
-  // Family Book screen stack before it can leave the site.
   if(!history.state?.fbApp||!history.state?.fbRoute){
     try{history.replaceState(routeState("home"),"",location.href)}catch(_){}
     currentRoute="home";
@@ -50,8 +47,6 @@
   window.go=goWithHistory;
 
   window.addEventListener("popstate",event=>{
-    // Composer/overlay history entries deliberately reuse the same fbRoute.
-    // Their own handler closes the overlay; do not rerender the page underneath.
     const next=event.state?.fbRoute;
     if(!event.state?.fbApp||!next||next===currentRoute)return;
 
@@ -87,13 +82,9 @@ function fbLoadScript(src,key){
   document.body.appendChild(script);
 }
 
-// Family Book date entry uses DD/MM/YYYY everywhere while preserving ISO
-// YYYY-MM-DD values internally for the existing save/database logic.
-fbLoadStyle('css/date-picker-ddmmyyyy.css?v=2','date-dmy-style');
-fbLoadScript('js/date-picker-ddmmyyyy.js?v=2','date-dmy-script');
+// Date entry is handled once, globally, by local-date-picker.js loaded in index.html.
+// Do not load a second date-picker implementation here.
 
-// Member editor presentation layers. These do not alter family data or the
-// relationship save/RPC logic; they only make large families easier to manage.
 fbLoadStyle('css/member-edit-desktop-fix.css?v=1','member-edit-desktop-fix');
 fbLoadStyle('css/member-relationship-manager.css?v=1','member-relationship-manager-style');
 fbLoadScript('js/member-relationship-manager.js?v=2','member-relationship-manager-script');
