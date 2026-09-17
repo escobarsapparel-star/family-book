@@ -1,0 +1,46 @@
+/* Family Book — keep authenticated mobile pages visually solid edge-to-edge.
+   This does not change page layout or card spacing; it only removes mismatched
+   shell/body gutters that can show beside full-width profile and directory views. */
+
+:root{
+  --fb-solid-page-bg:#fbf8f2;
+}
+
+html[data-theme="dark"]{
+  --fb-solid-page-bg:#111512;
+}
+
+@media (max-width:899px){
+  html,
+  body,
+  .app,
+  #screen{
+    background:var(--fb-solid-page-bg)!important;
+  }
+
+  html,
+  body{
+    width:100%;
+    max-width:100%;
+    overflow-x:hidden;
+  }
+
+  .app{
+    min-height:100dvh;
+  }
+
+  #screen{
+    min-height:calc(100dvh - 104px);
+    box-sizing:border-box;
+  }
+
+  /* Profile pages use transparent sections, so keep the route base itself solid. */
+  .member-profile-view:not(.history-profile-view):not(.account-profile-view){
+    background:var(--fb-solid-page-bg)!important;
+  }
+
+  /* Match Chromium's visible scrollbar track/gutter to the page background. */
+  body::-webkit-scrollbar-track{
+    background:var(--fb-solid-page-bg);
+  }
+}
