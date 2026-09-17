@@ -91,5 +91,5 @@ fbLoadScript('js/member-relationship-manager.js?v=9','member-relationship-manage
 fbLoadStyle('css/member-edit-mobile-actions.css?v=1','member-edit-mobile-actions-style');
 fbLoadScript('js/member-edit-mobile-actions.js?v=2','member-edit-mobile-actions-script');
 fbLoadScript('js/tree-age-order.js?v=1','tree-age-order-script');
-fbLoadStyle('css/full-tree-dark.css?v=2','full-tree-dark-style');
-fbLoadScript('js/full-tree-polish.js?v=3','full-tree-polish-script');
+fbLoadStyle('css/full-tree-dark.css?v=3','full-tree-dark-style');
+fbLoadScript('js/full-tree-polish.js?v=4','full-tree-polish-script');
