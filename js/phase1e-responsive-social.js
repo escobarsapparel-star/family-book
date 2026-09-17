@@ -28,11 +28,40 @@
     </div>`;
   }
 
+  function visibleModalHolder(){
+    return [...document.querySelectorAll('.home-status-composer-shell')].find(holder=>{
+      const modal=holder.querySelector('[data-home-composer-modal]');
+      return modal&&!modal.hidden;
+    })||null;
+  }
+
+  function closeVisual(holder){
+    const modal=holder?.querySelector("[data-home-composer-modal]");
+    if(modal){modal.hidden=true;modal.dataset.historyPushed="0"}
+    document.body.classList.remove("home-composer-open");
+  }
+
+  function requestClose(holder){
+    const modal=holder?.querySelector("[data-home-composer-modal]");
+    if(!modal||modal.hidden)return;
+    if(modal.dataset.historyPushed==="1"&&history.state?.fbComposerOpen){
+      history.back();
+      return;
+    }
+    closeVisual(holder);
+  }
+
   function openModal(holder,mode="post"){
     const modal=holder.querySelector("[data-home-composer-modal]");
     if(!modal)return;
     modal.hidden=false;
     document.body.classList.add("home-composer-open");
+    if(modal.dataset.historyPushed!=="1"){
+      try{
+        history.pushState({...history.state,fbComposerOpen:true},"",location.href);
+        modal.dataset.historyPushed="1";
+      }catch(_){modal.dataset.historyPushed="0"}
+    }
     window.icons?.();
     if(mode==="media"){
       setTimeout(()=>modal.querySelector('[data-wall-attach="home"]')?.click(),40);
@@ -42,10 +71,17 @@
     }
   }
 
-  function closeModal(holder){
-    const modal=holder.querySelector("[data-home-composer-modal]");
-    if(modal)modal.hidden=true;
-    document.body.classList.remove("home-composer-open");
+  function addVisibleCancel(holder,composer){
+    const actions=composer.querySelector('.wall-compose-actions');
+    const postButton=composer.querySelector('#wallHomePost');
+    if(!actions||!postButton||actions.querySelector('[data-home-cancel-composer]'))return;
+    const cancel=document.createElement('button');
+    cancel.type='button';
+    cancel.className='secondary home-composer-cancel';
+    cancel.dataset.homeCancelComposer='';
+    cancel.innerHTML='<i data-lucide="x"></i><span>Cancel</span>';
+    actions.insertBefore(cancel,postButton);
+    cancel.addEventListener('click',()=>requestClose(holder));
   }
 
   function closeAfterSuccessfulPost(holder){
@@ -70,7 +106,7 @@
         const input=holder.querySelector("#wallHomeText");
         if(input&&input.value!=="")return;
         stop();
-        closeModal(holder);
+        requestClose(holder);
       });
       observer.observe(holder,{childList:true,subtree:true});
       const timeout=setTimeout(stop,15000);
@@ -87,13 +123,14 @@
     holder.insertAdjacentHTML("beforeend",modalMarkup());
     const body=holder.querySelector("[data-home-composer-body]");
     body?.appendChild(composer);
+    addVisibleCancel(holder,composer);
 
     holder.querySelector("[data-home-open-composer]")?.addEventListener("click",()=>openModal(holder,"post"));
     holder.querySelector("[data-home-media-composer]")?.addEventListener("click",()=>openModal(holder,"media"));
     holder.querySelector("[data-home-activity-composer]")?.addEventListener("click",()=>openModal(holder,"activity"));
-    holder.querySelector("[data-home-close-composer]")?.addEventListener("click",()=>closeModal(holder));
+    holder.querySelector("[data-home-close-composer]")?.addEventListener("click",()=>requestClose(holder));
     const modal=holder.querySelector("[data-home-composer-modal]");
-    modal?.addEventListener("pointerdown",e=>{if(e.target===modal)closeModal(holder)});
+    modal?.addEventListener("pointerdown",e=>{if(e.target===modal)requestClose(holder)});
     closeAfterSuccessfulPost(holder);
     window.icons?.();
     return true;
@@ -105,9 +142,13 @@
 
   document.addEventListener("keydown",e=>{
     if(e.key!=="Escape")return;
-    const holder=document.querySelector(".home-status-composer-shell");
-    const modal=holder?.querySelector("[data-home-composer-modal]");
-    if(modal&&!modal.hidden)closeModal(holder);
+    const holder=visibleModalHolder();
+    if(holder){e.preventDefault();requestClose(holder)}
+  });
+
+  window.addEventListener('popstate',()=>{
+    const holder=visibleModalHolder();
+    if(holder)closeVisual(holder);
   });
 
   const root=document.getElementById("app");
