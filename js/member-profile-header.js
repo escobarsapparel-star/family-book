@@ -14,6 +14,9 @@
       back.classList.add('fb-member-profile-header');
       back.setAttribute('aria-label','Back to Members');
       back.innerHTML=`<i data-lucide="arrow-left"></i><span>${String(name).replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#039;"}[c]))}</span>`;
+
+      const editLabel=page.querySelector('.fb-profile-edit-button span');
+      if(editLabel&&editLabel.textContent.trim()==='Edit member')editLabel.textContent='Manage profile';
     });
     window.lucide?.createIcons?.();
   }
