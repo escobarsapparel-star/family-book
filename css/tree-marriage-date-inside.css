@@ -6,12 +6,26 @@
   position:relative!important;
 }
 
+/* Only married couples with a saved date need the extra lower band.
+   98px stays below the tree engine's 102px connector rail, so relationship
+   lines remain outside the rounded couple container. */
+.ct-couple:has(> .ct-marriage-date){
+  height:98px!important;
+}
+
+/* Lift the two person cards and heart slightly to create a dedicated date row
+   beneath them instead of allowing the badge to overlap the green cards. */
+.ct-couple:has(> .ct-marriage-date) > .ct-person,
+.ct-couple:has(> .ct-marriage-date) > .ct-heart{
+  transform:translateY(-6px);
+}
+
 .ct-couple > .ct-marriage-date{
   position:absolute!important;
   left:50%!important;
   right:auto!important;
   top:auto!important;
-  bottom:3px!important;
+  bottom:5px!important;
   transform:translateX(-50%)!important;
   margin:0!important;
   z-index:7!important;
@@ -24,7 +38,10 @@
 
 /* Keep the badge visually centred beneath the heart on smaller tree cards too. */
 @media(max-width:650px){
+  .ct-couple:has(> .ct-marriage-date){
+    height:98px!important;
+  }
   .ct-couple > .ct-marriage-date{
-    bottom:3px!important;
+    bottom:5px!important;
   }
 }
