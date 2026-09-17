@@ -87,4 +87,4 @@ function fbLoadScript(src,key){
 
 fbLoadStyle('css/member-edit-desktop-fix.css?v=1','member-edit-desktop-fix');
 fbLoadStyle('css/member-relationship-manager.css?v=3','member-relationship-manager-style');
-fbLoadScript('js/member-relationship-manager.js?v=4','member-relationship-manager-script');
+fbLoadScript('js/member-relationship-manager.js?v=5','member-relationship-manager-script');
