@@ -2,6 +2,7 @@
   if(window.__fbWebWallActivityOrder)return;
   window.__fbWebWallActivityOrder=true;
 
+  const LINK_PREFIX='[[FB_LINK]]';
   const styleId='fb-wall-link-preview-style';
   if(!document.getElementById(styleId)){
     const style=document.createElement('style');
@@ -42,6 +43,21 @@
       const url=new URL(raw);
       if(url.protocol!=='http:'&&url.protocol!=='https:')return null;
       return {raw,url};
+    }catch(_){return null}
+  }
+
+  function parseAttachedLink(text){
+    const rawText=String(text||'');
+    if(!rawText.startsWith(LINK_PREFIX))return null;
+    const rest=rawText.slice(LINK_PREFIX.length);
+    const nl=rest.indexOf('\n');
+    const metaText=(nl>=0?rest.slice(0,nl):rest).trim();
+    const note=(nl>=0?rest.slice(nl+1):'').trim();
+    try{
+      const meta=JSON.parse(metaText),raw=cleanUrl(meta?.url||'');
+      const url=new URL(raw);
+      if(url.protocol!=='http:'&&url.protocol!=='https:')return null;
+      return {info:{raw,url},note};
     }catch(_){return null}
   }
 
@@ -91,11 +107,20 @@
     const title=document.createElement('strong');
     title.textContent=id?'YouTube video':url.hostname.replace(/^www\./,'');
     const small=document.createElement('small');
-    small.textContent=raw;
+    small.textContent=id?'Watch on YouTube →':'Open link →';
     text.append(title,small);
     copy.append(icon,text);
     link.appendChild(copy);
     return link;
+  }
+
+  function tidyLegacyText(text,raw){
+    return String(text||'')
+      .replace(raw,'')
+      .replace(/[ \t]+\n/g,'\n')
+      .replace(/\n[ \t]+/g,'\n')
+      .replace(/[ \t]{2,}/g,' ')
+      .trim();
   }
 
   function enhanceLinkPreview(body){
@@ -104,9 +129,25 @@
     if(body.querySelector('.wall-link-preview')){body.dataset.wallLinkPreview='1';return}
     const p=body.querySelector(':scope > p');
     const text=String(p?.textContent||'').trim();
-    if(!text||text.startsWith('[[FB_')){body.dataset.wallLinkPreview='1';return}
-    const info=firstUrl(text);
+    if(!text){body.dataset.wallLinkPreview='1';return}
+
+    let info=null,caption='';
+    const attached=parseAttachedLink(text);
+    if(attached){
+      info=attached.info;
+      caption=attached.note;
+    }else{
+      if(text.startsWith('[[FB_')){body.dataset.wallLinkPreview='1';return}
+      info=firstUrl(text);
+      if(info)caption=tidyLegacyText(text,info.raw);
+    }
+
     if(!info){body.dataset.wallLinkPreview='1';return}
+
+    if(p){
+      if(caption){p.textContent=caption;p.hidden=false}
+      else p.remove();
+    }
 
     const preview=createPreview(info);
     const anchor=body.querySelector('.wall-post-attachment,.wall-map-link,.reaction-bar,.reaction-controls,.comment-thread');
