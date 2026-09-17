@@ -1,0 +1,65 @@
+/* Family Book — Create Post composer visibility + live URL previews */
+.home-composer-modal #wallHomeText,
+.home-composer-modal .wall-compose-main textarea#wallHomeText{
+  display:block!important;
+  width:100%!important;
+  min-height:118px!important;
+  resize:vertical!important;
+  box-sizing:border-box!important;
+  margin:10px 0 12px!important;
+  padding:15px 16px!important;
+  border:1px solid rgba(104,126,111,.48)!important;
+  border-radius:16px!important;
+  background:#f7f4ed!important;
+  color:#20251f!important;
+  font:inherit!important;
+  font-size:1rem!important;
+  line-height:1.5!important;
+  outline:none!important;
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.45)!important;
+}
+.home-composer-modal #wallHomeText::placeholder{color:#777d76!important;opacity:1!important}
+.home-composer-modal #wallHomeText:focus{
+  border-color:#7fb395!important;
+  box-shadow:0 0 0 3px rgba(127,179,149,.15)!important;
+}
+html[data-theme="dark"] .home-composer-modal #wallHomeText,
+html[data-theme="dark"] .home-composer-modal .wall-compose-main textarea#wallHomeText{
+  background:#111812!important;
+  border-color:#3c4a40!important;
+  color:#f3ecdd!important;
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.025)!important;
+}
+html[data-theme="dark"] .home-composer-modal #wallHomeText::placeholder{color:#8f968e!important}
+html[data-theme="dark"] .home-composer-modal #wallHomeText:focus{
+  border-color:#80b99a!important;
+  box-shadow:0 0 0 3px rgba(128,185,154,.13)!important;
+}
+
+.fb-composer-link-preview[hidden]{display:none!important}
+.fb-composer-link-preview{margin:-2px 0 14px}
+.fb-composer-link-card{display:block;overflow:hidden;border:1px solid var(--line);border-radius:16px;background:var(--cream);color:inherit;text-decoration:none}
+.fb-composer-link-media{position:relative;aspect-ratio:16/9;background:#101310;overflow:hidden}
+.fb-composer-link-media img{display:block;width:100%;height:100%;object-fit:cover}
+.fb-composer-link-play{position:absolute;inset:50% auto auto 50%;width:48px;height:48px;transform:translate(-50%,-50%);border-radius:50%;background:rgba(0,0,0,.68);display:grid;place-items:center;box-shadow:0 6px 20px rgba(0,0,0,.28)}
+.fb-composer-link-play:after{content:"";width:0;height:0;border-top:8px solid transparent;border-bottom:8px solid transparent;border-left:13px solid #fff;margin-left:3px}
+.fb-composer-link-copy{display:flex;align-items:center;gap:10px;padding:10px 12px;min-width:0}
+.fb-composer-link-copy>span:first-child{width:32px;height:32px;flex:0 0 32px;border-radius:9px;background:rgba(49,92,67,.12);display:grid;place-items:center;color:var(--green);font-weight:900}
+.fb-composer-link-copy>span:last-child{min-width:0;display:flex;flex-direction:column;gap:2px}
+.fb-composer-link-copy strong{font-size:.82rem;line-height:1.2}
+.fb-composer-link-copy small{font-size:.68rem;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+html[data-theme="dark"] .fb-composer-link-card{background:#1d251e;border-color:#3b473e}
+html[data-theme="dark"] .fb-composer-link-copy strong{color:#f1eadf}
+html[data-theme="dark"] .fb-composer-link-copy small{color:#aca499}
+html[data-theme="dark"] .fb-composer-link-copy>span:first-child{background:#27372d;color:#b9d7a9}
+
+@media(max-width:700px){
+  .home-composer-modal #wallHomeText,
+  .home-composer-modal .wall-compose-main textarea#wallHomeText{
+    min-height:132px!important;
+    margin-top:12px!important;
+    padding:14px!important;
+    border-radius:14px!important;
+  }
+  .fb-composer-link-card{border-radius:14px}
+}
