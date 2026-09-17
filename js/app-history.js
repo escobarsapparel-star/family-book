@@ -89,5 +89,5 @@ fbLoadStyle('css/member-edit-desktop-fix.css?v=1','member-edit-desktop-fix');
 fbLoadStyle('css/member-relationship-manager.css?v=3','member-relationship-manager-style');
 fbLoadScript('js/member-relationship-manager.js?v=9','member-relationship-manager-script');
 fbLoadStyle('css/member-edit-mobile-actions.css?v=1','member-edit-mobile-actions-style');
-fbLoadScript('js/member-edit-mobile-actions.js?v=1','member-edit-mobile-actions-script');
+fbLoadScript('js/member-edit-mobile-actions.js?v=2','member-edit-mobile-actions-script');
 fbLoadScript('js/tree-age-order.js?v=1','tree-age-order-script');
