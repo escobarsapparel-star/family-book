@@ -2,6 +2,8 @@
   if(window.__fbWallComposerPolish)return;
   window.__fbWallComposerPolish=true;
 
+  const LINK_PREFIX='[[FB_LINK]]';
+
   function cleanUrl(raw){
     let value=String(raw||'').trim();
     while(/[.,!?;:)\]]$/.test(value))value=value.slice(0,-1);
@@ -33,6 +35,14 @@
     return /^[A-Za-z0-9_-]{6,20}$/.test(id)?id:'';
   }
 
+  function urlInfo(raw){
+    try{
+      const value=cleanUrl(raw),url=new URL(value);
+      if(!['http:','https:'].includes(url.protocol))return null;
+      return {raw:value,url};
+    }catch(_){return null}
+  }
+
   function previewMount(input){
     let mount=input.parentElement?.querySelector('.fb-composer-link-preview');
     if(!mount){
@@ -44,10 +54,30 @@
     return mount;
   }
 
+  function stripAttachedUrl(text,raw){
+    return String(text||'')
+      .replace(raw,'')
+      .replace(/[ \t]+\n/g,'\n')
+      .replace(/\n[ \t]+/g,'\n')
+      .replace(/[ \t]{2,}/g,' ')
+      .replace(/^\s+|\s+$/g,'');
+  }
+
   function renderPreview(input){
     if(!input)return;
     const mount=previewMount(input);
-    const info=firstUrl(input.value);
+    const typed=firstUrl(input.value);
+
+    if(typed){
+      input.dataset.fbPreviewUrl=typed.raw;
+      const cleaned=stripAttachedUrl(input.value,typed.raw);
+      if(cleaned!==input.value){
+        input.value=cleaned;
+        try{input.setSelectionRange(cleaned.length,cleaned.length)}catch(_){}
+      }
+    }
+
+    const info=typed||urlInfo(input.dataset.fbPreviewUrl||'');
     if(!info){mount.hidden=true;mount.innerHTML='';return}
 
     const id=youtubeId(info.url);
@@ -80,7 +110,7 @@
     const strong=document.createElement('strong');
     strong.textContent=id?'YouTube video':info.url.hostname.replace(/^www\./,'');
     const small=document.createElement('small');
-    small.textContent=info.raw;
+    small.textContent=id?'Preview ready • add a caption above':'Link preview ready';
     text.append(strong,small);
     copy.append(icon,text);
     card.appendChild(copy);
@@ -109,7 +139,19 @@
     if(!api?.savePost||api.savePost.__fbComposerWrapped)return false;
     const original=api.savePost.bind(api);
     const wrapped=async function(...args){
+      const input=document.querySelector('#wallHomeText');
+      const attachedUrl=String(input?.dataset.fbPreviewUrl||'').trim();
+      const originalPost=args[0]||{};
+      const activity=String(originalPost.activity||'update');
+
+      if(attachedUrl&&activity==='update'){
+        const cleanText=String(originalPost.text||'').trim();
+        const encoded=`${LINK_PREFIX}${JSON.stringify({url:attachedUrl})}${cleanText?`\n${cleanText}`:''}`;
+        args[0]={...originalPost,text:encoded};
+      }
+
       const result=await original(...args);
+      if(input&&attachedUrl===input.dataset.fbPreviewUrl)delete input.dataset.fbPreviewUrl;
       window.dispatchEvent(new CustomEvent('fb:wall-post-saved',{detail:{post:args[0]||null}}));
       return result;
     };
@@ -127,6 +169,7 @@
     const input=document.querySelector('#wallHomeText');
     if(input){
       input.value='';
+      delete input.dataset.fbPreviewUrl;
       renderPreview(input);
     }
     closeHomeComposer();
