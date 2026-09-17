@@ -12,7 +12,7 @@
   };
   const ORDER=['Parents','Partner','Children','Siblings','Grandparents','Grandchildren'];
   const MEMBER_EDITABLE=new Set(['child_of','parent_of','sibling_of','spouse_of']);
-  const SUMMARY_LIMIT=3;
+  const SUMMARY_LIMIT=2;
 
   function escapeHtml(v){
     return String(v??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#039;'}[c]));
