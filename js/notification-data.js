@@ -3,6 +3,7 @@
   let preferences=null;
   let items=[];
   let channel=null;
+  let workerReady=null;
 
   const sb=()=>window.FB_SUPABASE?.client;
   const user=()=>window.FB_AUTH?.get?.()||{};
@@ -38,6 +39,15 @@
     current.privacy=current.privacy||{};
     current.appearance=current.appearance||{theme:"system"};
     localStorage.setItem(settingsKey(),JSON.stringify(current));
+  }
+
+  async function ensureNotificationWorker(){
+    if(!("serviceWorker" in navigator))return null;
+    if(workerReady)return workerReady;
+    workerReady=navigator.serviceWorker.register("./sw.js",{scope:"./"})
+      .then(()=>navigator.serviceWorker.ready)
+      .catch(err=>{console.warn("Notification worker:",err);workerReady=null;return null});
+    return workerReady;
   }
 
   async function loadPreferences(){
@@ -131,11 +141,28 @@
     return start===end?false:(start<end?mins>=start&&mins<end:mins>=start||mins<end);
   }
 
-  function maybeBrowserNotify(row){
-    if(document.visibilityState!=="hidden")return;
+  async function maybeBrowserNotify(row){
     if(!preferences?.enabled||inQuietHours())return;
     if(!("Notification" in window)||Notification.permission!=="granted")return;
-    try{new Notification(row.title||"Family Book",{body:row.body||"",tag:`family-book-${row.id}`})}catch(_){}
+
+    const title=row.title||"Family Book";
+    const options={
+      body:row.body||"",
+      tag:`family-book-${row.id}`,
+      renotify:true,
+      data:{targetType:row.target_type||"",targetId:row.target_id||""}
+    };
+
+    try{
+      const registration=await ensureNotificationWorker();
+      if(registration?.showNotification){
+        await registration.showNotification(title,options);
+        return;
+      }
+      new Notification(title,options);
+    }catch(err){
+      console.warn("Notification display:",err);
+    }
   }
 
   function subscribe(){
@@ -159,6 +186,7 @@
     if(!u.familyId)return;
     if(loadedFamilyId===u.familyId)return;
     await loadPreferences();
+    await ensureNotificationWorker();
     await loadNotifications(true);
     subscribe();
     loadedFamilyId=u.familyId;
