@@ -4,8 +4,8 @@
   overflow:hidden;
   border-radius:18px;
   background-color:#f5efe4;
-  background-image:linear-gradient(rgba(250,247,240,.62),rgba(250,247,240,.62)),url("../assets/images/family-tree-background.jpg");
-  background-size:cover;
+  background-image:linear-gradient(rgba(250,247,240,.40),rgba(250,247,240,.40)),url("../assets/images/family-tree-background.jpg");
+  background-size:contain;
   background-position:center center;
   background-repeat:no-repeat;
 }
@@ -22,10 +22,13 @@ html[data-theme="dark"] .full-tree-viewport{
   box-shadow:inset 0 0 0 1px rgba(255,255,255,.015);
 }
 html[data-theme="dark"] .full-tree-stage .ct-canvas{
-  background-color:#101713!important;
-  background-image:linear-gradient(rgba(9,15,11,.68),rgba(9,15,11,.68)),url("../assets/images/family-tree-background.jpg")!important;
+  background-color:#0b130e!important;
+  background-image:linear-gradient(rgba(7,13,9,.46),rgba(7,13,9,.46)),url("../assets/images/family-tree-background.jpg")!important;
+  background-size:contain!important;
+  background-position:center center!important;
+  background-repeat:no-repeat!important;
 }
-html[data-theme="dark"] .full-tree-page .ct-lines path{stroke:#9f9174!important}
+html[data-theme="dark"] .full-tree-page .ct-lines path{stroke:#b7a57f!important}
 html[data-theme="dark"] .full-tree-page .ct-person{
   background:rgba(24,35,28,.95)!important;
   border-color:#3f5547!important;
