@@ -92,4 +92,4 @@ fbLoadStyle('css/member-edit-mobile-actions.css?v=1','member-edit-mobile-actions
 fbLoadScript('js/member-edit-mobile-actions.js?v=2','member-edit-mobile-actions-script');
 fbLoadScript('js/tree-age-order.js?v=1','tree-age-order-script');
 fbLoadStyle('css/full-tree-dark.css?v=1','full-tree-dark-style');
-fbLoadScript('js/full-tree-polish.js?v=1','full-tree-polish-script');
+fbLoadScript('js/full-tree-polish.js?v=2','full-tree-polish-script');
