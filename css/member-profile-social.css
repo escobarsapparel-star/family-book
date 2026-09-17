@@ -21,9 +21,9 @@
 .fb-profile-photo-edit{position:absolute!important;right:3px;bottom:8px;z-index:7;width:42px!important;height:42px!important;min-height:42px!important;padding:0!important;margin:0!important;border-radius:50%!important;display:grid!important;place-items:center;background:var(--accent)!important;color:#fff!important;border:3px solid var(--paper)!important;box-shadow:0 3px 10px rgba(0,0,0,.22)}
 .fb-profile-photo-edit svg{width:18px;height:18px}
 
-.fb-basic-name{position:relative;margin:18px auto 0;padding:0 110px;display:flex;align-items:center;justify-content:center;gap:12px;min-height:52px}
+.fb-basic-name{position:relative;margin:18px auto 0;padding:0 24px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:10px;min-height:52px}
 .fb-member-profile .fb-basic-name>h1{margin:0!important;text-align:center!important;font-size:clamp(2rem,6vw,2.7rem)!important;line-height:1.08}
-.fb-profile-edit-button{position:absolute!important;right:14px!important;top:50%!important;transform:translateY(-50%);margin:0!important;min-height:42px!important;padding:0 14px!important;border-radius:999px!important;display:flex!important;align-items:center;gap:7px;font-size:.88rem!important;font-weight:800!important;white-space:nowrap}
+.fb-profile-edit-button{position:static!important;right:auto!important;top:auto!important;transform:none!important;margin:2px auto 0!important;min-height:42px!important;padding:0 14px!important;border-radius:999px!important;display:flex!important;align-items:center;justify-content:center;gap:7px;font-size:.88rem!important;font-weight:800!important;white-space:nowrap;width:max-content!important}
 .fb-profile-edit-button svg{width:17px;height:17px}
 
 .fb-profile-actions{margin:18px auto 0;padding:0 14px;max-width:520px}
