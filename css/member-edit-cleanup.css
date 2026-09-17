@@ -101,27 +101,52 @@ html[data-theme="dark"] .member-form-card:has(#editMemberForm) .member-static-av
 
 @media(max-width:560px){
   .member-form-page:has(#editMemberForm){
-    padding:14px 8px 96px!important;
+    padding:14px 10px calc(160px + env(safe-area-inset-bottom))!important;
   }
   .member-form-page:has(#editMemberForm)>.back-link{
-    margin:0 6px 10px;
+    margin:0 6px 12px;
     font-size:.78rem;
   }
   .member-form-card:has(#editMemberForm){
     width:100%;
-    padding:15px 13px;
+    padding:17px 14px 22px;
     border-radius:18px;
+    box-sizing:border-box;
   }
+
+  /* Give the identity block its own space on narrow screens. */
   .member-form-card:has(#editMemberForm) .form-title{
-    grid-template-columns:54px minmax(0,1fr);
-    gap:11px;
-    align-items:start;
-    margin-bottom:15px;
+    display:flex!important;
+    flex-direction:column!important;
+    align-items:flex-start!important;
+    gap:9px!important;
+    margin-bottom:19px!important;
+  }
+  .member-form-card:has(#editMemberForm) .form-title>div:last-child{
+    width:100%;
+    min-width:0;
+  }
+  .member-form-card:has(#editMemberForm) .form-title .member-photo-picker,
+  .member-form-card:has(#editMemberForm) .form-title .member-static-avatar{
+    margin:0!important;
   }
   .member-form-card:has(#editMemberForm) .member-static-avatar{
-    width:52px;
-    height:52px;
+    width:64px;
+    height:64px;
     box-shadow:0 0 0 2px #f0e9de;
+  }
+  .member-form-card:has(#editMemberForm) .member-photo-picker{
+    width:max-content!important;
+    max-width:100%;
+    align-items:flex-start!important;
+  }
+  .member-form-card:has(#editMemberForm) .member-photo-picker .member-photo-frame{
+    width:64px!important;
+    height:64px!important;
+  }
+  .member-form-card:has(#editMemberForm) .member-photo-picker small{
+    margin-top:6px!important;
+    font-size:.68rem!important;
   }
   html[data-theme="dark"] .member-form-card:has(#editMemberForm) .member-static-avatar{
     box-shadow:0 0 0 2px #31382f;
@@ -129,29 +154,34 @@ html[data-theme="dark"] .member-form-card:has(#editMemberForm) .member-static-av
   .member-form-card:has(#editMemberForm) .form-title .eyebrow{
     font-size:.58rem;
     letter-spacing:.11em;
+    margin-bottom:4px;
   }
   .member-form-card:has(#editMemberForm) .form-title h1{
-    font-size:1.42rem;
-    line-height:1.06;
-    margin-bottom:5px;
+    font-size:1.55rem;
+    line-height:1.08;
+    margin:0 0 5px;
   }
   .member-form-card:has(#editMemberForm) .form-title p{
-    font-size:.73rem;
-    line-height:1.35;
+    font-size:.75rem;
+    line-height:1.4;
+    margin:0;
   }
+
   #editMemberForm{
-    gap:10px;
+    gap:14px;
+    padding-bottom:104px;
   }
   #editMemberForm .field-row{
-    gap:10px;
+    gap:13px;
   }
   #editMemberForm label{
+    gap:7px;
     font-size:.76rem;
   }
   #editMemberForm input,
   #editMemberForm select{
-    min-height:43px;
-    padding:9px 11px;
+    min-height:44px;
+    padding:10px 11px;
     border-radius:10px;
     font-size:16px;
   }
@@ -160,21 +190,23 @@ html[data-theme="dark"] .member-form-card:has(#editMemberForm) .member-static-av
     padding:8px 10px;
   }
   #editMemberForm .relationship-section{
-    margin-top:1px;
-    padding:12px!important;
+    margin-top:4px;
+    margin-bottom:8px;
+    padding:14px!important;
     border-radius:15px;
   }
   #editMemberForm .relationship-title h3{
-    font-size:.96rem;
+    font-size:.98rem;
   }
   #editMemberForm .relationship-title p{
-    font-size:.71rem;
-    margin-bottom:8px!important;
+    font-size:.72rem;
+    line-height:1.4;
+    margin-bottom:11px!important;
   }
   #editMemberForm .relationship-row{
-    padding:7px 0!important;
-    gap:7px!important;
-    margin-bottom:0;
+    padding:8px 0!important;
+    gap:8px!important;
+    margin-bottom:1px;
   }
   #editMemberForm .relationship-row select{
     min-height:42px;
@@ -184,27 +216,32 @@ html[data-theme="dark"] .member-form-card:has(#editMemberForm) .member-static-av
     width:34px;
     height:34px;
   }
+
+  /* Sticky actions remain reachable without sitting over relationship fields. */
   #editMemberForm .form-actions{
     position:sticky;
     bottom:calc(8px + env(safe-area-inset-bottom));
-    z-index:6;
+    z-index:20;
     display:grid;
     grid-template-columns:1fr 1fr;
     gap:8px;
-    margin:8px -3px 0;
-    padding:8px;
+    margin:14px -2px 0;
+    padding:7px;
     border:1px solid rgba(127,145,126,.24);
-    border-radius:15px;
-    background:rgba(248,243,233,.94);
+    border-radius:14px;
+    background:rgba(248,243,233,.97);
     backdrop-filter:blur(12px);
     -webkit-backdrop-filter:blur(12px);
+    box-shadow:0 -8px 20px rgba(20,28,22,.08);
   }
   html[data-theme="dark"] #editMemberForm .form-actions{
-    background:rgba(24,29,23,.94);
+    background:rgba(20,26,21,.97);
     border-color:#394037;
+    box-shadow:0 -8px 20px rgba(0,0,0,.18);
   }
   #editMemberForm .form-actions button{
-    min-height:44px;
-    padding:10px 12px;
+    min-height:43px;
+    padding:9px 10px;
+    border-radius:12px;
   }
 }
