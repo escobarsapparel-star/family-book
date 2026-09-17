@@ -172,8 +172,11 @@
         if(limitedMember)applyMemberLimits(section);
         setOpen(section,!section.classList.contains('relationship-manager-open'));
       });
-      section.addEventListener('change',()=>{
-        sortEditorRows(section);
+      section.addEventListener('change',event=>{
+        // Reorder only when the relationship TYPE changes. Reparenting rows
+        // during a date-picker change can invalidate the active input and lock
+        // the editor, so marriage-date/person changes are deliberately ignored.
+        if(event.target?.closest?.('.mfRelType'))sortEditorRows(section);
         if(limitedMember)applyMemberLimits(section);
         render(section);
       });
