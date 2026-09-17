@@ -41,10 +41,10 @@
   function parentGraph(){
     const parentsOf={};
     relationships().forEach(r=>{
-      const from=String(r.from||''),to=String(r.to||'');
+      const from=String(r.from||''),to=String(r.to||''),type=r.type;
       if(!from||!to)return;
-      if(r.type==='parent_of') (parentsOf[to]??=[]).push(from);
-      else if(r.type==='child_of') (parentsOf[from]??=[]).push(to);
+      if(type==='parent_of') (parentsOf[to]??=[]).push(from);
+      else if(type==='child_of') (parentsOf[from]??=[]).push(to);
     });
     Object.keys(parentsOf).forEach(k=>parentsOf[k]=[...new Set(parentsOf[k])]);
     return parentsOf;
@@ -129,7 +129,7 @@
     const relation=labelFor(person.id);
     if(!relation)return {...item,__fbRelationshipDecorated:true};
 
-    const original=String(item.originalRelationshipText??item.text||'');
+    const original=String(item.originalRelationshipText ?? item.text ?? '');
     const name=String(person.name||'').trim();
     let text=original;
     if(name&&norm(original).startsWith(norm(name))){
