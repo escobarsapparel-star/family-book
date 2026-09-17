@@ -1,0 +1,45 @@
+/* Family Book — mobile horizontal overflow repair.
+   Android Chrome can make 100vw wider than the visible layout viewport when a
+   vertical scrollbar/gutter is present. Keep full-bleed profile elements inside
+   the already full-width profile wrapper instead of sizing them to 100vw. */
+
+@media (max-width:899px){
+  html,
+  body,
+  #app,
+  .app,
+  #screen{
+    max-width:100%!important;
+    overflow-x:clip!important;
+  }
+}
+
+@media (max-width:759px){
+  .member-profile-view:not(.history-profile-view):not(.account-profile-view){
+    max-width:none!important;
+    overflow-x:clip!important;
+  }
+
+  .member-profile-view:not(.history-profile-view):not(.account-profile-view) .fb-member-profile,
+  .member-profile-view:not(.history-profile-view):not(.account-profile-view) .fb-profile-content,
+  .member-profile-view:not(.history-profile-view):not(.account-profile-view) .fb-profile-actions{
+    max-width:100%!important;
+    box-sizing:border-box!important;
+  }
+
+  .member-profile-view:not(.history-profile-view):not(.account-profile-view) .fb-basic-cover{
+    width:100%!important;
+    max-width:100%!important;
+    margin-left:0!important;
+    margin-right:0!important;
+    box-sizing:border-box!important;
+  }
+
+  .member-profile-view:not(.history-profile-view):not(.account-profile-view)>.fb-member-profile-header{
+    width:100%!important;
+    max-width:100%!important;
+    margin-left:0!important;
+    margin-right:0!important;
+    box-sizing:border-box!important;
+  }
+}
