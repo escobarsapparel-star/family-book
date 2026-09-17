@@ -33,9 +33,8 @@
 
   function canManagePhoto(id){
     if(!id)return false;
-    const u=auth(),member=memberById(id);
-    if(String(u.memberId||'')===String(id))return true;
-    return u.role==='admin'&&!!member&&!member.accountId;
+    const u=auth();
+    return String(u.memberId||'')===String(id);
   }
 
   function visibleEmailFromDetails(details){
@@ -137,7 +136,7 @@
 
     const id=memberIdFromLegacy(old,edit,activity);
     const isOwn=!!id&&String(auth().memberId||'')===String(id);
-    const photoEditable=canManagePhoto(id);
+    const photoEditable=isOwn&&canManagePhoto(id);
     const visibleEmail=visibleEmailFromDetails(details);
 
     rebuilding=true;
@@ -147,9 +146,7 @@
       shell.dataset.basicProfileReady='1';
       if(id)shell.dataset.profileMemberId=id;
       shell.innerHTML=`
-        <div class="fb-basic-cover" data-basic-cover>
-          <div class="fb-basic-cover-empty"><i data-lucide="camera"></i><span>Cover photo</span></div>
-        </div>
+        <div class="fb-basic-cover" data-basic-cover>${isOwn?'<div class="fb-basic-cover-empty"><i data-lucide="camera"></i><span>Cover photo</span></div>':''}</div>
         <div class="fb-basic-avatar-slot">
           <div class="fb-avatar-home"></div>
           ${photoEditable?'<button type="button" class="fb-profile-photo-edit" aria-label="Profile picture options"><i data-lucide="camera"></i></button>':''}
@@ -161,9 +158,9 @@
       shell.querySelector('.fb-avatar-home').appendChild(avatar);
       shell.querySelector('.fb-basic-name').appendChild(name);
 
-      if(edit){
+      if(edit&&isOwn){
         edit.classList.add('fb-profile-edit-button');
-        edit.innerHTML=`<i data-lucide="pencil"></i><span>${isOwn?'Edit profile':'Edit member'}</span>`;
+        edit.innerHTML='<i data-lucide="pencil"></i><span>Edit profile</span>';
         shell.querySelector('.fb-basic-name').appendChild(edit);
       }
 
