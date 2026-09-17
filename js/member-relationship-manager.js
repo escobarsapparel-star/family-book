@@ -13,6 +13,7 @@
   const ORDER=['Parents','Partner','Children','Siblings','Grandparents','Grandchildren'];
   const MEMBER_EDITABLE=new Set(['child_of','parent_of','sibling_of','spouse_of']);
   const SUMMARY_LIMIT=2;
+  const EDIT_ORDER={spouse_of:0,child_of:1,parent_of:2,sibling_of:3,grandchild_of:4,grandparent_of:5};
 
   function escapeHtml(v){
     return String(v??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#039;'}[c]));
@@ -20,6 +21,18 @@
 
   function rowsOf(section){
     return [...section.querySelectorAll('#relationshipRows [data-rel-row]')];
+  }
+
+  function sortEditorRows(section){
+    const container=section.querySelector('#relationshipRows');
+    if(!container)return;
+    const rows=rowsOf(section);
+    rows.sort((a,b)=>{
+      const at=a.querySelector('.mfRelType')?.value||'';
+      const bt=b.querySelector('.mfRelType')?.value||'';
+      return (EDIT_ORDER[at]??99)-(EDIT_ORDER[bt]??99);
+    });
+    rows.forEach(row=>container.appendChild(row));
   }
 
   function read(section){
@@ -72,6 +85,7 @@
       const label=button.querySelector('[data-rel-action]');
       if(label)label.textContent=open?'Done':'Manage relationships';
     }
+    if(open)sortEditorRows(section);
     if(!open)render(section);
   }
 
@@ -140,6 +154,7 @@
       section.insertBefore(summary,rows);
       rows.classList.add('relationship-editor-scroll');
 
+      sortEditorRows(section);
       if(limitedMember)applyMemberLimits(section);
 
       summary.addEventListener('click',event=>{
@@ -158,12 +173,14 @@
         setOpen(section,!section.classList.contains('relationship-manager-open'));
       });
       section.addEventListener('change',()=>{
+        sortEditorRows(section);
         if(limitedMember)applyMemberLimits(section);
         render(section);
       });
       section.addEventListener('click',event=>{
         if(event.target.closest('#addRelationship,.remove-rel')){
           setTimeout(()=>{
+            sortEditorRows(section);
             if(limitedMember)applyMemberLimits(section);
             render(section);
           },0);
