@@ -98,3 +98,4 @@ fbLoadScript('js/person-sex.js?v=1','person-sex-script');
 fbLoadScript('js/relationship-context.js?v=3','relationship-context-script');
 fbLoadStyle('css/home-quick-memory-tags.css?v=quick-memory-tags-1','home-quick-memory-tags-style');
 fbLoadScript('js/home-quick-memory-tags.js?v=quick-memory-tags-1','home-quick-memory-tags-script');
+fbLoadScript('js/notification-alert-router.js?v=notification-alert-router-1','notification-alert-router-script');
