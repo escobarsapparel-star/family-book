@@ -1,0 +1,35 @@
+name: Package APK www
+
+on:
+  push:
+    branches:
+      - apk-next-sync-20260918
+  workflow_dispatch:
+
+jobs:
+  package:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout APK sync branch
+        uses: actions/checkout@v4
+
+      - name: Build www package
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p package/www
+          cp index.html manifest.json package/www/
+          cp -R assets css js package/www/
+          cat > package/www/APK_NEXT_SYNC_BUILD.txt <<'EOF'
+          Family Book APK Next Sync
+          Web baseline: 711b12f159f4ba64b7b792aae94f128ac873ea5b
+          Branch: apk-next-sync-20260918
+          Includes current live mobile site plus APK-only Capacitor bridge, native Google auth, sounds, swipe navigation and Android Back handling.
+          EOF
+
+      - name: Upload www package
+        uses: actions/upload-artifact@v4
+        with:
+          name: FamilyBook_APK_NEXT_SYNC_WWW
+          path: package/www
+          if-no-files-found: error
