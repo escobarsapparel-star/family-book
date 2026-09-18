@@ -96,3 +96,5 @@ fbLoadScript('js/full-tree-polish.js?v=4','full-tree-polish-script');
 fbLoadStyle('css/relationship-context.css?v=1','relationship-context-style');
 fbLoadScript('js/person-sex.js?v=1','person-sex-script');
 fbLoadScript('js/relationship-context.js?v=3','relationship-context-script');
+fbLoadStyle('css/home-quick-memory-tags.css?v=quick-memory-tags-1','home-quick-memory-tags-style');
+fbLoadScript('js/home-quick-memory-tags.js?v=quick-memory-tags-1','home-quick-memory-tags-script');
