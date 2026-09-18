@@ -7,8 +7,15 @@ html.native-app body{
   overscroll-behavior:none;
 }
 
+html.native-app{
+  --fb-apk-status-h:max(env(safe-area-inset-top),28px);
+  --fb-apk-navigation-h:max(env(safe-area-inset-bottom),48px);
+  --fb-apk-system-bg:#151813;
+}
+
 html.native-app body{
   -webkit-tap-highlight-color:transparent;
+  background:var(--fb-apk-system-bg);
 }
 
 html.native-app .app{
@@ -21,6 +28,48 @@ html.native-app #screen{
   transform:translateZ(0);
 }
 
+/* Android 15 can draw the WebView edge-to-edge. Paint solid system-bar
+   surfaces ourselves and keep Family Book content out from underneath them. */
+html.native-app body::before,
+html.native-app body::after{
+  content:"";
+  position:fixed;
+  left:0;
+  right:0;
+  z-index:2147483000;
+  pointer-events:none;
+  background:var(--fb-apk-system-bg);
+}
+
+html.native-app body::before{
+  top:0;
+  height:var(--fb-apk-status-h);
+}
+
+html.native-app body::after{
+  bottom:0;
+  height:var(--fb-apk-navigation-h);
+}
+
+@media(max-width:759px){
+  /* mobile-header-stability.css fixes these rows at top:0. Move them below
+     Android's status icons and reserve the full native + Family Book header. */
+  html.native-app #app>.app>.topbar{
+    top:var(--fb-apk-status-h)!important;
+  }
+
+  html.native-app #app>.app>.bottom{
+    top:calc(var(--fb-apk-status-h) + var(--fb-mobile-brand-h,56px))!important;
+  }
+
+  html.native-app #app>.app>.screen{
+    padding-top:calc(var(--fb-apk-status-h) + var(--fb-mobile-header-h,102px) + 10px)!important;
+    padding-bottom:calc(var(--fb-apk-navigation-h) + 14px)!important;
+    min-height:calc(100dvh - var(--fb-apk-status-h) - var(--fb-apk-navigation-h))!important;
+    box-sizing:border-box;
+  }
+}
+
 html.native-app .fb-apk-startup{
   min-height:100dvh;
   display:flex;
@@ -28,7 +77,7 @@ html.native-app .fb-apk-startup{
   align-items:center;
   justify-content:center;
   gap:16px;
-  padding:24px;
+  padding:calc(24px + var(--fb-apk-status-h)) 24px calc(24px + var(--fb-apk-navigation-h));
   box-sizing:border-box;
   background:#151813;
   color:#dce8df;
