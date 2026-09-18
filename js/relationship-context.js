@@ -122,6 +122,21 @@
       .sort((a,b)=>norm(b.name).length-norm(a.name).length)[0]||null;
   }
 
+  function firstName(person){
+    return String(person?.name||'').trim().split(/\s+/).filter(Boolean)[0]||'Family member';
+  }
+
+  function relationshipTitle(originalTitle,person,relation){
+    const title=String(originalTitle||'').trim();
+    const fullName=String(person?.name||'').trim();
+    const first=firstName(person);
+    if(fullName&&norm(title).startsWith(norm(fullName))){
+      return `Your ${relation} ${first}${title.slice(fullName.length)}`;
+    }
+    if(title)return `Your ${relation} ${first} · ${title}`;
+    return `Your ${relation} ${first}`;
+  }
+
   function decorateNotificationItem(item){
     if(!item)return item;
     const person=item.actorId?people().find(p=>String(p.id)===String(item.actorId)):mentionedPerson(`${item.title||''} ${item.text||''}`);
@@ -129,17 +144,19 @@
     const relation=labelFor(person.id);
     if(!relation)return {...item,__fbRelationshipDecorated:true};
 
-    const original=String(item.originalRelationshipText ?? item.text ?? '');
-    const name=String(person.name||'').trim();
-    let text=original;
-    if(name&&norm(original).startsWith(norm(name))){
-      text=`Your ${relation.toLowerCase()} ${original}`;
-    }else if(original){
-      text=`${relation} · ${original}`;
-    }else{
-      text=relation;
-    }
-    return {...item,text,originalRelationshipText:original,relationship:relation,actorId:String(person.id),__fbRelationshipDecorated:true};
+    const originalTitle=String(item.originalRelationshipTitle ?? item.title ?? '');
+    const originalText=String(item.originalRelationshipText ?? item.text ?? '');
+    const title=relationshipTitle(originalTitle,person,relation);
+    return {
+      ...item,
+      title,
+      text:originalText,
+      originalRelationshipTitle:originalTitle,
+      originalRelationshipText:originalText,
+      relationship:relation,
+      actorId:String(person.id),
+      __fbRelationshipDecorated:true
+    };
   }
 
   function decorateWall(root=document){
@@ -177,7 +194,7 @@
     proto.showNotification=function(title,options={}){
       try{
         const item=decorateNotificationItem({title,text:options?.body||''});
-        return original.call(this,title,{...options,body:item.text||options?.body||''});
+        return original.call(this,item.title||title,{...options,body:item.text||options?.body||''});
       }catch(_){return original.call(this,title,options)}
     };
     proto.__fbRelationshipWrapped=true;
