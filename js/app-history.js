@@ -99,3 +99,5 @@ fbLoadScript('js/relationship-context.js?v=4','relationship-context-script');
 fbLoadStyle('css/home-quick-memory-tags.css?v=quick-memory-tags-1','home-quick-memory-tags-style');
 fbLoadScript('js/home-quick-memory-tags.js?v=quick-memory-tags-1','home-quick-memory-tags-script');
 fbLoadScript('js/notification-alert-router.js?v=notification-alert-router-1','notification-alert-router-script');
+fbLoadStyle('css/home-feed-cleanup.css?v=1','home-feed-cleanup-style');
+fbLoadScript('js/home-feed-cleanup.js?v=1','home-feed-cleanup-script');
