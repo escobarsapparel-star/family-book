@@ -101,3 +101,4 @@ fbLoadScript('js/home-quick-memory-tags.js?v=quick-memory-tags-1','home-quick-me
 fbLoadScript('js/notification-alert-router.js?v=notification-alert-router-1','notification-alert-router-script');
 fbLoadStyle('css/home-feed-cleanup.css?v=1','home-feed-cleanup-style');
 fbLoadScript('js/home-feed-cleanup.js?v=1','home-feed-cleanup-script');
+fbLoadStyle('css/member-form-layout-fix.css?v=1','member-form-layout-fix-style');
