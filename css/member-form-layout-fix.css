@@ -1,0 +1,87 @@
+/* Family Book — member/profile form layout fixes */
+
+/* Keep Sex compact on wider screens instead of wasting a full form row. */
+#editMemberForm .fb-person-sex-row,
+#memberForm .fb-person-sex-row,
+#historyProfileForm .fb-person-sex-row{
+  width:min(220px,100%)!important;
+  max-width:220px!important;
+  display:block!important;
+}
+#editMemberForm .fb-person-sex-field,
+#memberForm .fb-person-sex-field,
+#historyProfileForm .fb-person-sex-field{
+  width:100%!important;
+}
+#editMemberForm .fb-person-sex-field select,
+#memberForm .fb-person-sex-field select,
+#historyProfileForm .fb-person-sex-field select{
+  min-height:42px!important;
+  padding:9px 12px!important;
+}
+
+/* Birthday should look like one control, with the calendar icon inside it. */
+#editMemberForm .fb-date-field,
+#memberForm .fb-date-field,
+#historyProfileForm .fb-date-field{
+  display:block!important;
+  position:relative!important;
+  width:100%!important;
+}
+#editMemberForm .fb-date-display,
+#memberForm .fb-date-display,
+#historyProfileForm .fb-date-display{
+  width:100%!important;
+  padding-right:48px!important;
+  border-radius:11px!important;
+}
+#editMemberForm .fb-date-button,
+#memberForm .fb-date-button,
+#historyProfileForm .fb-date-button{
+  position:absolute!important;
+  right:4px!important;
+  top:50%!important;
+  transform:translateY(-50%)!important;
+  width:36px!important;
+  height:36px!important;
+  min-width:36px!important;
+  min-height:36px!important;
+  padding:0!important;
+  margin:0!important;
+  border:0!important;
+  border-radius:9px!important;
+  background:transparent!important;
+  color:#425446!important;
+  box-shadow:none!important;
+  z-index:2;
+}
+#editMemberForm .fb-date-button:hover,
+#memberForm .fb-date-button:hover,
+#historyProfileForm .fb-date-button:hover{
+  background:rgba(49,92,67,.08)!important;
+}
+
+/* Give the photo caption and camera badge their own breathing room. */
+.member-form-card:has(#editMemberForm) .member-photo-picker{
+  padding-bottom:26px!important;
+  overflow:visible!important;
+}
+.member-form-card:has(#editMemberForm) .member-photo-picker small{
+  bottom:1px!important;
+  line-height:1.1!important;
+}
+.member-form-card:has(#editMemberForm) .photo-camera-badge{
+  top:50px!important;
+}
+
+@media(max-width:560px){
+  #editMemberForm .fb-person-sex-row,
+  #memberForm .fb-person-sex-row,
+  #historyProfileForm .fb-person-sex-row{
+    width:100%!important;
+    max-width:none!important;
+  }
+  .member-form-card:has(#editMemberForm) .member-photo-picker{
+    padding-bottom:24px!important;
+  }
+}
