@@ -103,3 +103,4 @@ fbLoadStyle('css/home-feed-cleanup.css?v=1','home-feed-cleanup-style');
 fbLoadScript('js/home-feed-cleanup.js?v=1','home-feed-cleanup-script');
 fbLoadStyle('css/member-form-layout-fix.css?v=2','member-form-layout-fix-style');
 fbLoadScript('js/member-sex-position.js?v=1','member-sex-position-script');
+fbLoadScript('js/native-push.js?v=native-push-1','native-push-script');
