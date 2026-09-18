@@ -2,13 +2,30 @@
   if(window.__fbPersonSexInstalled)return;
   window.__fbPersonSexInstalled=true;
 
+  const PENDING_SETUP_KEY='fb_pending_person_sex';
   const sexById=new Map();
   let loadedFamilyId='';
   let loading=null;
+  let pendingPersist=null;
+  let scheduled=false;
 
   const sb=()=>window.FB_SUPABASE?.client;
   const auth=()=>window.FB_AUTH?.get?.()||{};
   const valid=v=>v==='male'||v==='female';
+
+  function ensureStyles(){
+    if(document.getElementById('fbPersonSexStyles'))return;
+    const style=document.createElement('style');
+    style.id='fbPersonSexStyles';
+    style.textContent=`
+      .fb-person-sex-row{align-items:end}
+      .fb-person-sex-field{display:flex;flex:1;flex-direction:column;gap:6px;min-width:0}
+      .fb-person-sex-field select{width:100%;min-height:44px;box-sizing:border-box}
+      .setup-field.fb-person-sex-field{margin-top:12px}
+      .backend-invite-card .fb-person-sex-field{margin:12px 0}
+    `;
+    document.head.appendChild(style);
+  }
 
   async function load(force=false){
     const familyId=String(auth().familyId||'');
@@ -42,40 +59,72 @@
 
   function get(id){return sexById.get(String(id||''))||''}
 
-  function fieldHtml(id,value,label='Sex'){
-    return `<label class="fb-person-sex-field">${label}<select id="${id}" required><option value="">Select</option><option value="male" ${value==='male'?'selected':''}>Male</option><option value="female" ${value==='female'?'selected':''}>Female</option></select></label>`;
+  function selectHtml(id,value,setup=false){
+    const labelClass=setup?'setup-field fb-person-sex-field':'fb-person-sex-field';
+    const labelText=setup?'<span class="setup-label-text">Sex</span>':'Sex';
+    return `<label class="${labelClass}">${labelText}<select id="${id}" required aria-label="Sex"><option value="">Select Male or Female</option><option value="male" ${value==='male'?'selected':''}>Male</option><option value="female" ${value==='female'?'selected':''}>Female</option></select></label>`;
   }
 
-  function insertAfterFirstRow(form,html){
-    const rows=form.querySelectorAll(':scope > .field-row');
-    const anchor=rows[0]||form.querySelector('.field-row');
+  function insertMemberField(form,inputSelector,id,value){
+    if(!form||form.querySelector(`#${id}`))return;
+    const input=form.querySelector(inputSelector);
+    const anchor=input?.closest('.field-row,.row,.form-row')||input?.closest('label');
+    const html=`<div class="field-row fb-person-sex-row">${selectHtml(id,value,false)}</div>`;
     if(anchor)anchor.insertAdjacentHTML('afterend',html);
-    else form.insertAdjacentHTML('afterbegin',html);
+    else{
+      const before=form.querySelector('.relationship-section,.relationship-editor,.form-actions,button[type="submit"]');
+      if(before)before.insertAdjacentHTML('beforebegin',html);
+      else form.insertAdjacentHTML('beforeend',html);
+    }
   }
 
-  function decorateForms(){
+  function hydrate(select,id){
+    if(!select)return;
+    const known=get(id);
+    if(!select.value&&known)select.value=known;
+  }
+
+  function decorateMemberForms(){
     const edit=document.querySelector('#editMemberForm');
-    if(edit&&!edit.querySelector('#mfSex')){
+    if(edit){
       const id=String(edit.dataset.memberId||'');
-      insertAfterFirstRow(edit,fieldHtml('mfSex',get(id)));
-    }else if(edit?.querySelector('#mfSex')){
-      const id=String(edit.dataset.memberId||'');
-      const el=edit.querySelector('#mfSex');
-      if(!el.value&&get(id))el.value=get(id);
+      insertMemberField(edit,'#mfLast, #mfFirst','mfSex',get(id));
+      hydrate(edit.querySelector('#mfSex'),id);
     }
 
     const add=document.querySelector('#memberForm');
-    if(add&&!add.querySelector('#mfSex'))insertAfterFirstRow(add,fieldHtml('mfSex',''));
+    if(add)insertMemberField(add,'#mfLast, #mfFirst','mfSex','');
 
     const history=document.querySelector('#historyProfileForm');
-    if(history&&!history.querySelector('#hfSex')){
+    if(history){
       const id=String(history.dataset.historyId||'');
-      insertAfterFirstRow(history,fieldHtml('hfSex',get(id)));
-    }else if(history?.querySelector('#hfSex')){
-      const id=String(history.dataset.historyId||'');
-      const el=history.querySelector('#hfSex');
-      if(!el.value&&get(id))el.value=get(id);
+      insertMemberField(history,'#hfLast, #hfFirst','hfSex',get(id));
+      hydrate(history.querySelector('#hfSex'),id);
     }
+  }
+
+  function decorateSetupForms(){
+    const create=document.querySelector('#backendCreateFamily');
+    if(create&&!create.querySelector('#backendSex')){
+      const nameGrid=create.querySelector('.setup-name-grid')||create.querySelector('#backendLast')?.closest('.row');
+      const html=selectHtml('backendSex','',true);
+      if(nameGrid)nameGrid.insertAdjacentHTML('afterend',html);
+      else create.insertAdjacentHTML('afterbegin',html);
+    }
+
+    const joinCard=document.querySelector('#backendInvitePreview .backend-invite-card');
+    if(joinCard&&!joinCard.querySelector('#backendJoinSex')){
+      const submit=joinCard.querySelector('#backendJoinSubmit');
+      const html=selectHtml('backendJoinSex','',true);
+      if(submit)submit.insertAdjacentHTML('beforebegin',html);
+      else joinCard.insertAdjacentHTML('beforeend',html);
+    }
+  }
+
+  function decorateForms(){
+    ensureStyles();
+    decorateMemberForms();
+    decorateSetupForms();
   }
 
   function chosenSex(){
@@ -95,6 +144,77 @@
       return valid(sex)?{mode:'history',id:String(history.dataset.historyId||''),sex}:null;
     }
     return null;
+  }
+
+  function savePendingSex(sex){
+    try{
+      if(valid(sex))sessionStorage.setItem(PENDING_SETUP_KEY,sex);
+      else sessionStorage.removeItem(PENDING_SETUP_KEY);
+    }catch(_){}
+  }
+
+  function pendingSex(){
+    try{
+      const sex=sessionStorage.getItem(PENDING_SETUP_KEY)||'';
+      return valid(sex)?sex:'';
+    }catch(_){return ''}
+  }
+
+  async function persistPendingSetupSex(){
+    if(pendingPersist)return pendingPersist;
+    const sex=pendingSex(),personId=String(auth().memberId||'');
+    if(!sex||!personId||!sb())return false;
+    pendingPersist=(async()=>{
+      try{
+        await set(personId,sex);
+        savePendingSex('');
+        await load(true);
+        return true;
+      }catch(err){
+        console.warn('Family Book setup sex:',err?.message||err);
+        return false;
+      }finally{pendingPersist=null}
+    })();
+    return pendingPersist;
+  }
+
+  function requireSelect(select,message='Choose Male or Female to continue.'){
+    if(select&&valid(select.value)){
+      select.setCustomValidity('');
+      return true;
+    }
+    if(select){
+      select.setCustomValidity(message);
+      select.reportValidity();
+      select.addEventListener('change',()=>select.setCustomValidity(''),{once:true});
+    }
+    return false;
+  }
+
+  function bindSetupCapture(){
+    document.addEventListener('submit',event=>{
+      const form=event.target;
+      if(form?.id!=='backendCreateFamily')return;
+      const select=form.querySelector('#backendSex');
+      if(!requireSelect(select)){
+        event.preventDefault();
+        event.stopImmediatePropagation();
+        return;
+      }
+      savePendingSex(select.value);
+    },true);
+
+    document.addEventListener('click',event=>{
+      const button=event.target?.closest?.('#backendJoinSubmit');
+      if(!button)return;
+      const select=document.querySelector('#backendJoinSex');
+      if(!requireSelect(select)){
+        event.preventDefault();
+        event.stopImmediatePropagation();
+        return;
+      }
+      savePendingSex(select.value);
+    },true);
   }
 
   function wrapFamilyData(){
@@ -128,17 +248,31 @@
     return true;
   }
 
+  function scheduleInstall(){
+    if(scheduled)return;
+    scheduled=true;
+    requestAnimationFrame(()=>{
+      scheduled=false;
+      wrapFamilyData();
+      decorateForms();
+      persistPendingSetupSex();
+    });
+  }
+
   function install(){
+    ensureStyles();
+    bindSetupCapture();
     wrapFamilyData();
     decorateForms();
     load();
+    persistPendingSetupSex();
+
+    const app=document.getElementById('app');
+    if(app)new MutationObserver(scheduleInstall).observe(app,{childList:true,subtree:true});
+    window.addEventListener('familybook:family-data-updated',()=>{load(true);scheduleInstall()});
+    window.addEventListener('familybook:auth-ready',()=>{load(true);scheduleInstall()});
   }
 
-  const screen=document.getElementById('screen');
-  if(screen)new MutationObserver(()=>decorateForms()).observe(screen,{childList:true});
-  window.addEventListener('familybook:family-data-updated',()=>load(true));
-  window.addEventListener('familybook:auth-ready',()=>load(true));
-
-  window.FB_PERSON_SEX={load,get,set,valid};
+  window.FB_PERSON_SEX={load,get,set,valid,decorateForms};
   install();
 })();
