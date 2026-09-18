@@ -1,23 +1,27 @@
 /* Family Book — member/profile form layout fixes */
 
-/* Keep Sex compact on wider screens instead of wasting a full form row. */
+/* Sex is a small standalone selector above the name row. */
 #editMemberForm .fb-person-sex-row,
 #memberForm .fb-person-sex-row,
 #historyProfileForm .fb-person-sex-row{
-  width:min(220px,100%)!important;
-  max-width:220px!important;
+  width:min(160px,100%)!important;
+  max-width:160px!important;
   display:block!important;
+  margin:0 0 2px!important;
 }
 #editMemberForm .fb-person-sex-field,
 #memberForm .fb-person-sex-field,
 #historyProfileForm .fb-person-sex-field{
   width:100%!important;
+  max-width:160px!important;
 }
 #editMemberForm .fb-person-sex-field select,
 #memberForm .fb-person-sex-field select,
 #historyProfileForm .fb-person-sex-field select{
-  min-height:42px!important;
-  padding:9px 12px!important;
+  width:160px!important;
+  max-width:100%!important;
+  min-height:40px!important;
+  padding:8px 11px!important;
 }
 
 /* Birthday should look like one control, with the calendar icon inside it. */
@@ -78,8 +82,18 @@
   #editMemberForm .fb-person-sex-row,
   #memberForm .fb-person-sex-row,
   #historyProfileForm .fb-person-sex-row{
-    width:100%!important;
-    max-width:none!important;
+    width:min(150px,100%)!important;
+    max-width:150px!important;
+  }
+  #editMemberForm .fb-person-sex-field,
+  #memberForm .fb-person-sex-field,
+  #historyProfileForm .fb-person-sex-field{
+    max-width:150px!important;
+  }
+  #editMemberForm .fb-person-sex-field select,
+  #memberForm .fb-person-sex-field select,
+  #historyProfileForm .fb-person-sex-field select{
+    width:150px!important;
   }
   .member-form-card:has(#editMemberForm) .member-photo-picker{
     padding-bottom:24px!important;
