@@ -7,17 +7,41 @@
   let listenersBound=false;
   let registering=false;
   let lastStatus='idle';
+  let pushPlugin=null;
 
   const auth=()=>window.FB_AUTH?.get?.()||{};
   const sb=()=>window.FB_SUPABASE?.client;
   const capacitor=()=>window.Capacitor||null;
-  const push=()=>capacitor()?.Plugins?.PushNotifications||null;
 
   function isNativeAndroid(){
     try{
       const cap=capacitor();
       return !!cap?.isNativePlatform?.()&&cap?.getPlatform?.()==='android';
     }catch(_){return false}
+  }
+
+  function push(){
+    if(pushPlugin)return pushPlugin;
+    const cap=capacitor();
+    if(!cap)return null;
+    if(cap.Plugins?.PushNotifications){
+      pushPlugin=cap.Plugins.PushNotifications;
+      return pushPlugin;
+    }
+    if(typeof cap.registerPlugin==='function'){
+      try{
+        pushPlugin=cap.registerPlugin('PushNotifications');
+        return pushPlugin;
+      }catch(err){
+        console.warn('Family Book push plugin registration failed:',err?.message||err);
+      }
+    }
+    return null;
+  }
+
+  function setStatus(status,detail={}){
+    lastStatus=status;
+    window.dispatchEvent(new CustomEvent('familybook:push-status',{detail:{status,...detail}}));
   }
 
   function storedToken(){
@@ -40,7 +64,7 @@
       p_app_id:APP_ID
     });
     if(error)throw error;
-    lastStatus='registered';
+    setStatus('registered');
     window.dispatchEvent(new CustomEvent('familybook:push-ready',{detail:{platform:'android'}}));
     return true;
   }
@@ -48,11 +72,9 @@
   async function unregister(){
     const token=storedToken();
     if(!token||!sb())return false;
-    try{
-      await sb().rpc('unregister_push_device',{p_token:token});
-    }catch(_){}
+    try{await sb().rpc('unregister_push_device',{p_token:token})}catch(_){}
     storeToken('');
-    lastStatus='unregistered';
+    setStatus('unregistered');
     return true;
   }
 
@@ -70,31 +92,31 @@
     }
     if(!route)route='notifications';
 
-    const open=()=>{
+    setTimeout(()=>{
       if(typeof window.go==='function')window.go(route);
       else location.hash=`#${route}`;
-    };
-    setTimeout(open,250);
+    },250);
   }
 
   async function bindListeners(){
-    if(listenersBound)return;
+    if(listenersBound)return true;
     const p=push();
-    if(!p)return;
+    if(!p)return false;
     listenersBound=true;
 
     await p.addListener('registration',async token=>{
       try{
+        setStatus('token-received');
         await saveToken(token?.value||'');
         console.info('Family Book push registered');
       }catch(err){
-        lastStatus='save-error';
+        setStatus('save-error',{error:String(err?.message||err)});
         console.warn('Family Book push token save failed:',err?.message||err);
       }
     });
 
     await p.addListener('registrationError',err=>{
-      lastStatus='registration-error';
+      setStatus('registration-error',{error:String(err?.error||err?.message||err)});
       console.warn('Family Book push registration failed:',err?.error||err?.message||err);
       window.dispatchEvent(new CustomEvent('familybook:push-error',{detail:err||{}}));
     });
@@ -107,24 +129,49 @@
       routeFromNotification(action?.notification||{});
       window.dispatchEvent(new CustomEvent('familybook:push-opened',{detail:action||{}}));
     });
+    return true;
+  }
+
+  async function permission(){
+    if(!isNativeAndroid())return 'web';
+    const cap=capacitor();
+    if(typeof cap?.isPluginAvailable==='function'&&!cap.isPluginAvailable('PushNotifications'))return 'plugin-missing';
+    const p=push();
+    if(!p)return 'plugin-missing';
+    try{
+      const result=await p.checkPermissions();
+      return result?.receive||'unknown';
+    }catch(err){
+      console.warn('Family Book push permission check failed:',err?.message||err);
+      return 'error';
+    }
   }
 
   async function enable(){
     if(!isNativeAndroid())return {native:false,status:'web'};
+    const cap=capacitor();
+    if(typeof cap?.isPluginAvailable==='function'&&!cap.isPluginAvailable('PushNotifications')){
+      setStatus('plugin-missing');
+      return {native:true,status:'plugin-missing'};
+    }
     const p=push();
-    if(!p)return {native:true,status:'plugin-missing'};
+    if(!p){
+      setStatus('plugin-missing');
+      return {native:true,status:'plugin-missing'};
+    }
     if(registering)return {native:true,status:'registering'};
 
     registering=true;
     try{
       await bindListeners();
-      let permission=await p.checkPermissions();
-      if(permission?.receive==='prompt'||permission?.receive==='prompt-with-rationale'){
-        permission=await p.requestPermissions();
+      let current=await p.checkPermissions();
+      if(current?.receive==='prompt'||current?.receive==='prompt-with-rationale'){
+        setStatus('requesting-permission');
+        current=await p.requestPermissions();
       }
-      if(permission?.receive!=='granted'){
-        lastStatus='permission-denied';
-        return {native:true,status:lastStatus};
+      if(current?.receive!=='granted'){
+        setStatus('permission-denied');
+        return {native:true,status:'permission-denied'};
       }
 
       const existing=storedToken();
@@ -132,13 +179,13 @@
         try{await saveToken(existing)}catch(err){console.warn('Family Book saved token refresh failed:',err?.message||err)}
       }
 
-      lastStatus='registering';
+      setStatus('registering');
       await p.register();
-      return {native:true,status:lastStatus};
+      return {native:true,status:'registering'};
     }catch(err){
-      lastStatus='error';
+      setStatus('error',{error:String(err?.message||err)});
       console.warn('Family Book push setup failed:',err?.message||err);
-      return {native:true,status:lastStatus,error:String(err?.message||err)};
+      return {native:true,status:'error',error:String(err?.message||err)};
     }finally{
       registering=false;
     }
@@ -156,7 +203,6 @@
     refreshSavedToken();
     setTimeout(enable,300);
   });
-
   window.addEventListener('familybook:family-data-updated',refreshSavedToken);
 
   setTimeout(()=>{
@@ -167,6 +213,7 @@
     enable,
     unregister,
     refresh:refreshSavedToken,
+    permission,
     token:storedToken,
     status:()=>lastStatus,
     isNativeAndroid
