@@ -1,8 +1,9 @@
 (()=>{
-  let loadedFamilyId="";
+  let loadedMembershipId="";
   let preferences=null;
   let items=[];
   let channel=null;
+  let channelMembershipId="";
   let workerReady=null;
 
   const sb=()=>window.FB_SUPABASE?.client;
@@ -165,15 +166,38 @@
     }
   }
 
-  function subscribe(){
-    const u=user();
-    if(!u.membershipId||channel)return;
-    channel=sb().channel(`family-notifications-${u.membershipId}`)
+  async function unsubscribe(){
+    if(!channel){
+      channelMembershipId="";
+      return;
+    }
+    const current=channel;
+    channel=null;
+    channelMembershipId="";
+    try{
+      if(sb()?.removeChannel)await sb().removeChannel(current);
+      else await current.unsubscribe?.();
+    }catch(err){
+      console.warn("Notification unsubscribe:",err);
+    }
+  }
+
+  async function subscribe(){
+    const membershipId=String(user().membershipId||"");
+    if(!membershipId){
+      await unsubscribe();
+      return;
+    }
+    if(channel&&channelMembershipId===membershipId)return;
+
+    await unsubscribe();
+    channelMembershipId=membershipId;
+    channel=sb().channel(`family-notifications-${membershipId}`)
       .on("postgres_changes",{
         event:"*",
         schema:"public",
         table:"notifications",
-        filter:`recipient_membership_id=eq.${u.membershipId}`
+        filter:`recipient_membership_id=eq.${membershipId}`
       },async payload=>{
         if(payload.eventType==="INSERT")maybeBrowserNotify(payload.new||{});
         try{await loadNotifications(false)}catch(err){console.warn(err)}
@@ -183,14 +207,33 @@
 
   async function init(){
     const u=user();
-    if(!u.familyId)return;
-    if(loadedFamilyId===u.familyId)return;
+    const membershipId=String(u.membershipId||"");
+
+    if(!u.familyId||!membershipId){
+      await unsubscribe();
+      loadedMembershipId="";
+      preferences=null;
+      items=[];
+      window.dispatchEvent(new CustomEvent("familybook:notifications-changed"));
+      return;
+    }
+
+    if(loadedMembershipId===membershipId&&channelMembershipId===membershipId)return;
+
+    await unsubscribe();
+    loadedMembershipId="";
+    preferences=null;
+    items=[];
+    window.dispatchEvent(new CustomEvent("familybook:notifications-changed"));
+
     await loadPreferences();
     await ensureNotificationWorker();
     await loadNotifications(true);
-    subscribe();
-    loadedFamilyId=u.familyId;
+    await subscribe();
+    loadedMembershipId=membershipId;
   }
+
+  window.addEventListener("familybook:auth-ready",()=>init().catch(err=>console.warn("Notification init:",err)));
 
   window.FB_NOTIFICATION_DATA={
     init,loadPreferences,loadNotifications,getAll,getPreferences,
