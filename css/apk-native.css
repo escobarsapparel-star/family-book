@@ -28,6 +28,18 @@ html.native-app #screen{
   transform:translateZ(0);
 }
 
+/* The APK swipe layer keeps #screen transformed for GPU acceleration. A fixed
+   descendant inside a transformed element is fixed to that element instead of
+   the viewport in Android WebView. The Home post composer modal lives inside
+   #screen, so its card can be centred far below the visible phone screen while
+   only the backdrop/blur is visible. Drop the transform while the composer is
+   open so the modal becomes truly viewport-fixed. */
+html.native-app body.home-composer-open #screen{
+  will-change:auto!important;
+  backface-visibility:visible!important;
+  transform:none!important;
+}
+
 /* Android 15 can draw the WebView edge-to-edge. Paint solid system-bar
    surfaces ourselves and keep Family Book content out from underneath them. */
 html.native-app body::before,
