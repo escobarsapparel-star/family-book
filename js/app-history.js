@@ -93,6 +93,7 @@ fbLoadScript('js/member-edit-mobile-actions.js?v=2','member-edit-mobile-actions-
 fbLoadScript('js/tree-age-order.js?v=1','tree-age-order-script');
 fbLoadStyle('css/full-tree-dark.css?v=3','full-tree-dark-style');
 fbLoadScript('js/full-tree-polish.js?v=4','full-tree-polish-script');
+fbLoadScript('js/tree-spouse-ancestor-root.js?v=1','tree-spouse-ancestor-root-script');
 fbLoadStyle('css/relationship-context.css?v=1','relationship-context-style');
 fbLoadScript('js/person-sex.js?v=2','person-sex-script');
 fbLoadScript('js/relationship-context.js?v=4','relationship-context-script');
