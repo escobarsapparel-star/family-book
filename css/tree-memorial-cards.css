@@ -1,0 +1,48 @@
+.ct-person.fb-tree-memorial-card{
+  position:relative!important;
+  overflow:visible!important;
+  border:2px solid #a66b38!important;
+  box-shadow:0 0 0 3px rgba(166,107,56,.10),0 9px 24px rgba(74,52,31,.14)!important;
+}
+.fb-tree-memorial-ribbon{
+  position:absolute;
+  left:50%;
+  top:-13px;
+  transform:translateX(-50%);
+  z-index:5;
+  white-space:nowrap;
+  padding:4px 10px;
+  border-radius:999px;
+  background:#a66b38;
+  color:#fffdf8;
+  font-size:.61rem;
+  line-height:1;
+  font-weight:900;
+  letter-spacing:.06em;
+  text-transform:uppercase;
+  box-shadow:0 4px 10px rgba(56,37,20,.18);
+  pointer-events:none;
+}
+.fb-tree-memorial-detail{
+  position:absolute;
+  left:50%;
+  bottom:4px;
+  transform:translateX(-50%);
+  z-index:4;
+  width:calc(100% - 14px);
+  text-align:center;
+  font-size:.58rem;
+  line-height:1.1;
+  font-weight:800;
+  color:#7e512b;
+  white-space:nowrap;
+  overflow:hidden;
+  text-overflow:ellipsis;
+  pointer-events:none;
+}
+html[data-theme="dark"] .ct-person.fb-tree-memorial-card{
+  border-color:#c98a51!important;
+  box-shadow:0 0 0 3px rgba(201,138,81,.13),0 9px 24px rgba(0,0,0,.28)!important;
+}
+html[data-theme="dark"] .fb-tree-memorial-ribbon{background:#9b6235;color:#fff7ed}
+html[data-theme="dark"] .fb-tree-memorial-detail{color:#e1b586}
