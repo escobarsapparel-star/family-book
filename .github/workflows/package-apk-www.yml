@@ -19,12 +19,11 @@ jobs:
           set -euo pipefail
           mkdir -p package/www
           cp index.html manifest.json package/www/
-          cp -R assets css js package/www/
+          cp -R assets css js legal package/www/
           cat > package/www/APK_NEXT_SYNC_BUILD.txt <<'EOF'
           Family Book APK Next Sync
-          Web baseline: 711b12f159f4ba64b7b792aae94f128ac873ea5b
           Branch: apk-next-sync-20260918
-          Includes current live mobile site plus APK-only Capacitor bridge, native Google auth, sounds, swipe navigation and Android Back handling.
+          Includes current APK web assets, legal/privacy pages, Android push support, Home Wall post repair and Android shared-image receiver.
           EOF
 
       - name: Upload www package
