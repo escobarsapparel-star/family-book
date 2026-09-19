@@ -5,7 +5,7 @@
   window.__fbApkNativeEnhancementsReady=true;
 
   const tabs=['home','memories','tree','calendar','members','profile'];
-  const blockedSelector="input,textarea,select,button,a,[contenteditable='true'],canvas,.cropper-backdrop,.photo-action-backdrop,.fb-profile-media-viewer,.member-cover-editor,.full-tree-viewport,.memory-strip,[data-fb-no-swipe]";
+  const blockedSelector="input,textarea,select,button,a,[contenteditable='true'],canvas,.cropper-backdrop,.photo-action-backdrop,.fb-profile-media-viewer,.member-cover-editor,.full-tree-viewport,.memory-strip,.home-composer-modal,[data-fb-no-swipe]";
 
   function currentRoute(){
     return String(window.FB_APP_HISTORY?.current?.()||history.state?.fbRoute||'home');
@@ -14,6 +14,7 @@
   function closeOverlay(){
     const visible=el=>el&&getComputedStyle(el).display!=='none'&&!el.hidden;
     const candidates=[
+      ['.home-composer-modal:not([hidden])','[data-home-close-composer]'],
       ['.fb-profile-media-viewer','.fb-profile-media-close'],
       ['.cropper-backdrop','.crop-cancel'],
       ['.photo-action-backdrop','.photo-cancel'],
@@ -68,6 +69,7 @@
 
     document.addEventListener('touchstart',ev=>{
       if(animating||ev.touches?.length!==1)return;
+      if(document.body.classList.contains('home-composer-open'))return;
       const route=currentRoute();
       if(!tabs.includes(route))return;
       if(ev.target?.closest?.(blockedSelector))return;
