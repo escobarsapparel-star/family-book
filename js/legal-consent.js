@@ -20,6 +20,7 @@
       <a href="legal/privacy.html" target="_blank" rel="noopener">Privacy & POPIA</a>
       <a href="legal/terms.html" target="_blank" rel="noopener">Terms</a>
       <a href="legal/child-media.html" target="_blank" rel="noopener">Child & Family Media</a>
+      <a href="legal/paia.html" target="_blank" rel="noopener">PAIA Access</a>
       <span class="fb-legal-version">Legal version ${VERSION}</span>
     </div>`;
     document.body.appendChild(footer);
@@ -56,6 +57,7 @@
         <a href="legal/terms.html" target="_blank" rel="noopener">Read Terms</a>
         <a href="legal/privacy.html" target="_blank" rel="noopener">Read Privacy Notice</a>
         <a href="legal/child-media.html" target="_blank" rel="noopener">Read Child & Family Media Rules</a>
+        <a href="legal/paia.html" target="_blank" rel="noopener">Read PAIA Access Notice</a>
       </div>
 
       <div class="fb-legal-checks">
