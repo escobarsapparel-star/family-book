@@ -104,6 +104,6 @@ fbLoadScript('js/home-feed-cleanup.js?v=1','home-feed-cleanup-script');
 fbLoadStyle('css/member-form-layout-fix.css?v=2','member-form-layout-fix-style');
 fbLoadScript('js/member-sex-position.js?v=1','member-sex-position-script');
 
-// Legal footer + versioned POPIA/terms/child-media acceptance.
+// Legal footer + versioned POPIA/terms/child-media/PAIA information and acceptance.
 fbLoadStyle('css/legal-consent.css?v=legal-20260919-1','legal-consent-style');
-fbLoadScript('js/legal-consent.js?v=legal-20260919-1','legal-consent-script');
+fbLoadScript('js/legal-consent.js?v=legal-20260919-2','legal-consent-script');
