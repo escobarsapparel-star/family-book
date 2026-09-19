@@ -105,6 +105,7 @@ fbLoadStyle('css/member-form-layout-fix.css?v=2','member-form-layout-fix-style')
 fbLoadScript('js/member-sex-position.js?v=1','member-sex-position-script');
 fbLoadScript('js/native-push.js?v=native-push-1','native-push-script');
 fbLoadScript('js/apk-v2-native-share.js?v=apk-v2-share-1','apk-v2-native-share-script');
+fbLoadScript('js/apk-home-post-success.js?v=apk-home-post-success-1','apk-home-post-success-script');
 
 // Legal footer + versioned POPIA/terms/child-media/PAIA acceptance and review.
 fbLoadStyle('css/legal-consent.css?v=legal-20260919-2','legal-consent-style');
