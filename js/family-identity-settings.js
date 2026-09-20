@@ -5,6 +5,7 @@
   const e=(v="")=>String(v??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#039;"}[c]));
   const auth=()=>window.FB_AUTH?.get?.()||{};
   const sb=()=>window.FB_SUPABASE?.client;
+  const safeIcons=()=>{try{window.icons?.()}catch(err){console.warn("Family identity icons:",err)}};
 
   function shortFamilyName(value){
     return String(value||"").trim().replace(/(?:\s+Family)+$/i,"").replace(/^The\s+/i,"").trim();
@@ -23,7 +24,7 @@
     return `<div class="family-identity-settings" data-family-identity-settings>
       <div class="family-identity-block">
         <div class="family-identity-copy">
-          <span class="family-identity-icon"><i data-lucide="badge-family"></i></span>
+          <span class="family-identity-icon"><i data-lucide="users-round"></i></span>
           <div><strong>Family identity</strong><small>The family name is a shared display name. It does not decide who is the head of the Family Tree.</small></div>
         </div>
         <form id="familyRenameForm" class="family-identity-form">
@@ -56,8 +57,15 @@
     const button=document.querySelector("#familyAdminTransferButton");
     if(!select||!button)return;
     const u=auth();
+    const client=sb();
+    if(!client){
+      select.innerHTML='<option value="">Family service unavailable</option>';
+      select.disabled=true;
+      setMessage(document.querySelector("#familyAdminTransferMessage"),"Family service is not ready. Reopen Settings and try again.","error");
+      return;
+    }
     try{
-      const {data:memberships,error}=await sb().from("family_memberships")
+      const {data:memberships,error}=await client.from("family_memberships")
         .select("id,person_id,role,status,joined_at")
         .eq("family_id",u.familyId)
         .eq("status","active")
@@ -71,7 +79,7 @@
       const known=new Set(people.map(p=>String(p.id)));
       const missing=needed.filter(id=>!known.has(String(id)));
       if(missing.length){
-        const res=await sb().from("persons").select("id,first_name,surname").in("id",missing);
+        const res=await client.from("persons").select("id,first_name,surname").in("id",missing);
         if(res.error)throw res.error;
         people=people.concat((res.data||[]).map(p=>({id:p.id,name:[p.first_name,p.surname].filter(Boolean).join(" ")})));
       }
@@ -110,14 +118,16 @@
       try{
         setMessage(msg,"");
         if(btn){btn.disabled=true;btn.textContent="Saving…"}
-        const {data,error}=await sb().rpc("rename_current_family",{p_family_name:value});
+        const client=sb();
+        if(!client)throw new Error("Family service is not ready. Please try again.");
+        const {data,error}=await client.rpc("rename_current_family",{p_family_name:value});
         if(error)throw error;
         await window.FB_AUTH?.refresh?.();
         window.dispatchEvent(new CustomEvent("familybook:family-identity-updated",{detail:data||{}}));
         window.go?.("settings",{replaceHistory:true});
       }catch(err){
         setMessage(msg,err?.message||"Could not rename the family.","error");
-        if(btn){btn.disabled=false;btn.innerHTML=old;window.icons?.()}
+        if(btn){btn.disabled=false;btn.innerHTML=old;safeIcons()}
       }
     };
   }
@@ -139,7 +149,9 @@
         setMessage(msg,"");
         button.disabled=true;
         button.textContent="Transferring…";
-        const {data,error}=await sb().rpc("transfer_current_family_admin",{p_target_membership_id:select.value});
+        const client=sb();
+        if(!client)throw new Error("Family service is not ready. Please try again.");
+        const {data,error}=await client.rpc("transfer_current_family_admin",{p_target_membership_id:select.value});
         if(error)throw error;
         await window.FB_AUTH?.refresh?.();
         alert(`${data?.new_admin_name||name} is now a Family Admin. Your account is now an Adult Member.`);
@@ -148,7 +160,7 @@
         setMessage(msg,err?.message||"Could not transfer the Family Admin role.","error");
         button.disabled=false;
         button.innerHTML=old;
-        window.icons?.();
+        safeIcons();
       }
     };
   }
@@ -165,12 +177,14 @@
     if(head)head.insertAdjacentElement("afterend",panel);else card.prepend(panel);
     bindRename();
     bindTransfer();
+    safeIcons();
     await loadTransferCandidates();
-    window.icons?.();
+    safeIcons();
     return true;
   }
 
   const root=document.getElementById("app")||document.body;
-  new MutationObserver(()=>install()).observe(root,{childList:true,subtree:true});
-  install();
+  const runInstall=()=>{Promise.resolve(install()).catch(err=>console.warn("Family identity settings:",err))};
+  new MutationObserver(runInstall).observe(root,{childList:true,subtree:true});
+  runInstall();
 })();
