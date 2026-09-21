@@ -108,6 +108,7 @@ fbLoadStyle('css/member-form-layout-fix.css?v=2','member-form-layout-fix-style')
 fbLoadScript('js/member-sex-position.js?v=1','member-sex-position-script');
 fbLoadStyle('css/family-identity-settings.css?v=1','family-identity-settings-style');
 fbLoadScript('js/family-identity-settings.js?v=3','family-identity-settings-script');
+fbLoadScript('js/mobile-profile-menu-navigation.js?v=1','mobile-profile-menu-navigation-script');
 
 // Legal footer + versioned POPIA/terms/child-media/PAIA information and acceptance.
 fbLoadStyle('css/legal-consent.css?v=legal-20260919-1','legal-consent-style');
