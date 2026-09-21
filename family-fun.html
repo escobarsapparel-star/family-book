@@ -1,0 +1,100 @@
+<!doctype html>
+<html lang="en-ZA">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#315c43">
+<title>Family Fun · Family Book</title>
+<link rel="icon" type="image/png" sizes="32x32" href="assets/icons/familybook-favicon-32.png?v=3">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/style.css?v=5.7.4-cover-albums">
+<link rel="stylesheet" href="css/inter-global.css?v=inter-global-1">
+<link rel="stylesheet" href="css/family-fun.css?v=family-fun-2">
+<style>
+body{margin:0;background:#f5f7f5;color:#172019;font-family:Inter,system-ui,sans-serif}.family-fun-standalone{min-height:100vh;padding:18px 18px 42px}.family-fun-standalone-inner{max-width:900px;margin:0 auto}.family-fun-standalone-top{display:flex;align-items:center;justify-content:space-between;gap:14px;margin-bottom:18px}.family-fun-standalone-logo{height:38px;max-width:180px;object-fit:contain}.family-fun-back-link{display:inline-flex;align-items:center;gap:7px;text-decoration:none;color:#315c43;font-weight:800;background:#fff;border:1px solid rgba(49,92,67,.14);border-radius:999px;padding:10px 14px}.family-fun-test-note{font-size:.8rem;color:#66736b;text-align:center;margin-top:14px}@media(max-width:620px){.family-fun-standalone{padding:12px 12px 30px}.family-fun-standalone-logo{height:32px;max-width:150px}.family-fun-back-link{padding:9px 12px;font-size:.86rem}}
+</style>
+</head>
+<body>
+<main class="family-fun-standalone">
+  <div class="family-fun-standalone-inner">
+    <div class="family-fun-standalone-top">
+      <img class="family-fun-standalone-logo" src="assets/logo/family-book-logo-header.png" alt="Family Book">
+      <a class="family-fun-back-link" href="./">← Back to Family Book</a>
+    </div>
+
+    <section class="family-fun-page">
+      <div class="family-fun-title-row">
+        <div>
+          <p class="eyebrow">FAMILY FUN</p>
+          <h1>Family Fun Videos</h1>
+          <p class="family-fun-subtitle">Keep the funny, noisy and unforgettable family moments together.</p>
+        </div>
+      </div>
+
+      <div class="family-fun-construction" role="note" aria-label="Under construction">
+        <span class="family-fun-construction-icon">🚧</span>
+        <div>
+          <strong>UNDER CONSTRUCTION</strong>
+          <p>This is an early Family Fun test. Videos selected here stay on this device for preview only and are not uploaded or saved yet.</p>
+        </div>
+      </div>
+
+      <section class="family-fun-upload-card">
+        <div class="family-fun-upload-icon">🎬</div>
+        <div class="family-fun-upload-copy">
+          <h2>Try a family video</h2>
+          <p>Choose an existing video or record a quick test clip. The preview lets us test the experience before permanent video storage is connected.</p>
+        </div>
+
+        <div class="family-fun-actions">
+          <button class="primary" type="button" id="familyFunChooseVideo">Choose video</button>
+          <button class="secondary" type="button" id="familyFunRecordVideo">Record video</button>
+        </div>
+
+        <input id="familyFunVideoInput" type="file" accept="video/*" hidden>
+        <input id="familyFunCameraInput" type="file" accept="video/*" capture="environment" hidden>
+
+        <div class="family-fun-preview empty" id="familyFunPreview">
+          <span>▶</span>
+          <strong>No video selected</strong>
+          <small>Your test video preview will appear here.</small>
+        </div>
+      </section>
+
+      <section class="family-fun-next-card">
+        <div>✨</div>
+        <div>
+          <strong>Coming next</strong>
+          <p>Saved uploads, captions, family tagging, reactions and a private family video feed.</p>
+        </div>
+      </section>
+      <p class="family-fun-test-note">Family Fun test build · no videos are uploaded yet.</p>
+    </section>
+  </div>
+</main>
+<script>
+(function(){
+ let previewUrl='';
+ const picker=document.getElementById('familyFunVideoInput');
+ const camera=document.getElementById('familyFunCameraInput');
+ const preview=document.getElementById('familyFunPreview');
+ const choose=document.getElementById('familyFunChooseVideo');
+ const record=document.getElementById('familyFunRecordVideo');
+ function revoke(){if(previewUrl){URL.revokeObjectURL(previewUrl);previewUrl=''}}
+ function bytes(n){n=Number(n)||0;if(n<1024)return n+' B';if(n<1048576)return (n/1024).toFixed(1)+' KB';return (n/1048576).toFixed(1)+' MB'}
+ function clear(){revoke();picker.value='';camera.value='';preview.className='family-fun-preview empty';preview.innerHTML='<span>▶</span><strong>No video selected</strong><small>Your test video preview will appear here.</small>'}
+ function show(file){
+   if(!file)return;
+   if(!String(file.type||'').startsWith('video/')){preview.className='family-fun-preview empty';preview.innerHTML='<span>⚠</span><strong>That file is not a video</strong><small>Please choose a video file.</small>';return}
+   revoke();previewUrl=URL.createObjectURL(file);preview.className='family-fun-preview has-video';
+   const safe=String(file.name||'Family video').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+   preview.innerHTML='<video controls playsinline preload="metadata" src="'+previewUrl+'"></video><div class="family-fun-video-meta"><div><strong>'+safe+'</strong><small>'+bytes(file.size)+'</small></div><button type="button" class="family-fun-remove" id="familyFunRemoveVideo">Remove</button></div>';
+   document.getElementById('familyFunRemoveVideo').onclick=clear;
+ }
+ choose.onclick=()=>picker.click();record.onclick=()=>camera.click();picker.onchange=()=>show(picker.files&&picker.files[0]);camera.onchange=()=>show(camera.files&&camera.files[0]);window.addEventListener('beforeunload',revoke);
+})();
+</script>
+</body>
+</html>
