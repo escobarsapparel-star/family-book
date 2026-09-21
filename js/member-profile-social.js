@@ -31,10 +31,21 @@
     return familyData()?.getPeople?.().find(m=>String(m.id)===String(id))||null;
   }
 
+  function isManagedDependant(id){
+    if(!id)return false;
+    const u=auth(),me=String(u.memberId||''),target=memberById(id);
+    if(!me||!target||!target.managedProfile||target.accountId)return false;
+    const rels=familyData()?.getRelationships?.()||[];
+    return rels.some(r=>
+      (r.type==='parent_of'&&String(r.from)===me&&String(r.to)===String(id))||
+      (r.type==='child_of'&&String(r.from)===String(id)&&String(r.to)===me)
+    );
+  }
+
   function canManagePhoto(id){
     if(!id)return false;
     const u=auth();
-    return String(u.memberId||'')===String(id);
+    return String(u.memberId||'')===String(id)||isManagedDependant(id);
   }
 
   function visibleEmailFromDetails(details){
@@ -46,7 +57,48 @@
     return '';
   }
 
+  async function uploadDependantPhoto(id,photo){
+    if(!photo)return '';
+    const u=auth();
+    if(!u.familyId||!u.supabaseUserId)throw new Error('Your Family Book session is not ready.');
+    const response=await fetch(photo),blob=await response.blob();
+    const ext=blob.type==='image/png'?'png':'jpg';
+    const path=`${u.familyId}/${u.supabaseUserId}/profiles/${id}-${Date.now()}.${ext}`;
+    await window.FB_MEDIA.upload(path,blob,{
+      contentType:blob.type||'image/jpeg',
+      upsert:false,
+      cacheControl:'3600'
+    });
+    return path;
+  }
+
+  async function saveDependantProfilePhoto(id,photo){
+    const api=familyData(),member=memberById(id),client=window.FB_SUPABASE?.client;
+    if(!api?.reload||!member||!client)throw new Error('Profile storage is unavailable.');
+    if(!isManagedDependant(id))throw new Error('Only a parent can update this dependant profile photo.');
+
+    const oldPath=member.photoPath||'';
+    let newPath='';
+    try{
+      newPath=await uploadDependantPhoto(id,photo);
+      const {error}=await client.rpc('set_dependant_profile_photo',{
+        p_person_id:id,
+        p_photo_path:newPath||null
+      });
+      if(error)throw error;
+    }catch(err){
+      if(newPath)await window.FB_MEDIA.remove([newPath],{silent:true});
+      throw err;
+    }
+
+    if(oldPath&&oldPath!==newPath)await window.FB_MEDIA.remove([oldPath],{silent:true});
+    await api.reload();
+    window.dispatchEvent(new CustomEvent('familybook:family-data-updated',{detail:{reason:'dependant-profile-photo-updated',memberId:id}}));
+  }
+
   async function saveProfilePhoto(id,photo){
+    if(isManagedDependant(id))return saveDependantProfilePhoto(id,photo);
+
     const api=familyData();
     if(!api?.getPeople||!api?.syncMembers)throw new Error('Profile storage is unavailable.');
     const list=api.getPeople();
@@ -136,7 +188,7 @@
 
     const id=memberIdFromLegacy(old,edit,activity);
     const isOwn=!!id&&String(auth().memberId||'')===String(id);
-    const photoEditable=isOwn&&canManagePhoto(id);
+    const photoEditable=canManagePhoto(id);
     const visibleEmail=visibleEmailFromDetails(details);
 
     rebuilding=true;
