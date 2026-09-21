@@ -5,13 +5,20 @@
   window.__fbApkNativeEnhancementsReady=true;
 
   const tabs=['home','memories','tree','calendar','members','profile'];
-  const blockedSelector="input,textarea,select,button,a,[contenteditable='true'],canvas,.cropper-backdrop,.photo-action-backdrop,.fb-profile-media-viewer,.member-cover-editor,.full-tree-viewport,.memory-strip,.home-composer-modal,[data-fb-no-swipe]";
+  const blockedSelector="input,textarea,select,button,a,[contenteditable='true'],canvas,.cropper-backdrop,.photo-action-backdrop,.fb-profile-media-viewer,.member-cover-editor,.full-tree-viewport,.memory-strip,.home-composer-modal,.mobile-profile-menu,[data-fb-no-swipe]";
 
   function currentRoute(){
     return String(window.FB_APP_HISTORY?.current?.()||history.state?.fbRoute||'home');
   }
 
   function closeOverlay(){
+    try{
+      if(window.FB_MOBILE_PROFILE_MENU?.isOpen?.()){
+        window.FB_MOBILE_PROFILE_MENU.close?.();
+        return true;
+      }
+    }catch(_){}
+
     const visible=el=>el&&getComputedStyle(el).display!=='none'&&!el.hidden;
     const candidates=[
       ['.home-composer-modal:not([hidden])','[data-home-close-composer]'],
