@@ -65,12 +65,12 @@
   }
 
   async function exportPhotoDataUrl(person){
-    const key=String(person?.photoPath||person?.photo||person?.id||'');
+    const key=JSON.stringify([person?.photoPath,person?.photo]);
     if(exportDataUrlCache.has(key))return exportDataUrlCache.get(key);
     let value='';
     try{
       const path=String(person?.photoPath||'').trim();
-      if(path&&window.FB_MEDIA?.download){
+      if(path&&!/^(data:|blob:|https?:)/i.test(path)&&window.FB_MEDIA?.download){
         value=await blobToDataUrl(await window.FB_MEDIA.download(path));
       }else{
         const src=await resolvePhoto(person);
@@ -83,34 +83,39 @@
     }catch(err){
       console.warn('Full tree export photo fallback:',err?.message||err);
     }
-    if(key)exportDataUrlCache.set(key,value);
+    // A path download may fail while the displayed signed URL still works.
+    if(!value){
+      const src=await resolvePhoto(person);
+      if(src.startsWith('data:'))value=src;
+      else if(src){
+        const response=await fetch(src,{cache:'no-store',signal:AbortSignal.timeout(15000)});
+        if(!response.ok)throw new Error('Could not load a profile photo for export.');
+        value=await blobToDataUrl(await response.blob());
+      }
+    }
+    if(value)exportDataUrlCache.set(key,value);
     return value;
   }
 
   async function prepareExportPhotos(page){
     const byId=new Map(people().map(p=>[String(p.id),p]));
-    const restores=[];
+    const photos=new Map();
+    let failures=0;
     const cards=[...page.querySelectorAll('.ct-person[data-view-member]')];
-    await Promise.allSettled(cards.map(async card=>{
-      const person=byId.get(String(card.dataset.viewMember||''));
+    await Promise.all(cards.map(async card=>{
+      const id=String(card.dataset.viewMember||'');
       const avatar=card.querySelector('.ct-avatar');
-      if(!person||!avatar)return;
-      const dataUrl=await exportPhotoDataUrl(person);
-      if(!dataUrl)return;
-      let img=avatar.querySelector('img');
-      if(!img){
-        img=document.createElement('img');
-        img.alt='';
-        img.decoding='sync';
-        avatar.replaceChildren(img);
-        restores.push(()=>{if(avatar.isConnected)setInitials(avatar,person.name)});
-      }else{
-        const oldSrc=img.getAttribute('src')||'';
-        restores.push(()=>{if(img.isConnected)img.setAttribute('src',oldSrc)});
-      }
-      img.setAttribute('src',dataUrl);
+      const person={...byId.get(id)};
+      person.photo=avatar?.querySelector('img')?.currentSrc||avatar?.querySelector('img')?.src||person.photo;
+      if(!person.photo&&!person.photoPath)return;
+      try{
+        const dataUrl=await exportPhotoDataUrl(person);
+        if(!dataUrl)throw new Error('Missing photo');
+        photos.set(id,dataUrl);
+      }catch(_){failures++}
     }));
-    return ()=>restores.reverse().forEach(fn=>{try{fn()}catch(_){}});
+    if(failures)throw new Error(`${failures} profile photo(s) could not be loaded. Please retry the export when your connection is ready.`);
+    return photos;
   }
 
   function waitForTreeImages(canvas){
@@ -143,12 +148,9 @@
       btn.disabled=true;
       btn.textContent='Creating image…';
       const oldTransform=canvas.style.transform;
-      let restoreExportPhotos=()=>{};
       canvas.style.transform='none';
       try{
-        await syncTreePhotos(page);
-        restoreExportPhotos=await prepareExportPhotos(page);
-        await waitForTreeImages(canvas);
+        const photos=await prepareExportPhotos(page);
         if(!window.html2canvas)throw new Error('Image export library is still loading. Try again in a moment.');
         const width=Number(stage.dataset.width)||canvas.scrollWidth||canvas.offsetWidth;
         const height=Number(stage.dataset.height)||canvas.scrollHeight||canvas.offsetHeight;
@@ -160,6 +162,20 @@
           allowTaint:false,
           imageTimeout:8000,
           logging:false,
+          onclone:async doc=>{
+            const cloned=doc.querySelector('#fullTreeStage .ct-canvas');
+            if(!cloned)throw new Error('Could not prepare the tree export.');
+            await Promise.all([...cloned.querySelectorAll('.ct-person[data-view-member]')].map(async card=>{
+              const src=photos.get(String(card.dataset.viewMember));
+              if(!src)return;
+              const avatar=card.querySelector('.ct-avatar');
+              if(!avatar)return;
+              const img=doc.createElement('img');
+              img.alt='';img.loading='eager';img.src=src;
+              avatar.replaceChildren(img);
+              await img.decode();
+            }));
+          },
           width,
           height,
           windowWidth:Math.max(document.documentElement.clientWidth,width),
@@ -173,7 +189,6 @@
       }catch(err){
         alert(err?.message||'Could not export the tree image.');
       }finally{
-        restoreExportPhotos();
         canvas.style.transform=oldTransform;
         btn.disabled=false;
         btn.innerHTML=old;

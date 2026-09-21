@@ -1192,7 +1192,7 @@ function familyTree(){
  const rootId=findTreeRoot(familyTreeAnchorId(G),G);
  const drawing=buildCoordinateTree(rootId,false);
  return `<section class="tree-page coordinate-tree-page">
-   <div class="tree-head"><div><p class="eyebrow">${esc(familyLabel()).toUpperCase()}</p><h1>Family Tree</h1><p>Build current family and older generations together. The tree is shared by everyone in the family, regardless of who is signed in.</p></div><div class="tree-head-actions">${isFamilyAdmin()?`<button class="primary tree-history-add" data-r="add-history"><i data-lucide="book-heart"></i><span>Add family history</span></button>`:""}<button class="secondary tree-full-btn" data-r="tree-full"><i data-lucide="maximize-2"></i><span>View full tree</span></button><button class="secondary tree-manage" data-r="members"><i data-lucide="users-round"></i><span>${isFamilyAdmin()?"Manage":"View"} members</span></button></div></div>
+   <div class="tree-head"><div><p class="eyebrow">${esc(familyLabel()).toUpperCase()}</p><h1>Family Tree</h1><p>Build current family and older generations together. The tree is shared by everyone in the family, regardless of who is signed in.</p></div><div class="tree-head-actions">${isFamilyAdmin()?`<button class="primary tree-history-add" data-r="add-history"><i data-lucide="book-heart"></i><span>Add family history</span></button>`:""}<button class="secondary tree-full-btn" data-r="tree-full"><i data-lucide="maximize-2"></i><span>View full tree</span></button></div></div>
    <div class="ct-board">${drawing.html}</div>
    ${familyHistoryDirectoryHtml()}
  </section>`;
