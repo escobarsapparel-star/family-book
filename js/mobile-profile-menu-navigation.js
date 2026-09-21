@@ -27,8 +27,9 @@
   function prepareMenu(){
     const m=menu();
     if(!m)return;
-    // Keep the main mobile tabs visible and tappable while the menu is open.
-    m.style.bottom='calc(94px + env(safe-area-inset-bottom))';
+    // The mobile tab row already sits above this overlay. Let CSS keep the
+    // menu flush to the bottom so Home/calendar content cannot show through.
+    m.style.removeProperty('bottom');
     markMenuOpen();
   }
 
