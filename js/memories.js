@@ -283,13 +283,23 @@
       <div class="memories-head"><div><p class="eyebrow">${e(window.familyLabel?.()||"FAMILY BOOK").toUpperCase()}</p><h1>Memories</h1><p>Keep the photos, video clips, people and stories that make your family yours.</p></div><div class="memory-head-actions"><button class="secondary" data-r="albums"><i data-lucide="folder-heart"></i><span>Albums</span></button><button class="primary memory-add-top" data-r="add-memory"><i data-lucide="image-plus"></i><span>Add memory</span></button></div></div>
       
       <section class="memory-filter-panel" id="memoryFilterPanel">
-        <label class="memory-search-box"><i data-lucide="search"></i><input id="memorySearch" type="search" placeholder="Search captions, people or dates…" autocomplete="off"></label>
-        <div class="memory-filter-selects">
-          <label><span>Year</span><select id="memoryYearFilter"><option value="">All years</option></select></label>
-          <label><span>Person</span><select id="memoryMemberFilter"><option value="">Everyone</option></select></label>
-          <label><span>Album</span><select id="memoryAlbumFilter"><option value="">All albums</option></select></label>
-          <button type="button" class="memory-clear-filters" id="memoryClearFilters"><i data-lucide="x"></i>Clear</button>
+        <div class="memory-filter-search-row">
+          <label class="memory-search-box"><i data-lucide="search"></i><input id="memorySearch" type="search" placeholder="Search captions, people or dates…" autocomplete="off"></label>
+          <button type="button" class="memory-filter-toggle" id="memoryFilterToggle" aria-controls="memoryFilterSheet" aria-expanded="false"><i data-lucide="sliders-horizontal"></i><span>Filters</span><b id="memoryFilterBadge" hidden>0</b></button>
         </div>
+        <div class="memory-filter-sheet" id="memoryFilterSheet" aria-hidden="true">
+          <button type="button" class="memory-filter-backdrop" id="memoryFilterBackdrop" aria-label="Close filters"></button>
+          <div class="memory-filter-sheet-card" role="dialog" aria-modal="true" aria-labelledby="memoryFilterTitle">
+            <div class="memory-filter-sheet-head"><div><small>MEMORIES</small><h2 id="memoryFilterTitle">Filter memories</h2></div><button type="button" class="memory-filter-close" id="memoryFilterClose" aria-label="Close filters"><i data-lucide="x"></i></button></div>
+            <div class="memory-filter-selects">
+              <label><span>Year</span><select id="memoryYearFilter"><option value="">All years</option></select></label>
+              <label><span>Person</span><select id="memoryMemberFilter"><option value="">Everyone</option></select></label>
+              <label><span>Album</span><select id="memoryAlbumFilter"><option value="">All albums</option></select></label>
+            </div>
+            <div class="memory-filter-sheet-actions"><button type="button" class="memory-clear-filters" id="memoryClearFilters"><i data-lucide="rotate-ccw"></i>Clear filters</button><button type="button" class="primary memory-apply-filters" id="memoryApplyFilters"><i data-lucide="check"></i>Apply filters</button></div>
+          </div>
+        </div>
+        <div class="memory-active-filters" id="memoryActiveFilters" aria-live="polite"></div>
         <small id="memoryResultCount"></small>
       </section>
       <div id="memoryLibrary" class="memory-library-loading"><span class="memory-spinner"></span><p>Opening your family memories…</p></div>
