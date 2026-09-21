@@ -47,6 +47,42 @@
     lastTrigger=null;
   }
 
+  async function upgradeMemoryPreview(img){
+    if(!img||img.dataset.wallMemoryQuality==='full'||img.dataset.wallMemoryQuality==='loading')return;
+    const holder=img.closest?.('[data-wall-memory]');
+    const memoryId=holder?.dataset?.wallMemory;
+    if(!memoryId)return;
+
+    img.dataset.wallMemoryQuality='loading';
+    try{
+      let memory=null;
+      if(typeof window.FB_MEMORIES?.getOne==='function'){
+        memory=await window.FB_MEMORIES.getOne(memoryId);
+      }
+      if(!memory&&typeof window.FB_MEMORIES?.getAll==='function'){
+        const all=await window.FB_MEMORIES.getAll();
+        memory=(all||[]).find(item=>String(item?.id||'')===String(memoryId))||null;
+      }
+      if(!memory){img.dataset.wallMemoryQuality='missing';return;}
+
+      const photos=window.FB_MEMORIES?.getPhotos?.(memory)||memory.photos||[];
+      const full=photos[0]?.image||memory.image||photos[0]?.thumb||memory.thumb||'';
+      if(!full){img.dataset.wallMemoryQuality='missing';return;}
+
+      if(typeof full==='string'){
+        if((img.currentSrc||img.src)!==full)img.src=full;
+      }else if(full instanceof Blob){
+        const url=URL.createObjectURL(full);
+        img.addEventListener('load',()=>URL.revokeObjectURL(url),{once:true});
+        img.src=url;
+      }
+      img.dataset.wallMemoryQuality='full';
+    }catch(err){
+      img.dataset.wallMemoryQuality='failed';
+      console.warn('Family Book could not upgrade this Wall Memory preview.',err);
+    }
+  }
+
   function decorate(root=document){
     root.querySelectorAll?.('.wall-post-attachment img').forEach(img=>{
       if(img.dataset.wallViewerReady==='1')return;
@@ -55,6 +91,10 @@
       img.setAttribute('role','button');
       img.setAttribute('aria-label',img.alt?`Open ${img.alt}`:'Open wall photo');
       img.title='Open photo';
+    });
+
+    root.querySelectorAll?.('.wall-memory-photo img').forEach(img=>{
+      upgradeMemoryPreview(img);
     });
   }
 
@@ -76,7 +116,7 @@
   const observer=new MutationObserver(records=>{
     records.forEach(record=>record.addedNodes.forEach(node=>{
       if(node.nodeType!==1)return;
-      if(node.matches?.('.wall-post-attachment img'))decorate(node.parentElement||node);
+      if(node.matches?.('.wall-post-attachment img,.wall-memory-photo img'))decorate(node.parentElement||node);
       else decorate(node);
     }));
   });
