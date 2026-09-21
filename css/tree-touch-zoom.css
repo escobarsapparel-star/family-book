@@ -1,0 +1,16 @@
+.coordinate-tree-page .tree-touch-board{touch-action:pan-x pan-y;overflow:auto;max-height:65dvh;min-height:260px;scroll-behavior:auto}
+.tree-touch-stage{position:relative;overflow:hidden;margin:0 auto;flex:none}
+.tree-touch-stage>.ct-canvas{position:absolute;left:0;top:0;margin:0!important;transform-origin:0 0}
+.tree-touch-hint{font-size:.7rem;color:#81776b;margin:0 0 8px}
+html[data-theme="dark"] .tree-touch-hint{color:#b2aba2}
+@media(max-width:650px){
+  .coordinate-tree-page>.tree-head{display:flex!important;flex-wrap:wrap;align-items:center!important;gap:10px!important;margin:0 0 10px!important}
+  .coordinate-tree-page>.tree-head>div:first-child{flex:1 1 180px;min-width:0}
+  .coordinate-tree-page>.tree-head h1{font-size:1.65rem!important;line-height:1.15!important;margin:3px 0 5px!important}
+  .coordinate-tree-page>.tree-head .eyebrow{font-size:.62rem!important;margin:0!important}
+  .coordinate-tree-page>.tree-head>div>p:last-child:not(.eyebrow){font-size:.72rem!important;line-height:1.35!important;margin:0!important;max-width:none!important}
+  .coordinate-tree-page>.tree-head .tree-head-actions{display:flex!important;flex-wrap:nowrap!important;gap:6px!important;width:auto!important;flex:0 0 auto}
+  .coordinate-tree-page>.tree-head .tree-head-actions button{width:40px!important;height:40px!important;min-width:40px!important;min-height:40px!important}
+  .coordinate-tree-page>.tree-head .tree-head-actions button span{display:none}
+  .coordinate-tree-page .tree-touch-board{padding:8px!important}
+}
