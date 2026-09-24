@@ -9,7 +9,18 @@
   const auth=()=>window.FB_AUTH?.get?.()||{};
   const familyMembers=()=>window.ensureOwner?.()||window.FB_FAMILY_DATA?.getPeople?.()||[];
   const familyName=()=>{try{return window.familyLabel?.()||auth().family||"Family"}catch(_){return auth().family||"Family"}};
-  const userPhoto=()=>{try{return window.currentUserPhoto?.()||auth().photo||""}catch(_){return auth().photo||""}};
+  const isDisplayPhoto=v=>/^data:|^blob:|^https?:/i.test(String(v||""));
+  const userPhoto=()=>{
+    try{
+      const live=window.currentUserPhoto?.()||"";
+      if(isDisplayPhoto(live))return live;
+      const raw=auth().photo||"";
+      return isDisplayPhoto(raw)?raw:"";
+    }catch(_){
+      const raw=auth().photo||"";
+      return isDisplayPhoto(raw)?raw:"";
+    }
+  };
   const initials=name=>{const p=String(name||"Family").trim().split(/\s+/).filter(Boolean);return ((p[0]?.[0]||"F")+(p.length>1?(p.at(-1)?.[0]||""):"")).toUpperCase()};
 
   function navigate(route){
@@ -23,7 +34,8 @@
 
   function profileCard(){
     const u=auth(),name=u.name||"Family member",p=userPhoto();
-    return `<button class="desktop-profile-card" type="button" data-desktop-route="profile"><span class="desktop-profile-avatar">${p?`<img src="${esc(p)}" alt="">`:esc(initials(name))}</span><span><strong>${esc(name)}</strong><small>${esc(familyName())}</small></span></button>`;
+    const fallback=esc(initials(name));
+    return `<button class="desktop-profile-card" type="button" data-desktop-route="profile"><span class="desktop-profile-avatar"><span class="desktop-profile-initials">${fallback}</span>${p?`<img src="${esc(p)}" alt="" onerror="this.remove()">`:""}</span><span><strong>${esc(name)}</strong><small>${esc(familyName())}</small></span></button>`;
   }
 
   function leftRail(){
