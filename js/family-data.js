@@ -267,6 +267,9 @@
 
     loadedFamilyId=u.familyId;
     startRealtime();
+    window.dispatchEvent(new CustomEvent("familybook:family-data-ready",{
+      detail:{familyId:u.familyId||""}
+    }));
   }
 
   async function init(){
