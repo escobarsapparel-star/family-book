@@ -91,6 +91,7 @@ document.querySelectorAll("[data-google-auth]").forEach(btn=>btn.onclick=async()
  catch(ex){alert(ex.message||"Could not start Google sign-in.");btn.disabled=false;btn.innerHTML='<span class="google-mark">G</span>Continue with Google'}
 });
 icons();
+initAndroidDownloadUi();
 }
 
 function icons(){if(window.lucide)lucide.createIcons({attrs:{"stroke-width":1.9}})}
@@ -262,7 +263,6 @@ function showAndroidInstallSplash(force=false){
  d.querySelector("[data-android-not-now]")?.addEventListener("click",()=>closeAndroidInstallSplash(7));
  d.addEventListener("click",e=>{if(e.target===d)closeAndroidInstallSplash(7)});
  window.icons?.();
- initAndroidDownloadUi();
 }
 
 function showAndroidInstallHelp(){
@@ -286,6 +286,7 @@ async function initAndroidDownloadUi(){
  }
  if(!available)return;
  document.querySelectorAll("[data-android-install-help]").forEach(btn=>{
+   btn.hidden=false;
    btn.onclick=showAndroidInstallHelp;
  });
  setTimeout(()=>showAndroidInstallSplash(false),450);
@@ -400,7 +401,8 @@ let upcoming=demo
 ? D.events.map(x=>`<div class="event"><div class="date">${x[0]}<small>${x[1]}</small></div><div><strong>${x[2]}</strong><small>${x[3]}</small></div></div>`).join("")
 : (window.FB_CALENDAR?.homeUpcomingShell?.()||`<div class="empty-events"><span><i data-lucide="calendar-days"></i></span><strong>No family events yet</strong></div>`);
 
-return `${hero}
+return `${androidAppBannerHtml()}
+${hero}
 ${window.FB_WALL?.homeShell?.()||""}
 <div class="section-head"><h2 id="homeActivityTitle">${demo?"What's happening":"Start your Family Book"}</h2></div>
 <section class="columns">
