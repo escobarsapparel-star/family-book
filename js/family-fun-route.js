@@ -15,6 +15,29 @@
         </div>
       </div>
 
+      <section class="fun-hub" id="funHub">
+        <div class="fun-section-label"><span>FAMILY FUN</span><h2>Choose something fun</h2></div>
+        <div class="fun-feature-grid">
+          <button class="fun-feature-card family-camera-feature" type="button" data-family-fun-feature="camera">
+            <span class="fun-feature-icon"><i data-lucide="video"></i></span>
+            <span class="fun-feature-copy">
+              <strong>Family Camera</strong>
+              <small>Record, Bounce, Countdown, Pass the Phone and view the shared video gallery.</small>
+            </span>
+            <span class="fun-feature-arrow"><i data-lucide="chevron-down"></i></span>
+          </button>
+          <div class="fun-feature-card fun-feature-coming" aria-label="Family Games coming soon">
+            <span class="fun-feature-icon"><i data-lucide="gamepad-2"></i></span>
+            <span class="fun-feature-copy">
+              <strong>Family Games</strong>
+              <small>Quizzes, challenges and more family games can live here next.</small>
+            </span>
+            <span class="fun-coming-badge">COMING SOON</span>
+          </div>
+        </div>
+      </section>
+
+      <section class="fun-camera-inline-panel" id="funCameraPanel" hidden>
       <nav class="fun-main-tabs" aria-label="Family Fun sections">
         <button class="active" type="button" data-fun-tab="create">Create</button>
         <button type="button" data-fun-tab="gallery">Gallery</button>
@@ -108,6 +131,8 @@
         <div class="fun-gallery-grid" id="funGalleryGrid"></div>
       </section>
 
+      </section>
+
       <p class="fun-privacy-note">Family Fun videos are stored privately in Family Book cloud storage. Only signed-in members of your family can view them.</p>
     </section>`;
   }
@@ -123,7 +148,7 @@
     window.icons?.();
 
     const script=document.createElement("script");
-    script.src="js/family-fun-studio.js?v=app-route-3";
+    script.src="js/family-fun-studio.js?v=app-route-4";
     script.dataset.familyFunRuntime="1";
     script.onload=()=>window.icons?.();
     script.onerror=()=>console.error("Could not load Family Fun.");
