@@ -614,3 +614,26 @@ body.fun-camera-open{overflow:hidden!important}
     width:calc(100% - 20px)!important;
   }
 }
+
+/* Countdown is a locked pre-record state: no duplicate taps or phantom clips. */
+.fun-shutter:disabled{
+  opacity:.72;
+  pointer-events:none;
+}
+.fun-shutter.counting-down .fun-shutter-core{
+  width:54px;
+  height:54px;
+  background:rgba(255,255,255,.18);
+  border:2px solid rgba(255,255,255,.92);
+}
+.fun-shutter.counting-down:after{
+  content:"";
+  position:absolute;
+  width:16px;
+  height:16px;
+  border-radius:50%;
+  border:2px solid rgba(255,255,255,.35);
+  border-top-color:#fff;
+  animation:funCountdownSpin .8s linear infinite;
+}
+@keyframes funCountdownSpin{to{transform:rotate(360deg)}}
