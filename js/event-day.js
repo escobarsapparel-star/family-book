@@ -97,7 +97,9 @@
         : "";
     const art=birthday
       ? `<div class="fb-event-day-art fb-birthday-art"><span class="fb-birthday-glow"></span><span class="fb-birthday-cake">🎂</span>${person?.photo?`<span class="fb-birthday-person"><img src="${esc(person.photo)}" alt=""></span>`:""}<span class="fb-birthday-stars">✦ ✧ ✦</span></div>`
-      : `<div class="fb-event-day-art"><span class="fb-event-sun"></span><span class="fb-event-island island-a"></span><span class="fb-event-island island-b"></span><span class="fb-event-water"></span><span class="fb-event-palm palm-a">🌴</span><span class="fb-event-palm palm-b">🌴</span><span class="fb-event-suitcase">🧳</span><span class="fb-event-pin"><i data-lucide="map-pin"></i>${esc(destination)}</span></div>`;
+      : travel
+        ? `<div class="fb-event-day-art fb-travel-art"><span class="fb-event-sun"></span><span class="fb-event-island island-a"></span><span class="fb-event-island island-b"></span><span class="fb-event-water"></span><span class="fb-event-palm palm-a">🌴</span><span class="fb-event-palm palm-b">🌴</span><span class="fb-event-suitcase">🧳</span><span class="fb-event-pin"><i data-lucide="map-pin"></i>${esc(destination)}</span></div>`
+        : `<div class="fb-event-day-art fb-family-art"><span class="fb-family-event-orbit"></span><span class="fb-family-event-icon"><i data-lucide="heart-handshake"></i></span><span class="fb-family-event-spark s1">✦</span><span class="fb-family-event-spark s2">✧</span><span class="fb-family-event-spark s3">✦</span></div>`;
     const kicker=birthday?"TODAY WE CELEBRATE":"TODAY'S FAMILY EVENT";
     const title=birthday?`${birthdayName}'s Birthday`:(row.title||"Family event");
     const ribbon=birthday?"Happy Birthday!":travel?"Bon Voyage!":"Make today a memory!";
