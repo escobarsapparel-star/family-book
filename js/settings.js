@@ -100,6 +100,7 @@
 
   function save(value){
     const merged=mergeDefaults(value);
+    try{localStorage.setItem("fb_theme_preference",merged.appearance.theme)}catch(_){}
     localStorage.setItem(keyForMember(user().memberId||"owner"),JSON.stringify(merged));
     applyTheme(merged.appearance.theme);
     window.FB_FAMILY_DATA?.syncPrivacy?.(merged);
@@ -347,7 +348,9 @@
     }
   }
 
-  applyTheme(get().appearance.theme);
+  let initialTheme;
+  try{initialTheme=localStorage.getItem("fb_theme_preference")||get().appearance.theme}catch(_){initialTheme=get().appearance.theme}
+  applyTheme(initialTheme);
   if(systemTheme){
     const handleSystemTheme=()=>{if(get().appearance.theme==="system")applyTheme("system")};
     try{systemTheme.addEventListener("change",handleSystemTheme)}catch(_){try{systemTheme.addListener(handleSystemTheme)}catch(__){}}
