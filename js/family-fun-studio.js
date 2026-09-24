@@ -490,6 +490,7 @@
       try{
         recorder.resume();
         try{await camera.play()}catch(_){}
+        if(recordingSound){try{await recordingSound.play()}catch(_){}}
         setCaptureState("recording");
         setDecisionActions(false);
         startRecordTimer(true);
@@ -584,6 +585,8 @@
     if(mode==="pass"&&recorder.state==="recording"){
       try{
         recorder.pause();
+        try{camera.pause()}catch(_){}
+        if(recordingSound){try{recordingSound.pause()}catch(_){}}
         setCaptureState("paused");
         syncRecordButton(false);
         setDecisionActions(true);
@@ -832,7 +835,15 @@
       setSaveButtonState("Saved",true);
       setStatus("Saved to your shared Family Fun Gallery.","success");
       await renderGallery();
-      setTimeout(()=>switchTab("gallery"),250);
+      await stopStream();
+      resetResult();
+      const panel=$("#funCameraPanel");
+      panel?.classList.remove("fun-camera-fullscreen");
+      document.documentElement.classList.remove("fun-camera-open");
+      document.body.classList.remove("fun-camera-open");
+      document.querySelector('[data-family-fun-feature="camera"]')?.classList.remove("active");
+      switchTab("gallery");
+      setTimeout(()=>panel?.scrollIntoView({behavior:"smooth",block:"start"}),60);
     }catch(err){
       console.error("Family Fun upload:",err);
       if(storagePath){
