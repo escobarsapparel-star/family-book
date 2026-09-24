@@ -220,3 +220,18 @@ html[data-theme="dark"]{
 @media (max-width:1179px){
   .desktop-left-rail,.desktop-right-rail,.desktop-top-nav{display:none!important}
 }
+
+/* Desktop profile avatar: never expose a broken-image placeholder. */
+@media(min-width:1180px){
+  .desktop-profile-avatar{position:relative!important}
+  .desktop-profile-initials{
+    position:absolute;inset:0;
+    display:grid;place-items:center;
+    font-weight:800;color:var(--fb-shell-accent);
+  }
+  .desktop-profile-avatar img{
+    position:absolute;inset:0;z-index:1;
+    width:100%;height:100%;object-fit:cover;
+    background:var(--fb-shell-accent-soft);
+  }
+}
