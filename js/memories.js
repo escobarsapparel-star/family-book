@@ -587,34 +587,110 @@
     if(bitmap)bitmap.close();
     return {image,thumb,width,height};
   }
+  let eventFrameLogoPromise=null;
+  function loadEventFrameLogo(){
+    if(eventFrameLogoPromise)return eventFrameLogoPromise;
+    eventFrameLogoPromise=new Promise((resolve,reject)=>{
+      const img=new Image();
+      img.decoding="async";
+      img.onload=()=>resolve(img);
+      img.onerror=()=>reject(new Error("Could not load the original Family Book logo."));
+      img.src=new URL("assets/logo/family-book-logo-dark-header.png",document.baseURI).href;
+    });
+    return eventFrameLogoPromise;
+  }
+
+  function roundedRectPath(ctx,x,y,w,h,r){
+    const rr=Math.max(0,Math.min(r,w/2,h/2));
+    ctx.beginPath();
+    ctx.moveTo(x+rr,y);
+    ctx.lineTo(x+w-rr,y);
+    ctx.quadraticCurveTo(x+w,y,x+w,y+rr);
+    ctx.lineTo(x+w,y+h-rr);
+    ctx.quadraticCurveTo(x+w,y+h,x+w-rr,y+h);
+    ctx.lineTo(x+rr,y+h);
+    ctx.quadraticCurveTo(x,y+h,x,y+h-rr);
+    ctx.lineTo(x,y+rr);
+    ctx.quadraticCurveTo(x,y,x+rr,y);
+    ctx.closePath();
+  }
+
+  function fitCanvasText(ctx,text,maxWidth,minChars=10){
+    let out=String(text||"").trim();
+    if(!out)return "";
+    while(out.length>minChars&&ctx.measureText(out).width>maxWidth)out=out.slice(0,-1).trim();
+    return out!==String(text||"").trim()?out.replace(/[\s,.;:-]+$/,"")+"…":out;
+  }
+
   async function applyEventFrame(prepared,eventContext){
     if(!prepared?.image||!eventContext)return prepared;
     let bitmap=null;
     try{
+      const [logo]=await Promise.all([loadEventFrameLogo()]);
       bitmap=await createImageBitmap(prepared.image);
       const w=bitmap.width||prepared.width,h=bitmap.height||prepared.height;
       const canvas=document.createElement("canvas");canvas.width=w;canvas.height=h;
       const ctx=canvas.getContext("2d",{alpha:false});
       ctx.drawImage(bitmap,0,0,w,h);
-      const band=Math.max(82,Math.round(h*.13));
-      const border=Math.max(10,Math.round(Math.min(w,h)*.015));
-      ctx.fillStyle="#173321";ctx.fillRect(0,0,w,border);ctx.fillRect(0,h-border,w,border);ctx.fillRect(0,0,border,h);ctx.fillRect(w-border,0,border,h);
-      const grad=ctx.createLinearGradient(0,h-band,0,h);grad.addColorStop(0,"rgba(12,31,20,.10)");grad.addColorStop(.18,"rgba(12,31,20,.82)");grad.addColorStop(1,"rgba(12,31,20,.96)");ctx.fillStyle=grad;ctx.fillRect(0,h-band,w,band);
-      const title=String(eventContext.title||"Family event").trim();
+
+      const minSide=Math.min(w,h);
+      const outer=Math.max(18,Math.round(minSide*.026));
+      const panelH=Math.max(126,Math.round(h*.175));
+      const panelX=outer;
+      const panelY=h-panelH-outer;
+      const panelW=w-(outer*2);
+      const radius=Math.max(18,Math.round(minSide*.024));
+
+      // A restrained glass lower-third keeps the photo as the hero.
+      const grad=ctx.createLinearGradient(panelX,panelY,panelX,panelY+panelH);
+      grad.addColorStop(0,"rgba(11,31,20,.72)");
+      grad.addColorStop(1,"rgba(7,21,14,.91)");
+      roundedRectPath(ctx,panelX,panelY,panelW,panelH,radius);
+      ctx.fillStyle=grad;ctx.fill();
+      ctx.strokeStyle="rgba(213,182,122,.42)";
+      ctx.lineWidth=Math.max(2,Math.round(minSide*.002));
+      ctx.stroke();
+
+      const inner=Math.max(18,Math.round(minSide*.025));
+      const titleX=panelX+inner;
+      const accentY=panelY+inner;
+      ctx.fillStyle="#d9b67a";
+      roundedRectPath(ctx,titleX,accentY,Math.max(48,Math.round(panelW*.10)),Math.max(4,Math.round(minSide*.005)),999);
+      ctx.fill();
+
+      const logoMaxW=Math.min(Math.round(panelW*.30),Math.round(minSide*.34));
+      const logoScale=Math.min(1,logoMaxW/logo.naturalWidth);
+      const logoW=Math.max(1,Math.round(logo.naturalWidth*logoScale));
+      const logoH=Math.max(1,Math.round(logo.naturalHeight*logoScale));
+      const logoX=panelX+panelW-inner-logoW;
+      const logoY=panelY+Math.round((panelH-logoH)/2)+Math.round(inner*.12);
+
+      const textRight=logoX-inner;
+      const textWidth=Math.max(120,textRight-titleX);
+      const titleSize=Math.max(23,Math.min(54,Math.round(minSide*.042)));
+      ctx.fillStyle="#f3dfb0";
+      ctx.font=`700 ${titleSize}px Georgia, serif`;
+      ctx.textBaseline="alphabetic";
+      const title=fitCanvasText(ctx,String(eventContext.title||"Family event"),textWidth);
+      const titleY=panelY+Math.round(panelH*.54);
+      ctx.fillText(title,titleX,titleY);
+
+      const metaSize=Math.max(14,Math.min(27,Math.round(minSide*.021)));
+      ctx.fillStyle="#c9dfcf";
+      ctx.font=`600 ${metaSize}px Arial, sans-serif`;
       const location=String(eventContext.location||"").trim();
       const date=String(eventContext.date||"").trim();
-      const size=Math.max(24,Math.round(Math.min(w,h)*.038));
-      ctx.fillStyle="#f3dfb0";ctx.font=`700 ${size}px Georgia, serif`;
-      let display=title;
-      while(display.length>12&&ctx.measureText(display).width>w-border*4)display=display.slice(0,-2);
-      if(display!==title)display=display.trim()+"…";
-      ctx.fillText(display,border*2,h-band+size*1.25);
-      ctx.fillStyle="#d7eadc";ctx.font=`600 ${Math.max(16,Math.round(size*.55))}px Arial, sans-serif`;
-      const sub=[location,date].filter(Boolean).join(" · ")||"Captured with Family Book";
-      ctx.fillText(sub,border*2,h-border*2);
-      ctx.save();ctx.translate(w-border*2,h-band+size*.95);ctx.rotate(-.08);ctx.fillStyle="#b9e0c4";ctx.font=`700 ${Math.max(22,Math.round(size*.8))}px Arial, sans-serif`;ctx.textAlign="right";ctx.fillText("✈  FAMILY BOOK",0,0);ctx.restore();
-      const image=await new Promise((resolve,reject)=>canvas.toBlob(b=>b?resolve(b):reject(new Error("Could not create the event photo frame.")),"image/webp",.84));
-      const thumb=await canvasBlob(canvas,w,h,540,.74,"image/webp");
+      const meta=fitCanvasText(ctx,[location,date].filter(Boolean).join("  •  ")||"Event Day",textWidth);
+      ctx.fillText(meta,titleX,Math.min(panelY+panelH-inner,titleY+Math.round(metaSize*1.75)));
+
+      // Always use the original Family Book artwork; never substitute typed branding.
+      ctx.drawImage(logo,logoX,logoY,logoW,logoH);
+
+      const image=await new Promise((resolve,reject)=>canvas.toBlob(
+        b=>b?resolve(b):reject(new Error("Could not create the event photo frame.")),
+        "image/webp",.86
+      ));
+      const thumb=await canvasBlob(canvas,w,h,540,.76,"image/webp");
       return {image,thumb,width:w,height:h};
     }finally{try{bitmap?.close?.()}catch(_){}}
   }
