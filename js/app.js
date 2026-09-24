@@ -373,7 +373,7 @@ function go(r,opts={}){if(r==="profile"){const id=currentMemberId();if(id)r="vie
  if(r==="settings")window.FB_SETTINGS?.bindPage?.()
  if(r==="notifications")window.FB_NOTIFICATIONS?.bindPage?.()
  if(r==="family-access")window.FB_INVITES?.bindPage?.()
- $("#logout")?.addEventListener("click",async()=>{await FB_AUTH.logout();auth()});icons();
+ $("#logout")?.addEventListener("click",async()=>{try{window.FB_MEDIA?.clearSignedUrlCache?.();if("caches" in window)await caches.delete("family-book-b2-images-v1");navigator.serviceWorker?.controller?.postMessage?.({type:"familybook:clear-media-cache"})}catch(_){}await FB_AUTH.logout();auth()});icons();
  if(!opts.preserveScroll)scrollTo(0,0);
  if(!opts.skipFamilyRefresh)scheduleFamilyRouteRefresh(r);
 }
