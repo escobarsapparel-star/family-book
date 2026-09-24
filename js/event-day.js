@@ -98,8 +98,8 @@
           <strong class="fb-event-bonvoyage">${travel?"Bon Voyage!":"Make today a memory!"}</strong>
           <p>${travel?"Wishing them a safe and beautiful journey.":"A special family moment is happening today."}</p>
           <div class="fb-event-day-actions">
-            <button type="button" class="primary fb-event-view"><i data-lucide="calendar-heart"></i>View event</button>
-            <button type="button" class="secondary fb-event-capture"><i data-lucide="camera"></i>Capture the Day</button>
+            <button type="button" class="primary fb-event-view"><i data-lucide="calendar-heart"></i><span>View event</span></button>
+            <button type="button" class="secondary fb-event-capture"><i data-lucide="camera"></i><span>Capture the Day</span></button>
           </div>
         </div>
       </section>
@@ -146,7 +146,7 @@
     if(!actions||actions.querySelector(".fb-detail-capture"))return;
     const btn=document.createElement("button");
     btn.type="button";btn.className="secondary fb-detail-capture";
-    btn.innerHTML='<i data-lucide="camera"></i>Capture the Day';
+    btn.innerHTML='<i data-lucide="camera"></i><span>Capture the Day</span>';
     btn.addEventListener("click",()=>openCapture(row));
     actions.prepend(btn);window.icons?.();
   }
