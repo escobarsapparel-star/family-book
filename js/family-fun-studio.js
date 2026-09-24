@@ -592,7 +592,19 @@
   }
 
 
-  $$("[data-fun-mode]").forEach(btn=>btn.addEventListener("click",()=>setMode(btn.dataset.funMode)));
+  function openFamilyFunFeature(name){
+    if(name!=="camera")return;
+    const panel=$("#funCameraPanel");
+    const card=$('[data-family-fun-feature="camera"]');
+    if(panel)panel.hidden=false;
+    card?.classList.add("active");
+    window.icons?.();
+    setTimeout(()=>panel?.scrollIntoView({behavior:"smooth",block:"start"}),40);
+  }
+
+  $("[data-family-fun-feature]").forEach(btn=>btn.addEventListener("click",()=>openFamilyFunFeature(btn.dataset.familyFunFeature)));
+
+  $("[data-fun-mode]").forEach(btn=>btn.addEventListener("click",()=>setMode(btn.dataset.funMode)));
   $$("[data-fun-tab]").forEach(btn=>btn.addEventListener("click",()=>switchTab(btn.dataset.funTab)));
   $$("[data-gallery-filter]").forEach(btn=>btn.addEventListener("click",()=>{
     galleryFilter=btn.dataset.galleryFilter;
