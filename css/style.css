@@ -4462,3 +4462,50 @@ html[data-theme="dark"] .story-cover-no-memories{
     max-width:min(66vw,320px)!important;
   }
 }
+
+/* Family Book Android APK download */
+.apk-download-cta{
+  display:flex;
+  align-items:center;
+  gap:12px;
+  width:100%;
+  box-sizing:border-box;
+  margin:14px 0 0;
+  padding:13px 15px;
+  border:1px solid rgba(49,92,67,.18);
+  border-radius:16px;
+  background:rgba(49,92,67,.08);
+  color:#315c43;
+  text-decoration:none;
+  font-weight:800;
+}
+.apk-download-cta:hover{background:rgba(49,92,67,.12)}
+.apk-download-cta>span:nth-child(2){
+  flex:1;
+  min-width:0;
+  display:flex;
+  flex-direction:column;
+  gap:2px;
+}
+.apk-download-cta strong{font-size:.92rem}
+.apk-download-cta small{font-size:.72rem;font-weight:650;opacity:.72}
+.apk-download-icon{
+  width:38px;height:38px;border-radius:12px;
+  display:grid;place-items:center;
+  background:#315c43;color:#fff;
+}
+.apk-download-cta svg{width:19px;height:19px}
+.footer-apk-download{
+  display:inline-flex;align-items:center;gap:5px;
+  color:inherit;text-decoration:none;font-weight:800;
+}
+.footer-apk-download svg{width:14px;height:14px}
+html[data-theme="dark"] .apk-download-cta{
+  color:#a7d1b5;
+  background:rgba(143,193,159,.08);
+  border-color:rgba(143,193,159,.18);
+}
+@media(max-width:560px){
+  .apk-download-cta{padding:11px 13px;margin-top:12px}
+  .apk-download-cta strong{font-size:.84rem}
+}
