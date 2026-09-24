@@ -213,7 +213,9 @@
     const videoTrack=filteredVideoTrack();
     const micTrack=stream?.getAudioTracks?.()[0]||null;
     if(!soundUrl){
-      return stream;
+      if(activeFilter==="none")return stream;
+      recordingStream=new MediaStream([videoTrack,...(micTrack?[micTrack]:[])].filter(Boolean));
+      return recordingStream;
     }
     const AudioCtx=window.AudioContext||window.webkitAudioContext;
     if(!AudioCtx){
