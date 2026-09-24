@@ -1310,6 +1310,11 @@ async function routeAfterBackendAuth(){
  // Core family/member data is required before Family Book opens.
  await window.FB_FAMILY_DATA?.init?.();
 
+ // Re-apply the signed-in member's saved appearance after auth context is known.
+ const themePreference=window.FB_SETTINGS?.get?.()?.appearance?.theme||"system";
+ window.FB_SETTINGS?.applyTheme?.(themePreference);
+ try{localStorage.setItem("fb_theme_preference",themePreference)}catch(_){}
+
  // Feature modules must never block sign-in if a newly deployed RPC
  // is temporarily missing from PostgREST's schema cache.
  const optionalInitializers=[
