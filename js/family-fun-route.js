@@ -75,7 +75,7 @@
 
             <div class="fun-camera-rail" aria-label="Camera tools">
               <button type="button" id="funFilterBtn"><i data-lucide="wand-sparkles"></i><small>Filters</small></button>
-              <button type="button" id="funTimerToolBtn"><i data-lucide="timer-reset"></i><small>Timer</small></button>
+              <button type="button" id="funTimerToolBtn"><i data-lucide="timer-reset"></i><small id="funTimerToolLabel">Timer</small></button>
               <button type="button" id="funSourceBtn"><i data-lucide="ellipsis"></i><small>More</small></button>
             </div>
 
@@ -90,6 +90,15 @@
             <div class="fun-source-menu" id="funSourceMenu" hidden>
               <button type="button" id="funDeviceCameraBtn"><i data-lucide="camera"></i><span>Device camera</span></button>
               <button type="button" id="funChooseBtn"><i data-lucide="upload"></i><span>Choose video</span></button>
+            </div>
+
+            <div class="fun-countdown-options fun-timer-tray" id="funCountdownOptions" hidden>
+              <strong>Countdown</strong>
+              <div class="fun-choice-row">
+                <label><input type="radio" name="funCountdown" value="3" checked><span>3 sec</span></label>
+                <label><input type="radio" name="funCountdown" value="5"><span>5 sec</span></label>
+                <label><input type="radio" name="funCountdown" value="10"><span>10 sec</span></label>
+              </div>
             </div>
 
             <div class="fun-camera-mode-strip" id="funCameraModeStrip" aria-label="Family Fun camera modes">
@@ -110,15 +119,6 @@
             <button class="fun-start-camera-hit" type="button" id="funStartCameraBtn" aria-label="Start camera"></button>
             <input id="funFallbackInput" type="file" accept="video/*" hidden>
             <input id="funSoundInput" type="file" accept="audio/*" hidden>
-          </div>
-
-          <div class="fun-countdown-options" id="funCountdownOptions" hidden>
-            <strong>Countdown</strong>
-            <div class="fun-choice-row">
-              <label><input type="radio" name="funCountdown" value="3" checked><span>3 sec</span></label>
-              <label><input type="radio" name="funCountdown" value="5"><span>5 sec</span></label>
-              <label><input type="radio" name="funCountdown" value="10"><span>10 sec</span></label>
-            </div>
           </div>
 
           <div class="fun-pass-panel" id="funPassPanel" hidden>
@@ -200,7 +200,7 @@
     }
 
     const script=document.createElement("script");
-    script.src="js/family-fun-studio.js?v=camera-studio-4";
+    script.src="js/family-fun-studio.js?v=fullscreen-camera-1";
     script.dataset.familyFunRuntime="1";
     script.onload=()=>window.icons?.();
     script.onerror=()=>console.error("Could not load Family Fun.");
