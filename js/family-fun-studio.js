@@ -3,10 +3,10 @@
   const $$=s=>[...document.querySelectorAll(s)];
 
   const modes={
-    normal:{title:"Normal",desc:"Record a family moment with the camera, or choose a video from your device.",emoji:"🎥"},
-    bounce:{title:"Bounce",desc:"Record a quick 3-second clip and Family Fun plays it forward and backward.",emoji:"🔁"},
-    countdown:{title:"Countdown",desc:"Give everyone time to get into frame before recording starts.",emoji:"⏱️"},
-    pass:{title:"Pass the Phone",desc:"Family Book gives a fun prompt. Record a short answer, then pass the phone on.",emoji:"😂"}
+    normal:{title:"Normal",desc:"Record a family moment with the camera, or choose a video from your device.",icon:"video"},
+    bounce:{title:"Bounce",desc:"Record a quick 3-second clip and Family Fun plays it forward and backward.",icon:"repeat-2"},
+    countdown:{title:"Countdown",desc:"Give everyone time to get into frame before recording starts.",icon:"timer"},
+    pass:{title:"Pass the Phone",desc:"Family Book gives a fun prompt. Record a short answer, then pass the phone on.",icon:"smartphone"}
   };
 
   const prompts=[
@@ -470,7 +470,7 @@
         if(url)video.src=url;
         video.loop=item.mode!=="bounce";
 
-        card.querySelector(".fun-gallery-mode").textContent=(modes[item.mode]?.emoji||"🎬")+" "+(modes[item.mode]?.title||"Video");
+        card.querySelector(".fun-gallery-mode").innerHTML=`<i data-lucide="${modes[item.mode]?.icon||"video"}"></i><span>${modes[item.mode]?.title||"Video"}</span>`;
         card.querySelector(".fun-gallery-copy strong").textContent=item.title||"Family Fun";
         card.querySelector(".fun-gallery-date").textContent=formatDate(item.created_at);
         const promptEl=card.querySelector(".fun-gallery-prompt");
@@ -507,6 +507,7 @@
         }
 
         galleryGrid.appendChild(card);
+        window.icons?.();
       });
     }catch(err){
       console.error("Family Fun gallery:",err);
@@ -553,7 +554,7 @@
     if(recorder&&recorder.state!=="inactive")stopRecording();
     mode=next;
     document.querySelectorAll("[data-fun-mode]").forEach(btn=>btn.classList.toggle("active",btn.dataset.funMode===mode));
-    $("#funModeEmoji").textContent=modes[mode].emoji;
+    const modeIcon=$("#funModeIcon");if(modeIcon){modeIcon.innerHTML=`<i data-lucide="${modes[mode].icon}"></i>`;window.icons?.()}
     $("#funModeTitle").textContent=modes[mode].title;
     $("#funModeDesc").textContent=modes[mode].desc;
     countdownOptions.hidden=mode!=="countdown";
