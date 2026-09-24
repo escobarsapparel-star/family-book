@@ -571,6 +571,9 @@
       client=window.FB_SUPABASE.client;
       await window.FB_AUTH.init();
       userContext=window.FB_AUTH.get();
+      const themePreference=window.FB_SETTINGS?.get?.()?.appearance?.theme||localStorage.getItem("fb_theme_preference")||"system";
+      window.FB_SETTINGS?.applyTheme?.(themePreference);
+      try{localStorage.setItem("fb_theme_preference",themePreference)}catch(_){}
 
       if(!userContext?.familyId||!userContext?.supabaseUserId){
         throw new Error("Sign in to Family Book and join a family before using the shared Family Fun Gallery.");
@@ -614,6 +617,17 @@
     $$("[data-gallery-filter]").forEach(x=>x.classList.toggle("active",x===btn));
     renderGallery();
   }));
+
+  const backLink=$("#familyFunBackLink");
+  backLink?.addEventListener("click",event=>{
+    try{
+      const ref=document.referrer?new URL(document.referrer):null;
+      if(ref&&ref.origin===location.origin&&history.length>1){
+        event.preventDefault();
+        history.back();
+      }
+    }catch(_){}
+  });
 
   startBtn.addEventListener("click",startCamera);
   flipBtn.addEventListener("click",flipCamera);
