@@ -57,6 +57,7 @@
       id:p.id,name:nameOf(p),profileType:p.profile_type||"member",
       relationship:p.profile_type==="history"?"Family history":"Family member",
       birthday:birthdayFrom(p),birthdayYearVisible:p.birth_year_visible!==false,
+      sex:["male","female","other"].includes(String(p.sex||"").toLowerCase())?String(p.sex).toLowerCase():"",
       email:p.email||"",phone:p.phone||"",photo,
       photoPath:raw,passedDate:p.passing_date||"",
       inMemory:!!p.in_memory,story:p.biography||"",
@@ -72,7 +73,7 @@
   function snapshotPerson(m){
     return JSON.stringify({
       id:m.id,name:m.name||"",profileType:m.profileType||"member",
-      birthday:m.birthday||"",passedDate:m.passedDate||"",inMemory:!!m.inMemory,
+      birthday:m.birthday||"",sex:m.sex||"",passedDate:m.passedDate||"",inMemory:!!m.inMemory,
       story:m.story||"",managedProfile:!!m.managedProfile,email:m.email||"",
       phone:m.phone||"",photoPath:m.photoPath||"",accountId:m.accountId||""
     });
@@ -343,6 +344,14 @@
       p_email:member.email||null,p_phone:member.phone||null
     });
     if(error)throw error;
+
+    if(previous?.sex!==member.sex || !previous){
+      const {error:sexError}=await sb().rpc("set_family_person_sex",{
+        p_person_id:member.id,
+        p_sex:member.sex||null
+      });
+      if(sexError)throw sexError;
+    }
 
     const clearBirthday=!!previous?.birthday&&!member.birthday;
     const clearEmail=!!previous?.email&&!member.email;
