@@ -44,7 +44,7 @@ A.innerHTML=`<main class="login-page">
 <button class="primary full" type="submit">Sign in</button>
 </form>
 
-<a class="apk-download-cta" data-apk-download href="https://github.com/escobarsapparel-star/family-book/releases/latest/download/FamilyBook.apk">
+<a class="apk-download-cta" data-apk-download href="downloads/FamilyBook.apk">
   <span class="apk-download-icon"><i data-lucide="smartphone"></i></span>
   <span><strong>Download Family Book for Android</strong><small>Install the latest APK</small></span>
   <i data-lucide="download"></i>
