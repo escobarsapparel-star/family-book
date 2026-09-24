@@ -64,3 +64,74 @@ html[data-theme="light"] .fun-pass-panel{background:#f7faf8!important;border-col
 html[data-theme="light"] .fun-choice-row span{background:#fff!important;border-color:rgba(49,92,67,.16)!important;color:inherit}
 html[data-theme="light"] .fun-main-tabs{background:rgba(49,92,67,.07)!important}
 html[data-theme="light"] .fun-gallery-filters button.active{background:#315c43!important;color:#fff!important;border-color:#315c43!important}
+
+/* Match the standalone Family Fun header to Family Book's approved app header proportions. */
+.family-fun-standalone-top{
+  min-height:56px;
+  height:56px;
+  margin-bottom:16px;
+  padding:0;
+  align-items:center;
+}
+.family-fun-brand{
+  display:flex;
+  align-items:center;
+  min-width:0;
+  height:56px;
+  text-decoration:none;
+}
+.family-fun-standalone-logo{
+  display:block;
+  width:auto;
+  max-width:220px;
+  height:52px;
+  max-height:52px;
+  object-fit:contain;
+  object-position:left center;
+}
+.family-fun-back-link{
+  min-height:36px;
+  box-sizing:border-box;
+}
+@media(max-width:760px){
+  .family-fun-standalone{
+    padding:0 12px 34px;
+  }
+  .family-fun-standalone-top{
+    height:56px;
+    min-height:56px;
+    margin-bottom:12px;
+  }
+  .family-fun-brand{
+    height:56px;
+    flex:1 1 auto;
+    max-width:calc(100vw - 72px);
+    overflow:visible;
+  }
+  .family-fun-standalone-logo{
+    width:min(220px,calc(100vw - 108px));
+    max-width:min(220px,calc(100vw - 108px));
+    height:52px;
+    max-height:52px;
+  }
+  .family-fun-back-link{
+    flex:0 0 38px;
+    width:38px;
+    height:38px;
+    min-height:38px;
+    padding:0;
+    border-radius:50%;
+    justify-content:center;
+    font-size:1rem;
+  }
+  .family-fun-back-text{display:none}
+  .family-fun-back-arrow{font-size:1.2rem;line-height:1}
+}
+@media(max-width:380px){
+  .family-fun-standalone-logo{
+    width:min(204px,calc(100vw - 104px));
+    max-width:min(204px,calc(100vw - 104px));
+    height:50px;
+    max-height:50px;
+  }
+}
