@@ -637,3 +637,149 @@ body.fun-camera-open{overflow:hidden!important}
   animation:funCountdownSpin .8s linear infinite;
 }
 @keyframes funCountdownSpin{to{transform:rotate(360deg)}}
+
+/* ==========================================================
+   Full-screen capture review + Pass the Phone continuation
+   ========================================================== */
+.fun-camera-fullscreen .fun-main-tabs{display:none!important}
+.fun-camera-inline-panel.fun-camera-fullscreen{
+  padding:0!important;
+}
+.fun-camera-fullscreen #funCreatePanel{
+  width:100%!important;
+  max-width:none!important;
+  height:100dvh!important;
+}
+.fun-camera-fullscreen .fun-camera-studio{
+  width:100%!important;
+  height:100dvh!important;
+}
+.fun-camera-fullscreen .fun-camera-wrap{
+  width:min(100vw,900px)!important;
+  height:100dvh!important;
+  min-height:100dvh!important;
+  max-height:100dvh!important;
+  border-radius:0!important;
+}
+
+.fun-capture-review{
+  position:absolute;
+  inset:0;
+  z-index:7;
+  background:#050706;
+  display:grid;
+  place-items:center;
+}
+.fun-capture-review[hidden]{display:none!important}
+.fun-capture-review video{
+  width:100%!important;
+  height:100%!important;
+  object-fit:contain!important;
+  background:#050706!important;
+}
+.fun-review-caption{
+  position:absolute;
+  left:16px;
+  right:16px;
+  bottom:154px;
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  gap:2px;
+  color:#fff;
+  text-align:center;
+  text-shadow:0 2px 10px rgba(0,0,0,.65);
+}
+.fun-review-caption strong{font-size:.9rem}
+.fun-review-caption small{font-size:.72rem;color:rgba(255,255,255,.78)}
+
+.fun-camera-shutter{
+  width:min(290px,86vw);
+  display:grid!important;
+  grid-template-columns:58px 90px 58px;
+  align-items:center;
+  justify-content:center;
+  gap:18px;
+}
+.fun-decision-btn{
+  width:56px;
+  height:56px;
+  border-radius:50%;
+  display:grid;
+  place-items:center;
+  border:1px solid rgba(255,255,255,.18);
+  box-shadow:0 5px 18px rgba(0,0,0,.22);
+  backdrop-filter:blur(10px);
+  cursor:pointer;
+  padding:0;
+  position:relative;
+}
+.fun-decision-btn[hidden]{display:block!important;visibility:hidden!important;pointer-events:none!important}
+.fun-decision-btn svg{width:26px;height:26px;stroke-width:2.3}
+.fun-decision-btn small{
+  position:absolute;
+  top:62px;
+  left:50%;
+  transform:translateX(-50%);
+  color:#fff;
+  font-size:.62rem;
+  font-weight:800;
+  white-space:nowrap;
+  text-shadow:0 2px 7px rgba(0,0,0,.75)
+}
+.fun-decision-discard{
+  background:rgba(15,18,16,.72);
+  color:#fff;
+}
+.fun-decision-save{
+  background:#6fa984;
+  color:#fff;
+  border-color:#8fc19f;
+}
+.fun-decision-save:disabled{opacity:.55}
+.fun-camera-wrap.reviewing .fun-shutter{
+  visibility:hidden;
+  pointer-events:none;
+}
+.fun-camera-wrap.reviewing .fun-camera-mode-strip,
+.fun-camera-wrap.reviewing .fun-camera-rail,
+.fun-camera-wrap.reviewing .fun-camera-status,
+.fun-camera-wrap.reviewing .fun-sound-btn,
+.fun-camera-wrap.reviewing #funFlipCameraBtn{
+  visibility:hidden!important;
+  pointer-events:none!important;
+}
+.fun-camera-wrap.reviewing .fun-record-timer{display:none!important}
+
+.fun-shutter.paused .fun-shutter-core{
+  width:58px;
+  height:58px;
+  border-radius:50%;
+  background:#f4f6f4;
+}
+.fun-shutter.paused:after{
+  content:"";
+  position:absolute;
+  width:0;
+  height:0;
+  border-top:9px solid transparent;
+  border-bottom:9px solid transparent;
+  border-left:14px solid #315c43;
+  left:50%;
+  top:50%;
+  transform:translate(-40%,-50%);
+}
+.fun-shutter.paused .fun-shutter-core{opacity:.96}
+.fun-shutter.paused small{display:block!important}
+
+@media(max-width:760px){
+  .fun-camera-fullscreen .fun-camera-wrap{
+    width:100vw!important;
+    height:100dvh!important;
+    min-height:100dvh!important;
+  }
+  .fun-camera-shutter{bottom:max(28px,calc(env(safe-area-inset-bottom) + 18px))!important}
+  .fun-camera-mode-strip{bottom:max(124px,calc(env(safe-area-inset-bottom) + 112px))!important}
+  .fun-camera-status{bottom:max(170px,calc(env(safe-area-inset-bottom) + 158px))!important}
+  .fun-review-caption{bottom:max(150px,calc(env(safe-area-inset-bottom) + 140px))}
+}
