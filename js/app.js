@@ -1308,31 +1308,43 @@ async function routeAfterBackendAuth(){
  if(!u){auth();return}
  if(FB_AUTH.needsSetup?.()){FB_AUTH.renderSetup(A,()=>routeAfterBackendAuth(),()=>auth());return}
 
- // Core family/member data is required before Family Book opens.
- await window.FB_FAMILY_DATA?.init?.();
-
- // Re-apply the signed-in member's saved appearance after auth context is known.
+ // Apply appearance and render the app shell immediately.
+ // Cloud modules load afterwards so a slow request can never leave Family Book blank.
  const themePreference=window.FB_SETTINGS?.get?.()?.appearance?.theme||"system";
  window.FB_SETTINGS?.applyTheme?.(themePreference);
  try{localStorage.setItem("fb_theme_preference",themePreference)}catch(_){}
 
- // Feature modules must never block sign-in if a newly deployed RPC
- // is temporarily missing from PostgREST's schema cache.
+ cleanupLegacyBrowserData();
+ shell();
+
+ const withTimeout=(promise,ms,label)=>Promise.race([
+   Promise.resolve(promise),
+   new Promise((_,reject)=>setTimeout(()=>reject(new Error(label+" timed out")),ms))
+ ]);
+
+ // Load the core family bundle in the background, then refresh the active family screen.
+ if(window.FB_FAMILY_DATA?.init){
+   withTimeout(window.FB_FAMILY_DATA.init(),10000,"Family data")
+     .then(()=>{
+       updateLiveFamilyChrome();
+       if(isSafeFamilyRefreshRoute(currentRoute)){
+         go(currentRoute,{skipFamilyRefresh:true,preserveScroll:true});
+       }
+     })
+     .catch(err=>console.warn("Family data did not finish during startup:",err));
+ }
+
+ // Optional features are also background-only. One slow service must never block the app shell.
  const optionalInitializers=[
    ["Family Wall",()=>window.FB_SOCIAL_DATA?.init?.()],
    ["Albums & Calendar",()=>window.FB_ORGANIZER_DATA?.init?.()],
    ["Family Voices",()=>window.FB_HISTORY_DATA?.init?.()],
    ["Notifications",()=>window.FB_NOTIFICATION_DATA?.init?.()]
  ];
- const results=await Promise.allSettled(optionalInitializers.map(([,fn])=>Promise.resolve().then(fn)));
- results.forEach((result,i)=>{
-   if(result.status==="rejected"){
-     console.warn(`${optionalInitializers[i][0]} did not initialize:`,result.reason);
-   }
+ optionalInitializers.forEach(([label,fn])=>{
+   withTimeout(Promise.resolve().then(fn),10000,label)
+     .catch(err=>console.warn(label+" did not initialize:",err));
  });
-
- cleanupLegacyBrowserData();
- shell();
 }
 function cleanupLegacyBrowserData(){
  const prefixes=["fb_members_","fb_relationships_","fb_story_","fb_wall_","fb_calendar_","fb_albums_","fb_history_notes_"];
