@@ -24,9 +24,8 @@
     "Pass the phone to the person most likely to fall asleep first."
   ];
 
-  const DB_NAME="family-book-fun";
-  const DB_VERSION=1;
-  const STORE="clips";
+  const MAX_VIDEO_BYTES=50*1024*1024;
+  const SIGNED_URL_SECONDS=60*60;
 
   let mode="normal";
   let galleryFilter="all";
@@ -41,8 +40,11 @@
   let currentPrompt="";
   let bounceToken=0;
   let promptIndex=Math.floor(Math.random()*prompts.length);
+  let client=null;
+  let userContext=null;
+  let realtimeChannel=null;
+  let galleryRefreshTimer=0;
   const urls=new Set();
-  const galleryUrls=new Set();
 
   const camera=$("#funCameraPreview");
   const empty=$("#funCameraEmpty");
@@ -71,52 +73,7 @@
   const galleryEmpty=$("#funGalleryEmpty");
   const galleryCount=$("#funGalleryCount");
 
-  function openDb(){
-    return new Promise((resolve,reject)=>{
-      const request=indexedDB.open(DB_NAME,DB_VERSION);
-      request.onupgradeneeded=()=>{
-        const db=request.result;
-        if(!db.objectStoreNames.contains(STORE)){
-          const store=db.createObjectStore(STORE,{keyPath:"id"});
-          store.createIndex("createdAt","createdAt");
-          store.createIndex("mode","mode");
-        }
-      };
-      request.onsuccess=()=>resolve(request.result);
-      request.onerror=()=>reject(request.error);
-    });
-  }
-
-  async function dbAll(){
-    const db=await openDb();
-    return new Promise((resolve,reject)=>{
-      const tx=db.transaction(STORE,"readonly");
-      const req=tx.objectStore(STORE).getAll();
-      req.onsuccess=()=>resolve(req.result||[]);
-      req.onerror=()=>reject(req.error);
-      tx.oncomplete=()=>db.close();
-    });
-  }
-
-  async function dbPut(value){
-    const db=await openDb();
-    return new Promise((resolve,reject)=>{
-      const tx=db.transaction(STORE,"readwrite");
-      tx.objectStore(STORE).put(value);
-      tx.oncomplete=()=>{db.close();resolve(value)};
-      tx.onerror=()=>{db.close();reject(tx.error)};
-    });
-  }
-
-  async function dbDelete(id){
-    const db=await openDb();
-    return new Promise((resolve,reject)=>{
-      const tx=db.transaction(STORE,"readwrite");
-      tx.objectStore(STORE).delete(id);
-      tx.oncomplete=()=>{db.close();resolve()};
-      tx.onerror=()=>{db.close();reject(tx.error)};
-    });
-  }
+  const bucket=()=>window.FB_SUPABASE_CONFIG?.mediaBucket||"family-media";
 
   function setStatus(message,type=""){
     if(!status)return;
@@ -172,6 +129,7 @@
     camera.hidden=true;
     empty.hidden=false;
     flipBtn.disabled=true;
+    startBtn.disabled=false;
   }
 
   async function startCamera(){
@@ -285,7 +243,10 @@
   }
 
   function fileExt(blob){
-    return String(blob?.type||"").includes("mp4")?"mp4":"webm";
+    const type=String(blob?.type||"").toLowerCase();
+    if(type.includes("quicktime"))return "mov";
+    if(type.includes("mp4"))return "mp4";
+    return "webm";
   }
 
   function setDownload(blob,label="Download clip"){
@@ -328,8 +289,8 @@
       resultVideo.controls=true;
       resultVideo.muted=false;
     }else{
-      resultTitle.textContent=fileName||modes[sourceMode]?.title+" clip"||"Family Fun clip";
-      resultMeta.textContent=sourceMode==="countdown"?"Recorded with Countdown":"Ready to add to your Family Fun Gallery.";
+      resultTitle.textContent=fileName||((modes[sourceMode]?.title||"Family Fun")+" clip");
+      resultMeta.textContent=sourceMode==="countdown"?"Recorded with Countdown":"Ready to add to the shared Family Fun Gallery.";
       resultVideo.controls=true;
       resultVideo.muted=false;
     }
@@ -386,32 +347,76 @@
       setStatus("Please choose a video file.","warn");
       return;
     }
+    if(file.size>MAX_VIDEO_BYTES){
+      setStatus("That video is larger than the current 50 MB Family Fun limit.","warn");
+      fallbackInput.value="";
+      return;
+    }
     showResult(file,mode,file.name);
     fallbackInput.value="";
   }
 
+  function requireFamilyContext(){
+    if(!client||!userContext?.familyId||!userContext?.supabaseUserId){
+      throw new Error("Open Family Fun from your signed-in Family Book account.");
+    }
+    return userContext;
+  }
+
   async function addCurrentToGallery(){
     if(!currentBlob)return;
+    if(currentBlob.size>MAX_VIDEO_BYTES){
+      setStatus("This clip is larger than the current 50 MB Family Fun limit.","warn");
+      return;
+    }
+
     addGalleryBtn.disabled=true;
-    addGalleryBtn.textContent="Saving…";
+    addGalleryBtn.textContent="Uploading…";
+
+    let storagePath="";
     try{
-      await dbPut({
-        id:crypto.randomUUID(),
+      const u=requireFamilyContext();
+      const id=crypto.randomUUID();
+      const ext=fileExt(currentBlob);
+      storagePath=`${u.familyId}/${u.supabaseUserId}/family-fun/${id}.${ext}`;
+
+      const upload=await client.storage.from(bucket()).upload(storagePath,currentBlob,{
+        contentType:currentBlob.type||"video/webm",
+        cacheControl:"3600",
+        upsert:false
+      });
+      if(upload.error)throw upload.error;
+
+      const duration=Number(resultVideo.duration);
+      const row={
+        id,
+        family_id:u.familyId,
+        created_by_user_id:u.supabaseUserId,
+        created_by_person_id:u.memberId||null,
         mode,
         title:resultTitle.textContent||modes[mode]?.title||"Family Fun",
-        prompt:currentPrompt||"",
-        createdAt:Date.now(),
-        blob:currentBlob
-      });
+        prompt:currentPrompt||null,
+        storage_path:storagePath,
+        mime_type:currentBlob.type||null,
+        file_size_bytes:currentBlob.size||null,
+        duration_seconds:Number.isFinite(duration)&&duration>0?duration:null
+      };
+
+      const saved=await client.from("family_fun_videos").insert(row);
+      if(saved.error)throw saved.error;
+
       addGalleryBtn.textContent="Added ✓";
-      setStatus("Saved to your Family Fun Gallery.","success");
+      setStatus("Uploaded to your shared Family Fun Gallery.","success");
       await renderGallery();
-      setTimeout(()=>switchTab("gallery"),350);
+      setTimeout(()=>switchTab("gallery"),250);
     }catch(err){
-      console.error("Family Fun gallery save:",err);
+      console.error("Family Fun upload:",err);
+      if(storagePath){
+        try{await client?.storage.from(bucket()).remove([storagePath])}catch(_){}
+      }
       addGalleryBtn.disabled=false;
       addGalleryBtn.textContent="Add to Gallery";
-      setStatus("Could not save this clip to the Gallery on this device.","warn");
+      setStatus(err?.message||"Could not upload this Family Fun video.","warn");
     }
   }
 
@@ -420,53 +425,119 @@
     catch(_){return "Family Fun"}
   }
 
-  function clearGalleryUrls(){
-    galleryUrls.forEach(url=>{try{URL.revokeObjectURL(url)}catch(_){}});
-    galleryUrls.clear();
+  async function signedUrlMap(rows){
+    const paths=rows.map(x=>x.storage_path).filter(Boolean);
+    const map=new Map();
+    if(!paths.length)return map;
+    const signed=await client.storage.from(bucket()).createSignedUrls(paths,SIGNED_URL_SECONDS);
+    if(signed.error)throw signed.error;
+    (signed.data||[]).forEach((item,index)=>{
+      const path=item.path||paths[index];
+      if(path&&item.signedUrl)map.set(path,item.signedUrl);
+    });
+    return map;
   }
 
   async function renderGallery(){
-    clearGalleryUrls();
-    let rows=[];
-    try{rows=await dbAll()}catch(err){console.error("Family Fun gallery:",err)}
-    rows.sort((a,b)=>(b.createdAt||0)-(a.createdAt||0));
+    if(!client||!userContext?.familyId)return;
 
-    const visible=galleryFilter==="all"?rows:rows.filter(x=>x.mode===galleryFilter);
-    galleryCount.textContent=rows.length===1?"1 video":rows.length+" videos";
-    galleryEmpty.hidden=visible.length>0;
-    galleryGrid.innerHTML="";
+    galleryGrid.setAttribute("aria-busy","true");
+    try{
+      const response=await client
+        .from("family_fun_videos")
+        .select("id,family_id,created_by_user_id,created_by_person_id,mode,title,prompt,storage_path,mime_type,file_size_bytes,duration_seconds,created_at")
+        .eq("family_id",userContext.familyId)
+        .order("created_at",{ascending:false});
 
-    visible.forEach(item=>{
-      const url=URL.createObjectURL(item.blob);
-      galleryUrls.add(url);
-      const card=document.createElement("article");
-      card.className="fun-gallery-card";
-      card.innerHTML='<div class="fun-gallery-media"><video muted playsinline preload="metadata"></video><span class="fun-gallery-mode"></span></div><div class="fun-gallery-copy"><strong></strong><small class="fun-gallery-date"></small><small class="fun-gallery-prompt"></small></div><button class="fun-gallery-delete" type="button" aria-label="Delete video">×</button>';
-      const video=card.querySelector("video");
-      video.src=url;
-      video.loop=item.mode!=="bounce";
-      card.querySelector(".fun-gallery-mode").textContent=(modes[item.mode]?.emoji||"🎬")+" "+(modes[item.mode]?.title||"Video");
-      card.querySelector(".fun-gallery-copy strong").textContent=item.title||"Family Fun";
-      card.querySelector(".fun-gallery-date").textContent=formatDate(item.createdAt);
-      const p=card.querySelector(".fun-gallery-prompt");
-      p.textContent=item.prompt||"";
-      p.hidden=!item.prompt;
+      if(response.error)throw response.error;
 
-      video.addEventListener("click",()=>{
-        if(video.paused){
-          $$("#funGalleryGrid video").forEach(v=>{if(v!==video)v.pause()});
-          video.play().catch(()=>{});
-        }else video.pause();
+      const rows=response.data||[];
+      const visible=galleryFilter==="all"?rows:rows.filter(x=>x.mode===galleryFilter);
+      const urlsByPath=await signedUrlMap(visible);
+
+      galleryCount.textContent=rows.length===1?"1 video":rows.length+" videos";
+      galleryEmpty.hidden=visible.length>0;
+      galleryGrid.innerHTML="";
+
+      visible.forEach(item=>{
+        const url=urlsByPath.get(item.storage_path)||"";
+        const canDelete=item.created_by_user_id===userContext.supabaseUserId||userContext.role==="admin";
+        const card=document.createElement("article");
+        card.className="fun-gallery-card";
+        card.innerHTML='<div class="fun-gallery-media"><video muted playsinline preload="metadata"></video><span class="fun-gallery-mode"></span></div><div class="fun-gallery-copy"><strong></strong><small class="fun-gallery-date"></small><small class="fun-gallery-prompt"></small></div><button class="fun-gallery-delete" type="button" aria-label="Delete video">×</button>';
+
+        const video=card.querySelector("video");
+        if(url)video.src=url;
+        video.loop=item.mode!=="bounce";
+
+        card.querySelector(".fun-gallery-mode").textContent=(modes[item.mode]?.emoji||"🎬")+" "+(modes[item.mode]?.title||"Video");
+        card.querySelector(".fun-gallery-copy strong").textContent=item.title||"Family Fun";
+        card.querySelector(".fun-gallery-date").textContent=formatDate(item.created_at);
+        const promptEl=card.querySelector(".fun-gallery-prompt");
+        promptEl.textContent=item.prompt||"";
+        promptEl.hidden=!item.prompt;
+
+        video.addEventListener("click",()=>{
+          if(!url)return;
+          if(video.paused){
+            $$("#funGalleryGrid video").forEach(v=>{if(v!==video)v.pause()});
+            video.play().catch(()=>{});
+          }else{
+            video.pause();
+          }
+        });
+
+        const del=card.querySelector(".fun-gallery-delete");
+        del.hidden=!canDelete;
+        if(canDelete){
+          del.onclick=async()=>{
+            if(!confirm("Remove this video from the shared Family Fun Gallery?"))return;
+            del.disabled=true;
+            const removed=await client.from("family_fun_videos").delete().eq("id",item.id);
+            if(removed.error){
+              console.error(removed.error);
+              setStatus(removed.error.message||"Could not remove this video.","warn");
+              del.disabled=false;
+              return;
+            }
+            const storageRemoved=await client.storage.from(bucket()).remove([item.storage_path]);
+            if(storageRemoved.error)console.warn("Family Fun storage cleanup:",storageRemoved.error);
+            await renderGallery();
+          };
+        }
+
+        galleryGrid.appendChild(card);
       });
+    }catch(err){
+      console.error("Family Fun gallery:",err);
+      galleryEmpty.hidden=false;
+      galleryGrid.innerHTML="";
+      galleryEmpty.querySelector("strong").textContent="Could not load Family Fun videos";
+      galleryEmpty.querySelector("p").textContent=err?.message||"Please return to Family Book and try again.";
+    }finally{
+      galleryGrid.removeAttribute("aria-busy");
+    }
+  }
 
-      card.querySelector(".fun-gallery-delete").onclick=async()=>{
-        if(!confirm("Remove this video from Family Fun Gallery?"))return;
-        await dbDelete(item.id);
-        renderGallery();
-      };
+  function scheduleGalleryRefresh(){
+    clearTimeout(galleryRefreshTimer);
+    galleryRefreshTimer=setTimeout(()=>renderGallery(),250);
+  }
 
-      galleryGrid.appendChild(card);
-    });
+  function startRealtime(){
+    if(!client||!userContext?.familyId)return;
+    if(realtimeChannel){
+      try{client.removeChannel(realtimeChannel)}catch(_){}
+    }
+    realtimeChannel=client
+      .channel("family-fun-"+userContext.familyId)
+      .on("postgres_changes",{
+        event:"*",
+        schema:"public",
+        table:"family_fun_videos",
+        filter:"family_id=eq."+userContext.familyId
+      },scheduleGalleryRefresh)
+      .subscribe();
   }
 
   function switchTab(name){
@@ -494,6 +565,29 @@
     setStatus(stream?"Camera ready.":"Start the camera when you’re ready.");
   }
 
+  async function initBackend(){
+    try{
+      if(!window.FB_SUPABASE?.client||!window.FB_AUTH)throw new Error("Family Book cloud services are not ready.");
+      client=window.FB_SUPABASE.client;
+      await window.FB_AUTH.init();
+      userContext=window.FB_AUTH.get();
+
+      if(!userContext?.familyId||!userContext?.supabaseUserId){
+        throw new Error("Sign in to Family Book and join a family before using the shared Family Fun Gallery.");
+      }
+
+      startRealtime();
+      await renderGallery();
+    }catch(err){
+      console.error("Family Fun Supabase setup:",err);
+      setStatus(err?.message||"Family Fun could not connect to Family Book.","warn");
+      addGalleryBtn.disabled=true;
+      galleryEmpty.hidden=false;
+      galleryEmpty.querySelector("strong").textContent="Family Book sign-in required";
+      galleryEmpty.querySelector("p").textContent="Return to Family Book, sign in, then open Family Fun again.";
+    }
+  }
+
   $$("[data-fun-mode]").forEach(btn=>btn.addEventListener("click",()=>setMode(btn.dataset.funMode)));
   $$("[data-fun-tab]").forEach(btn=>btn.addEventListener("click",()=>switchTab(btn.dataset.funTab)));
   $$("[data-gallery-filter]").forEach(btn=>btn.addEventListener("click",()=>{
@@ -519,10 +613,13 @@
     stopStream();
     clearInterval(countdownTimer);
     clearTimeout(autoStopTimer);
-    clearGalleryUrls();
+    clearTimeout(galleryRefreshTimer);
+    if(realtimeChannel&&client){
+      try{client.removeChannel(realtimeChannel)}catch(_){}
+    }
     urls.forEach(url=>{try{URL.revokeObjectURL(url)}catch(_){}});
   });
 
   setMode("normal");
-  renderGallery();
+  initBackend();
 })();
