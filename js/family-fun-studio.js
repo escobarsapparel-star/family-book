@@ -39,6 +39,9 @@
   let countdownResolve=null;
   let countdownToken=0;
   let captureState="idle";
+  let pendingAutoSave=false;
+  let discardAfterStop=false;
+  let recordElapsedMs=0;
   let recordTimerInterval=0;
   let recordStartedAt=0;
   let currentBlob=null;
@@ -100,6 +103,7 @@
   const galleryGrid=$("#funGalleryGrid");
   const galleryEmpty=$("#funGalleryEmpty");
   const galleryCount=$("#funGalleryCount");
+  const cameraWrap=document.querySelector(".fun-camera-wrap");
   const soundBtn=$("#funSoundBtn");
   const soundInput=$("#funSoundInput");
   const soundLabel=$("#funSoundLabel");
@@ -136,22 +140,35 @@
   function stopRecordTimer(reset=true){
     clearInterval(recordTimerInterval);
     recordTimerInterval=0;
-    recordStartedAt=0;
-    if(recordTimer){
-      recordTimer.hidden=true;
-      recordTimer.classList.remove("recording");
+    if(recordStartedAt){
+      recordElapsedMs+=Math.max(0,Date.now()-recordStartedAt);
+      recordStartedAt=0;
     }
-    if(reset&&recordTimerText)recordTimerText.textContent="00:00";
+    if(recordTimer){
+      recordTimer.classList.remove("recording");
+      recordTimer.hidden=reset;
+    }
+    if(reset){
+      recordElapsedMs=0;
+      if(recordTimerText)recordTimerText.textContent="00:00";
+    }else if(recordTimerText){
+      recordTimerText.textContent=formatElapsed(recordElapsedMs);
+    }
   }
 
-  function startRecordTimer(){
-    stopRecordTimer(true);
+  function startRecordTimer(resume=false){
+    clearInterval(recordTimerInterval);
+    recordTimerInterval=0;
+    if(!resume)recordElapsedMs=0;
     recordStartedAt=Date.now();
     if(recordTimer){
       recordTimer.hidden=false;
       recordTimer.classList.add("recording");
     }
-    const paint=()=>{if(recordTimerText)recordTimerText.textContent=formatElapsed(Date.now()-recordStartedAt)};
+    const paint=()=>{
+      const elapsed=recordElapsedMs+(recordStartedAt?Date.now()-recordStartedAt:0);
+      if(recordTimerText)recordTimerText.textContent=formatElapsed(elapsed);
+    };
     paint();
     recordTimerInterval=setInterval(paint,250);
   }
@@ -162,11 +179,13 @@
 
   function syncRecordButton(recording=false){
     const isRecording=recording||captureState==="recording";
+    const isPaused=captureState==="paused";
     recordBtn?.classList.toggle("recording",isRecording);
+    recordBtn?.classList.toggle("paused",isPaused);
     recordBtn?.classList.toggle("counting-down",captureState==="countdown");
-    recordBtn?.setAttribute("aria-label",isRecording?"Stop recording":captureState==="countdown"?"Countdown in progress":"Start recording");
+    recordBtn?.setAttribute("aria-label",isRecording?(mode==="pass"?"Pause recording":"Stop recording"):isPaused?"Resume recording":captureState==="countdown"?"Countdown in progress":"Start recording");
     if(recordAction){
-      recordAction.textContent=isRecording?"Stop":captureState==="countdown"?"Wait":recordActionLabel();
+      recordAction.textContent=isRecording?(mode==="pass"?"Pause":"Stop"):isPaused?"Resume":captureState==="countdown"?"Wait":recordActionLabel();
     }
   }
 
@@ -196,6 +215,25 @@
     if(message)setStatus(message);
     if(resolve)resolve(false);
     return true;
+  }
+
+  function setDecisionActions(show){
+    if(discardBtn)discardBtn.hidden=!show;
+    if(addGalleryBtn)addGalleryBtn.hidden=!show;
+    if(show)window.icons?.();
+  }
+
+  function setSaveButtonState(label="Save",disabled=false){
+    if(!addGalleryBtn)return;
+    addGalleryBtn.disabled=disabled;
+    addGalleryBtn.setAttribute("aria-label",label);
+    const text=addGalleryBtn.querySelector("small");
+    if(text)text.textContent=label;
+  }
+
+  function setReviewing(active){
+    cameraWrap?.classList.toggle("reviewing",active);
+    setDecisionActions(active||captureState==="paused");
   }
 
   function applyFilter(name){
@@ -350,12 +388,14 @@
     result.style.display="none";
     resultVideo.removeAttribute("src");
     resultVideo.removeAttribute("poster");
+    resultVideo.onloadedmetadata=null;
+    resultVideo.onseeked=null;
     try{resultVideo.load()}catch(_){}
-    resultVideo.controls=true;
+    resultVideo.controls=false;
     resultVideo.muted=false;
     downloadLink.hidden=false;
-    addGalleryBtn.disabled=false;
-    addGalleryBtn.textContent="Add to Gallery";
+    setSaveButtonState("Save",false);
+    setReviewing(false);
   }
 
   async function stopStream(){
@@ -446,6 +486,23 @@
   }
 
   async function beginRecording(){
+    if(mode==="pass"&&captureState==="paused"&&recorder?.state==="paused"){
+      try{
+        recorder.resume();
+        try{await camera.play()}catch(_){}
+        setCaptureState("recording");
+        setDecisionActions(false);
+        startRecordTimer(true);
+        setStatus("Recording next Pass the Phone segment…","recording");
+        setOverlay("● REC","5 seconds");
+        clearTimeout(autoStopTimer);
+        autoStopTimer=setTimeout(stopRecording,5000);
+      }catch(err){
+        console.error("Pass the Phone resume:",err);
+        setStatus("Could not resume this recording.","warn");
+      }
+      return;
+    }
     if(captureState!=="idle")return;
     setCaptureState("preparing");
 
@@ -523,6 +580,22 @@
     clearTimeout(autoStopTimer);
     autoStopTimer=0;
     stopRecordTimer(false);
+
+    if(mode==="pass"&&recorder.state==="recording"){
+      try{
+        recorder.pause();
+        setCaptureState("paused");
+        syncRecordButton(false);
+        setDecisionActions(true);
+        setOverlay();
+        nextPrompt();
+        setStatus("Paused. Pass the phone, then tap Record to continue.");
+        return;
+      }catch(err){
+        console.warn("Pass the Phone pause:",err);
+      }
+    }
+
     setCaptureState("processing");
     if(recorder&&recorder.state!=="inactive"){
       try{recorder.stop()}catch(_){
@@ -558,13 +631,24 @@
     const mime=recorder?.mimeType||chunks[0]?.type||"video/webm";
     const blob=new Blob(chunks,{type:mime});
     chunks=[];
+    const shouldDiscard=discardAfterStop;
+    const shouldSave=pendingAutoSave;
+    discardAfterStop=false;
+    pendingAutoSave=false;
     finishRecordUi();
+
+    if(shouldDiscard){
+      resetResult();
+      setStatus("Clip discarded. Camera ready.");
+      return;
+    }
     if(!blob.size||blob.size<1024){
       resetResult();
       setStatus("No usable video was captured. Try recording again.","warn");
       return;
     }
     showResult(blob,mode);
+    if(shouldSave)setTimeout(()=>addCurrentToGallery(),50);
   }
 
   function showResult(blob,sourceMode=mode,fileName=""){
@@ -577,26 +661,31 @@
     result.style.removeProperty("display");
     resultVideo.src=currentUrl;
     resultVideo.playsInline=true;
+    resultVideo.controls=false;
+    resultVideo.muted=true;
+    setReviewing(true);
 
     if(sourceMode==="bounce"){
       resultTitle.textContent="Your Bounce";
-      resultMeta.textContent="Forward ↔ backward preview";
-      resultVideo.controls=false;
-      resultVideo.muted=true;
-      resultVideo.onloadedmetadata=()=>startBouncePreview(resultVideo);
+      resultMeta.textContent="Ready to save";
     }else if(sourceMode==="pass"){
-      resultTitle.textContent="Pass the Phone clip";
-      resultMeta.textContent=currentPrompt;
-      resultVideo.controls=true;
-      resultVideo.muted=false;
+      resultTitle.textContent="Pass the Phone";
+      resultMeta.textContent="Combined clip ready to save";
     }else{
       resultTitle.textContent=fileName||((modes[sourceMode]?.title||"Family Fun")+" clip");
-      resultMeta.textContent=sourceMode==="countdown"?"Recorded with Countdown":"Ready to add to the shared Family Fun Gallery.";
-      resultVideo.controls=true;
-      resultVideo.muted=false;
+      resultMeta.textContent=sourceMode==="countdown"?"Countdown clip ready":"Ready to save";
     }
+
+    resultVideo.onloadedmetadata=()=>{
+      const duration=Number(resultVideo.duration);
+      if(Number.isFinite(duration)&&duration>0.12){
+        try{resultVideo.currentTime=Math.max(0,duration-0.08)}catch(_){}
+      }
+    };
+    resultVideo.onseeked=()=>{try{resultVideo.pause()}catch(_){}};
     setDownload(blob);
-    result.scrollIntoView({behavior:"smooth",block:"nearest"});
+    setSaveButtonState("Save",false);
+    setStatus("Preview paused. Save ✓ or discard ✕.");
   }
 
   function startBouncePreview(video){
@@ -665,12 +754,38 @@
   }
 
   function discardCurrentClip(){
+    clearTimeout(autoStopTimer);
+    autoStopTimer=0;
+
+    if(captureState==="countdown"){
+      cancelCountdown();
+      resetResult();
+      setStatus("Countdown cancelled.");
+      return;
+    }
+
+    if((captureState==="recording"||captureState==="paused")&&recorder&&recorder.state!=="inactive"){
+      discardAfterStop=true;
+      pendingAutoSave=false;
+      stopRecordTimer(true);
+      setCaptureState("processing");
+      setDecisionActions(false);
+      try{recorder.stop()}catch(_){
+        discardAfterStop=false;
+        recorder=null;
+        clearRecordingPipeline();
+        setCaptureState("idle");
+        resetResult();
+      }
+      setOverlay();
+      return;
+    }
+
     resetResult();
     setOverlay();
+    setCaptureState("idle");
     setStatus(stream?"Clip discarded. Camera ready.":"Clip discarded. Nothing was saved.");
     syncRecordButton(false);
-    const cameraWrap=document.querySelector(".fun-camera-wrap");
-    cameraWrap?.scrollIntoView({behavior:"smooth",block:"center"});
   }
 
   async function addCurrentToGallery(){
@@ -680,8 +795,7 @@
       return;
     }
 
-    addGalleryBtn.disabled=true;
-    addGalleryBtn.textContent="Uploading…";
+    setSaveButtonState("Saving…",true);
 
     let storagePath="";
     try{
@@ -715,8 +829,8 @@
       const saved=await client.from("family_fun_videos").insert(row);
       if(saved.error)throw saved.error;
 
-      addGalleryBtn.textContent="Added ✓";
-      setStatus("Uploaded to your shared Family Fun Gallery.","success");
+      setSaveButtonState("Saved",true);
+      setStatus("Saved to your shared Family Fun Gallery.","success");
       await renderGallery();
       setTimeout(()=>switchTab("gallery"),250);
     }catch(err){
@@ -724,9 +838,8 @@
       if(storagePath){
         try{await client?.storage.from(bucket()).remove([storagePath])}catch(_){}
       }
-      addGalleryBtn.disabled=false;
-      addGalleryBtn.textContent="Add to Gallery";
-      setStatus(err?.message||"Could not upload this Family Fun video.","warn");
+      setSaveButtonState("Save",false);
+      setStatus(err?.message||"Could not save this Family Fun video.","warn");
     }
   }
 
@@ -862,6 +975,7 @@
   function setMode(next){
     if(!modes[next])return;
     if(captureState==="countdown")cancelCountdown("Countdown cancelled.");
+    if(captureState==="paused"){discardCurrentClip();return}
     if(captureState==="recording")stopRecording();
     if(captureState==="processing"||captureState==="preparing")return;
     mode=next;
@@ -874,7 +988,11 @@
     countdownOptions.hidden=mode!=="countdown";
     passPanel.hidden=mode!=="pass";
     syncRecordButton(false);
-    if(mode==="pass")passPrompt.textContent=prompts[promptIndex];
+    if(mode==="pass"){
+      passPrompt.textContent=prompts[promptIndex];
+      setOverlay("PASS THE PHONE",prompts[promptIndex]);
+      setTimeout(()=>{if(mode==="pass"&&captureState==="idle")setOverlay()},1800);
+    }
     resetResult();
     setOverlay();
     setStatus(stream?"Camera ready.":"Start the camera when you’re ready.");
@@ -947,6 +1065,7 @@
   flipBtn.addEventListener("click",flipCamera);
   recordBtn.addEventListener("click",()=>{
     if(captureState==="recording"){stopRecording();return}
+    if(mode==="pass"&&captureState==="paused"){beginRecording();return}
     if(captureState!=="idle")return;
     beginRecording();
   });
@@ -971,7 +1090,8 @@
   }));
   closeCameraBtn?.addEventListener("click",async()=>{
     if(captureState==="countdown")cancelCountdown();
-    if(captureState==="recording")stopRecording();
+    if(captureState==="paused"){discardCurrentClip();return}
+    if(captureState==="recording"){discardAfterStop=true;stopRecording();}
     await stopStream();
     resetResult();
     const panel=$("#funCameraPanel");
@@ -989,7 +1109,23 @@
   fallbackInput.addEventListener("change",()=>handleFile(fallbackInput.files?.[0]));
   retakeBtn.addEventListener("click",()=>{resetResult();setStatus(stream?"Camera ready.":"Start the camera when you’re ready.");document.querySelector(".fun-studio-card")?.scrollIntoView({behavior:"smooth",block:"nearest"})});
   discardBtn?.addEventListener("click",discardCurrentClip);
-  addGalleryBtn.addEventListener("click",addCurrentToGallery);
+  addGalleryBtn.addEventListener("click",()=>{
+    if(mode==="pass"&&captureState==="paused"&&recorder&&recorder.state!=="inactive"){
+      pendingAutoSave=true;
+      discardAfterStop=false;
+      setSaveButtonState("Finishing…",true);
+      setDecisionActions(false);
+      stopRecordTimer(true);
+      setCaptureState("processing");
+      try{recorder.stop()}catch(_){
+        pendingAutoSave=false;
+        finishRecordUi();
+        setStatus("Could not finish this Pass the Phone clip.","warn");
+      }
+      return;
+    }
+    addCurrentToGallery();
+  });
   nextPromptBtn.addEventListener("click",nextPrompt);
 
   const onVisibilityChange=()=>{
@@ -1032,5 +1168,6 @@
   applyFilter("none");
   setMode("normal");
   setCaptureState("idle");
+  setDecisionActions(false);
   initBackend();
 })();
