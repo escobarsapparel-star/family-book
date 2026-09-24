@@ -18,6 +18,10 @@
   }
   function members(){try{return (window.ensureOwner?.()||[]).filter(m=>m.profileType!=="history")}catch(_){return []}}
   function memberById(id){return members().find(m=>String(m.id)===String(id))}
+  function birthdaySexClass(member){
+    const sex=String(member?.sex||"").toLowerCase();
+    return sex==="male"?"sex-male":sex==="female"?"sex-female":"sex-neutral";
+  }
   function birthdayRouteParts(id){const m=String(id||"").match(/^birthday:(.+):(\d{4})$/);return m?{memberId:m[1],year:m[2]}:null}
   function readEvents(){return window.FB_ORGANIZER_DATA?.getEvents?.()||[]}
   function getEvent(id){return window.FB_ORGANIZER_DATA?.getEvent?.(id)||null}
@@ -215,7 +219,7 @@
         <span class="calendar-day-num">${d.getDate()}</span>
         <div class="calendar-day-events">
           ${visible.map(row=>{
-            if(row.kind==="birthday")return `<button type="button" class="calendar-chip birthday" data-cal-item="${e(row.id)}"><i data-lucide="cake-slice"></i><span>${e(memberById(row.memberId)?.name||"Birthday")}</span></button>`;
+            if(row.kind==="birthday"){const bm=memberById(row.memberId);return `<button type="button" class="calendar-chip birthday ${birthdaySexClass(bm)}" data-cal-item="${e(row.id)}"><i data-lucide="cake-slice"></i><span>${e(bm?.name||"Birthday")}</span></button>`}
             const meta=typeMeta(row.type);
             return `<button type="button" class="calendar-chip ${e(row.type)}" data-cal-item="${e(row.id)}"><i data-lucide="${meta.icon}"></i><span>${e(row.title)}</span></button>`;
           }).join("")}
@@ -235,7 +239,7 @@
   function upcomingItem(row){
     if(row.kind==="birthday"){
       const m=memberById(row.memberId);
-      return `<button type="button" class="cal-upcoming-item birthday" data-cal-item="${e(row.id)}"><span class="cal-up-date"><strong>${e(fmtDate(row.date,{day:"numeric"}))}</strong><small>${e(fmtDate(row.date,{month:"short"}))}</small></span><span class="cal-up-icon"><i data-lucide="cake-slice"></i></span><span><strong>${e(m?.name||"Family member")}</strong><small>Birthday</small></span></button>`;
+      return `<button type="button" class="cal-upcoming-item birthday ${birthdaySexClass(m)}" data-cal-item="${e(row.id)}"><span class="cal-up-date"><strong>${e(fmtDate(row.date,{day:"numeric"}))}</strong><small>${e(fmtDate(row.date,{month:"short"}))}</small></span><span class="cal-up-icon"><i data-lucide="cake-slice"></i></span><span><strong>${e(m?.name||"Family member")}</strong><small>Birthday</small></span></button>`;
     }
     const meta=typeMeta(row.type);
     return `<button type="button" class="cal-upcoming-item" data-cal-item="${e(row.id)}"><span class="cal-up-date"><strong>${e(fmtDate(row.date,{day:"numeric"}))}</strong><small>${e(fmtDate(row.date,{month:"short"}))}</small></span><span class="cal-up-icon"><i data-lucide="${meta.icon}"></i></span><span><strong>${e(row.title)}</strong><small>${e(timeLabel(row))}${row.location?` • ${e(row.location)}`:""}</small></span></button>`;
@@ -360,7 +364,7 @@
     mount.innerHTML=rows.length?rows.map(row=>{
       if(row.kind==="birthday"){
         const m=memberById(row.memberId);
-        return `<button type="button" class="event home-event" data-cal-item="${e(row.id)}"><div class="date">${e(fmtDate(row.date,{day:"numeric"}))}<small>${e(fmtDate(row.date,{month:"short"}))}</small></div><div><strong>${e(m?.name||"Family member")}</strong><small>Birthday</small></div><i data-lucide="cake-slice"></i></button>`;
+        return `<button type="button" class="event home-event birthday ${birthdaySexClass(m)}" data-cal-item="${e(row.id)}"><div class="date">${e(fmtDate(row.date,{day:"numeric"}))}<small>${e(fmtDate(row.date,{month:"short"}))}</small></div><div><strong>${e(m?.name||"Family member")}</strong><small>Birthday</small></div><i data-lucide="cake-slice"></i></button>`;
       }
       const meta=typeMeta(row.type);
       return `<button type="button" class="event home-event" data-cal-item="${e(row.id)}"><div class="date">${e(fmtDate(row.date,{day:"numeric"}))}<small>${e(fmtDate(row.date,{month:"short"}))}</small></div><div><strong>${e(row.title)}</strong><small>${e(timeLabel(row))}${row.location?` • ${e(row.location)}`:""}</small></div><i data-lucide="${meta.icon}"></i></button>`;
