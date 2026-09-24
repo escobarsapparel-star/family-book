@@ -135,3 +135,27 @@ html[data-theme="light"] .fun-gallery-filters button.active{background:#315c43!i
     max-height:50px;
   }
 }
+
+/* Native Family Fun tab: use the same page shell, title hierarchy and theme as Calendar. */
+.family-fun-app-page{
+  max-width:1220px!important;
+  margin:0 auto!important;
+  padding:4px 0 110px!important;
+  color:inherit;
+}
+.family-fun-app-page .fun-hub{margin-top:0}
+.family-fun-app-page .fun-feature-grid{margin-top:4px}
+.family-fun-app-page .fun-feature-icon svg{width:25px;height:25px}
+.family-fun-app-page .fun-feature-arrow svg{width:22px;height:22px}
+.family-fun-app-page .fun-feature-back{
+  display:inline-flex;
+  align-items:center;
+  gap:7px;
+}
+.family-fun-app-page .fun-feature-back svg{width:17px;height:17px}
+html[data-theme="dark"] .family-fun-app-page{color:#f4efe7}
+@media(max-width:620px){
+  .family-fun-app-page{padding-top:0!important}
+  .family-fun-app-page .calendar-title-row{margin-top:4px}
+  .family-fun-app-page .fun-feature-grid{grid-template-columns:1fr}
+}
