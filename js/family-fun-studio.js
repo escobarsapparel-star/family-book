@@ -760,6 +760,8 @@
     if(recorder&&recorder.state!=="inactive")stopRecording();
     mode=next;
     document.querySelectorAll("[data-fun-mode]").forEach(btn=>btn.classList.toggle("active",btn.dataset.funMode===mode));
+    const activeModeBtn=document.querySelector('#funCameraModeStrip [data-fun-mode="'+mode+'"]');
+    activeModeBtn?.scrollIntoView({behavior:"smooth",inline:"center",block:"nearest"});
     const modeIcon=$("#funModeIcon");if(modeIcon){modeIcon.innerHTML=`<i data-lucide="${modes[mode].icon}"></i>`;window.icons?.()}
     $("#funModeTitle").textContent=modes[mode].title;
     $("#funModeDesc").textContent=modes[mode].desc;
