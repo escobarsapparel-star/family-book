@@ -96,3 +96,61 @@ self.addEventListener('message',event=>{
     event.waitUntil(caches.delete(FB_MEDIA_CACHE));
   }
 });
+
+
+const FB_APP_CACHE = 'family-book-app-v1';
+
+async function cacheShellResponse(request,response){
+  if(!response||(response.status!==200&&response.type!=='opaque'))return;
+  try{
+    const cache=await caches.open(FB_APP_CACHE);
+    await cache.put(request,response.clone());
+  }catch(_){}
+}
+
+async function appShellFetch(request){
+  const cache=await caches.open(FB_APP_CACHE);
+  const cached=await cache.match(request);
+  if(cached)return cached;
+  const response=await fetch(request);
+  await cacheShellResponse(request,response);
+  return response;
+}
+
+async function navigationFetch(request){
+  const cache=await caches.open(FB_APP_CACHE);
+  try{
+    const response=await fetch(request);
+    await cacheShellResponse(request,response);
+    return response;
+  }catch(_){
+    return (await cache.match(request))||
+      (await cache.match('./'))||
+      (await cache.match('./index.html'))||
+      Response.error();
+  }
+}
+
+self.addEventListener('install',event=>{
+  event.waitUntil((async()=>{
+    try{
+      const cache=await caches.open(FB_APP_CACHE);
+      await cache.addAll(['./','./index.html','./manifest.json']);
+    }catch(_){}
+  })());
+});
+
+self.addEventListener('fetch',event=>{
+  const request=event.request;
+  if(request.method!=='GET'||isBackblazeImageRequest(request))return;
+
+  if(request.mode==='navigate'){
+    event.respondWith(navigationFetch(request));
+    return;
+  }
+
+  const cacheableDestinations=new Set(['script','style','font','image']);
+  if(cacheableDestinations.has(request.destination)){
+    event.respondWith(appShellFetch(request));
+  }
+});
