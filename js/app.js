@@ -167,7 +167,7 @@ function setFamilyFormSaving(form,saving,label="Saving…"){
 }
 
 const FB_ANDROID_APK_URL="downloads/FamilyBook.apk";
-const FB_ANDROID_RELEASE_KEY="familybook_android_release_681";
+const FB_ANDROID_RELEASE_KEY="familybook_android_release_clean_1";
 let fbAndroidApkAvailable=null;
 
 function runningInsideNativeApp(){
@@ -246,17 +246,17 @@ function showAndroidInstallSplash(force=false){
    <section class="android-install-splash" role="dialog" aria-modal="true" aria-labelledby="androidInstallTitle">
      <button class="android-install-close" type="button" aria-label="Close"><i data-lucide="x"></i></button>
      <div class="android-install-hero">
-       <span class="android-install-app-icon"><img src="assets/icons/familybook-icon-192.png" alt=""></span>
-       <p>FAMILY BOOK ANDROID</p>
-       <h2 id="androidInstallTitle">Your family, now in the app</h2>
-       <span>Install Family Book on your Android phone for the best camera and navigation experience.</span>
+       <img class="android-install-logo" src="assets/logo/family-book-logo-dark-header.png" alt="Family Book">
+       <p>ANDROID APP</p>
+       <h2 id="androidInstallTitle">Install Family Book</h2>
+       <span>Get the full Family Book experience on your Android phone.</span>
      </div>
      ${androidInstallStepsHtml()}
      <div class="android-install-actions">
        <a class="primary" href="${FB_ANDROID_APK_URL}" download><i data-lucide="download"></i>Download Family Book</a>
        <button class="secondary" type="button" data-android-not-now>Not now</button>
      </div>
-     <small class="android-install-note">Android may show a security prompt because this beta APK is installed directly from Family Book rather than the Play Store.</small>
+     <small class="android-install-note">This beta installs directly from Family Book, so Android may ask you to allow this source once.</small>
    </section>`;
  document.body.appendChild(d);
  d.querySelector(".android-install-close")?.addEventListener("click",()=>closeAndroidInstallSplash(7));
