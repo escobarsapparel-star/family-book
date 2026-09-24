@@ -294,7 +294,8 @@
 
   async function uploadPhoto(member){
     const photo=String(member?.photo||"");
-    if(!photo)return "";
+    if(member?.photoRemoved===true)return "";
+    if(!photo)return member?.photoPath||"";
     if(!photo.startsWith("data:image/"))return member?.photoPath||"";
 
     const response=await fetch(photo),blob=await response.blob();
@@ -351,8 +352,15 @@
       for(const m of copy){
         const cloudSnapshotChanged=peopleSnapshot.get(m.id)!==snapshotPerson(m);
         const hasNewPhoto=String(m.photo||"").startsWith("data:image/");
-        const removedExistingPhoto=!m.photo&&!!m.photoPath;
-        if(cloudSnapshotChanged||hasNewPhoto||removedExistingPhoto)await persistPerson(m);
+        const removedExistingPhoto=m.photoRemoved===true&&!!m.photoPath;
+        if(cloudSnapshotChanged||hasNewPhoto||removedExistingPhoto){
+          await persistPerson(m);
+          if(m.photoRemoved===true){
+            delete m.photoRemoved;
+            const live=people.find(x=>x.id===m.id);
+            if(live)delete live.photoRemoved;
+          }
+        }
       }
     });
   }
