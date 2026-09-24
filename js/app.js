@@ -49,7 +49,7 @@ A.innerHTML=`<main class="login-page">
   <span><strong>Download Family Book for Android</strong><small>Install the latest APK</small></span>
   <i data-lucide="download"></i>
 </a>
-<button class="apk-install-help-login" type="button" data-android-install-help hidden><i data-lucide="circle-help"></i>How to install the Android app</button>
+        <button class="android-install-link" type="button" data-android-install-help>Install guide</button>
 
 <form id="signup" class="form hidden">
 <div><p class="eyebrow">CREATE YOUR ACCOUNT</p><h1>Start with Family Book</h1><p class="muted">Create your secure login first. After signing in, you can create a new family or join one with an invitation.</p></div>
@@ -188,7 +188,10 @@ async function androidApkAvailable(){
  if(fbAndroidApkAvailable!==null)return fbAndroidApkAvailable;
  try{
    const r=await fetch(FB_ANDROID_APK_URL,{method:"HEAD",cache:"no-store"});
-   fbAndroidApkAvailable=!!r.ok;
+   const type=String(r.headers.get("content-type")||"").toLowerCase();
+   const size=Number(r.headers.get("content-length")||0);
+   const looksBinary=!type.includes("text/html")&&!type.includes("text/plain");
+   fbAndroidApkAvailable=!!(r.ok&&looksBinary&&size>1024*1024);
  }catch(_){
    fbAndroidApkAvailable=false;
  }
@@ -198,9 +201,9 @@ async function androidApkAvailable(){
 function androidInstallStepsHtml(){
  return `
    <ol class="android-install-steps">
-     <li><span>1</span><div><strong>Download the APK</strong><small>Tap Download Family Book below.</small></div></li>
-     <li><span>2</span><div><strong>Open the downloaded file</strong><small>Android may ask you to allow installs from your browser or Files app.</small></div></li>
-     <li><span>3</span><div><strong>Install Family Book</strong><small>Tap Install. Your Family Book account and family data stay in the same private cloud.</small></div></li>
+      <li><span>1</span><div><strong>Download</strong><small>Tap Download Family Book.</small></div></li>
+      <li><span>2</span><div><strong>Open the APK</strong><small>Allow installs from your browser if Android asks.</small></div></li>
+      <li><span>3</span><div><strong>Install</strong><small>Tap Install, then open Family Book.</small></div></li>
    </ol>`;
 }
 
@@ -210,13 +213,13 @@ function androidAppBannerHtml(){
    <section class="android-app-banner" id="androidAppBanner" hidden>
      <div class="android-app-mark"><i data-lucide="smartphone"></i></div>
      <div class="android-app-banner-copy">
-       <small>FAMILY BOOK FOR ANDROID</small>
-       <strong>Take Family Book with you</strong>
-       <span>Install the Android app for a more app-like camera, sharing and navigation experience.</span>
+        <small>ANDROID APP</small>
+        <strong>Family Book for Android</strong>
+        <span>Camera, sharing and smoother app navigation.</span>
      </div>
      <div class="android-app-banner-actions">
-       <a class="primary" href="${FB_ANDROID_APK_URL}" download><i data-lucide="download"></i>Download app</a>
-       <button class="secondary" type="button" data-android-install-help><i data-lucide="circle-help"></i>How to install</button>
+        <a class="primary" href="${FB_ANDROID_APK_URL}" download><i data-lucide="download"></i>Get app</a>
+        <button class="android-install-link" type="button" data-android-install-help>Install guide</button>
      </div>
    </section>`;
 }
