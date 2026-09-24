@@ -92,6 +92,13 @@
               <button type="button" id="funChooseBtn"><i data-lucide="upload"></i><span>Choose video</span></button>
             </div>
 
+            <div class="fun-camera-mode-strip" id="funCameraModeStrip" aria-label="Family Fun camera modes">
+              <button class="active" type="button" data-fun-mode="normal">Normal</button>
+              <button type="button" data-fun-mode="bounce">Bounce</button>
+              <button type="button" data-fun-mode="countdown">Countdown</button>
+              <button type="button" data-fun-mode="pass">Pass the Phone</button>
+            </div>
+
             <div class="fun-camera-shutter">
               <button class="fun-shutter" type="button" id="funRecordBtn" aria-label="Start recording">
                 <span class="fun-shutter-core"></span>
@@ -193,7 +200,7 @@
     }
 
     const script=document.createElement("script");
-    script.src="js/family-fun-studio.js?v=camera-studio-3";
+    script.src="js/family-fun-studio.js?v=camera-studio-4";
     script.dataset.familyFunRuntime="1";
     script.onload=()=>window.icons?.();
     script.onerror=()=>console.error("Could not load Family Fun.");
