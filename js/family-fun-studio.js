@@ -35,6 +35,8 @@
   let facing="user";
   let autoStopTimer=0;
   let countdownTimer=0;
+  let recordTimerInterval=0;
+  let recordStartedAt=0;
   let currentBlob=null;
   let currentUrl="";
   let currentPrompt="";
@@ -69,6 +71,9 @@
   const passPanel=$("#funPassPanel");
   const passPrompt=$("#funPassPrompt");
   const nextPromptBtn=$("#funNextPrompt");
+  const discardBtn=$("#funDiscardBtn");
+  const recordTimer=$("#funRecordTimer");
+  const recordTimerText=$("#funRecordTimerText");
   const galleryGrid=$("#funGalleryGrid");
   const galleryEmpty=$("#funGalleryEmpty");
   const galleryCount=$("#funGalleryCount");
@@ -85,6 +90,36 @@
     overlayMain.textContent=main;
     overlaySub.textContent=sub;
     overlay.hidden=!main&&!sub;
+  }
+
+  function formatElapsed(ms){
+    const total=Math.max(0,Math.floor(ms/1000));
+    const minutes=Math.floor(total/60);
+    const seconds=total%60;
+    return String(minutes).padStart(2,"0")+":"+String(seconds).padStart(2,"0");
+  }
+
+  function stopRecordTimer(reset=true){
+    clearInterval(recordTimerInterval);
+    recordTimerInterval=0;
+    recordStartedAt=0;
+    if(recordTimer){
+      recordTimer.hidden=true;
+      recordTimer.classList.remove("recording");
+    }
+    if(reset&&recordTimerText)recordTimerText.textContent="00:00";
+  }
+
+  function startRecordTimer(){
+    stopRecordTimer(true);
+    recordStartedAt=Date.now();
+    if(recordTimer){
+      recordTimer.hidden=false;
+      recordTimer.classList.add("recording");
+    }
+    const paint=()=>{if(recordTimerText)recordTimerText.textContent=formatElapsed(Date.now()-recordStartedAt)};
+    paint();
+    recordTimerInterval=setInterval(paint,250);
   }
 
   function supportedMime(){
@@ -141,7 +176,7 @@
       await stopStream();
       setStatus("Opening camera…");
       stream=await navigator.mediaDevices.getUserMedia({
-        video:{facingMode:{ideal:facing},width:{ideal:1080},height:{ideal:1920}},
+        video:{facingMode:{ideal:facing}},
         audio:true
       });
       camera.srcObject=stream;
@@ -209,6 +244,7 @@
     recorder.ondataavailable=e=>{if(e.data?.size)chunks.push(e.data)};
     recorder.onstop=handleRecorded;
     recorder.start(250);
+    startRecordTimer();
 
     recordBtn.disabled=true;
     stopBtn.disabled=false;
@@ -226,12 +262,14 @@
   function stopRecording(){
     clearTimeout(autoStopTimer);
     autoStopTimer=0;
+    stopRecordTimer(false);
     if(recorder&&recorder.state!=="inactive"){
       try{recorder.stop()}catch(_){}
     }
   }
 
   function finishRecordUi(){
+    stopRecordTimer(true);
     recorder=null;
     recordBtn.disabled=false;
     stopBtn.disabled=true;
@@ -361,6 +399,13 @@
       throw new Error("Open Family Fun from your signed-in Family Book account.");
     }
     return userContext;
+  }
+
+  function discardCurrentClip(){
+    resetResult();
+    setStatus(stream?"Clip discarded. Camera ready.":"Clip discarded. Nothing was saved.");
+    const studioCard=document.querySelector(".fun-studio-card");
+    studioCard?.scrollIntoView({behavior:"smooth",block:"nearest"});
   }
 
   async function addCurrentToGallery(){
@@ -631,7 +676,8 @@
   chooseBtn.addEventListener("click",chooseFile);
   $("#funDeviceCameraBtn").addEventListener("click",captureFallback);
   fallbackInput.addEventListener("change",()=>handleFile(fallbackInput.files?.[0]));
-  retakeBtn.addEventListener("click",()=>{resetResult();setStatus(stream?"Camera ready.":"Start the camera when you’re ready.")});
+  retakeBtn.addEventListener("click",()=>{resetResult();setStatus(stream?"Camera ready.":"Start the camera when you’re ready.");document.querySelector(".fun-studio-card")?.scrollIntoView({behavior:"smooth",block:"nearest"})});
+  discardBtn?.addEventListener("click",discardCurrentClip);
   addGalleryBtn.addEventListener("click",addCurrentToGallery);
   nextPromptBtn.addEventListener("click",nextPrompt);
 
@@ -642,6 +688,7 @@
     try{stopRecording()}catch(_){}
     try{stopStream()}catch(_){}
     clearInterval(countdownTimer);
+    stopRecordTimer(true);
     clearTimeout(autoStopTimer);
     clearTimeout(galleryRefreshTimer);
     document.removeEventListener("visibilitychange",onVisibilityChange);
