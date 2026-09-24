@@ -64,6 +64,14 @@
             <div class="fun-camera-empty" id="funCameraEmpty"><span class="fun-empty-icon"><i data-lucide="camera-off"></i></span><strong>Camera is off</strong><small>Tap the camera to begin.</small></div>
             <div class="fun-camera-overlay" id="funCameraOverlay" hidden><strong id="funOverlayMain"></strong><small id="funOverlaySub"></small></div>
 
+            <div class="fun-capture-review" id="funResult" hidden>
+              <video id="funResultVideo" playsinline preload="metadata"></video>
+              <div class="fun-review-caption">
+                <strong id="funResultTitle">Family Fun clip</strong>
+                <small id="funResultMeta"></small>
+              </div>
+            </div>
+
             <div class="fun-camera-topbar">
               <button class="fun-camera-icon-btn" type="button" id="funCloseCameraBtn" aria-label="Close camera"><i data-lucide="x"></i></button>
               <button class="fun-sound-btn" type="button" id="funSoundBtn"><i data-lucide="music-2"></i><span id="funSoundLabel">Add sound</span></button>
@@ -109,9 +117,15 @@
             </div>
 
             <div class="fun-camera-shutter">
+              <button class="fun-decision-btn fun-decision-discard" type="button" id="funDiscardBtn" aria-label="Discard clip" hidden>
+                <i data-lucide="x"></i><small>Discard</small>
+              </button>
               <button class="fun-shutter" type="button" id="funRecordBtn" aria-label="Start recording">
                 <span class="fun-shutter-core"></span>
                 <small id="funRecordAction">Record</small>
+              </button>
+              <button class="fun-decision-btn fun-decision-save" type="button" id="funAddGalleryBtn" aria-label="Save clip" hidden>
+                <i data-lucide="check"></i><small>Save</small>
               </button>
               <button class="fun-stop-btn" type="button" id="funStopBtn" hidden disabled>Stop</button>
             </div>
@@ -128,16 +142,10 @@
           </div>
         </section>
 
-        <section class="fun-result-card" id="funResult" hidden>
-          <div class="fun-result-heading"><p class="eyebrow">YOUR CLIP</p><h2 id="funResultTitle">Family Fun clip</h2><p id="funResultMeta"></p></div>
-          <video id="funResultVideo" controls playsinline preload="metadata"></video>
-          <div class="fun-result-actions">
-            <button class="primary" type="button" id="funAddGalleryBtn">Add to Gallery</button>
-            <a class="secondary" id="funDownloadLink" href="#" download>Download clip</a>
-            <button class="secondary" type="button" id="funRetakeBtn"><i data-lucide="rotate-ccw"></i>Record again</button>
-            <button class="fun-discard-btn" type="button" id="funDiscardBtn"><i data-lucide="trash-2"></i>Discard clip</button>
-          </div>
-        </section>
+        <div class="fun-camera-compat-actions" hidden>
+          <a id="funDownloadLink" href="#" download>Download clip</a>
+          <button type="button" id="funRetakeBtn">Record again</button>
+        </div>
       </div>
 
       <section id="funGalleryPanel" hidden>
@@ -200,7 +208,7 @@
     }
 
     const script=document.createElement("script");
-    script.src="js/family-fun-studio.js?v=countdown-state-1";
+    script.src="js/family-fun-studio.js?v=camera-review-pass-1";
     script.dataset.familyFunRuntime="1";
     script.onload=()=>window.icons?.();
     script.onerror=()=>console.error("Could not load Family Fun.");
