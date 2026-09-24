@@ -147,8 +147,27 @@
     cleanup();
     window.icons?.();
 
+    const cameraCard=document.querySelector('[data-family-fun-feature="camera"]');
+    const cameraPanel=document.querySelector("#funCameraPanel");
+
+    if(cameraCard&&cameraPanel){
+      cameraCard.onclick=()=>{
+        cameraPanel.hidden=false;
+        cameraPanel.removeAttribute("hidden");
+        cameraPanel.style.display="";
+        cameraCard.classList.add("active");
+        cameraCard.setAttribute("aria-expanded","true");
+        window.icons?.();
+        requestAnimationFrame(()=>{
+          cameraPanel.scrollIntoView({behavior:"smooth",block:"start"});
+        });
+      };
+      cameraCard.setAttribute("aria-expanded","false");
+      cameraCard.setAttribute("aria-controls","funCameraPanel");
+    }
+
     const script=document.createElement("script");
-    script.src="js/family-fun-studio.js?v=app-route-7";
+    script.src="js/family-fun-studio.js?v=app-route-8";
     script.dataset.familyFunRuntime="1";
     script.onload=()=>window.icons?.();
     script.onerror=()=>console.error("Could not load Family Fun.");
