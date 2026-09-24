@@ -783,3 +783,94 @@ body.fun-camera-open{overflow:hidden!important}
   .fun-camera-status{bottom:max(170px,calc(env(safe-area-inset-bottom) + 158px))!important}
   .fun-review-caption{bottom:max(150px,calc(env(safe-area-inset-bottom) + 140px))}
 }
+
+/* ==========================================================
+   Camera composition: maximise preview, keep timer + shutter together
+   ========================================================== */
+.fun-camera-fullscreen .fun-camera-wrap{
+  position:relative!important;
+  inset:auto!important;
+  margin:0!important;
+  width:100vw!important;
+  max-width:none!important;
+  height:100dvh!important;
+  min-height:100dvh!important;
+  max-height:100dvh!important;
+  border-radius:0!important;
+  overflow:hidden!important;
+}
+.fun-camera-fullscreen .fun-camera-wrap>video#funCameraPreview{
+  position:absolute!important;
+  inset:0!important;
+  width:100%!important;
+  height:100%!important;
+  max-height:none!important;
+  object-fit:contain!important;
+  background:#050706!important;
+}
+.fun-camera-fullscreen .fun-camera-shutter{
+  position:absolute!important;
+  left:50%!important;
+  transform:translateX(-50%)!important;
+  bottom:max(28px,calc(env(safe-area-inset-bottom) + 18px))!important;
+  z-index:20!important;
+}
+.fun-camera-fullscreen .fun-record-timer{
+  position:absolute!important;
+  top:auto!important;
+  left:50%!important;
+  transform:translateX(-50%)!important;
+  bottom:max(132px,calc(env(safe-area-inset-bottom) + 122px))!important;
+  z-index:21!important;
+  min-width:82px!important;
+  justify-content:center!important;
+  background:rgba(7,10,8,.62)!important;
+}
+.fun-camera-fullscreen .fun-camera-mode-strip{
+  bottom:max(126px,calc(env(safe-area-inset-bottom) + 116px))!important;
+  z-index:19!important;
+}
+.fun-camera-fullscreen .fun-camera-status{
+  bottom:max(186px,calc(env(safe-area-inset-bottom) + 176px))!important;
+}
+.fun-camera-fullscreen .fun-filter-tray{
+  bottom:max(188px,calc(env(safe-area-inset-bottom) + 178px))!important;
+}
+
+/* Once recording begins, replace the mode wheel with the live timer. */
+.fun-camera-wrap.capture-recording .fun-camera-mode-strip,
+.fun-camera-wrap.capture-recording .fun-camera-status{
+  opacity:0!important;
+  visibility:hidden!important;
+  pointer-events:none!important;
+}
+.fun-camera-wrap.capture-recording .fun-record-timer{
+  display:inline-flex!important;
+}
+.fun-camera-wrap.capture-paused .fun-record-timer{
+  display:inline-flex!important;
+  opacity:.92;
+}
+.fun-camera-wrap.capture-countdown .fun-camera-mode-strip{
+  opacity:.38;
+  pointer-events:none;
+}
+
+/* Keep the main capture control large and easy to reach. */
+.fun-camera-fullscreen .fun-shutter{
+  width:88px!important;
+  height:88px!important;
+}
+.fun-camera-fullscreen .fun-shutter:before{
+  inset:2px!important;
+  border-width:4px!important;
+}
+.fun-camera-fullscreen .fun-shutter-core{
+  width:64px!important;
+  height:64px!important;
+}
+.fun-camera-fullscreen .fun-shutter.recording .fun-shutter-core{
+  width:36px!important;
+  height:36px!important;
+  border-radius:10px!important;
+}
