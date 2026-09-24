@@ -523,6 +523,7 @@
         audio:true
       });
       camera.srcObject=stream;
+      camera.dataset.facing=facing;
       camera.muted=true;
       camera.playsInline=true;
       await camera.play().catch(()=>{});
@@ -544,6 +545,7 @@
 
   async function flipCamera(){
     facing=facing==="user"?"environment":"user";
+    if(camera)camera.dataset.facing=facing;
     await startCamera();
     if(lightEnabled)await syncLight();
   }
