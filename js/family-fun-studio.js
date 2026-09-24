@@ -54,6 +54,8 @@
   let realtimeChannel=null;
   let galleryRefreshTimer=0;
   let activeFilter="none";
+  let lightEnabled=false;
+  let torchActive=false;
   let soundUrl="";
   let selectedSoundName="";
   let filterCanvas=null;
@@ -109,6 +111,9 @@
   const soundLabel=$("#funSoundLabel");
   const filterBtn=$("#funFilterBtn");
   const filterTray=$("#funFilterTray");
+  const lightBtn=$("#funLightBtn");
+  const lightLabel=$("#funLightLabel");
+  const frontFill=$("#funFrontFill");
   const sourceBtn=$("#funSourceBtn");
   const sourceMenu=$("#funSourceMenu");
   const timerToolBtn=$("#funTimerToolBtn");
@@ -239,13 +244,100 @@
     setDecisionActions(active||captureState==="paused");
   }
 
+  function currentVideoTrack(){
+    return stream?.getVideoTracks?.()[0]||null;
+  }
+
+  function torchSupported(){
+    try{
+      return !!currentVideoTrack()?.getCapabilities?.()?.torch;
+    }catch(_){
+      return false;
+    }
+  }
+
+  function needsDigitalLight(){
+    return lightEnabled&&(facing==="user"||!torchActive);
+  }
+
+  function visualFilterCss(){
+    const parts=[];
+    const base=filterDefs[activeFilter]?.css||"none";
+    if(base&&base!=="none")parts.push(base);
+    if(needsDigitalLight())parts.push("brightness(1.16) contrast(1.06)");
+    return parts.length?parts.join(" "):"none";
+  }
+
+  function applyVisualEffects(){
+    if(camera){
+      camera.style.filter=visualFilterCss();
+      camera.dataset.filter=activeFilter;
+      camera.dataset.light=lightEnabled?"on":"off";
+    }
+  }
+
+  async function setTorch(on){
+    const track=currentVideoTrack();
+    if(!track||!torchSupported()){
+      torchActive=false;
+      return false;
+    }
+    try{
+      await track.applyConstraints({advanced:[{torch:!!on}]});
+      torchActive=!!on;
+      return torchActive;
+    }catch(err){
+      console.warn("Family Fun torch:",err);
+      torchActive=false;
+      return false;
+    }
+  }
+
+  async function syncLight(){
+    if(!lightEnabled){
+      await setTorch(false);
+      if(frontFill)frontFill.hidden=true;
+      lightBtn?.classList.remove("active");
+      if(lightLabel)lightLabel.textContent="Light";
+      applyVisualEffects();
+      return;
+    }
+
+    let label="Bright";
+    if(facing==="environment"){
+      const torch=await setTorch(true);
+      if(torch){
+        label="Torch";
+        if(frontFill)frontFill.hidden=true;
+      }else{
+        label="Bright";
+        if(frontFill)frontFill.hidden=true;
+      }
+    }else{
+      await setTorch(false);
+      label="Fill";
+      if(frontFill)frontFill.hidden=false;
+    }
+
+    lightBtn?.classList.add("active");
+    if(lightLabel)lightLabel.textContent=label;
+    applyVisualEffects();
+    setStatus(label==="Torch"?"Rear torch on.":label==="Fill"?"Front fill light on.":"Brightness boost on.","success");
+  }
+
+  async function toggleLight(){
+    if(captureState!=="idle"){
+      setStatus("Change the light before recording.","warn");
+      return;
+    }
+    lightEnabled=!lightEnabled;
+    await syncLight();
+  }
+
   function applyFilter(name){
     if(!filterDefs[name])name="none";
     activeFilter=name;
-    if(camera){
-      camera.style.filter=filterDefs[name].css;
-      camera.dataset.filter=name;
-    }
+    applyVisualEffects();
     document.querySelectorAll("[data-fun-filter]").forEach(btn=>{
       const active=btn.dataset.funFilter===name;
       btn.classList.toggle("active",active);
@@ -273,7 +365,8 @@
   }
 
   function filteredVideoTrack(){
-    if(activeFilter==="none"||!camera?.videoWidth||!camera?.captureStream&&typeof HTMLCanvasElement==="undefined"){
+    const needsCanvas=activeFilter!=="none"||needsDigitalLight();
+    if(!needsCanvas||!camera?.videoWidth||!camera?.captureStream&&typeof HTMLCanvasElement==="undefined"){
       return stream?.getVideoTracks?.()[0]||null;
     }
     filterCanvas=filterCanvas||document.createElement("canvas");
@@ -283,7 +376,7 @@
     const paint=()=>{
       if(!filterContext||!stream)return;
       filterContext.save();
-      filterContext.filter=filterDefs[activeFilter]?.css||"none";
+      filterContext.filter=visualFilterCss();
       filterContext.drawImage(camera,0,0,filterCanvas.width,filterCanvas.height);
       filterContext.restore();
       filterFrame=requestAnimationFrame(paint);
@@ -298,14 +391,14 @@
     const videoTrack=filteredVideoTrack();
     const micTrack=stream?.getAudioTracks?.()[0]||null;
     if(!soundUrl){
-      if(activeFilter==="none")return stream;
+      if(activeFilter==="none"&&!needsDigitalLight())return stream;
       recordingStream=new MediaStream([videoTrack,...(micTrack?[micTrack]:[])].filter(Boolean));
       return recordingStream;
     }
     const AudioCtx=window.AudioContext||window.webkitAudioContext;
     if(!AudioCtx){
       setStatus("Sound mixing is not supported on this device. Recording with microphone only.","warn");
-      return activeFilter==="none"?stream:new MediaStream([videoTrack,...(micTrack?[micTrack]:[])]);
+      return activeFilter==="none"&&!needsDigitalLight()?stream:new MediaStream([videoTrack,...(micTrack?[micTrack]:[])]);
     }
     try{
       audioContext=new AudioCtx();
@@ -329,7 +422,7 @@
       console.warn("Family Fun sound mix:",err);
       clearRecordingPipeline();
       setStatus("Could not add that sound. Recording with microphone only.","warn");
-      return activeFilter==="none"?stream:new MediaStream([videoTrack,...(micTrack?[micTrack]:[])]);
+      return activeFilter==="none"&&!needsDigitalLight()?stream:new MediaStream([videoTrack,...(micTrack?[micTrack]:[])]);
     }
   }
 
@@ -402,6 +495,10 @@
   }
 
   async function stopStream(){
+    if(torchActive){
+      try{await setTorch(false)}catch(_){}
+    }
+    torchActive=false;
     if(stream){
       stream.getTracks().forEach(t=>t.stop());
       stream=null;
@@ -433,6 +530,9 @@
       empty.hidden=true;
       flipBtn.disabled=false;
       startBtn.disabled=true;
+      applyVisualEffects();
+      if(lightEnabled)await syncLight();
+      else if(frontFill)frontFill.hidden=true;
       setStatus("Camera ready.");
       return true;
     }catch(err){
@@ -445,6 +545,7 @@
   async function flipCamera(){
     facing=facing==="user"?"environment":"user";
     await startCamera();
+    if(lightEnabled)await syncLight();
   }
 
   function countdownSeconds(){
@@ -1087,6 +1188,7 @@
   soundBtn?.addEventListener("click",()=>soundInput?.click());
   soundInput?.addEventListener("change",()=>setSoundFile(soundInput.files?.[0]||null));
   filterBtn?.addEventListener("click",()=>togglePanel(filterTray,filterBtn));
+  lightBtn?.addEventListener("click",toggleLight);
   sourceBtn?.addEventListener("click",()=>togglePanel(sourceMenu,sourceBtn));
   timerToolBtn?.addEventListener("click",()=>{
     setMode("countdown");
