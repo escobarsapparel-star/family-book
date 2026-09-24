@@ -11,90 +11,91 @@
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="css/style.css?v=5.7.4-cover-albums">
 <link rel="stylesheet" href="css/inter-global.css?v=inter-global-1">
-<link rel="stylesheet" href="css/family-fun.css?v=family-fun-2">
-<style>
-body{margin:0;background:#f5f7f5;color:#172019;font-family:Inter,system-ui,sans-serif}.family-fun-standalone{min-height:100vh;padding:18px 18px 42px}.family-fun-standalone-inner{max-width:900px;margin:0 auto}.family-fun-standalone-top{display:flex;align-items:center;justify-content:space-between;gap:14px;margin-bottom:18px}.family-fun-standalone-logo{height:38px;max-width:180px;object-fit:contain}.family-fun-back-link{display:inline-flex;align-items:center;gap:7px;text-decoration:none;color:#315c43;font-weight:800;background:#fff;border:1px solid rgba(49,92,67,.14);border-radius:999px;padding:10px 14px}.family-fun-test-note{font-size:.8rem;color:#66736b;text-align:center;margin-top:14px}@media(max-width:620px){.family-fun-standalone{padding:12px 12px 30px}.family-fun-standalone-logo{height:32px;max-width:150px}.family-fun-back-link{padding:9px 12px;font-size:.86rem}}
-</style>
+<link rel="stylesheet" href="css/family-fun.css?v=studio-1">
 </head>
-<body>
+<body class="family-fun-body">
 <main class="family-fun-standalone">
   <div class="family-fun-standalone-inner">
-    <div class="family-fun-standalone-top">
+    <header class="family-fun-standalone-top">
       <img class="family-fun-standalone-logo" src="assets/logo/family-book-logo-header.png" alt="Family Book">
       <a class="family-fun-back-link" href="./">← Back to Family Book</a>
-    </div>
+    </header>
 
     <section class="family-fun-page">
-      <div class="family-fun-title-row">
+      <div class="family-fun-hero">
         <div>
           <p class="eyebrow">FAMILY FUN</p>
-          <h1>Family Fun Videos</h1>
-          <p class="family-fun-subtitle">Keep the funny, noisy and unforgettable family moments together.</p>
+          <h1>Family Fun Studio</h1>
+          <p>Make silly clips, quick loops and family challenge videos together.</p>
         </div>
+        <span class="family-fun-hero-icon">🎬</span>
       </div>
 
-      <div class="family-fun-construction" role="note" aria-label="Under construction">
-        <span class="family-fun-construction-icon">🚧</span>
-        <div>
-          <strong>UNDER CONSTRUCTION</strong>
-          <p>This is an early Family Fun test. Videos selected here stay on this device for preview only and are not uploaded or saved yet.</p>
-        </div>
-      </div>
-
-      <section class="family-fun-upload-card">
-        <div class="family-fun-upload-icon">🎬</div>
-        <div class="family-fun-upload-copy">
-          <h2>Try a family video</h2>
-          <p>Choose an existing video or record a quick test clip. The preview lets us test the experience before permanent video storage is connected.</p>
-        </div>
-
-        <div class="family-fun-actions">
-          <button class="primary" type="button" id="familyFunChooseVideo">Choose video</button>
-          <button class="secondary" type="button" id="familyFunRecordVideo">Record video</button>
-        </div>
-
-        <input id="familyFunVideoInput" type="file" accept="video/*" hidden>
-        <input id="familyFunCameraInput" type="file" accept="video/*" capture="environment" hidden>
-
-        <div class="family-fun-preview empty" id="familyFunPreview">
-          <span>▶</span>
-          <strong>No video selected</strong>
-          <small>Your test video preview will appear here.</small>
-        </div>
+      <section class="fun-mode-grid" aria-label="Family Fun modes">
+        <button class="fun-mode-card active" type="button" data-fun-mode="normal"><span>🎥</span><strong>Normal</strong><small>Record anything</small></button>
+        <button class="fun-mode-card" type="button" data-fun-mode="bounce"><span>🔁</span><strong>Bounce</strong><small>3-second loop</small></button>
+        <button class="fun-mode-card" type="button" data-fun-mode="countdown"><span>⏱️</span><strong>Countdown</strong><small>Get everyone ready</small></button>
+        <button class="fun-mode-card" type="button" data-fun-mode="pass"><span>😂</span><strong>Pass the Phone</strong><small>Family prompts</small></button>
       </section>
 
-      <section class="family-fun-next-card">
-        <div>✨</div>
-        <div>
-          <strong>Coming next</strong>
-          <p>Saved uploads, captions, family tagging, reactions and a private family video feed.</p>
+      <section class="fun-studio-card">
+        <div class="fun-mode-heading">
+          <span id="funModeEmoji">🎥</span>
+          <div><h2 id="funModeTitle">Normal</h2><p id="funModeDesc">Record a family moment with the camera, or choose a video from your device.</p></div>
         </div>
+
+        <div class="fun-camera-wrap">
+          <video id="funCameraPreview" autoplay muted playsinline hidden></video>
+          <div class="fun-camera-empty" id="funCameraEmpty"><span>📹</span><strong>Camera is off</strong><small>Start the camera, or use your device camera below.</small></div>
+          <div class="fun-camera-overlay" id="funCameraOverlay" hidden><strong id="funOverlayMain"></strong><small id="funOverlaySub"></small></div>
+        </div>
+
+        <p class="fun-status" id="funStatus">Start the camera when you’re ready.</p>
+
+        <div class="fun-camera-tools">
+          <button class="secondary" type="button" id="funStartCameraBtn">Start camera</button>
+          <button class="secondary" type="button" id="funFlipCameraBtn" disabled>Flip camera</button>
+          <button class="secondary" type="button" id="funDeviceCameraBtn">Device camera</button>
+          <button class="secondary" type="button" id="funChooseBtn">Choose video</button>
+        </div>
+
+        <div class="fun-countdown-options" id="funCountdownOptions" hidden>
+          <strong>Countdown</strong>
+          <div class="fun-choice-row">
+            <label><input type="radio" name="funCountdown" value="3" checked><span>3 sec</span></label>
+            <label><input type="radio" name="funCountdown" value="5"><span>5 sec</span></label>
+            <label><input type="radio" name="funCountdown" value="10"><span>10 sec</span></label>
+          </div>
+        </div>
+
+        <div class="fun-pass-panel" id="funPassPanel" hidden>
+          <span class="fun-pass-label">PASS THE PHONE</span>
+          <p id="funPassPrompt"></p>
+          <button class="secondary" type="button" id="funNextPrompt">New prompt</button>
+        </div>
+
+        <div class="fun-record-controls">
+          <button class="primary fun-record-btn" type="button" id="funRecordBtn">Start Recording</button>
+          <button class="secondary fun-stop-btn" type="button" id="funStopBtn" disabled>Stop</button>
+        </div>
+        <input id="funFallbackInput" type="file" accept="video/*" hidden>
       </section>
-      <p class="family-fun-test-note">Family Fun test build · no videos are uploaded yet.</p>
+
+      <section class="fun-result-card" id="funResult" hidden>
+        <div class="fun-result-heading"><p class="eyebrow">YOUR CLIP</p><h2 id="funResultTitle">Family Fun clip</h2><p id="funResultMeta"></p></div>
+        <video id="funResultVideo" controls playsinline preload="metadata"></video>
+        <div class="fun-result-actions"><a class="primary" id="funSaveLink" href="#" download>Save clip</a><button class="secondary" type="button" id="funRetakeBtn">Retake</button></div>
+      </section>
+
+      <section class="fun-pass-clips" id="funPassClips" hidden>
+        <div class="fun-section-heading"><div><p class="eyebrow">THIS ROUND</p><h2>Pass the Phone clips</h2></div><span>😂</span></div>
+        <div id="funPassClipList"></div>
+      </section>
+
+      <p class="fun-privacy-note">Family Fun recordings stay on your device unless you choose to save them. Family Book video uploads can be connected later.</p>
     </section>
   </div>
 </main>
-<script>
-(function(){
- let previewUrl='';
- const picker=document.getElementById('familyFunVideoInput');
- const camera=document.getElementById('familyFunCameraInput');
- const preview=document.getElementById('familyFunPreview');
- const choose=document.getElementById('familyFunChooseVideo');
- const record=document.getElementById('familyFunRecordVideo');
- function revoke(){if(previewUrl){URL.revokeObjectURL(previewUrl);previewUrl=''}}
- function bytes(n){n=Number(n)||0;if(n<1024)return n+' B';if(n<1048576)return (n/1024).toFixed(1)+' KB';return (n/1048576).toFixed(1)+' MB'}
- function clear(){revoke();picker.value='';camera.value='';preview.className='family-fun-preview empty';preview.innerHTML='<span>▶</span><strong>No video selected</strong><small>Your test video preview will appear here.</small>'}
- function show(file){
-   if(!file)return;
-   if(!String(file.type||'').startsWith('video/')){preview.className='family-fun-preview empty';preview.innerHTML='<span>⚠</span><strong>That file is not a video</strong><small>Please choose a video file.</small>';return}
-   revoke();previewUrl=URL.createObjectURL(file);preview.className='family-fun-preview has-video';
-   const safe=String(file.name||'Family video').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
-   preview.innerHTML='<video controls playsinline preload="metadata" src="'+previewUrl+'"></video><div class="family-fun-video-meta"><div><strong>'+safe+'</strong><small>'+bytes(file.size)+'</small></div><button type="button" class="family-fun-remove" id="familyFunRemoveVideo">Remove</button></div>';
-   document.getElementById('familyFunRemoveVideo').onclick=clear;
- }
- choose.onclick=()=>picker.click();record.onclick=()=>camera.click();picker.onchange=()=>show(picker.files&&picker.files[0]);camera.onchange=()=>show(camera.files&&camera.files[0]);window.addEventListener('beforeunload',revoke);
-})();
-</script>
+<script src="js/family-fun-studio.js?v=studio-1"></script>
 </body>
 </html>
