@@ -416,3 +416,60 @@ html[data-theme="dark"] .fun-result-actions .fun-discard-btn{
   .fun-camera-wrap{min-height:430px;height:63svh}
   .fun-sound-btn span{max-width:130px}
 }
+
+/* Mobile camera mode wheel — swipe left/right like a native camera app. */
+.fun-camera-mode-strip{display:none}
+@media(max-width:760px){
+  .fun-mode-grid{display:none!important}
+  .fun-section-label:has(+ .fun-mode-grid){display:none!important}
+
+  .fun-camera-mode-strip{
+    position:absolute;
+    z-index:12;
+    left:50%;
+    bottom:112px;
+    transform:translateX(-50%);
+    width:min(88%,430px);
+    display:flex;
+    align-items:center;
+    gap:20px;
+    overflow-x:auto;
+    padding:8px 38%;
+    scrollbar-width:none;
+    scroll-snap-type:x mandatory;
+    overscroll-behavior-x:contain;
+    -webkit-overflow-scrolling:touch;
+    mask-image:linear-gradient(90deg,transparent 0,#000 14%,#000 86%,transparent 100%);
+    -webkit-mask-image:linear-gradient(90deg,transparent 0,#000 14%,#000 86%,transparent 100%);
+  }
+  .fun-camera-mode-strip::-webkit-scrollbar{display:none}
+  .fun-camera-mode-strip button{
+    flex:0 0 auto;
+    border:0;
+    background:transparent;
+    color:rgba(255,255,255,.58);
+    padding:5px 0;
+    font-size:.78rem;
+    font-weight:800;
+    white-space:nowrap;
+    scroll-snap-align:center;
+    text-shadow:0 2px 9px rgba(0,0,0,.55);
+    transition:color .16s ease,transform .16s ease
+  }
+  .fun-camera-mode-strip button.active{
+    color:#fff;
+    transform:scale(1.08);
+  }
+  .fun-camera-mode-strip button.active:after{
+    content:"";
+    display:block;
+    width:18px;
+    height:2px;
+    border-radius:999px;
+    background:#8fc19f;
+    margin:4px auto 0;
+  }
+  .fun-camera-status{bottom:158px!important}
+  .fun-filter-tray{bottom:160px!important}
+  .fun-camera-shutter{bottom:22px!important}
+}
