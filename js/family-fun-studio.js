@@ -165,8 +165,15 @@
   function applyFilter(name){
     if(!filterDefs[name])name="none";
     activeFilter=name;
-    if(camera)camera.style.filter=filterDefs[name].css;
-    $("[data-fun-filter]").forEach(btn=>btn.classList.toggle("active",btn.dataset.funFilter===name));
+    if(camera){
+      camera.style.filter=filterDefs[name].css;
+      camera.dataset.filter=name;
+    }
+    document.querySelectorAll("[data-fun-filter]").forEach(btn=>{
+      const active=btn.dataset.funFilter===name;
+      btn.classList.toggle("active",active);
+      btn.setAttribute("aria-pressed",String(active));
+    });
     filterBtn?.classList.toggle("active",name!=="none");
   }
 
@@ -856,9 +863,12 @@
   sourceBtn?.addEventListener("click",()=>togglePanel(sourceMenu,sourceBtn));
   timerToolBtn?.addEventListener("click",()=>{
     setMode("countdown");
-    togglePanel(countdownOptions,timerToolBtn);
+    if(filterTray)filterTray.hidden=true;
+    if(sourceMenu)sourceMenu.hidden=true;
+    countdownOptions.hidden=false;
+    timerToolBtn.classList.add("active");
   });
-  $('input[name="funCountdown"]').forEach(input=>input.addEventListener("change",()=>{
+  document.querySelectorAll('input[name="funCountdown"]').forEach(input=>input.addEventListener("change",()=>{
     const seconds=Number(input.value||3);
     if(timerToolLabel)timerToolLabel.textContent=seconds+"s";
     timerToolBtn?.classList.add("active");
@@ -878,7 +888,7 @@
     document.body.classList.remove("fun-camera-open");
     document.querySelector('[data-family-fun-feature="camera"]')?.classList.remove("active");
   });
-  $("[data-fun-filter]").forEach(btn=>btn.addEventListener("click",()=>{applyFilter(btn.dataset.funFilter);setStatus((filterDefs[btn.dataset.funFilter]?.label||"Filter")+" preview");}));
+  document.querySelectorAll("[data-fun-filter]").forEach(btn=>btn.addEventListener("click",()=>{applyFilter(btn.dataset.funFilter);setStatus((filterDefs[btn.dataset.funFilter]?.label||"Filter")+" preview");}));
   chooseBtn.addEventListener("click",()=>{if(sourceMenu)sourceMenu.hidden=true;chooseFile()});
   $("#funDeviceCameraBtn").addEventListener("click",()=>{if(sourceMenu)sourceMenu.hidden=true;captureFallback()});
   fallbackInput.addEventListener("change",()=>handleFile(fallbackInput.files?.[0]));
