@@ -167,7 +167,7 @@ function setFamilyFormSaving(form,saving,label="Saving…"){
 }
 
 const FB_ANDROID_APK_URL="downloads/FamilyBook.apk";
-const FB_ANDROID_RELEASE_KEY="familybook_android_release_clean_1";
+const FB_ANDROID_RELEASE_KEY="familybook_android_release_modal_1";
 let fbAndroidApkAvailable=null;
 
 function runningInsideNativeApp(){
@@ -208,24 +208,14 @@ function androidInstallStepsHtml(){
 }
 
 function androidAppBannerHtml(){
- if(runningInsideNativeApp())return "";
- return `
-   <section class="android-app-banner" id="androidAppBanner" hidden>
-     <div class="android-app-mark"><i data-lucide="smartphone"></i></div>
-     <div class="android-app-banner-copy">
-        <small>ANDROID APP</small>
-        <strong>Family Book for Android</strong>
-        <span>Camera, sharing and smoother app navigation.</span>
-     </div>
-     <div class="android-app-banner-actions">
-        <a class="primary" href="${FB_ANDROID_APK_URL}" download><i data-lucide="download"></i>Get app</a>
-        <button class="android-install-link" type="button" data-android-install-help>Install guide</button>
-     </div>
-   </section>`;
+ return "";
 }
 
 function closeAndroidInstallSplash(days=7){
- document.querySelector("#androidInstallSplash")?.remove();
+ const dialog=document.querySelector("#androidInstallSplash");
+ dialog?.close();
+ dialog?.remove();
+ document.body.classList.remove("android-release-open");
  try{
    const until=Date.now()+days*24*60*60*1000;
    localStorage.setItem(FB_ANDROID_RELEASE_KEY,String(until));
@@ -240,21 +230,22 @@ function showAndroidInstallSplash(force=false){
      const until=Number(localStorage.getItem(FB_ANDROID_RELEASE_KEY)||0);
      if(until>Date.now())return;
    }catch(_){}
-   if(!isAndroidBrowser())return;
+   if(currentRoute!=="home"||!document.querySelector("#screen"))return;
  }
- const d=document.createElement("div");
+ const d=document.createElement("dialog");
  d.id="androidInstallSplash";
- d.className="android-install-backdrop";
+ d.className="android-install-backdrop android-release-modal";
+ d.setAttribute("aria-labelledby","androidInstallTitle");
  d.innerHTML=`
-   <section class="android-install-splash" role="dialog" aria-modal="true" aria-labelledby="androidInstallTitle">
+   <section class="android-install-splash">
      <button class="android-install-close" type="button" aria-label="Close"><i data-lucide="x"></i></button>
      <div class="android-install-hero">
        <img class="android-install-logo" src="assets/logo/family-book-logo-dark-header.png" alt="Family Book">
-       <p>ANDROID APP</p>
-       <h2 id="androidInstallTitle">Install Family Book</h2>
-       <span>Get the full Family Book experience on your Android phone.</span>
+       <p>NOW AVAILABLE · ANDROID APP</p>
+       <h2 id="androidInstallTitle">Family Book is now an app!</h2>
+       <span>Keep your family close. Download and install Family Book on your Android phone.</span>
      </div>
-     ${androidInstallStepsHtml()}
+     <details class="android-release-guide"><summary>How to install</summary>${androidInstallStepsHtml()}</details>
      <div class="android-install-actions">
        <a class="primary" href="${FB_ANDROID_APK_URL}" download><i data-lucide="download"></i>Download Family Book</a>
        <button class="secondary" type="button" data-android-not-now>Not now</button>
@@ -262,6 +253,9 @@ function showAndroidInstallSplash(force=false){
      <small class="android-install-note">This beta installs directly from Family Book, so Android may ask you to allow this source once.</small>
    </section>`;
  document.body.appendChild(d);
+ document.body.classList.add("android-release-open");
+ d.showModal();
+ d.addEventListener("cancel",e=>{e.preventDefault();closeAndroidInstallSplash(7)});
  d.querySelector(".android-install-close")?.addEventListener("click",()=>closeAndroidInstallSplash(7));
  d.querySelector("[data-android-not-now]")?.addEventListener("click",()=>closeAndroidInstallSplash(7));
  d.addEventListener("click",e=>{if(e.target===d)closeAndroidInstallSplash(7)});
@@ -271,8 +265,9 @@ function showAndroidInstallSplash(force=false){
 function showAndroidInstallHelp(){
  if(runningInsideNativeApp())return;
  const existing=document.querySelector("#androidInstallSplash");
- if(existing){existing.remove()}
+ if(existing){existing.querySelector("details").open=true;return}
  showAndroidInstallSplash(true);
+ document.querySelector("#androidInstallSplash details")?.setAttribute("open","");
 }
 
 async function initAndroidDownloadUi(){
@@ -377,7 +372,7 @@ function go(r,opts={}){if(currentRoute==="family-fun"&&r!=="family-fun")window.F
  if(r==="albums"||r==="new-album"||r.startsWith("album:")||r.startsWith("edit-album:"))FB_ALBUMS.bindRoute(r);
  if(r==="calendar"||r==="add-event"||r.startsWith("edit-event:")||r.startsWith("view-event:"))FB_CALENDAR.bindRoute(r);
  if(r==="family-fun")window.FB_FAMILY_FUN?.bindRoute?.();
- if(r==="home"){window.FB_WALL?.bindHome?.();bindHomeMemories();window.FB_CALENDAR?.bindHomeUpcoming?.()}
+ if(r==="home"){window.FB_WALL?.bindHome?.();bindHomeMemories();window.FB_CALENDAR?.bindHomeUpcoming?.();initAndroidDownloadUi()}
  if(r==="settings")window.FB_SETTINGS?.bindPage?.()
  if(r==="notifications")window.FB_NOTIFICATIONS?.bindPage?.()
  if(r==="family-access")window.FB_INVITES?.bindPage?.()
