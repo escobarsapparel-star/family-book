@@ -317,9 +317,7 @@ function go(r,opts={}){if(currentRoute==="family-fun"&&r!=="family-fun")window.F
    setFamilyFormSaving(f,true,"Saving photo…");
    try{
      await saveMembers(list);
-     removeRelationshipsFor(id);
-     plan.forEach(({type,to})=>addRelationship(id,type,to));
-     await window.FB_FAMILY_DATA?.syncRelationships?.(getRelationships());
+     await saveRelationshipPlan(id,plan);
      if(nextAuth){
        FB_AUTH.update(nextAuth);
        await window.FB_INVITES?.syncCurrentAccount?.({name,email:nextAuth.email,oldEmail:oldAuth.email||""});
@@ -344,8 +342,7 @@ function go(r,opts={}){if(currentRoute==="family-fun"&&r!=="family-fun")window.F
   setFamilyFormSaving(f,true,"Saving photo…");
   try{
     await saveMembers(list);
-    plan.forEach(({type,to})=>addRelationship(id,type,to));
-    await window.FB_FAMILY_DATA?.syncRelationships?.(getRelationships());
+    await saveRelationshipPlan(id,plan);
     go("members");
   }catch(err){
     console.error("Could not add member:",err);
@@ -762,7 +759,9 @@ function memberContactActions(m,compact=false){
 }
 function ensureOwner(){
  let list=getMembers(),u=FB_AUTH.get()||{},id=u.memberId||"owner";
- if(!list.length&&u.name){list.push({id,name:u.name,relationship:"You",birthday:"",email:u.email||"",phone:"",photo:u.photo||"",profileType:"member",accountId:u.supabaseUserId||u.email||""});saveMembers(list)}
+ if(!list.length&&u.name){
+   return [{id,name:u.name,relationship:"You",birthday:"",email:u.email||"",phone:"",photo:u.photo||"",profileType:"member",accountId:u.supabaseUserId||u.email||""}];
+ }
  return list
 }
 function isHistoryPerson(m){return !!m&&m.profileType==="history"}
@@ -905,11 +904,16 @@ function migrateRelationships(){
  // remove obsolete/invalid relationship records and exact duplicates
  rs=rs.filter(r=>REL[r.type]&&r.from&&r.to&&r.from!==r.to);
  let seen=new Set();rs=rs.filter(r=>{let k=`${r.from}|${r.type}|${r.to}`;if(seen.has(k)){changed=true;return false}seen.add(k);return true});
- if(changed)saveRelationships(rs);
  return rs
 }
 
 function relLabel(k){return REL[k]?.label||k.replaceAll("_"," ")}
+async function saveRelationshipPlan(personId,plan){
+ const sync=window.FB_FAMILY_DATA?.syncPersonRelationships;
+ if(typeof sync!=="function")throw new Error("Family relationship sync is not ready yet.");
+ const payload=(plan||[]).map(({type,to})=>({from:personId,to,type}));
+ return sync(personId,payload);
+}
 function addRelationship(a,type,b){
  if(!a||!b||a===b||!REL[type])return false;
  let rs=migrateRelationships(),guard=validateRelationshipAddition(a,type,b,rs);
@@ -1069,9 +1073,7 @@ function bindHistoryForm(id=""){
    setFamilyFormSaving(f,true,"Saving photo…");
    try{
      await saveMembers(list);
-     removeRelationshipsFor(personId);
-     plan.forEach(({type,to})=>addRelationship(personId,type,to));
-     await window.FB_FAMILY_DATA?.syncRelationships?.(getRelationships());
+     await saveRelationshipPlan(personId,plan);
      go(`view-member:${personId}`);
    }catch(err){
      console.error("Could not save Family History profile:",err);
@@ -1206,10 +1208,10 @@ async function bindHistoryProfile(m){
 async function removeHistoryPerson(id){
  const list=getMembers(),person=list.find(x=>x.id===id);if(!person||!isHistoryPerson(person))return;
  if(!confirm(`Remove ${person.name} from the Family Tree? Their profile and tree connections will be removed. The photos themselves will stay in Memories.`))return;
- saveMembers(list.filter(x=>x.id!==id));
- saveRelationships(migrateRelationships().filter(r=>r.from!==id&&r.to!==id));
+ await saveMembers(list.filter(x=>x.id!==id));
  saveHistoryNotes(id,[]);
  try{await window.FB_MEMORIES?.removePersonTag?.(id)}catch(_){}
+ try{await window.FB_FAMILY_DATA?.reload?.()}catch(_){}
  go("tree");
 }
 
@@ -1385,7 +1387,7 @@ function familyUnitView(id){
    <div class="ct-board focus">${drawing.html}</div>
  </section>`;
 }
-function removeMember(id){
+async function removeMember(id){
  const list=getMembers(), member=list.find(x=>x.id===id);
  if(!member)return;
 
@@ -1410,9 +1412,8 @@ function removeMember(id){
  if(!confirm(`Remove ${member.name} from this family? Their family-tree connections will also be removed.`))return;
 
  // Update family data only. Do NOT call FB_AUTH.clear(), logout(), auth(), or recreate the session.
- saveMembers(list.filter(x=>x.id!==id));
- const remaining=migrateRelationships().filter(r=>r.from!==id && r.to!==id);
- saveRelationships(remaining);
+ await saveMembers(list.filter(x=>x.id!==id));
+ try{await window.FB_FAMILY_DATA?.reload?.()}catch(_){}
  go("members");
 }
 function viewMember(id){
