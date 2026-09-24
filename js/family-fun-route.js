@@ -208,7 +208,7 @@
     }
 
     const script=document.createElement("script");
-    script.src="js/family-fun-studio.js?v=camera-review-pass-2";
+    script.src="js/family-fun-studio.js?v=camera-screen-space-1";
     script.dataset.familyFunRuntime="1";
     script.onload=()=>window.icons?.();
     script.onerror=()=>console.error("Could not load Family Fun.");
