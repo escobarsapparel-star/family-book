@@ -103,12 +103,11 @@
     populate(strip);
   }
 
-  function removeDuplicateFamilyCards(screen){
+  function preserveHomeShortcuts(screen){
     const quick=screen.querySelector(".quick");
     if(!quick)return;
     const heading=quick.previousElementSibling;
-    if(heading?.classList?.contains("section-head")&&/your\s+family/i.test(heading.textContent||""))heading.remove();
-    quick.remove();
+    if(heading?.classList?.contains("section-head"))heading.remove();
   }
 
   function moveComposerAboveMemories(screen,strip){
@@ -124,7 +123,7 @@
   }
 
   function reshapeHome(screen,strip){
-    removeDuplicateFamilyCards(screen);
+    preserveHomeShortcuts(screen);
     moveComposerAboveMemories(screen,strip);
   }
 
