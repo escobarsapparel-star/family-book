@@ -8,6 +8,16 @@
     if(typeof window.go==="function")window.go("add-event");
   }
 
+  function openCalendarDate(cell){
+    if(!cell)return;
+    const eventButton=cell.querySelector("[data-cal-item]");
+    if(eventButton?.dataset?.calItem){
+      if(typeof window.go==="function")window.go(`view-event:${eventButton.dataset.calItem}`);
+      return;
+    }
+    openCalendarDate(cell);
+  }
+
   document.addEventListener("click",event=>{
     const cell=event.target?.closest?.(".calendar-day[data-cal-date]");
     if(!cell)return;
@@ -15,7 +25,7 @@
     // Existing events keep their own click action instead of opening Add event.
     if(event.target.closest("[data-cal-item],[data-cal-date-more],button,a,input,select,textarea,label"))return;
 
-    openAddEvent(cell.dataset.calDate);
+    openCalendarDate(cell);
   });
 
   document.addEventListener("keydown",event=>{
@@ -42,7 +52,12 @@
     document.querySelectorAll(".calendar-day[data-cal-date]").forEach(cell=>{
       if(!cell.hasAttribute("tabindex"))cell.tabIndex=0;
       if(!cell.hasAttribute("role"))cell.setAttribute("role","button");
-      if(!cell.hasAttribute("aria-label"))cell.setAttribute("aria-label",`Add event on ${cell.dataset.calDate}`);
+      const firstEvent=cell.querySelector("[data-cal-item]");
+      const count=cell.querySelectorAll("[data-cal-item]").length;
+      const label=firstEvent
+        ? (count>1?`View events on ${cell.dataset.calDate}`:`View event on ${cell.dataset.calDate}`)
+        : `Add event on ${cell.dataset.calDate}`;
+      cell.setAttribute("aria-label",label);
     });
   };
 
