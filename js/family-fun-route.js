@@ -53,26 +53,56 @@
           <button class="fun-mode-card" type="button" data-fun-mode="pass"><span class="fun-ui-icon"><i data-lucide="smartphone"></i></span><strong>Pass the Phone</strong><small>Family prompts</small></button>
         </section>
 
-        <section class="fun-studio-card">
-          <div class="fun-mode-heading">
+        <section class="fun-studio-card fun-camera-studio">
+          <div class="fun-mode-heading fun-camera-mode-copy">
             <span id="funModeIcon" class="fun-ui-icon"><i data-lucide="video"></i></span>
             <div><h2 id="funModeTitle">Normal</h2><p id="funModeDesc">Record a family moment with the camera, or choose a video from your device.</p></div>
           </div>
 
           <div class="fun-camera-wrap">
             <video id="funCameraPreview" autoplay muted playsinline hidden></video>
-            <div class="fun-camera-empty" id="funCameraEmpty"><span class="fun-empty-icon"><i data-lucide="camera-off"></i></span><strong>Camera is off</strong><small>Start the camera, or use your device camera below.</small></div>
+            <div class="fun-camera-empty" id="funCameraEmpty"><span class="fun-empty-icon"><i data-lucide="camera-off"></i></span><strong>Camera is off</strong><small>Tap the camera to begin.</small></div>
             <div class="fun-camera-overlay" id="funCameraOverlay" hidden><strong id="funOverlayMain"></strong><small id="funOverlaySub"></small></div>
+
+            <div class="fun-camera-topbar">
+              <button class="fun-camera-icon-btn" type="button" id="funCloseCameraBtn" aria-label="Close camera"><i data-lucide="x"></i></button>
+              <button class="fun-sound-btn" type="button" id="funSoundBtn"><i data-lucide="music-2"></i><span id="funSoundLabel">Add sound</span></button>
+              <button class="fun-camera-icon-btn" type="button" id="funFlipCameraBtn" aria-label="Flip camera" disabled><i data-lucide="switch-camera"></i></button>
+            </div>
+
             <div class="fun-record-timer" id="funRecordTimer" hidden><span></span><strong id="funRecordTimerText">00:00</strong></div>
-          </div>
+            <p class="fun-status fun-camera-status" id="funStatus">Tap the camera to begin.</p>
 
-          <p class="fun-status" id="funStatus">Start the camera when you’re ready.</p>
+            <div class="fun-camera-rail" aria-label="Camera tools">
+              <button type="button" id="funFilterBtn"><i data-lucide="wand-sparkles"></i><small>Filters</small></button>
+              <button type="button" id="funTimerToolBtn"><i data-lucide="timer-reset"></i><small>Timer</small></button>
+              <button type="button" id="funSourceBtn"><i data-lucide="ellipsis"></i><small>More</small></button>
+            </div>
 
-          <div class="fun-camera-tools">
-            <button class="secondary" type="button" id="funStartCameraBtn">Start camera</button>
-            <button class="secondary" type="button" id="funFlipCameraBtn" disabled>Flip camera</button>
-            <button class="secondary" type="button" id="funDeviceCameraBtn">Device camera</button>
-            <button class="secondary" type="button" id="funChooseBtn">Choose video</button>
+            <div class="fun-filter-tray" id="funFilterTray" hidden>
+              <button class="active" type="button" data-fun-filter="none"><span class="filter-preview filter-original"></span><small>Original</small></button>
+              <button type="button" data-fun-filter="warm"><span class="filter-preview filter-warm"></span><small>Warm</small></button>
+              <button type="button" data-fun-filter="vivid"><span class="filter-preview filter-vivid"></span><small>Vivid</small></button>
+              <button type="button" data-fun-filter="soft"><span class="filter-preview filter-soft"></span><small>Soft</small></button>
+              <button type="button" data-fun-filter="mono"><span class="filter-preview filter-mono"></span><small>B&amp;W</small></button>
+            </div>
+
+            <div class="fun-source-menu" id="funSourceMenu" hidden>
+              <button type="button" id="funDeviceCameraBtn"><i data-lucide="camera"></i><span>Device camera</span></button>
+              <button type="button" id="funChooseBtn"><i data-lucide="upload"></i><span>Choose video</span></button>
+            </div>
+
+            <div class="fun-camera-shutter">
+              <button class="fun-shutter" type="button" id="funRecordBtn" aria-label="Start recording">
+                <span class="fun-shutter-core"></span>
+                <small id="funRecordAction">Record</small>
+              </button>
+              <button class="fun-stop-btn" type="button" id="funStopBtn" hidden disabled>Stop</button>
+            </div>
+
+            <button class="fun-start-camera-hit" type="button" id="funStartCameraBtn" aria-label="Start camera"></button>
+            <input id="funFallbackInput" type="file" accept="video/*" hidden>
+            <input id="funSoundInput" type="file" accept="audio/*" hidden>
           </div>
 
           <div class="fun-countdown-options" id="funCountdownOptions" hidden>
@@ -89,12 +119,6 @@
             <p id="funPassPrompt"></p>
             <button class="secondary" type="button" id="funNextPrompt">New prompt</button>
           </div>
-
-          <div class="fun-record-controls">
-            <button class="primary fun-record-btn" type="button" id="funRecordBtn">Start Recording</button>
-            <button class="secondary fun-stop-btn" type="button" id="funStopBtn" disabled>Stop</button>
-          </div>
-          <input id="funFallbackInput" type="file" accept="video/*" hidden>
         </section>
 
         <section class="fun-result-card" id="funResult" hidden>
@@ -169,7 +193,7 @@
     }
 
     const script=document.createElement("script");
-    script.src="js/family-fun-studio.js?v=camera-ux-1";
+    script.src="js/family-fun-studio.js?v=camera-studio-2";
     script.dataset.familyFunRuntime="1";
     script.onload=()=>window.icons?.();
     script.onerror=()=>console.error("Could not load Family Fun.");
