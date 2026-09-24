@@ -188,19 +188,19 @@
         cameraPanel.hidden=false;
         cameraPanel.removeAttribute("hidden");
         cameraPanel.style.display="";
+        cameraPanel.classList.add("fun-camera-fullscreen");
+        document.documentElement.classList.add("fun-camera-open");
+        document.body.classList.add("fun-camera-open");
         cameraCard.classList.add("active");
         cameraCard.setAttribute("aria-expanded","true");
         window.icons?.();
-        requestAnimationFrame(()=>{
-          cameraPanel.scrollIntoView({behavior:"smooth",block:"start"});
-        });
       };
       cameraCard.setAttribute("aria-expanded","false");
       cameraCard.setAttribute("aria-controls","funCameraPanel");
     }
 
     const script=document.createElement("script");
-    script.src="js/family-fun-studio.js?v=fullscreen-camera-2";
+    script.src="js/family-fun-studio.js?v=fullscreen-camera-3";
     script.dataset.familyFunRuntime="1";
     script.onload=()=>window.icons?.();
     script.onerror=()=>console.error("Could not load Family Fun.");
