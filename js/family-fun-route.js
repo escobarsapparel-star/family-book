@@ -148,7 +148,7 @@
     window.icons?.();
 
     const script=document.createElement("script");
-    script.src="js/family-fun-studio.js?v=app-route-6";
+    script.src="js/family-fun-studio.js?v=app-route-7";
     script.dataset.familyFunRuntime="1";
     script.onload=()=>window.icons?.();
     script.onerror=()=>console.error("Could not load Family Fun.");
