@@ -4639,3 +4639,71 @@ html[data-theme="dark"] .apk-download-cta{
     padding:21px 18px max(20px,env(safe-area-inset-bottom))
   }
 }
+
+/* ==========================================================
+   Android release banner polish
+   ========================================================== */
+@media(min-width:761px){
+  .android-app-banner{
+    grid-template-columns:36px minmax(0,1fr) auto!important;
+    gap:10px!important;
+    margin:0 0 12px!important;
+    padding:8px 10px!important;
+    border-radius:14px!important;
+    background:rgba(24,34,28,.58)!important;
+    box-shadow:none!important;
+  }
+  .android-app-mark{
+    width:34px!important;height:34px!important;border-radius:10px!important;
+  }
+  .android-app-mark svg{width:17px!important;height:17px!important}
+  .android-app-banner-copy{gap:0!important}
+  .android-app-banner-copy small{
+    font-size:.55rem!important;
+    letter-spacing:.08em!important;
+    line-height:1.1!important;
+  }
+  .android-app-banner-copy strong{
+    font-size:.82rem!important;
+    line-height:1.2!important;
+  }
+  .android-app-banner-copy span{
+    font-size:.66rem!important;
+    white-space:nowrap!important;
+    overflow:hidden!important;
+    text-overflow:ellipsis!important;
+    max-width:520px!important;
+  }
+  .android-app-banner-actions{gap:5px!important}
+  .android-app-banner-actions a,
+  .android-app-banner-actions button{
+    min-height:32px!important;
+    height:32px!important;
+    padding:0 10px!important;
+    border-radius:9px!important;
+    font-size:.68rem!important;
+    line-height:1!important;
+    gap:4px!important;
+  }
+  .android-app-banner-actions svg{
+    width:14px!important;height:14px!important;
+  }
+  .android-app-banner-actions .secondary{
+    background:transparent!important;
+    border-color:rgba(143,193,159,.16)!important;
+    color:#9fc8aa!important;
+  }
+}
+
+/* Keep the mobile install card tidy and app-like. */
+@media(max-width:760px){
+  .android-app-banner{
+    margin:0 0 12px!important;
+    border-radius:17px!important;
+    box-shadow:none!important;
+  }
+  .android-app-banner-copy span{line-height:1.35}
+  .android-app-banner-actions{
+    gap:7px!important;
+  }
+}
