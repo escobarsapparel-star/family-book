@@ -15,7 +15,7 @@
       if(typeof window.go==="function")window.go(`view-event:${eventButton.dataset.calItem}`);
       return;
     }
-    openCalendarDate(cell);
+    openAddEvent(cell.dataset.calDate);
   }
 
   document.addEventListener("click",event=>{
@@ -33,7 +33,7 @@
     const cell=event.target?.closest?.(".calendar-day[data-cal-date]");
     if(!cell)return;
     event.preventDefault();
-    openAddEvent(cell.dataset.calDate);
+    openCalendarDate(cell);
   });
 
   const style=document.createElement("style");
