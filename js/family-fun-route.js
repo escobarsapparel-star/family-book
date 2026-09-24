@@ -63,6 +63,7 @@
             <video id="funCameraPreview" autoplay muted playsinline hidden></video>
             <div class="fun-camera-empty" id="funCameraEmpty"><span class="fun-empty-icon"><i data-lucide="camera-off"></i></span><strong>Camera is off</strong><small>Tap the camera to begin.</small></div>
             <div class="fun-camera-overlay" id="funCameraOverlay" hidden><strong id="funOverlayMain"></strong><small id="funOverlaySub"></small></div>
+            <div class="fun-front-fill" id="funFrontFill" hidden aria-hidden="true"></div>
 
             <div class="fun-capture-review" id="funResult" hidden>
               <video id="funResultVideo" playsinline preload="metadata"></video>
@@ -83,6 +84,7 @@
 
             <div class="fun-camera-rail" aria-label="Camera tools">
               <button type="button" id="funFilterBtn"><i data-lucide="wand-sparkles"></i><small>Filters</small></button>
+              <button type="button" id="funLightBtn"><i data-lucide="sun"></i><small id="funLightLabel">Light</small></button>
               <button type="button" id="funTimerToolBtn"><i data-lucide="timer-reset"></i><small id="funTimerToolLabel">3s</small></button>
               <button type="button" id="funSourceBtn"><i data-lucide="ellipsis"></i><small>More</small></button>
             </div>
@@ -208,7 +210,7 @@
     }
 
     const script=document.createElement("script");
-    script.src="js/family-fun-studio.js?v=camera-screen-space-1";
+    script.src="js/family-fun-studio.js?v=camera-light-1";
     script.dataset.familyFunRuntime="1";
     script.onload=()=>window.icons?.();
     script.onerror=()=>console.error("Could not load Family Fun.");
