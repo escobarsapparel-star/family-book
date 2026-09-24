@@ -13,10 +13,6 @@
   const initials=name=>{const p=String(name||"Family").trim().split(/\s+/).filter(Boolean);return ((p[0]?.[0]||"F")+(p.length>1?(p.at(-1)?.[0]||""):"")).toUpperCase()};
 
   function navigate(route){
-    if(route==="family-fun"){
-      window.location.href="family-fun.html";
-      return;
-    }
     try{window.go?.(route)}catch(err){console.error("Desktop navigation failed",err)}
     document.querySelectorAll(".desktop-top-nav [data-desktop-route]").forEach(b=>b.classList.toggle("active",b.dataset.desktopRoute===route));
     setTimeout(refreshWidgets,50);
