@@ -75,7 +75,7 @@
 
             <div class="fun-camera-rail" aria-label="Camera tools">
               <button type="button" id="funFilterBtn"><i data-lucide="wand-sparkles"></i><small>Filters</small></button>
-              <button type="button" id="funTimerToolBtn"><i data-lucide="timer-reset"></i><small id="funTimerToolLabel">Timer</small></button>
+              <button type="button" id="funTimerToolBtn"><i data-lucide="timer-reset"></i><small id="funTimerToolLabel">3s</small></button>
               <button type="button" id="funSourceBtn"><i data-lucide="ellipsis"></i><small>More</small></button>
             </div>
 
@@ -200,7 +200,7 @@
     }
 
     const script=document.createElement("script");
-    script.src="js/family-fun-studio.js?v=fullscreen-camera-1";
+    script.src="js/family-fun-studio.js?v=fullscreen-camera-2";
     script.dataset.familyFunRuntime="1";
     script.onload=()=>window.icons?.();
     script.onerror=()=>console.error("Could not load Family Fun.");
