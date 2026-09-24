@@ -30,8 +30,8 @@ window.addEventListener("familybook:family-data-updated",()=>{
 });
 function auth(){
 A.innerHTML=`<main class="login-page">
-<section class="login-photo"><img class="login-logo auth-logo original-login-logo" src="assets/icons/familybook-icon-192.png?v=original-login-1" alt="Family Book"><div class="login-message"><h2 class="script">Family is everything.</h2><p>Our family. Our memories. Our story.</p></div></section>
-<section class="login-side"><div class="auth-card"><img class="mobile-logo auth-logo original-login-logo" src="assets/icons/familybook-icon-192.png?v=original-login-1" alt="Family Book">
+<section class="login-photo"><img class="login-logo auth-logo original-login-logo" src="assets/logo/family-book-logo-dark.png?v=login-wide-1" alt="Family Book"><div class="login-message"><h2 class="script">Family is everything.</h2><p>Our family. Our memories. Our story.</p></div></section>
+<section class="login-side"><div class="auth-card"><img class="mobile-logo auth-logo original-login-logo" src="assets/logo/family-book-logo-dark.png?v=login-wide-1" alt="Family Book">
 <div class="tabs"><button class="tab active" data-tab="in">Sign in</button><button class="tab" data-tab="up">Create account</button></div>
 
 <form id="signin" class="form">
