@@ -552,7 +552,7 @@
     if(!modes[next])return;
     if(recorder&&recorder.state!=="inactive")stopRecording();
     mode=next;
-    $$$("[data-fun-mode]").forEach(btn=>btn.classList.toggle("active",btn.dataset.funMode===mode));
+    $("[data-fun-mode]").forEach(btn=>btn.classList.toggle("active",btn.dataset.funMode===mode));
     $("#funModeEmoji").textContent=modes[mode].emoji;
     $("#funModeTitle").textContent=modes[mode].title;
     $("#funModeDesc").textContent=modes[mode].desc;
@@ -640,18 +640,28 @@
   addGalleryBtn.addEventListener("click",addCurrentToGallery);
   nextPromptBtn.addEventListener("click",nextPrompt);
 
-  document.addEventListener("visibilitychange",()=>{if(document.hidden&&recorder?.state==="recording")stopRecording()});
-  window.addEventListener("beforeunload",()=>{
+  const onVisibilityChange=()=>{if(document.hidden&&recorder?.state==="recording")stopRecording()};
+
+  function dispose(){
     stopBounce();
-    stopStream();
+    try{stopRecording()}catch(_){}
+    try{stopStream()}catch(_){}
     clearInterval(countdownTimer);
     clearTimeout(autoStopTimer);
     clearTimeout(galleryRefreshTimer);
+    document.removeEventListener("visibilitychange",onVisibilityChange);
     if(realtimeChannel&&client){
       try{client.removeChannel(realtimeChannel)}catch(_){}
     }
+    realtimeChannel=null;
     urls.forEach(url=>{try{URL.revokeObjectURL(url)}catch(_){}});
-  });
+    urls.clear();
+    if(window.FB_FAMILY_FUN_STUDIO_DISPOSE===dispose)delete window.FB_FAMILY_FUN_STUDIO_DISPOSE;
+  }
+
+  window.FB_FAMILY_FUN_STUDIO_DISPOSE=dispose;
+  document.addEventListener("visibilitychange",onVisibilityChange);
+  window.addEventListener("beforeunload",dispose,{once:true});
 
   setMode("normal");
   initBackend();
