@@ -46,7 +46,26 @@
   let userContext=null;
   let realtimeChannel=null;
   let galleryRefreshTimer=0;
+  let activeFilter="none";
+  let soundUrl="";
+  let selectedSoundName="";
+  let filterCanvas=null;
+  let filterContext=null;
+  let filterFrame=0;
+  let filterCaptureStream=null;
+  let recordingStream=null;
+  let recordingSound=null;
+  let audioContext=null;
+  let audioDestination=null;
   const urls=new Set();
+
+  const filterDefs={
+    none:{label:"Original",css:"none"},
+    warm:{label:"Warm",css:"sepia(.18) saturate(1.18) contrast(1.04)"},
+    vivid:{label:"Vivid",css:"saturate(1.32) contrast(1.08)"},
+    soft:{label:"Soft",css:"brightness(1.06) contrast(.92) saturate(.94)"},
+    mono:{label:"B&W",css:"grayscale(1) contrast(1.08)"}
+  };
 
   const camera=$("#funCameraPreview");
   const empty=$("#funCameraEmpty");
@@ -77,6 +96,16 @@
   const galleryGrid=$("#funGalleryGrid");
   const galleryEmpty=$("#funGalleryEmpty");
   const galleryCount=$("#funGalleryCount");
+  const soundBtn=$("#funSoundBtn");
+  const soundInput=$("#funSoundInput");
+  const soundLabel=$("#funSoundLabel");
+  const filterBtn=$("#funFilterBtn");
+  const filterTray=$("#funFilterTray");
+  const sourceBtn=$("#funSourceBtn");
+  const sourceMenu=$("#funSourceMenu");
+  const timerToolBtn=$("#funTimerToolBtn");
+  const closeCameraBtn=$("#funCloseCameraBtn");
+  const recordAction=$("#funRecordAction");
 
   const bucket=()=>window.FB_SUPABASE_CONFIG?.mediaBucket||"family-media";
 
@@ -120,6 +149,129 @@
     const paint=()=>{if(recordTimerText)recordTimerText.textContent=formatElapsed(Date.now()-recordStartedAt)};
     paint();
     recordTimerInterval=setInterval(paint,250);
+  }
+
+  function recordActionLabel(){
+    return mode==="bounce"?"Bounce":mode==="pass"?"5s clip":mode==="countdown"?"Countdown":"Record";
+  }
+
+  function syncRecordButton(recording=false){
+    recordBtn?.classList.toggle("recording",recording);
+    recordBtn?.setAttribute("aria-label",recording?"Stop recording":"Start recording");
+    if(recordAction)recordAction.textContent=recording?"Stop":recordActionLabel();
+  }
+
+  function applyFilter(name){
+    if(!filterDefs[name])name="none";
+    activeFilter=name;
+    if(camera)camera.style.filter=filterDefs[name].css;
+    $("[data-fun-filter]").forEach(btn=>btn.classList.toggle("active",btn.dataset.funFilter===name));
+    filterBtn?.classList.toggle("active",name!=="none");
+  }
+
+  function clearRecordingPipeline(){
+    if(filterFrame){cancelAnimationFrame(filterFrame);filterFrame=0}
+    if(filterCaptureStream){
+      filterCaptureStream.getTracks().forEach(t=>{try{t.stop()}catch(_){}});
+      filterCaptureStream=null;
+    }
+    if(recordingSound){
+      try{recordingSound.pause()}catch(_){}
+      recordingSound=null;
+    }
+    if(audioContext){
+      try{audioContext.close()}catch(_){}
+      audioContext=null;
+    }
+    audioDestination=null;
+    recordingStream=null;
+  }
+
+  function filteredVideoTrack(){
+    if(activeFilter==="none"||!camera?.videoWidth||!camera?.captureStream&&typeof HTMLCanvasElement==="undefined"){
+      return stream?.getVideoTracks?.()[0]||null;
+    }
+    filterCanvas=filterCanvas||document.createElement("canvas");
+    filterContext=filterCanvas.getContext("2d");
+    filterCanvas.width=camera.videoWidth||720;
+    filterCanvas.height=camera.videoHeight||1280;
+    const paint=()=>{
+      if(!filterContext||!stream)return;
+      filterContext.save();
+      filterContext.filter=filterDefs[activeFilter]?.css||"none";
+      filterContext.drawImage(camera,0,0,filterCanvas.width,filterCanvas.height);
+      filterContext.restore();
+      filterFrame=requestAnimationFrame(paint);
+    };
+    paint();
+    filterCaptureStream=filterCanvas.captureStream?.(30)||null;
+    return filterCaptureStream?.getVideoTracks?.()[0]||stream?.getVideoTracks?.()[0]||null;
+  }
+
+  async function buildRecordingStream(){
+    clearRecordingPipeline();
+    const videoTrack=filteredVideoTrack();
+    const micTrack=stream?.getAudioTracks?.()[0]||null;
+    if(!soundUrl){
+      return stream;
+    }
+    const AudioCtx=window.AudioContext||window.webkitAudioContext;
+    if(!AudioCtx){
+      setStatus("Sound mixing is not supported on this device. Recording with microphone only.","warn");
+      return activeFilter==="none"?stream:new MediaStream([videoTrack,...(micTrack?[micTrack]:[])]);
+    }
+    try{
+      audioContext=new AudioCtx();
+      await audioContext.resume?.();
+      audioDestination=audioContext.createMediaStreamDestination();
+      if(micTrack){
+        const micSource=audioContext.createMediaStreamSource(new MediaStream([micTrack]));
+        micSource.connect(audioDestination);
+      }
+      recordingSound=new Audio(soundUrl);
+      recordingSound.preload="auto";
+      const soundSource=audioContext.createMediaElementSource(recordingSound);
+      soundSource.connect(audioDestination);
+      soundSource.connect(audioContext.destination);
+      recordingSound.currentTime=0;
+      recordingSound.play().catch(()=>{});
+      const audioTracks=audioDestination.stream.getAudioTracks();
+      recordingStream=new MediaStream([videoTrack,...audioTracks].filter(Boolean));
+      return recordingStream;
+    }catch(err){
+      console.warn("Family Fun sound mix:",err);
+      clearRecordingPipeline();
+      setStatus("Could not add that sound. Recording with microphone only.","warn");
+      return activeFilter==="none"?stream:new MediaStream([videoTrack,...(micTrack?[micTrack]:[])]);
+    }
+  }
+
+  function setSoundFile(file){
+    if(soundUrl){try{URL.revokeObjectURL(soundUrl)}catch(_){}}
+    soundUrl="";
+    selectedSoundName="";
+    if(!file){
+      if(soundLabel)soundLabel.textContent="Add sound";
+      soundBtn?.classList.remove("active");
+      return;
+    }
+    if(!String(file.type||"").startsWith("audio/")){
+      setStatus("Choose an audio file for Add sound.","warn");
+      return;
+    }
+    soundUrl=URL.createObjectURL(file);
+    selectedSoundName=file.name||"Selected sound";
+    if(soundLabel)soundLabel.textContent=selectedSoundName.length>20?selectedSoundName.slice(0,18)+"…":selectedSoundName;
+    soundBtn?.classList.add("active");
+    setStatus("Sound ready. It will start when you record.","success");
+  }
+
+  function togglePanel(panel,button){
+    const willOpen=panel?.hidden!==false;
+    if(filterTray&&panel!==filterTray)filterTray.hidden=true;
+    if(sourceMenu&&panel!==sourceMenu)sourceMenu.hidden=true;
+    if(panel)panel.hidden=!willOpen;
+    button?.classList.toggle("active",willOpen);
   }
 
   function supportedMime(){
@@ -238,19 +390,23 @@
 
     chunks=[];
     const mime=supportedMime();
-    try{recorder=mime?new MediaRecorder(stream,{mimeType:mime}):new MediaRecorder(stream)}
-    catch(_){recorder=new MediaRecorder(stream)}
+    const captureStream=await buildRecordingStream();
+    try{recorder=mime?new MediaRecorder(captureStream,{mimeType:mime}):new MediaRecorder(captureStream)}
+    catch(_){recorder=new MediaRecorder(captureStream)}
 
     recorder.ondataavailable=e=>{if(e.data?.size)chunks.push(e.data)};
     recorder.onstop=handleRecorded;
     recorder.start(250);
     startRecordTimer();
 
-    recordBtn.disabled=true;
+    recordBtn.disabled=false;
     stopBtn.disabled=false;
     startBtn.disabled=true;
     chooseBtn.disabled=true;
     flipBtn.disabled=true;
+    syncRecordButton(true);
+    filterTray&&(filterTray.hidden=true);
+    sourceMenu&&(sourceMenu.hidden=true);
 
     setStatus(mode==="bounce"?"Recording Bounce…":mode==="pass"?"Recording this person…":"Recording…","recording");
     setOverlay("● REC",mode==="bounce"?"3 seconds":mode==="pass"?"5 seconds":"");
@@ -263,6 +419,7 @@
     clearTimeout(autoStopTimer);
     autoStopTimer=0;
     stopRecordTimer(false);
+    syncRecordButton(false);
     if(recorder&&recorder.state!=="inactive"){
       try{recorder.stop()}catch(_){}
     }
@@ -270,12 +427,14 @@
 
   function finishRecordUi(){
     stopRecordTimer(true);
+    clearRecordingPipeline();
     recorder=null;
     recordBtn.disabled=false;
     stopBtn.disabled=true;
     startBtn.disabled=!!stream;
     chooseBtn.disabled=false;
     flipBtn.disabled=!stream;
+    syncRecordButton(false);
     setOverlay();
     setStatus(stream?"Camera ready.":"Clip ready.");
   }
@@ -604,7 +763,7 @@
     $("#funModeDesc").textContent=modes[mode].desc;
     countdownOptions.hidden=mode!=="countdown";
     passPanel.hidden=mode!=="pass";
-    recordBtn.textContent=mode==="bounce"?"Record 3s Bounce":mode==="pass"?"Record 5s Clip":mode==="countdown"?"Start Countdown":"Start Recording";
+    syncRecordButton(false);
     if(mode==="pass")passPrompt.textContent=prompts[promptIndex];
     resetResult();
     setOverlay();
@@ -646,6 +805,7 @@
     card?.classList.add("active");
     window.icons?.();
     setTimeout(()=>panel?.scrollIntoView({behavior:"smooth",block:"start"}),40);
+    if(!stream)setTimeout(()=>startCamera().catch(()=>{}),80);
   }
 
   document.querySelectorAll("[data-family-fun-feature]").forEach(btn=>btn.addEventListener("click",()=>openFamilyFunFeature(btn.dataset.familyFunFeature)));
@@ -671,10 +831,23 @@
 
   startBtn.addEventListener("click",startCamera);
   flipBtn.addEventListener("click",flipCamera);
-  recordBtn.addEventListener("click",beginRecording);
+  recordBtn.addEventListener("click",()=>recorder&&recorder.state!=="inactive"?stopRecording():beginRecording());
   stopBtn.addEventListener("click",stopRecording);
-  chooseBtn.addEventListener("click",chooseFile);
-  $("#funDeviceCameraBtn").addEventListener("click",captureFallback);
+  soundBtn?.addEventListener("click",()=>soundInput?.click());
+  soundInput?.addEventListener("change",()=>setSoundFile(soundInput.files?.[0]||null));
+  filterBtn?.addEventListener("click",()=>togglePanel(filterTray,filterBtn));
+  sourceBtn?.addEventListener("click",()=>togglePanel(sourceMenu,sourceBtn));
+  timerToolBtn?.addEventListener("click",()=>{setMode("countdown");countdownOptions.hidden=false;countdownOptions.scrollIntoView({behavior:"smooth",block:"nearest"})});
+  closeCameraBtn?.addEventListener("click",async()=>{
+    if(recorder&&recorder.state!=="inactive")stopRecording();
+    await stopStream();
+    const panel=$("#funCameraPanel");
+    if(panel)panel.hidden=true;
+    document.querySelector('[data-family-fun-feature="camera"]')?.classList.remove("active");
+  });
+  $("[data-fun-filter]").forEach(btn=>btn.addEventListener("click",()=>{applyFilter(btn.dataset.funFilter);filterTray.hidden=true}));
+  chooseBtn.addEventListener("click",()=>{if(sourceMenu)sourceMenu.hidden=true;chooseFile()});
+  $("#funDeviceCameraBtn").addEventListener("click",()=>{if(sourceMenu)sourceMenu.hidden=true;captureFallback()});
   fallbackInput.addEventListener("change",()=>handleFile(fallbackInput.files?.[0]));
   retakeBtn.addEventListener("click",()=>{resetResult();setStatus(stream?"Camera ready.":"Start the camera when you’re ready.");document.querySelector(".fun-studio-card")?.scrollIntoView({behavior:"smooth",block:"nearest"})});
   discardBtn?.addEventListener("click",discardCurrentClip);
@@ -689,6 +862,8 @@
     try{stopStream()}catch(_){}
     clearInterval(countdownTimer);
     stopRecordTimer(true);
+    clearRecordingPipeline();
+    if(soundUrl){try{URL.revokeObjectURL(soundUrl)}catch(_){};soundUrl=""};
     clearTimeout(autoStopTimer);
     clearTimeout(galleryRefreshTimer);
     document.removeEventListener("visibilitychange",onVisibilityChange);
@@ -705,6 +880,8 @@
   document.addEventListener("visibilitychange",onVisibilityChange);
   window.addEventListener("beforeunload",dispose,{once:true});
 
+  applyFilter("none");
   setMode("normal");
+  syncRecordButton(false);
   initBackend();
 })();
