@@ -191,6 +191,9 @@
 
   function setCaptureState(next){
     captureState=next;
+    cameraWrap?.classList.toggle("capture-recording",next==="recording");
+    cameraWrap?.classList.toggle("capture-paused",next==="paused");
+    cameraWrap?.classList.toggle("capture-countdown",next==="countdown");
     const busy=next!=="idle";
     const counting=next==="countdown";
     recordBtn.disabled=counting||next==="preparing"||next==="processing";
