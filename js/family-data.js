@@ -353,7 +353,11 @@
   }
 
   function syncMembers(list){
-    if(!auth().familyId)return;
+    const u=auth();
+    if(!u.familyId)return Promise.resolve();
+    if(loadedFamilyId!==u.familyId){
+      return Promise.reject(new Error("Family data is still loading. Please wait a moment and try again."));
+    }
     const copy=cloneRows(list),before=cloneRows(people);
     people=copy;
 
@@ -400,6 +404,43 @@
     });
   }
 
+  async function syncPersonRelationships(personId,rows){
+    const u=auth();
+    if(!u.familyId)throw new Error("Your Family Book session is not ready.");
+    if(loadedFamilyId!==u.familyId){
+      throw new Error("Family data is still loading. Please wait a moment and try again.");
+    }
+
+    const target=String(personId||"");
+    if(!target)throw new Error("Family profile not found.");
+
+    const clean=cloneRows(rows).filter(r=>r&&r.from&&r.to&&r.type).map(r=>({
+      from:String(r.from),to:String(r.to),type:String(r.type)
+    }));
+
+    let rpcName,args;
+    if(u.role==="admin"){
+      rpcName="replace_family_person_relationships";
+      args={p_person_id:target,p_relationships:clean};
+    }else{
+      if(String(u.memberId||"")!==target){
+        throw new Error("You can only change relationships connected to your own profile.");
+      }
+      rpcName="replace_my_family_relationships";
+      args={p_relationships:clean};
+    }
+
+    const {error}=await sb().rpc(rpcName,args);
+    if(error)throw error;
+    await reload();
+    return cloneRows(relationships);
+  }
+
+  function isReady(){
+    const u=auth();
+    return !!u.familyId&&loadedFamilyId===u.familyId;
+  }
+
   function syncPrivacy(settings){
     const p=settings?.privacy;
     if(!p||!auth().familyId)return;
@@ -430,6 +471,6 @@
 
   window.FB_FAMILY_DATA={
     init,load,reload,startRealtime,stopRealtime,getPeople,getRelationships,getStory,saveStory,uploadStoryCover,
-    syncMembers,syncRelationships,syncPrivacy,familyKey
+    syncMembers,syncRelationships,syncPersonRelationships,syncPrivacy,isReady,familyKey
   };
 })();
