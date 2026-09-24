@@ -344,10 +344,25 @@
     });
     if(error)throw error;
 
-    member.photoPath=photoPath||"";
+    const clearBirthday=!!previous?.birthday&&!member.birthday;
+    const clearEmail=!!previous?.email&&!member.email;
+    const clearPhone=!!previous?.phone&&!member.phone;
+    const clearPhoto=member.photoRemoved===true&&!!oldPhotoPath;
+    if(clearBirthday||clearEmail||clearPhone||clearPhoto){
+      const {error:clearError}=await sb().rpc("clear_family_person_fields",{
+        p_person_id:member.id,
+        p_clear_birthday:clearBirthday,
+        p_clear_email:clearEmail,
+        p_clear_phone:clearPhone,
+        p_clear_photo:clearPhoto
+      });
+      if(clearError)throw clearError;
+    }
+
+    member.photoPath=clearPhoto?"":(photoPath||"");
     const live=people.find(x=>x.id===member.id);
     if(live)live.photoPath=member.photoPath;
-    if(oldPhotoPath&&oldPhotoPath!==photoPath)await removeStorage([oldPhotoPath]);
+    if(oldPhotoPath&&oldPhotoPath!==member.photoPath)await removeStorage([oldPhotoPath]);
     peopleSnapshot.set(member.id,snapshotPerson(member));
     return data;
   }
