@@ -105,6 +105,7 @@
   const sourceMenu=$("#funSourceMenu");
   const timerToolBtn=$("#funTimerToolBtn");
   const closeCameraBtn=$("#funCloseCameraBtn");
+  const timerToolLabel=$("#funTimerToolLabel");
   const recordAction=$("#funRecordAction");
 
   const bucket=()=>window.FB_SUPABASE_CONFIG?.mediaBucket||"family-media";
@@ -272,6 +273,7 @@
     const willOpen=panel?.hidden!==false;
     if(filterTray&&panel!==filterTray)filterTray.hidden=true;
     if(sourceMenu&&panel!==sourceMenu)sourceMenu.hidden=true;
+    if(countdownOptions&&panel!==countdownOptions)countdownOptions.hidden=true;
     if(panel)panel.hidden=!willOpen;
     button?.classList.toggle("active",willOpen);
   }
@@ -300,8 +302,12 @@
 
   function resetResult(){
     revokeCurrent();
+    try{resultVideo.pause()}catch(_){}
     result.hidden=true;
+    result.style.display="none";
     resultVideo.removeAttribute("src");
+    resultVideo.removeAttribute("poster");
+    try{resultVideo.load()}catch(_){}
     resultVideo.controls=true;
     resultVideo.muted=false;
     downloadLink.hidden=false;
@@ -473,6 +479,7 @@
     currentUrl=URL.createObjectURL(blob);
     urls.add(currentUrl);
     result.hidden=false;
+    result.style.removeProperty("display");
     resultVideo.src=currentUrl;
     resultVideo.playsInline=true;
 
@@ -564,9 +571,11 @@
 
   function discardCurrentClip(){
     resetResult();
+    setOverlay();
     setStatus(stream?"Clip discarded. Camera ready.":"Clip discarded. Nothing was saved.");
-    const studioCard=document.querySelector(".fun-studio-card");
-    studioCard?.scrollIntoView({behavior:"smooth",block:"nearest"});
+    syncRecordButton(false);
+    const cameraWrap=document.querySelector(".fun-camera-wrap");
+    cameraWrap?.scrollIntoView({behavior:"smooth",block:"center"});
   }
 
   async function addCurrentToGallery(){
@@ -805,10 +814,14 @@
     if(name!=="camera")return;
     const panel=$("#funCameraPanel");
     const card=$('[data-family-fun-feature="camera"]');
-    if(panel)panel.hidden=false;
+    if(panel){
+      panel.hidden=false;
+      panel.classList.add("fun-camera-fullscreen");
+    }
+    document.documentElement.classList.add("fun-camera-open");
+    document.body.classList.add("fun-camera-open");
     card?.classList.add("active");
     window.icons?.();
-    setTimeout(()=>panel?.scrollIntoView({behavior:"smooth",block:"start"}),40);
     if(!stream)setTimeout(()=>startCamera().catch(()=>{}),80);
   }
 
@@ -841,15 +854,31 @@
   soundInput?.addEventListener("change",()=>setSoundFile(soundInput.files?.[0]||null));
   filterBtn?.addEventListener("click",()=>togglePanel(filterTray,filterBtn));
   sourceBtn?.addEventListener("click",()=>togglePanel(sourceMenu,sourceBtn));
-  timerToolBtn?.addEventListener("click",()=>{setMode("countdown");countdownOptions.hidden=false;countdownOptions.scrollIntoView({behavior:"smooth",block:"nearest"})});
+  timerToolBtn?.addEventListener("click",()=>{
+    setMode("countdown");
+    togglePanel(countdownOptions,timerToolBtn);
+  });
+  $('input[name="funCountdown"]').forEach(input=>input.addEventListener("change",()=>{
+    const seconds=Number(input.value||3);
+    if(timerToolLabel)timerToolLabel.textContent=seconds+"s";
+    timerToolBtn?.classList.add("active");
+    countdownOptions.hidden=true;
+    setStatus("Countdown set to "+seconds+" seconds.","success");
+  }));
   closeCameraBtn?.addEventListener("click",async()=>{
     if(recorder&&recorder.state!=="inactive")stopRecording();
     await stopStream();
+    resetResult();
     const panel=$("#funCameraPanel");
-    if(panel)panel.hidden=true;
+    if(panel){
+      panel.classList.remove("fun-camera-fullscreen");
+      panel.hidden=true;
+    }
+    document.documentElement.classList.remove("fun-camera-open");
+    document.body.classList.remove("fun-camera-open");
     document.querySelector('[data-family-fun-feature="camera"]')?.classList.remove("active");
   });
-  $("[data-fun-filter]").forEach(btn=>btn.addEventListener("click",()=>{applyFilter(btn.dataset.funFilter);filterTray.hidden=true}));
+  $("[data-fun-filter]").forEach(btn=>btn.addEventListener("click",()=>{applyFilter(btn.dataset.funFilter);setStatus((filterDefs[btn.dataset.funFilter]?.label||"Filter")+" preview");}));
   chooseBtn.addEventListener("click",()=>{if(sourceMenu)sourceMenu.hidden=true;chooseFile()});
   $("#funDeviceCameraBtn").addEventListener("click",()=>{if(sourceMenu)sourceMenu.hidden=true;captureFallback()});
   fallbackInput.addEventListener("change",()=>handleFile(fallbackInput.files?.[0]));
@@ -877,6 +906,9 @@
     realtimeChannel=null;
     urls.forEach(url=>{try{URL.revokeObjectURL(url)}catch(_){}});
     urls.clear();
+    document.documentElement.classList.remove("fun-camera-open");
+    document.body.classList.remove("fun-camera-open");
+    $("#funCameraPanel")?.classList.remove("fun-camera-fullscreen");
     if(window.FB_FAMILY_FUN_STUDIO_DISPOSE===dispose)delete window.FB_FAMILY_FUN_STUDIO_DISPOSE;
   }
 
