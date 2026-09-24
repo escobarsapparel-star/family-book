@@ -11,6 +11,7 @@
   let realtimeFamilyId=null;
   let realtimeTimer=null;
   const objectUrls=new Set();
+  const profileRecoveryAttempted=new Set();
 
   const sb=()=>window.FB_SUPABASE?.client;
   const auth=()=>window.FB_AUTH?.get?.()||{};
@@ -249,6 +250,24 @@
     if(error)throw error;
 
     const rows=data?.people||[];
+    const me=rows.find(row=>row.id===u.memberId);
+    if(me && !me.photo_path && !profileRecoveryAttempted.has(me.id) && window.FB_MEDIA?.recoverProfilePhoto){
+      profileRecoveryAttempted.add(me.id);
+      try{
+        const recovered=await window.FB_MEDIA.recoverProfilePhoto(me.id);
+        if(recovered?.found&&recovered?.path){
+          const {error:restoreError}=await sb().rpc("restore_profile_photo_path",{
+            p_person_id:me.id,
+            p_photo_path:recovered.path
+          });
+          if(restoreError)throw restoreError;
+          me.photo_path=recovered.path;
+          console.info("Recovered Family Book profile photo link.");
+        }
+      }catch(err){
+        console.warn("Profile photo recovery unavailable:",err);
+      }
+    }
     const profileUrls=await signedPhotoMap(rows.map(row=>row.photo_path));
     people=rows.map(row=>personFromRow(row,profileUrls));
     relationships=(data?.relationships||[]).map(relationshipLocal);
