@@ -591,24 +591,6 @@
     }
   }
 
-  function openFamilyFunFeature(name){
-    if(name!=="camera")return;
-    $("#funHub").hidden=true;
-    $("#funCameraFeature").hidden=false;
-    window.scrollTo({top:0,behavior:"smooth"});
-  }
-
-  function closeFamilyFunFeature(){
-    stopRecording();
-    stopStream();
-    resetResult();
-    $("#funCameraFeature").hidden=true;
-    $("#funHub").hidden=false;
-    window.scrollTo({top:0,behavior:"smooth"});
-  }
-
-  $$("[data-family-fun-feature]").forEach(btn=>btn.addEventListener("click",()=>openFamilyFunFeature(btn.dataset.familyFunFeature)));
-  $$("[data-family-fun-back]").forEach(btn=>btn.addEventListener("click",closeFamilyFunFeature));
 
   $$("[data-fun-mode]").forEach(btn=>btn.addEventListener("click",()=>setMode(btn.dataset.funMode)));
   $$("[data-fun-tab]").forEach(btn=>btn.addEventListener("click",()=>switchTab(btn.dataset.funTab)));
