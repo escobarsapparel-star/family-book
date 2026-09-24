@@ -395,27 +395,30 @@
     let existing=null;
     if(id){existing=await getOne(id);if(!existing){mount.innerHTML=`<div class="memory-error"><h3>Memory not found</h3><button class="primary" data-r="memories">Back to memories</button></div>`;rebindRoutes();return}}
     const members=window.ensureOwner?.()||[],currentMembers=members.filter(m=>m.profileType!=="history"),historyPeople=members.filter(m=>m.profileType==="history");
+    const eventCapture=!id?window.FB_EVENT_DAY?.getCaptureContext?.():null;
     mount.className="memory-editor-card";
-    mount.innerHTML=`<div class="memory-editor-title"><div><p class="eyebrow">${id?"EDIT MEMORY":"NEW MEMORY"}</p><h1>${id?"Edit this memory":"Add a family memory"}</h1><p>Add photos, short video clips, or a mix from the same family moment. Family Book checks photo metadata when available, and you can change the date and time whenever you need to.</p></div><i data-lucide="images"></i></div>
+    mount.innerHTML=`<div class="memory-editor-title"><div><p class="eyebrow">${id?"EDIT MEMORY":eventCapture?"EVENT DAY MEMORY":"NEW MEMORY"}</p><h1>${id?"Edit this memory":eventCapture?"Capture the Day":"Add a family memory"}</h1><p>${eventCapture?`Add the photos that tell the story of ${e(eventCapture.title||"today")}. The event date and caption are ready for you.`:"Add photos, short video clips, or a mix from the same family moment. Family Book checks photo metadata when available, and you can change the date and time whenever you need to."}</p></div><i data-lucide="images"></i></div>
+      ${eventCapture?`<div class="fb-event-memory-banner"><span><i data-lucide="${eventCapture.frameTheme==="travel"?"plane":"sparkles"}"></i></span><div><strong>${e(eventCapture.title||"Today's family event")}</strong><small>${e(eventCapture.location||eventCapture.date||"Today")}</small></div></div>`:""}
       <form id="memoryForm" novalidate>
         <div class="memory-photo-section">
           <div id="memoryPhotoPreview" class="memory-photo-preview"></div>
           <div class="memory-photo-actions memory-media-actions"><button type="button" class="secondary" id="memoryGalleryBtn"><i data-lucide="images"></i>Add photos / videos</button><button type="button" class="secondary" id="memoryCameraBtn"><i data-lucide="camera"></i>Take photo</button><button type="button" class="secondary" id="memoryVideoBtn"><i data-lucide="video"></i>Record video</button><button type="button" class="memory-remove-all hidden" id="memoryRemoveAllBtn"><i data-lucide="trash-2"></i>Remove all</button></div>
           <input id="memoryGalleryInput" type="file" accept="image/*,video/*" multiple hidden><input id="memoryCameraInput" type="file" accept="image/*" capture="environment" hidden><input id="memoryVideoInput" type="file" accept="video/*" capture="environment" hidden>
+          ${eventCapture?`<label class="fb-event-frame-option"><input id="eventFrameToggle" type="checkbox" checked><span><strong>Event photo frame</strong><small>Add a Family Book ${eventCapture.frameTheme==="travel"?"travel":"event"} frame to photos added here. Videos stay unchanged.</small></span></label>`:""}
           <div id="memoryProcessStatus" class="memory-process-status hidden"><span class="memory-spinner small"></span><span>Preparing media…</span></div>
           <p class="memory-video-note"><i data-lucide="video"></i>Video limit: 50 MB per clip. Photos are optimized automatically before private family upload.</p>
         </div>
         <div id="memoryMetaNote" class="memory-meta-note ${existing?.dateSource==="exif"?"detected":""}"><i data-lucide="${existing?.dateSource==="exif"?"scan-line":"info"}"></i><div><strong>${existing?.dateSource==="exif"?"Date detected from photo":"Photo date & time"}</strong><span>${existing?.dateSource==="exif"?"This came from image metadata. You can still edit it below.":"If metadata is available, Family Book will fill these fields automatically."}</span></div></div>
-        <div class="memory-date-grid"><label>Date taken <span class="optional">(editable)</span><input id="memoryDate" type="date" value="${e(existing?.date||"")}"></label><label>Time taken <span class="optional">(optional)</span><input id="memoryTime" type="time" value="${e(existing?.time||"")}"></label></div>
-        <label>Caption or story <span class="optional">(optional)</span><textarea id="memoryCaption" rows="4" maxlength="800" placeholder="What was happening in this moment?">${e(existing?.caption||"")}</textarea></label>
-        <fieldset class="memory-tags"><legend>Tag people in this Memory <span class="optional">(optional)</span></legend><p>Tag current family or people from Family History. History tags connect old photos to their Family Tree profile and never create notifications for that person.</p>${currentMembers.length?`<div class="memory-tag-group"><strong>Current family</strong><div class="memory-tag-grid">${currentMembers.map(m=>tagChoice(m,(existing?.tags||[]).includes(m.id))).join("")}</div></div>`:""}${historyPeople.length?`<div class="memory-tag-group history-tag-group"><strong><i data-lucide="book-heart"></i>Family history</strong><div class="memory-tag-grid">${historyPeople.map(m=>tagChoice(m,(existing?.tags||[]).includes(m.id),true)).join("")}</div></div>`:""}${!members.length?`<span class="muted">Add family members or Family History profiles first to tag them here.</span>`:""}</fieldset>
+        <div class="memory-date-grid"><label>Date taken <span class="optional">(editable)</span><input id="memoryDate" type="date" value="${e(existing?.date||eventCapture?.date||"")}"></label><label>Time taken <span class="optional">(optional)</span><input id="memoryTime" type="time" value="${e(existing?.time||"")}"></label></div>
+        <label>Caption or story <span class="optional">(optional)</span><textarea id="memoryCaption" rows="4" maxlength="800" placeholder="What was happening in this moment?">${e(existing?.caption||eventCapture?.caption||"")}</textarea></label>
+        <fieldset class="memory-tags"><legend>Tag people in this Memory <span class="optional">(optional)</span></legend><p>Tag current family or people from Family History. History tags connect old photos to their Family Tree profile and never create notifications for that person.</p>${currentMembers.length?`<div class="memory-tag-group"><strong>Current family</strong><div class="memory-tag-grid">${currentMembers.map(m=>tagChoice(m,(existing?.tags||eventCapture?.memberIds||[]).includes(m.id))).join("")}</div></div>`:""}${historyPeople.length?`<div class="memory-tag-group history-tag-group"><strong><i data-lucide="book-heart"></i>Family history</strong><div class="memory-tag-grid">${historyPeople.map(m=>tagChoice(m,(existing?.tags||eventCapture?.memberIds||[]).includes(m.id),true)).join("")}</div></div>`:""}${!members.length?`<span class="muted">Add family members or Family History profiles first to tag them here.</span>`:""}</fieldset>
         <div class="memory-form-actions"><button type="button" class="secondary" data-r="memories">Cancel</button><button type="submit" class="primary" id="memorySaveBtn"><i data-lucide="heart"></i>${id?"Save changes":"Save memory"}</button></div>
       </form>`;
     window.icons?.();rebindRoutes();
 
     let photos=memoryPhotos(existing).map(p=>({id:p.id||photoId(),kind:p.kind||"image",image:p.image,thumb:p.thumb||p.image,meta:p.meta||{}}));
-    let dateSource=existing?.dateSource||"manual",dateAuto=!existing?.date;
-    const preview=mount.querySelector("#memoryPhotoPreview"),status=mount.querySelector("#memoryProcessStatus"),statusText=status.querySelector("span:last-child"),metaNote=mount.querySelector("#memoryMetaNote"),dateInput=mount.querySelector("#memoryDate"),timeInput=mount.querySelector("#memoryTime"),removeAllBtn=mount.querySelector("#memoryRemoveAllBtn");
+    let dateSource=existing?.dateSource||"manual",dateAuto=!(existing?.date||eventCapture?.date);
+    const preview=mount.querySelector("#memoryPhotoPreview"),status=mount.querySelector("#memoryProcessStatus"),statusText=status.querySelector("span:last-child"),metaNote=mount.querySelector("#memoryMetaNote"),dateInput=mount.querySelector("#memoryDate"),timeInput=mount.querySelector("#memoryTime"),removeAllBtn=mount.querySelector("#memoryRemoveAllBtn"),frameToggle=mount.querySelector("#eventFrameToggle");
 
     function setMetaNote(kind,message){
       const detected=kind==="exif"||kind==="file";metaNote.classList.toggle("detected",detected);
@@ -476,10 +479,12 @@
             });
           }else{
             const meta=await readPhotoMetadata(file);
-            const prepared=await preparePhoto(file);
+            let prepared=await preparePhoto(file);
+            const framed=!!(eventCapture&&frameToggle?.checked);
+            if(framed)prepared=await applyEventFrame(prepared,eventCapture);
             added.push({
               id:photoId(),kind:"image",image:prepared.image,thumb:prepared.thumb,
-              meta:{name:file.name,type:file.type,size:file.size,width:prepared.width,height:prepared.height,exifDateTime:meta?.raw||"",detectedDate:meta?.date||"",detectedTime:meta?.time||"",detectedSource:meta?"exif":""}
+              meta:{name:file.name,type:file.type,size:file.size,width:prepared.width,height:prepared.height,exifDateTime:meta?.raw||"",detectedDate:meta?.date||"",detectedTime:meta?.time||"",detectedSource:meta?"exif":"",eventFramed:framed}
             });
           }
         }
@@ -515,6 +520,7 @@
           authorPhoto:existing?.authorPhoto||(typeof window.currentUserPhoto==="function"?window.currentUserPhoto():(window.FB_AUTH?.get?.()?.photo||"")),
           createdAt:existing?.createdAt||now,updatedAt:now
         });
+        window.FB_EVENT_DAY?.clearCaptureContext?.();
         window.go?.("memories");
       }catch(err){alert(err.message||"Could not save this memory.");saveBtn.disabled=false;saveBtn.innerHTML=old;window.icons?.()}
     };
@@ -581,6 +587,38 @@
     if(bitmap)bitmap.close();
     return {image,thumb,width,height};
   }
+  async function applyEventFrame(prepared,eventContext){
+    if(!prepared?.image||!eventContext)return prepared;
+    let bitmap=null;
+    try{
+      bitmap=await createImageBitmap(prepared.image);
+      const w=bitmap.width||prepared.width,h=bitmap.height||prepared.height;
+      const canvas=document.createElement("canvas");canvas.width=w;canvas.height=h;
+      const ctx=canvas.getContext("2d",{alpha:false});
+      ctx.drawImage(bitmap,0,0,w,h);
+      const band=Math.max(82,Math.round(h*.13));
+      const border=Math.max(10,Math.round(Math.min(w,h)*.015));
+      ctx.fillStyle="#173321";ctx.fillRect(0,0,w,border);ctx.fillRect(0,h-border,w,border);ctx.fillRect(0,0,border,h);ctx.fillRect(w-border,0,border,h);
+      const grad=ctx.createLinearGradient(0,h-band,0,h);grad.addColorStop(0,"rgba(12,31,20,.10)");grad.addColorStop(.18,"rgba(12,31,20,.82)");grad.addColorStop(1,"rgba(12,31,20,.96)");ctx.fillStyle=grad;ctx.fillRect(0,h-band,w,band);
+      const title=String(eventContext.title||"Family event").trim();
+      const location=String(eventContext.location||"").trim();
+      const date=String(eventContext.date||"").trim();
+      const size=Math.max(24,Math.round(Math.min(w,h)*.038));
+      ctx.fillStyle="#f3dfb0";ctx.font=`700 ${size}px Georgia, serif`;
+      let display=title;
+      while(display.length>12&&ctx.measureText(display).width>w-border*4)display=display.slice(0,-2);
+      if(display!==title)display=display.trim()+"…";
+      ctx.fillText(display,border*2,h-band+size*1.25);
+      ctx.fillStyle="#d7eadc";ctx.font=`600 ${Math.max(16,Math.round(size*.55))}px Arial, sans-serif`;
+      const sub=[location,date].filter(Boolean).join(" · ")||"Captured with Family Book";
+      ctx.fillText(sub,border*2,h-border*2);
+      ctx.save();ctx.translate(w-border*2,h-band+size*.95);ctx.rotate(-.08);ctx.fillStyle="#b9e0c4";ctx.font=`700 ${Math.max(22,Math.round(size*.8))}px Arial, sans-serif`;ctx.textAlign="right";ctx.fillText("✈  FAMILY BOOK",0,0);ctx.restore();
+      const image=await new Promise((resolve,reject)=>canvas.toBlob(b=>b?resolve(b):reject(new Error("Could not create the event photo frame.")),"image/webp",.84));
+      const thumb=await canvasBlob(canvas,w,h,540,.74,"image/webp");
+      return {image,thumb,width:w,height:h};
+    }finally{try{bitmap?.close?.()}catch(_){}}
+  }
+
   async function prepareVideo(file){
     const MAX_VIDEO_BYTES=50*1024*1024;
     if(file.size>MAX_VIDEO_BYTES)throw new Error("That video is larger than 50 MB. Choose a shorter or smaller clip.");
