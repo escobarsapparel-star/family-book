@@ -163,8 +163,9 @@
     if(!String(route).startsWith("view-event:"))return null;
     const id=String(route).slice("view-event:".length);
     if(String(id).startsWith("birthday:")){
-      const parts=String(id).split(":");
-      const memberId=parts[1],year=parts[2];
+      const match=String(id).match(/^birthday:(.+):(\\d{4})$/);
+      if(!match)return null;
+      const memberId=match[1],year=match[2];
       let member=null;
       try{member=(window.ensureOwner?.()||[]).find(m=>String(m.id)===String(memberId))||null}catch(_){}
       if(!member?.birthday)return null;
