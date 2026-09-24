@@ -44,11 +44,12 @@ A.innerHTML=`<main class="login-page">
 <button class="primary full" type="submit">Sign in</button>
 </form>
 
-<a class="apk-download-cta" data-apk-download href="downloads/FamilyBook.apk">
+<a class="apk-download-cta" data-apk-download href="downloads/FamilyBook.apk" download hidden>
   <span class="apk-download-icon"><i data-lucide="smartphone"></i></span>
   <span><strong>Download Family Book for Android</strong><small>Install the latest APK</small></span>
   <i data-lucide="download"></i>
 </a>
+<button class="apk-install-help-login" type="button" data-android-install-help hidden><i data-lucide="circle-help"></i>How to install the Android app</button>
 
 <form id="signup" class="form hidden">
 <div><p class="eyebrow">CREATE YOUR ACCOUNT</p><h1>Start with Family Book</h1><p class="muted">Create your secure login first. After signing in, you can create a new family or join one with an invitation.</p></div>
@@ -163,7 +164,134 @@ function setFamilyFormSaving(form,saving,label="Saving…"){
    icons();
  }
 }
-function shell(){window.FB_INVITES?.ensureCurrentAccount?.();let fam=esc(familyLabel()),initials=userInitials();A.innerHTML=`<div class="app"><header class="topbar"><button class="brand-home" data-r="home" aria-label="Go to Family Book Home"><span class="brand-logo-wrap"><img class="theme-logo theme-logo-light" src="assets/logo/family-book-logo-header.png" alt="Family Book"><img class="theme-logo theme-logo-dark" src="assets/logo/family-book-logo-dark-header.png" alt="Family Book"></span><span class="brand-tagline">OUR FAMILY <b>•</b> OUR MEMORIES <b>•</b> OUR STORY</span></button><div class="actions profile-actions"><button class="notify circle" id="topNotificationButton" aria-label="Notification settings"><i data-lucide="bell"></i></button><button class="circle avatar" id="topProfileButton" data-current-user-avatar aria-label="Open profile menu" aria-haspopup="menu" aria-expanded="false">${userAvatarHtml()}</button>${window.FB_SETTINGS?.menuShell?.()||""}</div></header><main id="screen" class="screen"></main><nav class="bottom" aria-label="Main navigation"><button class="nav active" data-r="home"><i data-lucide="house"></i><small>Home</small></button><button class="nav" data-r="memories"><i data-lucide="images"></i><small>Memories</small></button><button class="nav" data-r="tree"><i data-lucide="git-fork"></i><small>Tree</small></button><button class="nav" data-r="calendar"><i data-lucide="calendar-days"></i><small>Calendar</small></button><button class="nav family-fun-nav" data-r="family-fun"><i data-lucide="sparkles"></i><small>Family Fun</small></button><button class="nav members-nav" data-r="members"><i data-lucide="users-round"></i><small>Members</small></button><button class="nav" data-r="profile"><i data-lucide="user-round"></i><small>Profile</small></button></nav></div>`;document.querySelectorAll("[data-r]").forEach(b=>b.onclick=()=>go(b.dataset.r));icons();window.FB_SETTINGS?.bindMenu?.();document.querySelector("#topNotificationButton")?.addEventListener("click",()=>go("notifications"));window.FB_NOTIFICATIONS?.refreshBadge?.();go("home",{skipFamilyRefresh:true})}
+
+const FB_ANDROID_APK_URL="downloads/FamilyBook.apk";
+const FB_ANDROID_RELEASE_KEY="familybook_android_release_681";
+let fbAndroidApkAvailable=null;
+
+function runningInsideNativeApp(){
+ try{
+   if(window.Capacitor?.isNativePlatform?.())return true;
+   const p=window.Capacitor?.getPlatform?.();
+   if(p&&p!=="web")return true;
+ }catch(_){}
+ return location.protocol==="capacitor:";
+}
+
+function isAndroidBrowser(){
+ return /Android/i.test(navigator.userAgent||"")&&!runningInsideNativeApp();
+}
+
+async function androidApkAvailable(){
+ if(runningInsideNativeApp())return false;
+ if(fbAndroidApkAvailable!==null)return fbAndroidApkAvailable;
+ try{
+   const r=await fetch(FB_ANDROID_APK_URL,{method:"HEAD",cache:"no-store"});
+   fbAndroidApkAvailable=!!r.ok;
+ }catch(_){
+   fbAndroidApkAvailable=false;
+ }
+ return fbAndroidApkAvailable;
+}
+
+function androidInstallStepsHtml(){
+ return `
+   <ol class="android-install-steps">
+     <li><span>1</span><div><strong>Download the APK</strong><small>Tap Download Family Book below.</small></div></li>
+     <li><span>2</span><div><strong>Open the downloaded file</strong><small>Android may ask you to allow installs from your browser or Files app.</small></div></li>
+     <li><span>3</span><div><strong>Install Family Book</strong><small>Tap Install. Your Family Book account and family data stay in the same private cloud.</small></div></li>
+   </ol>`;
+}
+
+function androidAppBannerHtml(){
+ if(runningInsideNativeApp())return "";
+ return `
+   <section class="android-app-banner" id="androidAppBanner" hidden>
+     <div class="android-app-mark"><i data-lucide="smartphone"></i></div>
+     <div class="android-app-banner-copy">
+       <small>FAMILY BOOK FOR ANDROID</small>
+       <strong>Take Family Book with you</strong>
+       <span>Install the Android app for a more app-like camera, sharing and navigation experience.</span>
+     </div>
+     <div class="android-app-banner-actions">
+       <a class="primary" href="${FB_ANDROID_APK_URL}" download><i data-lucide="download"></i>Download app</a>
+       <button class="secondary" type="button" data-android-install-help><i data-lucide="circle-help"></i>How to install</button>
+     </div>
+   </section>`;
+}
+
+function closeAndroidInstallSplash(days=7){
+ document.querySelector("#androidInstallSplash")?.remove();
+ try{
+   const until=Date.now()+days*24*60*60*1000;
+   localStorage.setItem(FB_ANDROID_RELEASE_KEY,String(until));
+ }catch(_){}
+}
+
+function showAndroidInstallSplash(force=false){
+ if(runningInsideNativeApp())return;
+ if(document.querySelector("#androidInstallSplash"))return;
+ if(!force){
+   try{
+     const until=Number(localStorage.getItem(FB_ANDROID_RELEASE_KEY)||0);
+     if(until>Date.now())return;
+   }catch(_){}
+   if(!isAndroidBrowser())return;
+ }
+ const d=document.createElement("div");
+ d.id="androidInstallSplash";
+ d.className="android-install-backdrop";
+ d.innerHTML=`
+   <section class="android-install-splash" role="dialog" aria-modal="true" aria-labelledby="androidInstallTitle">
+     <button class="android-install-close" type="button" aria-label="Close"><i data-lucide="x"></i></button>
+     <div class="android-install-hero">
+       <span class="android-install-app-icon"><img src="assets/icons/familybook-icon-192.png" alt=""></span>
+       <p>FAMILY BOOK ANDROID</p>
+       <h2 id="androidInstallTitle">Your family, now in the app</h2>
+       <span>Install Family Book on your Android phone for the best camera and navigation experience.</span>
+     </div>
+     ${androidInstallStepsHtml()}
+     <div class="android-install-actions">
+       <a class="primary" href="${FB_ANDROID_APK_URL}" download><i data-lucide="download"></i>Download Family Book</a>
+       <button class="secondary" type="button" data-android-not-now>Not now</button>
+     </div>
+     <small class="android-install-note">Android may show a security prompt because this beta APK is installed directly from Family Book rather than the Play Store.</small>
+   </section>`;
+ document.body.appendChild(d);
+ d.querySelector(".android-install-close")?.addEventListener("click",()=>closeAndroidInstallSplash(7));
+ d.querySelector("[data-android-not-now]")?.addEventListener("click",()=>closeAndroidInstallSplash(7));
+ d.addEventListener("click",e=>{if(e.target===d)closeAndroidInstallSplash(7)});
+ window.icons?.();
+ initAndroidDownloadUi();
+}
+
+function showAndroidInstallHelp(){
+ if(runningInsideNativeApp())return;
+ const existing=document.querySelector("#androidInstallSplash");
+ if(existing){existing.remove()}
+ showAndroidInstallSplash(true);
+}
+
+async function initAndroidDownloadUi(){
+ if(runningInsideNativeApp())return;
+ const available=await androidApkAvailable();
+ document.querySelectorAll("[data-apk-download]").forEach(el=>{
+   if(!available){el.setAttribute("hidden","");return}
+   el.removeAttribute("hidden");
+ });
+ const banner=document.querySelector("#androidAppBanner");
+ if(banner){
+   banner.hidden=!available;
+   if(available)window.icons?.();
+ }
+ if(!available)return;
+ document.querySelectorAll("[data-android-install-help]").forEach(btn=>{
+   btn.onclick=showAndroidInstallHelp;
+ });
+ setTimeout(()=>showAndroidInstallSplash(false),450);
+}
+
+function shell(){window.FB_INVITES?.ensureCurrentAccount?.();let fam=esc(familyLabel()),initials=userInitials();A.innerHTML=`<div class="app"><header class="topbar"><button class="brand-home" data-r="home" aria-label="Go to Family Book Home"><span class="brand-logo-wrap"><img class="theme-logo theme-logo-light" src="assets/logo/family-book-logo-header.png" alt="Family Book"><img class="theme-logo theme-logo-dark" src="assets/logo/family-book-logo-dark-header.png" alt="Family Book"></span><span class="brand-tagline">OUR FAMILY <b>•</b> OUR MEMORIES <b>•</b> OUR STORY</span></button><div class="actions profile-actions"><button class="notify circle" id="topNotificationButton" aria-label="Notification settings"><i data-lucide="bell"></i></button><button class="circle avatar" id="topProfileButton" data-current-user-avatar aria-label="Open profile menu" aria-haspopup="menu" aria-expanded="false">${userAvatarHtml()}</button>${window.FB_SETTINGS?.menuShell?.()||""}</div></header><main id="screen" class="screen"></main><nav class="bottom" aria-label="Main navigation"><button class="nav active" data-r="home"><i data-lucide="house"></i><small>Home</small></button><button class="nav" data-r="memories"><i data-lucide="images"></i><small>Memories</small></button><button class="nav" data-r="tree"><i data-lucide="git-fork"></i><small>Tree</small></button><button class="nav" data-r="calendar"><i data-lucide="calendar-days"></i><small>Calendar</small></button><button class="nav family-fun-nav" data-r="family-fun"><i data-lucide="sparkles"></i><small>Family Fun</small></button><button class="nav members-nav" data-r="members"><i data-lucide="users-round"></i><small>Members</small></button><button class="nav" data-r="profile"><i data-lucide="user-round"></i><small>Profile</small></button></nav></div>`;document.querySelectorAll("[data-r]").forEach(b=>b.onclick=()=>go(b.dataset.r));icons();window.FB_SETTINGS?.bindMenu?.();document.querySelector("#topNotificationButton")?.addEventListener("click",()=>go("notifications"));window.FB_NOTIFICATIONS?.refreshBadge?.();go("home",{skipFamilyRefresh:true});initAndroidDownloadUi()}
 function go(r,opts={}){if(currentRoute==="family-fun"&&r!=="family-fun")window.FB_FAMILY_FUN?.cleanup?.();currentRoute=r;let navRoute=(r==="albums"||r==="new-album"||r.startsWith("album:")||r.startsWith("edit-album:"))?"memories":(r==="add-history"||r.startsWith("edit-history:"))?"tree":r;document.querySelectorAll(".nav").forEach(b=>b.classList.toggle("active",b.dataset.r===navRoute));$("#screen").innerHTML=r==="home"?home():r==="memories"?FB_MEMORIES.pageShell():r==="albums"?FB_ALBUMS.pageShell():r==="new-album"?FB_ALBUMS.editorShell():r.startsWith("edit-album:")?FB_ALBUMS.editorShell(r.split(":")[1]):r.startsWith("album:")?FB_ALBUMS.detailShell(r.split(":")[1]):r==="family-fun"?FB_FAMILY_FUN.pageShell():r==="calendar"?FB_CALENDAR.pageShell():r==="add-event"?FB_CALENDAR.editorShell():r.startsWith("edit-event:")?FB_CALENDAR.editorShell(r.split(":")[1]):r.startsWith("view-event:")?FB_CALENDAR.detailShell(r.split(":")[1]):r==="add-memory"?FB_MEMORIES.editorShell():r.startsWith("view-memory:")?FB_MEMORIES.detailShell(r.split(":")[1]):r.startsWith("edit-memory:")?FB_MEMORIES.editorShell(r.split(":")[1]):r==="members"?members():r==="add-member"?addMember():r.startsWith("edit-member:")?editMember(r.split(":")[1]):r==="add-history"?historyForm():r.startsWith("edit-history:")?historyForm(r.split(":")[1]):r.startsWith("family-unit:")?familyUnitView(r.split(":")[1]):r.startsWith("view-member:")?viewMember(r.split(":")[1]):r.startsWith("member-wall:")?memberWallPage(r.split(":")[1]):r==="tree-full"?fullFamilyTree():r==="tree"?familyTree():r==="story-cover"?storyCoverPage():r==="story-slideshow"?storySlideshowPage():r==="notifications"?FB_NOTIFICATIONS.pageShell():r==="family-access"?FB_INVITES.pageShell():r==="settings"?FB_SETTINGS.pageShell():r==="profile"?profilePage():page(r);document.querySelectorAll("#screen [data-r]").forEach(b=>b.onclick=()=>go(b.dataset.r));
  document.querySelectorAll("[data-edit-member]").forEach(b=>b.onclick=()=>go("edit-member:"+b.dataset.editMember));
  if(r.startsWith("edit-member:")){
