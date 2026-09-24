@@ -602,9 +602,9 @@
     setTimeout(()=>panel?.scrollIntoView({behavior:"smooth",block:"start"}),40);
   }
 
-  $("[data-family-fun-feature]").forEach(btn=>btn.addEventListener("click",()=>openFamilyFunFeature(btn.dataset.familyFunFeature)));
+  document.querySelectorAll("[data-family-fun-feature]").forEach(btn=>btn.addEventListener("click",()=>openFamilyFunFeature(btn.dataset.familyFunFeature)));
 
-  $("[data-fun-mode]").forEach(btn=>btn.addEventListener("click",()=>setMode(btn.dataset.funMode)));
+  document.querySelectorAll("[data-fun-mode]").forEach(btn=>btn.addEventListener("click",()=>setMode(btn.dataset.funMode)));
   $$("[data-fun-tab]").forEach(btn=>btn.addEventListener("click",()=>switchTab(btn.dataset.funTab)));
   $$("[data-gallery-filter]").forEach(btn=>btn.addEventListener("click",()=>{
     galleryFilter=btn.dataset.galleryFilter;
