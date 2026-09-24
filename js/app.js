@@ -236,13 +236,12 @@ let upcoming=demo
 : (window.FB_CALENDAR?.homeUpcomingShell?.()||`<div class="empty-events"><span><i data-lucide="calendar-days"></i></span><strong>No family events yet</strong></div>`);
 
 return `${hero}
-<div class="section-head"><h2>Shortcuts</h2><button class="link" data-r="members">View family</button></div>
+<div class="section-head"><h2>Quick Access</h2></div>
 <section class="quick">
 <button class="qcard" data-r="memories"><span class="qicon"><i data-lucide="images"></i></span><strong>Memories</strong><small>Photos & albums</small></button>
 <button class="qcard" data-r="tree"><span class="qicon"><i data-lucide="git-fork"></i></span><strong>Family Tree</strong><small>Our history</small></button>
 <button class="qcard" data-r="calendar"><span class="qicon"><i data-lucide="calendar-days"></i></span><strong>Calendar</strong><small>Events & birthdays</small></button>
-<button class="qcard" data-r="members"><span class="qicon"><i data-lucide="users-round"></i></span><strong>Family</strong><small>Profiles & members</small></button>
-<button class="qcard" type="button" onclick="window.location.href='family-fun.html'"><span class="qicon"><i data-lucide="clapperboard"></i></span><strong>Family Fun</strong><small>Create & watch videos</small></button>
+<button class="qcard" type="button" onclick="window.location.href='family-fun.html'"><span class="qicon"><i data-lucide="party-popper"></i></span><strong>Family Fun</strong><small>Camera, games & more</small></button>
 </section>
 ${window.FB_WALL?.homeShell?.()||""}
 <div class="section-head"><h2 id="homeActivityTitle">${demo?"What's happening":"Start your Family Book"}</h2></div>
