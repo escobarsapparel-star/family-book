@@ -165,8 +165,10 @@
   }
 
   async function logout(){
+    const userId=session?.user?.id||current?.supabaseUserId||"";
     try{await client()?.auth.signOut({scope:"local"})}
     finally{
+      try{await window.FB_OFFLINE_CACHE?.clearUser?.(userId)}catch(_){}
       current=null;
       session=null;
       sessionStorage.removeItem(PENDING_INVITE);
