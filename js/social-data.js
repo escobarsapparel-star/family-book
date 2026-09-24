@@ -58,7 +58,7 @@
         id:String(p.id),
         authorId:String(p.author_person_id||""),
         authorName:author.name||"Family member",
-        authorPhoto:author.photo||"",
+        authorPhoto:currentPersonPhoto(people,p.author_person_id,author.photo||""),
         text:p.text||"",
         activity:p.activity_type||"update",
         location:p.location_name||"",
@@ -81,7 +81,7 @@
         target:key,
         authorId:String(c.author_person_id||""),
         authorName:author.name||"Family member",
-        authorPhoto:author.photo||"",
+        authorPhoto:currentPersonPhoto(people,c.author_person_id,author.photo||""),
         text:c.text||"",
         createdAt:c.created_at?new Date(c.created_at).getTime():0,
         canDelete:c.can_delete!==false
