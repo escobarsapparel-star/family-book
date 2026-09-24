@@ -63,6 +63,7 @@
             <video id="funCameraPreview" autoplay muted playsinline hidden></video>
             <div class="fun-camera-empty" id="funCameraEmpty"><span class="fun-empty-icon"><i data-lucide="camera-off"></i></span><strong>Camera is off</strong><small>Start the camera, or use your device camera below.</small></div>
             <div class="fun-camera-overlay" id="funCameraOverlay" hidden><strong id="funOverlayMain"></strong><small id="funOverlaySub"></small></div>
+            <div class="fun-record-timer" id="funRecordTimer" hidden><span></span><strong id="funRecordTimerText">00:00</strong></div>
           </div>
 
           <p class="fun-status" id="funStatus">Start the camera when you’re ready.</p>
@@ -102,7 +103,8 @@
           <div class="fun-result-actions">
             <button class="primary" type="button" id="funAddGalleryBtn">Add to Gallery</button>
             <a class="secondary" id="funDownloadLink" href="#" download>Download clip</a>
-            <button class="secondary" type="button" id="funRetakeBtn">Retake</button>
+            <button class="secondary" type="button" id="funRetakeBtn"><i data-lucide="rotate-ccw"></i>Record again</button>
+            <button class="fun-discard-btn" type="button" id="funDiscardBtn"><i data-lucide="trash-2"></i>Discard clip</button>
           </div>
         </section>
       </div>
@@ -167,7 +169,7 @@
     }
 
     const script=document.createElement("script");
-    script.src="js/family-fun-studio.js?v=icon-system-1";
+    script.src="js/family-fun-studio.js?v=camera-ux-1";
     script.dataset.familyFunRuntime="1";
     script.onload=()=>window.icons?.();
     script.onerror=()=>console.error("Could not load Family Fun.");
