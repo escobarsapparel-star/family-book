@@ -241,3 +241,178 @@ html[data-theme="dark"] .fun-result-actions .fun-discard-btn{
   .fun-result-actions .primary{grid-column:1/-1}
   .fun-result-actions .fun-discard-btn{width:100%}
 }
+
+/* ==========================================================
+   Family Fun Camera Studio — camera-first mobile experience
+   ========================================================== */
+.fun-camera-studio{padding:12px!important}
+.fun-camera-wrap{
+  position:relative;
+  min-height:520px;
+  height:min(68svh,680px);
+  overflow:hidden;
+  border-radius:24px;
+  background:#080b09;
+}
+.fun-camera-wrap video{
+  width:100%!important;
+  height:100%!important;
+  min-height:100%!important;
+  object-fit:contain!important;
+  background:#080b09!important;
+}
+.fun-camera-topbar{
+  position:absolute;z-index:12;left:12px;right:12px;top:12px;
+  display:grid;grid-template-columns:44px 1fr 44px;align-items:center;gap:10px;
+  pointer-events:none
+}
+.fun-camera-topbar>*{pointer-events:auto}
+.fun-camera-icon-btn,.fun-sound-btn,.fun-camera-rail button{
+  border:1px solid rgba(255,255,255,.18);
+  background:rgba(8,12,9,.60);
+  color:#fff;
+  backdrop-filter:blur(12px);
+  box-shadow:0 6px 18px rgba(0,0,0,.16)
+}
+.fun-camera-icon-btn{
+  width:44px;height:44px;border-radius:50%;display:grid;place-items:center;padding:0
+}
+.fun-camera-icon-btn svg{width:21px;height:21px}
+.fun-sound-btn{
+  min-height:44px;border-radius:999px;padding:8px 14px;
+  display:flex;align-items:center;justify-content:center;gap:8px;
+  font-weight:800;min-width:0
+}
+.fun-sound-btn span{white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:190px}
+.fun-sound-btn.active{background:rgba(49,92,67,.86);border-color:rgba(143,193,159,.75)}
+.fun-record-timer{
+  top:68px!important;left:50%!important;transform:translateX(-50%);
+  min-width:84px!important;justify-content:center
+}
+.fun-camera-status{
+  position:absolute;z-index:9;left:14px;bottom:104px;
+  max-width:calc(100% - 110px);margin:0!important;
+  padding:7px 10px;border-radius:999px;
+  background:rgba(8,12,9,.58);color:rgba(255,255,255,.88)!important;
+  backdrop-filter:blur(10px);font-size:.76rem!important;line-height:1.25
+}
+.fun-camera-status:empty{display:none}
+.fun-camera-rail{
+  position:absolute;z-index:11;right:12px;top:86px;
+  display:flex;flex-direction:column;gap:10px
+}
+.fun-camera-rail button{
+  width:58px;min-height:58px;border-radius:18px;padding:7px 4px;
+  display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px
+}
+.fun-camera-rail button svg{width:20px;height:20px}
+.fun-camera-rail button small{font-size:.58rem;font-weight:800}
+.fun-camera-rail button.active{background:rgba(49,92,67,.88);border-color:#8fc19f}
+.fun-camera-shutter{
+  position:absolute;z-index:12;left:50%;bottom:18px;transform:translateX(-50%);
+  display:flex;align-items:center;justify-content:center
+}
+.fun-shutter{
+  width:82px;height:82px;border:0;background:transparent!important;
+  padding:0;position:relative;display:grid;place-items:center;color:#fff;
+  cursor:pointer
+}
+.fun-shutter:before{
+  content:"";position:absolute;inset:3px;border:4px solid #fff;border-radius:50%;
+  box-shadow:0 3px 18px rgba(0,0,0,.28)
+}
+.fun-shutter-core{
+  width:60px;height:60px;border-radius:50%;background:#f4f6f4;
+  transition:.18s ease;box-shadow:inset 0 0 0 2px rgba(0,0,0,.07)
+}
+.fun-shutter small{
+  position:absolute;top:86px;white-space:nowrap;font-size:.67rem;font-weight:800;
+  text-shadow:0 2px 8px rgba(0,0,0,.7)
+}
+.fun-shutter.recording .fun-shutter-core{
+  width:34px;height:34px;border-radius:9px;background:#e14848
+}
+.fun-filter-tray{
+  position:absolute;z-index:13;left:12px;right:82px;bottom:112px;
+  display:flex;gap:8px;overflow-x:auto;padding:10px;
+  border:1px solid rgba(255,255,255,.14);border-radius:18px;
+  background:rgba(8,12,9,.74);backdrop-filter:blur(14px);scrollbar-width:none
+}
+.fun-filter-tray[hidden]{display:none!important}
+.fun-filter-tray::-webkit-scrollbar{display:none}
+.fun-filter-tray button{
+  flex:0 0 58px;border:0;background:transparent;color:#fff;padding:0;
+  display:flex;flex-direction:column;align-items:center;gap:5px;font-size:.65rem
+}
+.filter-preview{
+  display:block;width:46px;height:46px;border-radius:50%;
+  background:linear-gradient(135deg,#365945,#e0b978);
+  border:2px solid transparent;box-shadow:0 3px 10px rgba(0,0,0,.22)
+}
+.fun-filter-tray button.active .filter-preview{border-color:#fff}
+.filter-warm{filter:sepia(.3) saturate(1.3)}
+.filter-vivid{filter:saturate(1.6) contrast(1.1)}
+.filter-soft{filter:brightness(1.12) contrast(.86)}
+.filter-mono{filter:grayscale(1)}
+.fun-source-menu{
+  position:absolute;z-index:13;right:82px;top:166px;width:190px;
+  padding:8px;border:1px solid rgba(255,255,255,.14);border-radius:16px;
+  background:rgba(8,12,9,.80);backdrop-filter:blur(14px)
+}
+.fun-source-menu[hidden]{display:none!important}
+.fun-source-menu button{
+  width:100%;border:0;background:transparent;color:#fff;padding:11px 10px;
+  display:flex;align-items:center;gap:10px;border-radius:11px;text-align:left;font-weight:750
+}
+.fun-source-menu button:hover{background:rgba(255,255,255,.08)}
+.fun-source-menu svg{width:18px;height:18px}
+.fun-start-camera-hit{
+  position:absolute;z-index:4;inset:0;border:0;background:transparent;
+  cursor:pointer
+}
+.fun-camera-wrap video:not([hidden])~.fun-start-camera-hit{display:none}
+.fun-camera-empty{z-index:3}
+.fun-camera-empty[hidden]{display:none!important}
+.fun-camera-overlay{z-index:10}
+.fun-stop-btn[hidden]{display:none!important}
+.fun-camera-mode-copy{margin-bottom:10px}
+.fun-countdown-options,.fun-pass-panel{margin-top:10px!important}
+
+/* Make modes compact and keep the camera close to the top on phones. */
+@media(max-width:760px){
+  .fun-section-label{margin-bottom:8px}
+  .fun-mode-grid{
+    display:flex!important;grid-template-columns:none!important;gap:8px!important;
+    overflow-x:auto;padding:1px 1px 8px;scrollbar-width:none
+  }
+  .fun-mode-grid::-webkit-scrollbar{display:none}
+  .fun-mode-card{
+    flex:0 0 auto;min-width:118px!important;min-height:62px!important;
+    padding:9px 11px!important;border-radius:15px!important;
+    display:grid!important;grid-template-columns:30px 1fr!important;
+    grid-template-rows:auto auto!important;column-gap:8px!important;align-items:center!important
+  }
+  .fun-mode-card>.fun-ui-icon{
+    grid-row:1/3;width:30px!important;height:30px!important;margin:0!important;border-radius:9px!important
+  }
+  .fun-mode-card>.fun-ui-icon svg{width:18px!important;height:18px!important}
+  .fun-mode-card strong{font-size:.82rem!important;align-self:end}
+  .fun-mode-card small{font-size:.64rem!important;align-self:start}
+  .fun-camera-mode-copy{display:none!important}
+  .fun-camera-studio{padding:0!important;border:0!important;background:transparent!important;box-shadow:none!important}
+  .fun-camera-wrap{
+    width:100%;height:min(67svh,620px);min-height:470px;
+    border-radius:22px
+  }
+  .fun-camera-topbar{top:10px;left:10px;right:10px}
+  .fun-camera-rail{right:10px;top:82px}
+  .fun-camera-rail button{width:54px;min-height:54px;border-radius:17px}
+  .fun-camera-shutter{bottom:20px}
+  .fun-shutter small{display:none}
+  .fun-record-timer{top:64px!important}
+  .fun-camera-status{bottom:104px}
+}
+@media(max-width:380px){
+  .fun-camera-wrap{min-height:430px;height:63svh}
+  .fun-sound-btn span{max-width:130px}
+}
