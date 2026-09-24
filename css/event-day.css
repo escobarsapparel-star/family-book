@@ -38,6 +38,34 @@
 .fb-birthday-art{background:
  radial-gradient(circle at 50% 35%,rgba(255,239,196,.98) 0 10%,rgba(255,207,155,.92) 11% 25%,transparent 26%),
  linear-gradient(145deg,#f39ca9 0%,#d76b8b 44%,#83435b 100%)}
+/* Birthday palette follows the member's saved sex; unspecified/other stays neutral. */
+.fb-event-day-card.is-birthday.birthday-male{background:linear-gradient(160deg,#10283a,#0b1a27 58%,#12364a);border-color:rgba(132,202,224,.30)}
+.fb-event-day-card.is-birthday.birthday-male .fb-event-kicker{color:#a8d9e7}
+.fb-event-day-card.is-birthday.birthday-male .fb-event-day-copy h2{color:#f0c879}
+.fb-event-day-card.is-birthday.birthday-male .fb-event-meta{color:#acd3df}
+.fb-event-day-card.is-birthday.birthday-male .fb-event-capture{background:rgba(18,54,72,.82);color:#e0f4f8;border-color:rgba(139,205,224,.28)}
+.fb-birthday-art.birthday-male{background:
+ radial-gradient(circle at 50% 35%,rgba(240,248,255,.98) 0 10%,rgba(168,219,235,.90) 11% 25%,transparent 26%),
+ linear-gradient(145deg,#5daec6 0%,#347f9a 45%,#1d4c68 100%)}
+.fb-event-party-layer.birthday-male .b2{background:#5daec6}.fb-event-party-layer.birthday-male .b3{background:#d4b46a}
+
+.fb-event-day-card.is-birthday.birthday-female{background:linear-gradient(160deg,#321823,#1f1118 58%,#3c1d2c);border-color:rgba(244,193,207,.32)}
+.fb-event-day-card.is-birthday.birthday-female .fb-event-kicker{color:#f3c1cf}
+.fb-event-day-card.is-birthday.birthday-female .fb-event-day-copy h2{color:#f2c786}
+.fb-event-day-card.is-birthday.birthday-female .fb-event-meta{color:#e8b8c6}
+.fb-event-day-card.is-birthday.birthday-female .fb-event-capture{background:rgba(91,35,58,.82);color:#ffe5ec;border-color:rgba(244,190,211,.30)}
+.fb-birthday-art.birthday-female{background:
+ radial-gradient(circle at 50% 35%,rgba(255,243,222,.98) 0 10%,rgba(248,205,185,.92) 11% 25%,transparent 26%),
+ linear-gradient(145deg,#ef9daf 0%,#c96886 44%,#80425e 100%)}
+
+.fb-event-day-card.is-birthday.birthday-neutral{background:linear-gradient(160deg,#193126,#0f2118 58%,#24392c);border-color:rgba(212,190,132,.28)}
+.fb-event-day-card.is-birthday.birthday-neutral .fb-event-kicker{color:#b9ddc3}
+.fb-event-day-card.is-birthday.birthday-neutral .fb-event-day-copy h2{color:#e9c97f}
+.fb-event-day-card.is-birthday.birthday-neutral .fb-event-meta{color:#b8d4bf}
+.fb-event-day-card.is-birthday.birthday-neutral .fb-event-capture{background:rgba(29,65,43,.82);color:#e0f0e4;border-color:rgba(166,207,177,.26)}
+.fb-birthday-art.birthday-neutral{background:
+ radial-gradient(circle at 50% 35%,rgba(255,244,203,.98) 0 10%,rgba(227,206,148,.92) 11% 25%,transparent 26%),
+ linear-gradient(145deg,#7db18b 0%,#477b5c 44%,#294936 100%)}
 .fb-birthday-glow{position:absolute;inset:0;background:radial-gradient(circle at 50% 42%,rgba(255,255,255,.35),transparent 38%)}
 .fb-birthday-person{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);width:142px;height:142px;border-radius:50%;padding:5px;background:linear-gradient(145deg,#fff2d3,#e8ad6a);box-shadow:0 18px 42px rgba(52,20,31,.28);z-index:3}
 .fb-birthday-person img{width:100%;height:100%;display:block;object-fit:cover;border-radius:50%;background:#fff}
@@ -120,6 +148,30 @@
 .calendar-detail-card.fb-themed-event-detail.is-birthday>h1{color:#f2c6a0}
 .calendar-detail-card.fb-themed-event-detail.is-birthday .fb-detail-hero-label{background:#fff0dd;color:#4d2833}
 .calendar-detail-card.fb-themed-event-detail.is-birthday .fb-detail-hero-label svg{color:#bb566b}
+.fb-event-detail-hero.is-birthday.birthday-male{background:
+ radial-gradient(circle at 50% 35%,rgba(240,248,255,.98) 0 10%,rgba(168,219,235,.90) 11% 25%,transparent 26%),
+ linear-gradient(145deg,#5daec6 0%,#347f9a 45%,#1d4c68 100%)}
+.calendar-detail-card.fb-themed-event-detail.is-birthday.birthday-male{background:linear-gradient(160deg,#10283a,#0b1a27 58%,#12364a);border-color:rgba(132,202,224,.28)}
+.calendar-detail-card.fb-themed-event-detail.is-birthday.birthday-male>.eyebrow{color:#9fd0df}
+.calendar-detail-card.fb-themed-event-detail.is-birthday.birthday-male>h1{color:#f0c879}
+.calendar-detail-card.fb-themed-event-detail.is-birthday.birthday-male .fb-detail-hero-label{background:#e8f6fa;color:#173d50}
+.calendar-detail-card.fb-themed-event-detail.is-birthday.birthday-male .fb-detail-hero-label svg{color:#347f9a}
+
+.fb-event-detail-hero.is-birthday.birthday-female{background:
+ radial-gradient(circle at 50% 35%,rgba(255,243,222,.98) 0 10%,rgba(248,205,185,.92) 11% 25%,transparent 26%),
+ linear-gradient(145deg,#ef9daf 0%,#c96886 44%,#80425e 100%)}
+.calendar-detail-card.fb-themed-event-detail.is-birthday.birthday-female{background:linear-gradient(160deg,#321823,#1f1118 58%,#3c1d2c);border-color:rgba(244,193,207,.28)}
+.calendar-detail-card.fb-themed-event-detail.is-birthday.birthday-female>.eyebrow{color:#efb7c7}
+.calendar-detail-card.fb-themed-event-detail.is-birthday.birthday-female>h1{color:#f2c786}
+
+.fb-event-detail-hero.is-birthday.birthday-neutral{background:
+ radial-gradient(circle at 50% 35%,rgba(255,244,203,.98) 0 10%,rgba(227,206,148,.92) 11% 25%,transparent 26%),
+ linear-gradient(145deg,#7db18b 0%,#477b5c 44%,#294936 100%)}
+.calendar-detail-card.fb-themed-event-detail.is-birthday.birthday-neutral{background:linear-gradient(160deg,#193126,#0f2118 58%,#24392c);border-color:rgba(212,190,132,.28)}
+.calendar-detail-card.fb-themed-event-detail.is-birthday.birthday-neutral>.eyebrow{color:#b9d9c0}
+.calendar-detail-card.fb-themed-event-detail.is-birthday.birthday-neutral>h1{color:#e9c97f}
+.calendar-detail-card.fb-themed-event-detail.is-birthday.birthday-neutral .fb-detail-hero-label{background:#eef5e8;color:#294936}
+.calendar-detail-card.fb-themed-event-detail.is-birthday.birthday-neutral .fb-detail-hero-label svg{color:#5e8b6c}
 .fb-event-detail-hero.is-family{display:grid;place-items:center;background:radial-gradient(circle at 50% 48%,rgba(230,201,142,.22),transparent 27%),linear-gradient(145deg,#315c43,#173523 56%,#102519)}
 .fb-detail-family-orbit{position:absolute;width:152px;height:152px;border:1px solid rgba(238,211,159,.30);border-radius:50%;box-shadow:0 0 0 28px rgba(154,200,169,.07),0 0 0 53px rgba(231,198,139,.04)}
 .fb-detail-family-icon{position:relative;width:88px;height:88px;border-radius:27px;background:linear-gradient(145deg,#e0c48c,#b28c54);color:#183522;display:grid;place-items:center;z-index:2}
