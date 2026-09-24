@@ -1312,7 +1312,7 @@ function memberWallPage(id){
 }
 
 function profilePage(){
- let u=FB_AUTH.get()||{},owner=ensureOwner().find(m=>m.id===currentMemberId())||{},photo=owner.photo||u.photo||"";
+ let u=FB_AUTH.get()||{},owner=ensureOwner().find(m=>m.id===currentMemberId())||{},photo=(owner.photo&&isDisplayPhotoUrl(owner.photo)?owner.photo:(u.photo&&isDisplayPhotoUrl(u.photo)?u.photo:""));
  return `<section class="member-profile-view account-profile-view"><div class="profile-view-card"><button type="button" id="accountPhotoPicker" class="profile-photo-button" aria-label="Change your profile photo"><span class="profile-view-avatar">${photo?`<img src="${photo}" alt="Profile photo">`:`<span>${memberInitials(u.name||"Family User")}</span>`}</span><span class="profile-photo-camera"><i data-lucide="camera"></i></span><small>${photo?"Change photo":"Add profile photo"}</small></button><h1>${esc(u.name||"Family User")}</h1>${window.FB_WALL?.profileStatusShell?.()||""}<div class="profile-details"><div class="profile-detail"><i data-lucide="users-round"></i><div><span>Family</span><strong>${esc(familyLabel())}</strong></div></div>${u.email?`<div class="profile-detail"><i data-lucide="mail"></i><div><span>Email</span><strong>${esc(u.email)}</strong></div></div>`:""}</div><div class="account-profile-actions"><button class="secondary" data-r="edit-member:${esc(currentMemberId())}"><i data-lucide="pencil"></i>Edit my profile</button><button class="logout" id="logout">Sign out</button></div></div></section>`;
 }
 function bindOwnProfilePhoto(){
@@ -1321,7 +1321,8 @@ function bindOwnProfilePhoto(){
    b.disabled=true;
    const previous=(FB_AUTH.get()||{}).photo||"";
    try{
-     list[idx]={...list[idx],photo};
+     const explicitRemove=photo===""&&!!(list[idx].photo||list[idx].photoPath);
+     list[idx]={...list[idx],photo,photoRemoved:explicitRemove||undefined};
      await saveMembers(list);
      FB_AUTH.update({photo});
      let top=document.querySelector(".topbar .avatar");
