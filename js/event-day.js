@@ -159,6 +159,70 @@
     window.icons?.();
   }
 
+  function routeEventRow(route){
+    if(!String(route).startsWith("view-event:"))return null;
+    const id=String(route).slice("view-event:".length);
+    if(String(id).startsWith("birthday:")){
+      const parts=String(id).split(":");
+      const memberId=parts[1],year=parts[2];
+      let member=null;
+      try{member=(window.ensureOwner?.()||[]).find(m=>String(m.id)===String(memberId))||null}catch(_){}
+      if(!member?.birthday)return null;
+      return {
+        id,kind:"birthday",memberId,
+        title:`${member.name}'s birthday`,
+        date:`${year}-${String(member.birthday).slice(5)}`,
+        startTime:"",endTime:"",type:"birthday",location:"",
+        memberIds:[memberId],recurringYearly:true
+      };
+    }
+    return (window.FB_CALENDAR?.getEvents?.()||[]).find(row=>String(row.id)===String(id))||null;
+  }
+
+  function detailThemeMarkup(row){
+    const theme=eventTheme(row);
+    const birthday=theme==="birthday",travel=theme==="travel";
+    const person=birthday?memberForBirthday(row):null;
+    const destination=row.location||"Family adventure";
+    if(birthday){
+      return `<div class="fb-event-detail-hero is-birthday">
+        <span class="fb-detail-confetti d1"></span><span class="fb-detail-confetti d2"></span><span class="fb-detail-confetti d3"></span><span class="fb-detail-confetti d4"></span>
+        <span class="fb-detail-birthday-glow"></span>
+        ${person?.photo?`<span class="fb-detail-person"><img src="${esc(person.photo)}" alt=""></span>`:""}
+        <span class="fb-detail-cake">🎂</span>
+        <span class="fb-detail-hero-label"><i data-lucide="cake-slice"></i> Birthday celebration</span>
+      </div>`;
+    }
+    if(travel){
+      return `<div class="fb-event-detail-hero is-travel">
+        <span class="fb-detail-sun"></span>
+        <span class="fb-detail-mountain m1"></span><span class="fb-detail-mountain m2"></span>
+        <span class="fb-detail-sea"></span>
+        <span class="fb-detail-palm p1">🌴</span><span class="fb-detail-palm p2">🌴</span>
+        <span class="fb-detail-plane">✈</span>
+        <span class="fb-detail-route"></span>
+        <span class="fb-detail-hero-label"><i data-lucide="map-pin"></i>${esc(destination)}</span>
+      </div>`;
+    }
+    return `<div class="fb-event-detail-hero is-family">
+      <span class="fb-detail-family-orbit"></span>
+      <span class="fb-detail-family-icon"><i data-lucide="heart-handshake"></i></span>
+      <span class="fb-detail-family-spark s1">✦</span><span class="fb-detail-family-spark s2">✧</span><span class="fb-detail-family-spark s3">✦</span>
+      <span class="fb-detail-hero-label"><i data-lucide="sparkles"></i> Family Event</span>
+    </div>`;
+  }
+
+  function applyThemeToEventDetail(route){
+    if(!String(route).startsWith("view-event:"))return;
+    const row=routeEventRow(route);
+    const card=document.querySelector(".calendar-detail-card");
+    if(!row||!card||card.classList.contains("fb-themed-event-detail"))return;
+    const theme=eventTheme(row);
+    card.classList.add("fb-themed-event-detail",`is-${theme}`);
+    card.insertAdjacentHTML("afterbegin",detailThemeMarkup(row));
+    window.icons?.();
+  }
+
   function addCaptureToEventDetail(route){
     if(!String(route).startsWith("view-event:"))return;
     const id=String(route).slice("view-event:".length);
@@ -175,7 +239,10 @@
 
   function enhanceCurrentRoute(route){
     if(route==="calendar")addCaptureToCalendar();
-    if(String(route).startsWith("view-event:"))addCaptureToEventDetail(route);
+    if(String(route).startsWith("view-event:")){
+      applyThemeToEventDetail(route);
+      addCaptureToEventDetail(route);
+    }
   }
 
   async function bindRoute(route){
