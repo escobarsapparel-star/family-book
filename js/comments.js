@@ -11,6 +11,18 @@
     return e(((p[0]?.[0]||"F")+(p.length>1?(p.at(-1)?.[0]||""):"")).toUpperCase());
   }
   function avatar(name,photo){return photo?`<img src="${e(photo)}" alt="">`:`<span>${initials(name)}</span>`}
+  function currentPersonById(id){
+    const wanted=String(id||"");
+    if(!wanted)return null;
+    try{return (window.FB_FAMILY_DATA?.getPeople?.()||[]).find(p=>String(p.id||"")===wanted)||null}catch(_){return null}
+  }
+  function resolvedCommentAuthor(row){
+    const live=currentPersonById(row?.authorId);
+    return {
+      name:live?.name||row?.authorName||"Family member",
+      photo:live?.photo||row?.authorPhoto||""
+    };
+  }
   function rows(target){return window.FB_SOCIAL_DATA?.getComments?.(target)||[]}
   function hiddenSet(){return window.FB_SOCIAL_DATA?.getHidden?.()||new Set()}
   function timeAgo(ts){return window.FB_TIME?.activity?.(ts)||"Earlier"}
@@ -56,7 +68,7 @@
       </div>`;
     }
     return `<article class="comment-item" data-comment-id="${e(row.id)}">
-      <span class="comment-avatar">${avatar(row.authorName,row.authorPhoto)}</span>
+      <span class="comment-avatar">${(()=>{const a=resolvedCommentAuthor(row);return avatar(a.name,a.photo)})()}</span>
       <div class="comment-bubble">
         <div class="comment-meta"><strong>${e(row.authorName||"Family member")}</strong><span>${e(timeAgo(row.createdAt))}</span></div>
         <p>${e(row.text||"")}</p>
