@@ -164,3 +164,22 @@ html[data-theme="dark"] .family-fun-app-page{color:#f4efe7}
 .fun-feature-card.active{border-color:#72a784;box-shadow:0 0 0 2px rgba(114,167,132,.12),0 10px 26px rgba(32,52,40,.08)}
 .fun-feature-card.active .fun-feature-arrow{transform:rotate(180deg)}
 .fun-feature-arrow{transition:transform .18s ease}
+
+/* Family Book icon language — Lucide line icons are the default UI icons. */
+.fun-ui-icon,.fun-empty-icon{display:grid;place-items:center;color:#315c43}
+.fun-ui-icon svg{width:24px;height:24px;stroke-width:1.9}
+.fun-mode-card>.fun-ui-icon{width:38px;height:38px;border-radius:12px;background:rgba(49,92,67,.09);margin-bottom:7px}
+.fun-mode-card.active>.fun-ui-icon{background:rgba(49,92,67,.14)}
+.fun-mode-heading>.fun-ui-icon{font-size:0}
+.fun-mode-heading>.fun-ui-icon svg{width:23px;height:23px}
+.fun-camera-empty>.fun-empty-icon,.fun-gallery-empty>.fun-empty-icon{width:52px;height:52px;border-radius:16px;background:rgba(49,92,67,.10);margin-bottom:10px}
+.fun-camera-empty>.fun-empty-icon{color:#dbe4de;background:rgba(255,255,255,.08)}
+.fun-empty-icon svg{width:28px;height:28px;stroke-width:1.8}
+.fun-gallery-filters button{display:inline-flex;align-items:center;gap:6px}
+.fun-gallery-filters button svg{width:15px;height:15px;stroke-width:1.9}
+.fun-gallery-mode{display:inline-flex;align-items:center;gap:5px}
+.fun-gallery-mode svg{width:13px;height:13px;stroke-width:2}
+.fun-feature-icon svg{width:25px;height:25px;stroke-width:1.9}
+html[data-theme="dark"] .fun-ui-icon{color:#8fc19f}
+html[data-theme="dark"] .fun-mode-card>.fun-ui-icon{background:rgba(143,193,159,.10)}
+html[data-theme="dark"] .fun-mode-card.active>.fun-ui-icon{background:rgba(143,193,159,.16)}
