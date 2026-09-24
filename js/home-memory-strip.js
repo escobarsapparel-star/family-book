@@ -15,7 +15,9 @@
   }
 
   function authorAvatar(memory){
-    const name=memory?.authorName||"Family member",photo=memory?.authorPhoto||"";
+    const live=(window.FB_FAMILY_DATA?.getPeople?.()||[]).find(p=>String(p.id||"")===String(memory?.authorId||""));
+    const name=live?.name||memory?.authorName||"Family member";
+    const photo=live?.photo||memory?.authorPhoto||"";
     return photo?`<img src="${esc(photo)}" alt="">`:`<span>${esc(initials(name))}</span>`;
   }
 
