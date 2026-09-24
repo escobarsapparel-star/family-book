@@ -35,6 +35,12 @@
     const id=String(row?.memberId||String(row?.id||"").split(":")[1]||"");
     try{return (window.ensureOwner?.()||[]).find(m=>String(m.id)===id)||null}catch(_){return null}
   }
+  function birthdayGenderTheme(person){
+    const sex=String(person?.sex||"").toLowerCase();
+    if(sex==="male")return "male";
+    if(sex==="female")return "female";
+    return "neutral";
+  }
   function captureContextFor(row){
     const birthday=String(row.id||"").startsWith("birthday:");
     return {
@@ -88,15 +94,16 @@
     const theme=eventTheme(row);
     const travel=theme==="travel",birthday=theme==="birthday";
     const person=birthday?memberForBirthday(row):null;
+    const birthdayGender=birthday?birthdayGenderTheme(person):"neutral";
     const destination=row.location||"Today's adventure";
     const birthdayName=person?.name||String(row.title||"Birthday").replace(/['’]s birthday$/i,"");
     const motion=birthday
-      ? `<div class="fb-event-party-layer" aria-hidden="true"><span class="fb-balloon b1">●</span><span class="fb-balloon b2">●</span><span class="fb-balloon b3">●</span><span class="fb-confetti k1"></span><span class="fb-confetti k2"></span><span class="fb-confetti k3"></span><span class="fb-confetti k4"></span><span class="fb-confetti k5"></span><span class="fb-confetti k6"></span></div>`
+      ? `<div class="fb-event-party-layer birthday-${birthdayGender}" aria-hidden="true"><span class="fb-balloon b1">●</span><span class="fb-balloon b2">●</span><span class="fb-balloon b3">●</span><span class="fb-confetti k1"></span><span class="fb-confetti k2"></span><span class="fb-confetti k3"></span><span class="fb-confetti k4"></span><span class="fb-confetti k5"></span><span class="fb-confetti k6"></span></div>`
       : travel
         ? `<div class="fb-event-flight-layer" aria-hidden="true"><span class="fb-event-flight-trail"></span><span class="fb-event-plane">✈</span><span class="fb-event-cloud c1"></span><span class="fb-event-cloud c2"></span><span class="fb-event-cloud c3"></span></div>`
         : "";
     const art=birthday
-      ? `<div class="fb-event-day-art fb-birthday-art"><span class="fb-birthday-glow"></span><span class="fb-birthday-cake">🎂</span>${person?.photo?`<span class="fb-birthday-person"><img src="${esc(person.photo)}" alt=""></span>`:""}<span class="fb-birthday-stars">✦ ✧ ✦</span></div>`
+      ? `<div class="fb-event-day-art fb-birthday-art birthday-${birthdayGender}"><span class="fb-birthday-glow"></span><span class="fb-birthday-cake">🎂</span>${person?.photo?`<span class="fb-birthday-person"><img src="${esc(person.photo)}" alt=""></span>`:""}<span class="fb-birthday-stars">✦ ✧ ✦</span></div>`
       : travel
         ? `<div class="fb-event-day-art fb-travel-art"><span class="fb-event-sun"></span><span class="fb-event-island island-a"></span><span class="fb-event-island island-b"></span><span class="fb-event-water"></span><span class="fb-event-palm palm-a">🌴</span><span class="fb-event-palm palm-b">🌴</span><span class="fb-event-suitcase">🧳</span><span class="fb-event-pin"><i data-lucide="map-pin"></i>${esc(destination)}</span></div>`
         : `<div class="fb-event-day-art fb-family-art"><span class="fb-family-event-orbit"></span><span class="fb-family-event-icon"><i data-lucide="heart-handshake"></i></span><span class="fb-family-event-spark s1">✦</span><span class="fb-family-event-spark s2">✧</span><span class="fb-family-event-spark s3">✦</span></div>`;
@@ -110,7 +117,7 @@
     const captureLabel=birthday?"Capture Birthday":"Capture the Day";
     return `<div class="fb-event-day-overlay" role="dialog" aria-modal="true" aria-label="${birthday?"Today's birthday":"Today's family event"}">
       ${motion}
-      <section class="fb-event-day-card is-${theme}">
+      <section class="fb-event-day-card is-${theme} ${birthday?`birthday-${birthdayGender}`:""}">
         <button type="button" class="fb-event-day-close" aria-label="Close"><i data-lucide="x"></i></button>
         ${art}
         <div class="fb-event-day-copy">
@@ -184,9 +191,10 @@
     const theme=eventTheme(row);
     const birthday=theme==="birthday",travel=theme==="travel";
     const person=birthday?memberForBirthday(row):null;
+    const birthdayGender=birthday?birthdayGenderTheme(person):"neutral";
     const destination=row.location||"Family adventure";
     if(birthday){
-      return `<div class="fb-event-detail-hero is-birthday">
+      return `<div class="fb-event-detail-hero is-birthday birthday-${birthdayGender}">
         <span class="fb-detail-confetti d1"></span><span class="fb-detail-confetti d2"></span><span class="fb-detail-confetti d3"></span><span class="fb-detail-confetti d4"></span>
         <span class="fb-detail-birthday-glow"></span>
         ${person?.photo?`<span class="fb-detail-person"><img src="${esc(person.photo)}" alt=""></span>`:""}
@@ -220,6 +228,7 @@
     if(!row||!card||card.classList.contains("fb-themed-event-detail"))return;
     const theme=eventTheme(row);
     card.classList.add("fb-themed-event-detail",`is-${theme}`);
+    if(theme==="birthday")card.classList.add(`birthday-${birthdayGenderTheme(memberForBirthday(row))}`);
     card.insertAdjacentHTML("afterbegin",detailThemeMarkup(row));
     window.icons?.();
   }
