@@ -1,0 +1,45 @@
+/* Family Book Event Day */
+.fb-event-day-overlay{position:fixed;inset:0;z-index:1200;background:rgba(3,10,7,.78);backdrop-filter:blur(8px);display:grid;place-items:center;padding:18px;overflow:hidden}
+.fb-event-day-card{position:relative;width:min(760px,96vw);max-height:min(880px,92vh);overflow:auto;border-radius:30px;background:linear-gradient(160deg,#13251a,#0d1711 58%,#182a1d);border:1px solid rgba(172,215,185,.28);box-shadow:0 35px 90px rgba(0,0,0,.48);color:#edf6ef}
+.fb-event-day-close{position:absolute;right:14px;top:14px;z-index:6;width:42px;height:42px;border-radius:50%;border:1px solid rgba(218,236,222,.22);background:rgba(9,19,13,.78);color:#d9ebde;display:grid;place-items:center}
+.fb-event-day-art{height:300px;position:relative;overflow:hidden;background:linear-gradient(#73c9e9 0 58%,#36a9c5 58% 70%,#1f7382 70%);border-radius:30px 30px 0 0}
+.fb-event-sun{position:absolute;right:12%;top:12%;width:68px;height:68px;border-radius:50%;background:#ffe88a;box-shadow:0 0 42px rgba(255,232,138,.65)}
+.fb-event-water{position:absolute;left:0;right:0;bottom:0;height:31%;background:repeating-linear-gradient(0deg,rgba(255,255,255,.16) 0 2px,transparent 2px 18px)}
+.fb-event-island{position:absolute;bottom:27%;width:0;height:0;border-left:125px solid transparent;border-right:125px solid transparent;border-bottom:190px solid #2f714b;filter:drop-shadow(0 8px 3px rgba(8,43,30,.2))}
+.fb-event-island:after{content:"";position:absolute;left:-75px;top:95px;width:150px;height:72px;background:#58a262;border-radius:50% 50% 10% 10%}
+.fb-event-island.island-a{left:14%;transform:scale(1.08)}
+.fb-event-island.island-b{right:3%;transform:scale(.72);opacity:.9}
+.fb-event-palm{position:absolute;bottom:10px;font-size:84px;filter:drop-shadow(0 9px 6px rgba(0,0,0,.2));z-index:3}
+.fb-event-palm.palm-a{left:-10px;transform:rotate(7deg)}
+.fb-event-palm.palm-b{right:-12px;transform:scaleX(-1) rotate(4deg)}
+.fb-event-suitcase{position:absolute;right:14%;bottom:17px;font-size:58px;z-index:4}
+.fb-event-pin{position:absolute;left:50%;bottom:18px;transform:translateX(-50%);z-index:5;display:flex;align-items:center;gap:7px;background:#f8f1de;color:#183522;padding:9px 15px;border-radius:999px;font-weight:900;box-shadow:0 7px 20px rgba(0,0,0,.18)}
+.fb-event-pin svg{width:18px;height:18px;color:#b35d3e}
+.fb-event-day-copy{padding:24px 28px 28px;text-align:center}
+.fb-event-kicker{display:flex;justify-content:center;align-items:center;gap:8px;color:#9fd2ad;font-size:.75rem;font-weight:900;letter-spacing:.16em;margin:0 0 9px}
+.fb-event-kicker svg{width:17px;height:17px}
+.fb-event-day-copy h2{font:800 clamp(2rem,5vw,3.4rem)/1.03 Georgia,serif;color:#d9b67a;margin:0 auto 10px;max-width:650px}
+.fb-event-meta{color:#a9c6b0;font-weight:800;margin:0 0 15px}
+.fb-event-bonvoyage{display:inline-block;color:#142319;background:#eecb83;padding:9px 20px;border-radius:999px;font:italic 800 1.2rem Georgia,serif;transform:rotate(-1deg)}
+.fb-event-day-copy>p:last-of-type{color:#c9d8cc;margin:16px auto 22px}
+.fb-event-day-actions{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.fb-event-day-actions button{min-height:52px}
+.fb-event-flight-layer{position:fixed;inset:0;pointer-events:none;z-index:1201;overflow:hidden}
+.fb-event-plane{position:absolute;left:-100px;top:12%;font-size:52px;color:#fff;filter:drop-shadow(0 7px 5px rgba(0,0,0,.25));animation:fbPlaneFly 6.5s cubic-bezier(.18,.68,.2,1) .45s both}
+.fb-event-flight-trail{position:absolute;left:-20vw;top:22%;width:58vw;height:130px;border-top:3px dashed rgba(239,250,243,.58);border-radius:50%;transform:rotate(-8deg);animation:fbTrailFade 7s ease .3s both}
+.fb-event-cloud{position:absolute;width:90px;height:28px;border-radius:40px;background:rgba(255,255,255,.3);filter:blur(.3px);animation:fbCloudDrift 10s linear infinite}
+.fb-event-cloud:before,.fb-event-cloud:after{content:"";position:absolute;border-radius:50%;background:inherit}.fb-event-cloud:before{width:38px;height:38px;left:15px;top:-18px}.fb-event-cloud:after{width:48px;height:48px;right:13px;top:-24px}
+.fb-event-cloud.c1{top:8%;left:18%}.fb-event-cloud.c2{top:28%;right:8%;transform:scale(.7)}.fb-event-cloud.c3{top:46%;left:7%;transform:scale(.52);opacity:.55}
+@keyframes fbPlaneFly{0%{transform:translate(-8vw,16vh) rotate(-10deg) scale(.82)}40%{transform:translate(46vw,-2vh) rotate(5deg) scale(1)}72%{transform:translate(77vw,8vh) rotate(-4deg) scale(.92)}100%{transform:translate(118vw,-12vh) rotate(8deg) scale(.72)}}
+@keyframes fbTrailFade{0%{opacity:0;transform:rotate(-8deg) scaleX(.2)}20%{opacity:1}80%{opacity:.65}100%{opacity:0;transform:rotate(-8deg) scaleX(1.2)}}
+@keyframes fbCloudDrift{from{margin-left:-25px}to{margin-left:45px}}
+.fb-calendar-capture{display:flex;align-items:center;justify-content:center;gap:5px;width:100%;border:1px solid rgba(101,174,126,.45);background:#193b27;color:#c9ecd3;border-radius:8px;padding:5px 7px;font-size:.68rem;font-weight:900;margin-top:4px}
+.fb-calendar-capture svg{width:14px;height:14px}
+.fb-event-day-today{box-shadow:inset 0 0 0 2px rgba(111,191,137,.4)}
+.fb-detail-capture{display:inline-flex;align-items:center;gap:7px}
+.fb-event-memory-banner{display:flex;align-items:center;gap:14px;background:linear-gradient(135deg,#173321,#102418);border:1px solid rgba(139,203,158,.28);border-radius:18px;padding:14px 16px;margin:0 0 16px;color:#d8eade}
+.fb-event-memory-banner>span{width:44px;height:44px;border-radius:14px;background:#28583a;display:grid;place-items:center;color:#bde4c8;flex:0 0 auto}.fb-event-memory-banner svg{width:23px;height:23px}
+.fb-event-memory-banner strong,.fb-event-memory-banner small{display:block}.fb-event-memory-banner small{color:#9fb3a4;margin-top:3px}
+.fb-event-frame-option{display:flex;align-items:center;gap:12px;border:1px solid #d9c9aa;background:#fff9ee;border-radius:15px;padding:12px 14px;margin:12px 0;color:#26382c}.fb-event-frame-option input{width:20px;height:20px;accent-color:#315c43}.fb-event-frame-option span{display:grid;gap:2px}.fb-event-frame-option small{color:#6f756e}
+@media(max-width:620px){.fb-event-day-overlay{padding:9px}.fb-event-day-card{width:100%;border-radius:23px}.fb-event-day-art{height:250px;border-radius:23px 23px 0 0}.fb-event-day-copy{padding:20px 17px 22px}.fb-event-day-actions{grid-template-columns:1fr}.fb-event-plane{top:8%;font-size:42px;animation-duration:5.7s}.fb-event-flight-trail{top:17%;width:78vw}.fb-event-palm{font-size:66px}.fb-event-island{transform:scale(.78)}.fb-event-island.island-a{left:0;transform:scale(.84)}.fb-event-day-copy h2{font-size:2rem}.fb-calendar-capture span{display:none}.fb-calendar-capture{width:28px;height:28px;padding:0;margin:4px auto 0;border-radius:50%}}
+@media(prefers-reduced-motion:reduce){.fb-event-plane,.fb-event-flight-trail,.fb-event-cloud{animation:none!important}.fb-event-plane{left:72%;top:8%}}
