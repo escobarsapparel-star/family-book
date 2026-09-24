@@ -922,3 +922,34 @@ body.fun-camera-open{overflow:hidden!important}
 #funCameraPreview[data-facing="environment"]{
   transform:none!important;
 }
+
+/* ==========================================================
+   Full-bleed Family Camera — preview is the entire screen
+   ========================================================== */
+.fun-camera-fullscreen .fun-camera-wrap>video#funCameraPreview{
+  position:absolute!important;
+  inset:0!important;
+  width:100%!important;
+  height:100%!important;
+  min-width:100%!important;
+  min-height:100%!important;
+  max-width:none!important;
+  max-height:none!important;
+  object-fit:cover!important;
+  object-position:center center!important;
+  background:#050706!important;
+}
+.fun-camera-fullscreen .fun-camera-topbar,
+.fun-camera-fullscreen .fun-camera-rail,
+.fun-camera-fullscreen .fun-camera-mode-strip,
+.fun-camera-fullscreen .fun-camera-shutter,
+.fun-camera-fullscreen .fun-record-timer,
+.fun-camera-fullscreen .fun-camera-status{
+  position:absolute!important;
+}
+.fun-camera-fullscreen .fun-camera-topbar{z-index:30!important}
+.fun-camera-fullscreen .fun-camera-rail{z-index:28!important}
+.fun-camera-fullscreen .fun-camera-mode-strip{z-index:27!important}
+.fun-camera-fullscreen .fun-camera-shutter{z-index:31!important}
+.fun-camera-fullscreen .fun-record-timer{z-index:32!important}
+.fun-camera-fullscreen .fun-camera-status{z-index:26!important}
