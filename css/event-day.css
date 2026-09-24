@@ -79,10 +79,55 @@
 .calendar-detail-card .cal-detail-actions button span{display:inline-flex;align-items:center;justify-content:center;line-height:1}
 .calendar-detail-card .fb-detail-capture{background:rgba(18,34,24,.72);color:#d6eadc;border:1px solid rgba(178,216,188,.22)}
 .calendar-detail-card .cal-detail-actions .primary{background:#82b394;color:#102219;border:1px solid rgba(183,224,195,.24)}
+.calendar-detail-card.fb-themed-event-detail{overflow:hidden;padding:0;background:linear-gradient(160deg,#13251a,#0d1711 58%,#182a1d);border-color:rgba(172,215,185,.22);color:#edf6ef;box-shadow:0 26px 65px rgba(0,0,0,.22)}
+.calendar-detail-card.fb-themed-event-detail>.cal-detail-icon{display:none}
+.calendar-detail-card.fb-themed-event-detail>.eyebrow{margin-top:18px;color:#d6aa72}
+.calendar-detail-card.fb-themed-event-detail>h1{color:#b7dec2;padding:0 18px}
+.calendar-detail-card.fb-themed-event-detail>.cal-detail-date{color:#d0c2b6;padding:0 18px}
+.calendar-detail-card.fb-themed-event-detail>.cal-detail-list{padding:0 18px;margin:18px 0}
+.calendar-detail-card.fb-themed-event-detail>.cal-detail-actions{padding:0 18px 18px}
+.calendar-detail-card.fb-themed-event-detail .cal-detail-list>div{background:rgba(6,17,11,.52);border:1px solid rgba(179,216,190,.08)}
+.calendar-detail-card.fb-themed-event-detail .cal-detail-list svg{color:#6eaa82}
+.calendar-detail-card.fb-themed-event-detail .cal-detail-list small{color:#b2a69c}
+.calendar-detail-card.fb-themed-event-detail .cal-detail-list strong{color:#f2f2ec}
+.calendar-detail-card.fb-themed-event-detail .cal-detail-map-link{color:#8ec49f}
+.fb-event-detail-hero{position:relative;height:210px;overflow:hidden;border-radius:22px 22px 0 0}
+.fb-event-detail-hero.is-travel{background:linear-gradient(#73c9e9 0 56%,#34a7c1 56% 70%,#1f7382 70%)}
+.fb-detail-sun{position:absolute;right:11%;top:12%;width:56px;height:56px;border-radius:50%;background:#ffe88a;box-shadow:0 0 34px rgba(255,232,138,.55)}
+.fb-detail-mountain{position:absolute;bottom:56px;width:0;height:0;border-left:95px solid transparent;border-right:95px solid transparent;border-bottom:145px solid #2f714b;filter:drop-shadow(0 7px 3px rgba(8,43,30,.16))}
+.fb-detail-mountain:after{content:"";position:absolute;left:-58px;top:76px;width:116px;height:54px;background:#58a262;border-radius:50% 50% 10% 10%}
+.fb-detail-mountain.m1{left:11%}.fb-detail-mountain.m2{right:3%;transform:scale(.72);opacity:.92}
+.fb-detail-sea{position:absolute;left:0;right:0;bottom:0;height:32%;background:repeating-linear-gradient(0deg,rgba(255,255,255,.14) 0 2px,transparent 2px 16px)}
+.fb-detail-palm{position:absolute;bottom:4px;font-size:56px;z-index:4;filter:drop-shadow(0 7px 4px rgba(0,0,0,.18))}
+.fb-detail-palm.p1{left:-5px;transform:rotate(6deg)}.fb-detail-palm.p2{right:-7px;transform:scaleX(-1) rotate(5deg)}
+.fb-detail-plane{position:absolute;left:-48px;top:22%;font-size:34px;z-index:5;filter:drop-shadow(0 5px 4px rgba(0,0,0,.18));animation:fbDetailPlane 6s ease-in-out .4s both}
+.fb-detail-route{position:absolute;left:10%;top:39%;width:62%;height:70px;border-top:2px dashed rgba(255,255,255,.62);border-radius:50%;transform:rotate(-8deg)}
+@keyframes fbDetailPlane{0%{transform:translate(0,36px) rotate(-10deg)}55%{transform:translate(55vw,-8px) rotate(4deg)}100%{transform:translate(92vw,-24px) rotate(8deg)}}
+.fb-detail-hero-label{position:absolute;left:50%;bottom:14px;transform:translateX(-50%);z-index:7;display:inline-flex;align-items:center;gap:7px;max-width:80%;padding:8px 13px;border-radius:999px;background:rgba(248,241,222,.94);color:#183522;font-weight:900;font-size:.78rem;box-shadow:0 7px 18px rgba(0,0,0,.16);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.fb-detail-hero-label svg{width:16px;height:16px;flex:0 0 auto;color:#b35d3e}
+.fb-event-detail-hero.is-birthday{background:
+ radial-gradient(circle at 50% 35%,rgba(255,239,196,.98) 0 10%,rgba(255,207,155,.90) 11% 25%,transparent 26%),
+ linear-gradient(145deg,#f39ca9 0%,#d76b8b 44%,#83435b 100%)}
+.fb-detail-birthday-glow{position:absolute;inset:0;background:radial-gradient(circle at 50% 42%,rgba(255,255,255,.34),transparent 38%)}
+.fb-detail-person{position:absolute;left:50%;top:48%;transform:translate(-50%,-50%);width:112px;height:112px;border-radius:50%;padding:4px;background:linear-gradient(145deg,#fff2d3,#e8ad6a);box-shadow:0 15px 34px rgba(52,20,31,.26);z-index:4}
+.fb-detail-person img{width:100%;height:100%;display:block;object-fit:cover;border-radius:50%}
+.fb-detail-cake{position:absolute;left:calc(50% + 68px);top:54%;transform:translateY(-50%) rotate(4deg);font-size:56px;z-index:5}
+.fb-detail-confetti{position:absolute;width:8px;height:16px;border-radius:3px;animation:fbDetailConfetti 4.4s linear infinite}
+.fb-detail-confetti.d1{left:16%;top:-20px;background:#f3d27d}.fb-detail-confetti.d2{left:36%;top:-32px;background:#91c7a0;animation-delay:-1.7s}.fb-detail-confetti.d3{right:29%;top:-24px;background:#e47a91;animation-delay:-2.6s}.fb-detail-confetti.d4{right:13%;top:-35px;background:#93bed8;animation-delay:-3.5s}
+@keyframes fbDetailConfetti{to{transform:translateY(250px) rotate(560deg)}}
+.calendar-detail-card.fb-themed-event-detail.is-birthday{background:linear-gradient(160deg,#2b171e,#1a1216 58%,#2b1b20);border-color:rgba(244,193,160,.25)}
+.calendar-detail-card.fb-themed-event-detail.is-birthday>.eyebrow{color:#efb985}
+.calendar-detail-card.fb-themed-event-detail.is-birthday>h1{color:#f2c6a0}
+.calendar-detail-card.fb-themed-event-detail.is-birthday .fb-detail-hero-label{background:#fff0dd;color:#4d2833}
+.calendar-detail-card.fb-themed-event-detail.is-birthday .fb-detail-hero-label svg{color:#bb566b}
+.fb-event-detail-hero.is-family{display:grid;place-items:center;background:radial-gradient(circle at 50% 48%,rgba(230,201,142,.22),transparent 27%),linear-gradient(145deg,#315c43,#173523 56%,#102519)}
+.fb-detail-family-orbit{position:absolute;width:152px;height:152px;border:1px solid rgba(238,211,159,.30);border-radius:50%;box-shadow:0 0 0 28px rgba(154,200,169,.07),0 0 0 53px rgba(231,198,139,.04)}
+.fb-detail-family-icon{position:relative;width:88px;height:88px;border-radius:27px;background:linear-gradient(145deg,#e0c48c,#b28c54);color:#183522;display:grid;place-items:center;z-index:2}
+.fb-detail-family-icon svg{width:41px;height:41px}.fb-detail-family-spark{position:absolute;color:#f2d9a6;font-size:23px}.fb-detail-family-spark.s1{left:25%;top:26%}.fb-detail-family-spark.s2{right:26%;top:19%}.fb-detail-family-spark.s3{right:21%;bottom:23%}
 .fb-event-memory-banner{display:flex;align-items:center;gap:14px;background:linear-gradient(135deg,#173321,#102418);border:1px solid rgba(139,203,158,.28);border-radius:18px;padding:14px 16px;margin:0 0 16px;color:#d8eade}
 .fb-event-memory-banner>span{width:44px;height:44px;border-radius:14px;background:#28583a;display:grid;place-items:center;color:#bde4c8;flex:0 0 auto}.fb-event-memory-banner svg{width:23px;height:23px}
 .fb-event-memory-banner strong,.fb-event-memory-banner small{display:block}.fb-event-memory-banner small{color:#9fb3a4;margin-top:3px}
 .fb-event-frame-option{display:flex;align-items:center;gap:12px;border:1px solid #d9c9aa;background:#fff9ee;border-radius:15px;padding:12px 14px;margin:12px 0;color:#26382c}.fb-event-frame-option input{width:20px;height:20px;accent-color:#315c43}.fb-event-frame-option span{display:grid;gap:2px}.fb-event-frame-option small{color:#6f756e}
-@media(max-width:620px){.fb-event-day-overlay{padding:9px}.fb-event-day-card{width:100%;border-radius:23px}.fb-event-day-art{height:235px;border-radius:23px 23px 0 0}.fb-event-day-copy{padding:18px 16px 20px}.fb-event-day-actions{grid-template-columns:1fr 1fr;gap:8px}.fb-event-day-actions button{height:46px;min-height:46px;padding:0 10px;font-size:.84rem;border-radius:13px}.fb-event-day-actions button svg{width:17px;height:17px;min-width:17px;flex-basis:17px}.fb-event-plane{top:8%;font-size:42px;animation-duration:5.7s}.fb-event-flight-trail{top:17%;width:78vw}.fb-event-palm{font-size:66px}.fb-event-island{transform:scale(.78)}.fb-event-island.island-a{left:0;transform:scale(.84)}.fb-event-day-copy h2{font-size:2rem}.fb-birthday-person{width:116px;height:116px}.fb-birthday-cake{font-size:60px;left:calc(50% + 70px)}.fb-birthday-stars{font-size:28px;letter-spacing:10px}.fb-calendar-capture span{display:none}.fb-calendar-capture{width:28px;height:28px;padding:0;margin:4px auto 0;border-radius:50%}.calendar-detail-card .cal-detail-actions{gap:8px}.calendar-detail-card .cal-detail-actions button{height:48px;min-height:48px;flex:1 1 calc(50% - 4px);padding:0 12px;font-size:.9rem;border-radius:13px}}
+@media(max-width:620px){.fb-event-detail-hero{height:180px}.fb-detail-mountain{bottom:48px}.fb-detail-person{width:96px;height:96px}.fb-detail-cake{font-size:48px;left:calc(50% + 58px)}.calendar-detail-card.fb-themed-event-detail>h1{font-size:1.85rem}.fb-event-day-overlay{padding:9px}.fb-event-day-card{width:100%;border-radius:23px}.fb-event-day-art{height:235px;border-radius:23px 23px 0 0}.fb-event-day-copy{padding:18px 16px 20px}.fb-event-day-actions{grid-template-columns:1fr 1fr;gap:8px}.fb-event-day-actions button{height:46px;min-height:46px;padding:0 10px;font-size:.84rem;border-radius:13px}.fb-event-day-actions button svg{width:17px;height:17px;min-width:17px;flex-basis:17px}.fb-event-plane{top:8%;font-size:42px;animation-duration:5.7s}.fb-event-flight-trail{top:17%;width:78vw}.fb-event-palm{font-size:66px}.fb-event-island{transform:scale(.78)}.fb-event-island.island-a{left:0;transform:scale(.84)}.fb-event-day-copy h2{font-size:2rem}.fb-birthday-person{width:116px;height:116px}.fb-birthday-cake{font-size:60px;left:calc(50% + 70px)}.fb-birthday-stars{font-size:28px;letter-spacing:10px}.fb-calendar-capture span{display:none}.fb-calendar-capture{width:28px;height:28px;padding:0;margin:4px auto 0;border-radius:50%}.calendar-detail-card .cal-detail-actions{gap:8px}.calendar-detail-card .cal-detail-actions button{height:48px;min-height:48px;flex:1 1 calc(50% - 4px);padding:0 12px;font-size:.9rem;border-radius:13px}}
 @media(max-width:380px){.fb-event-day-actions{grid-template-columns:1fr}.calendar-detail-card .cal-detail-actions button{flex:1 1 100%}}
-@media(prefers-reduced-motion:reduce){.fb-event-plane,.fb-event-flight-trail,.fb-event-cloud,.fb-balloon,.fb-confetti,.fb-family-event-spark{animation:none!important}.fb-event-plane{left:72%;top:8%}.fb-balloon{display:none}.fb-confetti{display:none}}
+@media(prefers-reduced-motion:reduce){.fb-event-plane,.fb-event-flight-trail,.fb-event-cloud,.fb-balloon,.fb-confetti,.fb-family-event-spark,.fb-detail-plane,.fb-detail-confetti{animation:none!important}.fb-event-plane{left:72%;top:8%}.fb-balloon{display:none}.fb-confetti{display:none}}
