@@ -35,6 +35,10 @@
   let facing="user";
   let autoStopTimer=0;
   let countdownTimer=0;
+  let countdownGoTimer=0;
+  let countdownResolve=null;
+  let countdownToken=0;
+  let captureState="idle";
   let recordTimerInterval=0;
   let recordStartedAt=0;
   let currentBlob=null;
@@ -157,9 +161,41 @@
   }
 
   function syncRecordButton(recording=false){
-    recordBtn?.classList.toggle("recording",recording);
-    recordBtn?.setAttribute("aria-label",recording?"Stop recording":"Start recording");
-    if(recordAction)recordAction.textContent=recording?"Stop":recordActionLabel();
+    const isRecording=recording||captureState==="recording";
+    recordBtn?.classList.toggle("recording",isRecording);
+    recordBtn?.classList.toggle("counting-down",captureState==="countdown");
+    recordBtn?.setAttribute("aria-label",isRecording?"Stop recording":captureState==="countdown"?"Countdown in progress":"Start recording");
+    if(recordAction){
+      recordAction.textContent=isRecording?"Stop":captureState==="countdown"?"Wait":recordActionLabel();
+    }
+  }
+
+  function setCaptureState(next){
+    captureState=next;
+    const busy=next!=="idle";
+    const counting=next==="countdown";
+    recordBtn.disabled=counting||next==="preparing"||next==="processing";
+    stopBtn.disabled=next!=="recording";
+    if(startBtn)startBtn.disabled=busy||!!stream;
+    if(chooseBtn)chooseBtn.disabled=busy;
+    if(flipBtn)flipBtn.disabled=busy||!stream;
+    syncRecordButton(next==="recording");
+  }
+
+  function cancelCountdown(message=""){
+    if(captureState!=="countdown"&&!countdownResolve)return false;
+    countdownToken++;
+    clearInterval(countdownTimer);
+    clearTimeout(countdownGoTimer);
+    countdownTimer=0;
+    countdownGoTimer=0;
+    setOverlay();
+    const resolve=countdownResolve;
+    countdownResolve=null;
+    setCaptureState("idle");
+    if(message)setStatus(message);
+    if(resolve)resolve(false);
+    return true;
   }
 
   function applyFilter(name){
@@ -373,16 +409,35 @@
   }
 
   function runCountdown(seconds){
+    cancelCountdown();
+    const token=++countdownToken;
+    let left=Math.max(1,Number(seconds)||3);
+    setCaptureState("countdown");
+    setStatus("Recording starts in "+left+" seconds…");
+    setOverlay(String(left),"Get ready!");
+
     return new Promise(resolve=>{
-      let left=seconds;
-      setOverlay(String(left),"Get ready!");
+      countdownResolve=resolve;
       countdownTimer=setInterval(()=>{
+        if(token!==countdownToken){
+          clearInterval(countdownTimer);
+          countdownTimer=0;
+          return;
+        }
         left--;
         if(left<=0){
           clearInterval(countdownTimer);
           countdownTimer=0;
           setOverlay("GO!","");
-          setTimeout(()=>{setOverlay();resolve()},350);
+          countdownGoTimer=setTimeout(()=>{
+            countdownGoTimer=0;
+            if(token!==countdownToken)return;
+            countdownResolve=null;
+            captureState="preparing";
+            syncRecordButton(false);
+            setOverlay();
+            resolve(true);
+          },350);
         }else{
           setOverlay(String(left),"Get ready!");
         }
@@ -391,52 +446,88 @@
   }
 
   async function beginRecording(){
-    if(!stream){
-      const ok=await startCamera();
-      if(!ok||!stream)return;
+    if(captureState!=="idle")return;
+    setCaptureState("preparing");
+
+    try{
+      if(!stream){
+        const ok=await startCamera();
+        if(!ok||!stream){
+          setCaptureState("idle");
+          return;
+        }
+      }
+      if(!window.MediaRecorder){
+        setStatus("Direct recording is not supported here. Use Device camera instead.","warn");
+        setCaptureState("idle");
+        return;
+      }
+
+      if(mode==="countdown"){
+        const proceed=await runCountdown(countdownSeconds());
+        if(!proceed||!stream)return;
+      }
+      if(!stream){
+        setCaptureState("idle");
+        return;
+      }
+
+      chunks=[];
+      const mime=supportedMime();
+      const captureStream=await buildRecordingStream();
+      if(captureState!=="preparing"){
+        clearRecordingPipeline();
+        return;
+      }
+
+      try{recorder=mime?new MediaRecorder(captureStream,{mimeType:mime}):new MediaRecorder(captureStream)}
+      catch(_){recorder=new MediaRecorder(captureStream)}
+
+      recorder.ondataavailable=e=>{if(e.data?.size)chunks.push(e.data)};
+      recorder.onstop=handleRecorded;
+      recorder.onerror=()=>{
+        setStatus("Recording failed. Please try again.","warn");
+        finishRecordUi();
+      };
+      recorder.start(250);
+      setCaptureState("recording");
+      startRecordTimer();
+
+      filterTray&&(filterTray.hidden=true);
+      sourceMenu&&(sourceMenu.hidden=true);
+      countdownOptions&&(countdownOptions.hidden=true);
+
+      setStatus(mode==="bounce"?"Recording Bounce…":mode==="pass"?"Recording this person…":"Recording…","recording");
+      setOverlay("● REC",mode==="bounce"?"3 seconds":mode==="pass"?"5 seconds":"");
+
+      const limit=mode==="bounce"?3000:mode==="pass"?5000:0;
+      if(limit)autoStopTimer=setTimeout(stopRecording,limit);
+    }catch(err){
+      console.error("Family Fun recording:",err);
+      cancelCountdown();
+      clearRecordingPipeline();
+      recorder=null;
+      chunks=[];
+      setOverlay();
+      setCaptureState("idle");
+      setStatus("Recording could not start. Please try again.","warn");
     }
-    if(!window.MediaRecorder){
-      setStatus("Direct recording is not supported here. Use Device camera instead.","warn");
-      return;
-    }
-
-    if(mode==="countdown")await runCountdown(countdownSeconds());
-    if(!stream)return;
-
-    chunks=[];
-    const mime=supportedMime();
-    const captureStream=await buildRecordingStream();
-    try{recorder=mime?new MediaRecorder(captureStream,{mimeType:mime}):new MediaRecorder(captureStream)}
-    catch(_){recorder=new MediaRecorder(captureStream)}
-
-    recorder.ondataavailable=e=>{if(e.data?.size)chunks.push(e.data)};
-    recorder.onstop=handleRecorded;
-    recorder.start(250);
-    startRecordTimer();
-
-    recordBtn.disabled=false;
-    stopBtn.disabled=false;
-    startBtn.disabled=true;
-    chooseBtn.disabled=true;
-    flipBtn.disabled=true;
-    syncRecordButton(true);
-    filterTray&&(filterTray.hidden=true);
-    sourceMenu&&(sourceMenu.hidden=true);
-
-    setStatus(mode==="bounce"?"Recording Bounce…":mode==="pass"?"Recording this person…":"Recording…","recording");
-    setOverlay("● REC",mode==="bounce"?"3 seconds":mode==="pass"?"5 seconds":"");
-
-    const limit=mode==="bounce"?3000:mode==="pass"?5000:0;
-    if(limit)autoStopTimer=setTimeout(stopRecording,limit);
   }
 
   function stopRecording(){
+    if(captureState==="countdown"){
+      cancelCountdown("Countdown cancelled.");
+      return;
+    }
+    if(captureState!=="recording"||!recorder||recorder.state==="inactive")return;
     clearTimeout(autoStopTimer);
     autoStopTimer=0;
     stopRecordTimer(false);
-    syncRecordButton(false);
+    setCaptureState("processing");
     if(recorder&&recorder.state!=="inactive"){
-      try{recorder.stop()}catch(_){}
+      try{recorder.stop()}catch(_){
+        finishRecordUi();
+      }
     }
   }
 
@@ -444,12 +535,7 @@
     stopRecordTimer(true);
     clearRecordingPipeline();
     recorder=null;
-    recordBtn.disabled=false;
-    stopBtn.disabled=true;
-    startBtn.disabled=!!stream;
-    chooseBtn.disabled=false;
-    flipBtn.disabled=!stream;
-    syncRecordButton(false);
+    setCaptureState("idle");
     setOverlay();
     setStatus(stream?"Camera ready.":"Clip ready.");
   }
@@ -471,9 +557,11 @@
   async function handleRecorded(){
     const mime=recorder?.mimeType||chunks[0]?.type||"video/webm";
     const blob=new Blob(chunks,{type:mime});
+    chunks=[];
     finishRecordUi();
-    if(!blob.size){
-      setStatus("No video was captured. Try recording again.","warn");
+    if(!blob.size||blob.size<1024){
+      resetResult();
+      setStatus("No usable video was captured. Try recording again.","warn");
       return;
     }
     showResult(blob,mode);
@@ -773,7 +861,9 @@
 
   function setMode(next){
     if(!modes[next])return;
-    if(recorder&&recorder.state!=="inactive")stopRecording();
+    if(captureState==="countdown")cancelCountdown("Countdown cancelled.");
+    if(captureState==="recording")stopRecording();
+    if(captureState==="processing"||captureState==="preparing")return;
     mode=next;
     document.querySelectorAll("[data-fun-mode]").forEach(btn=>btn.classList.toggle("active",btn.dataset.funMode===mode));
     const activeModeBtn=document.querySelector('#funCameraModeStrip [data-fun-mode="'+mode+'"]');
@@ -855,7 +945,11 @@
 
   startBtn.addEventListener("click",startCamera);
   flipBtn.addEventListener("click",flipCamera);
-  recordBtn.addEventListener("click",()=>recorder&&recorder.state!=="inactive"?stopRecording():beginRecording());
+  recordBtn.addEventListener("click",()=>{
+    if(captureState==="recording"){stopRecording();return}
+    if(captureState!=="idle")return;
+    beginRecording();
+  });
   stopBtn.addEventListener("click",stopRecording);
   soundBtn?.addEventListener("click",()=>soundInput?.click());
   soundInput?.addEventListener("change",()=>setSoundFile(soundInput.files?.[0]||null));
@@ -876,7 +970,8 @@
     setStatus("Countdown set to "+seconds+" seconds.","success");
   }));
   closeCameraBtn?.addEventListener("click",async()=>{
-    if(recorder&&recorder.state!=="inactive")stopRecording();
+    if(captureState==="countdown")cancelCountdown();
+    if(captureState==="recording")stopRecording();
     await stopStream();
     resetResult();
     const panel=$("#funCameraPanel");
@@ -897,13 +992,21 @@
   addGalleryBtn.addEventListener("click",addCurrentToGallery);
   nextPromptBtn.addEventListener("click",nextPrompt);
 
-  const onVisibilityChange=()=>{if(document.hidden&&recorder?.state==="recording")stopRecording()};
+  const onVisibilityChange=()=>{
+    if(!document.hidden)return;
+    if(captureState==="countdown")cancelCountdown();
+    if(captureState==="recording")stopRecording();
+  };
 
   function dispose(){
     stopBounce();
     try{stopRecording()}catch(_){}
     try{stopStream()}catch(_){}
+    cancelCountdown();
     clearInterval(countdownTimer);
+    clearTimeout(countdownGoTimer);
+    countdownTimer=0;
+    countdownGoTimer=0;
     stopRecordTimer(true);
     clearRecordingPipeline();
     if(soundUrl){try{URL.revokeObjectURL(soundUrl)}catch(_){};soundUrl=""};
@@ -928,6 +1031,6 @@
 
   applyFilter("none");
   setMode("normal");
-  syncRecordButton(false);
+  setCaptureState("idle");
   initBackend();
 })();
