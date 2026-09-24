@@ -17,7 +17,7 @@
     return String(u.family||"Family").toLowerCase().replace(/[^a-z0-9]+/g,"_");
   }
   function members(){try{return (window.ensureOwner?.()||[]).filter(m=>m.profileType!=="history")}catch(_){return []}}
-  function memberById(id){return members().find(m=>m.id===id)}
+  function memberById(id){return members().find(m=>String(m.id)===String(id))}\n  function birthdayRouteParts(id){const m=String(id||"").match(/^birthday:(.+):(\\d{4})$/);return m?{memberId:m[1],year:m[2]}:null}
   function readEvents(){return window.FB_ORGANIZER_DATA?.getEvents?.()||[]}
   function getEvent(id){return window.FB_ORGANIZER_DATA?.getEvent?.(id)||null}
   async function saveEvent(row){return window.FB_ORGANIZER_DATA?.saveEvent?.(row)}
@@ -160,10 +160,15 @@
   }
 
   function detailShell(id){
-    if(String(id).startsWith("birthday:")){
-      const parts=String(id).split(":"),m=memberById(parts[1]);
-      if(!m)return pageShell();
-      return `<section class="calendar-detail-page"><button class="fu-back" data-r="calendar"><i data-lucide="arrow-left"></i> Calendar</button><div class="calendar-detail-card birthday-detail"><div class="cal-detail-icon"><i data-lucide="cake-slice"></i></div><p class="eyebrow">BIRTHDAY</p><h1>${e(m.name)}</h1><p class="cal-detail-date">${e(fmtDate(`${parts[2]}-${m.birthday.slice(5)}`))}</p><p>This birthday comes automatically from ${e(m.name)}'s family profile.</p><div class="cal-detail-actions"><button class="secondary" data-r="view-member:${e(m.id)}"><i data-lucide="user-round"></i>View member</button></div></div></section>`;
+    const birthdayParts=birthdayRouteParts(id);
+    if(birthdayParts){
+      const m=memberById(birthdayParts.memberId);
+      if(!m){
+        return `<section class="calendar-detail-page"><button class="fu-back" data-r="calendar"><i data-lucide="arrow-left"></i> Calendar</button><div class="calendar-detail-card birthday-detail"><div class="cal-detail-icon"><i data-lucide="cake-slice"></i></div><p class="eyebrow">BIRTHDAY</p><h1>Birthday</h1><p class="cal-detail-date">This family profile could not be loaded.</p><div class="cal-detail-actions"><button class="secondary" data-r="calendar"><i data-lucide="arrow-left"></i>Back to calendar</button></div></div></section>`;
+      }
+      const md=String(m.birthday||"").slice(5);
+      const birthdayDate=/^\\d{2}-\\d{2}$/.test(md)?`${birthdayParts.year}-${md}`:"";
+      return `<section class="calendar-detail-page"><button class="fu-back" data-r="calendar"><i data-lucide="arrow-left"></i> Calendar</button><div class="calendar-detail-card birthday-detail"><div class="cal-detail-icon"><i data-lucide="cake-slice"></i></div><p class="eyebrow">BIRTHDAY</p><h1>${e(m.name)}</h1><p class="cal-detail-date">${e(birthdayDate?fmtDate(birthdayDate):"Birthday")}</p><p>This birthday comes automatically from ${e(m.name)}'s family profile.</p><div class="cal-detail-actions"><button class="secondary" data-r="view-member:${e(m.id)}"><i data-lucide="user-round"></i>View member</button></div></div></section>`;
     }
     const row=getEvent(id);
     if(!row)return pageShell();
