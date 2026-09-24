@@ -208,7 +208,7 @@ function go(r,opts={}){currentRoute=r;let navRoute=(r==="albums"||r==="new-album
  if(r==="memories"||r==="add-memory"||r.startsWith("view-memory:")||r.startsWith("edit-memory:"))FB_MEMORIES.bindRoute(r);
  if(r==="albums"||r==="new-album"||r.startsWith("album:")||r.startsWith("edit-album:"))FB_ALBUMS.bindRoute(r);
  if(r==="calendar"||r==="add-event"||r.startsWith("edit-event:")||r.startsWith("view-event:"))FB_CALENDAR.bindRoute(r);
- if(r==="home"){window.FB_WALL?.bindHome?.();bindHomeMemories();window.FB_CALENDAR?.bindHomeUpcoming?.()}
+ if(r==="home"){window.FB_WALL?.bindHome?.();bindHomeMemories();window.FB_CALENDAR?.bindHomeUpcoming?.();document.querySelector("[data-family-fun-home]")?.addEventListener("click",()=>{window.location.href="family-fun.html"})}
  if(r==="settings")window.FB_SETTINGS?.bindPage?.()
  if(r==="notifications")window.FB_NOTIFICATIONS?.bindPage?.()
  if(r==="family-access")window.FB_INVITES?.bindPage?.()
@@ -236,12 +236,11 @@ let upcoming=demo
 : (window.FB_CALENDAR?.homeUpcomingShell?.()||`<div class="empty-events"><span><i data-lucide="calendar-days"></i></span><strong>No family events yet</strong></div>`);
 
 return `${hero}
-<div class="section-head"><h2>Quick Access</h2></div>
 <section class="quick">
 <button class="qcard" data-r="memories"><span class="qicon"><i data-lucide="images"></i></span><strong>Memories</strong><small>Photos & albums</small></button>
 <button class="qcard" data-r="tree"><span class="qicon"><i data-lucide="git-fork"></i></span><strong>Family Tree</strong><small>Our history</small></button>
 <button class="qcard" data-r="calendar"><span class="qicon"><i data-lucide="calendar-days"></i></span><strong>Calendar</strong><small>Events & birthdays</small></button>
-<button class="qcard" type="button" onclick="window.location.href='family-fun.html'"><span class="qicon"><i data-lucide="party-popper"></i></span><strong>Family Fun</strong><small>Camera, games & more</small></button>
+<button class="qcard" type="button" data-family-fun-home><span class="qicon"><i data-lucide="party-popper"></i></span><strong>Family Fun</strong><small>Camera, games & more</small></button>
 </section>
 ${window.FB_WALL?.homeShell?.()||""}
 <div class="section-head"><h2 id="homeActivityTitle">${demo?"What's happening":"Start your Family Book"}</h2></div>
