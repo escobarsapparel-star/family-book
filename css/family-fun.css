@@ -159,3 +159,8 @@ html[data-theme="dark"] .family-fun-app-page{color:#f4efe7}
   .family-fun-app-page .calendar-title-row{margin-top:4px}
   .family-fun-app-page .fun-feature-grid{grid-template-columns:1fr}
 }
+
+.fun-camera-inline-panel{margin-top:16px}
+.fun-feature-card.active{border-color:#72a784;box-shadow:0 0 0 2px rgba(114,167,132,.12),0 10px 26px rgba(32,52,40,.08)}
+.fun-feature-card.active .fun-feature-arrow{transform:rotate(180deg)}
+.fun-feature-arrow{transition:transform .18s ease}
