@@ -4306,7 +4306,7 @@ html[data-theme="dark"] .story-cover-no-memories{
 /* Main mobile navigation: keep all seven items equal and visible. */
 @media(max-width:1179px){
   #app>.app>.bottom{
-    grid-template-columns:repeat(7,minmax(0,1fr))!important;
+    grid-template-columns:repeat(6,minmax(0,1fr))!important;
     overflow:hidden!important;
   }
   #app>.app>.bottom .nav{
