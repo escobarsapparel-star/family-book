@@ -53,3 +53,46 @@ self.addEventListener('notificationclick',event=>{
     }
   })());
 });
+
+
+const FB_MEDIA_CACHE = 'family-book-b2-images-v1';
+
+function isBackblazeImageRequest(request){
+  if(request.method!=='GET'||request.destination!=='image')return false;
+  try{
+    const url=new URL(request.url);
+    return /(^|\.)backblazeb2\.com$/i.test(url.hostname);
+  }catch(_){return false}
+}
+
+function stableMediaCacheKey(request){
+  const url=new URL(request.url);
+  // B2 signed URLs change query parameters as signatures expire. The object
+  // path is immutable in Family Book, so cache by bucket/object URL only.
+  url.search='';
+  url.hash='';
+  return new Request(url.toString(),{method:'GET',mode:'no-cors'});
+}
+
+self.addEventListener('fetch',event=>{
+  const request=event.request;
+  if(!isBackblazeImageRequest(request))return;
+  event.respondWith((async()=>{
+    const cache=await caches.open(FB_MEDIA_CACHE);
+    const key=stableMediaCacheKey(request);
+    const cached=await cache.match(key);
+    if(cached)return cached;
+
+    const response=await fetch(request);
+    if(response.ok||response.type==='opaque'){
+      try{await cache.put(key,response.clone())}catch(_){}
+    }
+    return response;
+  })());
+});
+
+self.addEventListener('message',event=>{
+  if(event.data?.type==='familybook:clear-media-cache'){
+    event.waitUntil(caches.delete(FB_MEDIA_CACHE));
+  }
+});
