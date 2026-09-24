@@ -47,21 +47,21 @@
         <div class="fun-section-label"><span>CREATE</span><h2>Choose a video style</h2></div>
 
         <section class="fun-mode-grid" aria-label="Family Fun video modes">
-          <button class="fun-mode-card active" type="button" data-fun-mode="normal"><span>🎥</span><strong>Normal</strong><small>Record anything</small></button>
-          <button class="fun-mode-card" type="button" data-fun-mode="bounce"><span>🔁</span><strong>Bounce</strong><small>3-second loop</small></button>
-          <button class="fun-mode-card" type="button" data-fun-mode="countdown"><span>⏱️</span><strong>Countdown</strong><small>Get everyone ready</small></button>
-          <button class="fun-mode-card" type="button" data-fun-mode="pass"><span>😂</span><strong>Pass the Phone</strong><small>Family prompts</small></button>
+          <button class="fun-mode-card active" type="button" data-fun-mode="normal"><span class="fun-ui-icon"><i data-lucide="video"></i></span><strong>Normal</strong><small>Record anything</small></button>
+          <button class="fun-mode-card" type="button" data-fun-mode="bounce"><span class="fun-ui-icon"><i data-lucide="repeat-2"></i></span><strong>Bounce</strong><small>3-second loop</small></button>
+          <button class="fun-mode-card" type="button" data-fun-mode="countdown"><span class="fun-ui-icon"><i data-lucide="timer"></i></span><strong>Countdown</strong><small>Get everyone ready</small></button>
+          <button class="fun-mode-card" type="button" data-fun-mode="pass"><span class="fun-ui-icon"><i data-lucide="smartphone"></i></span><strong>Pass the Phone</strong><small>Family prompts</small></button>
         </section>
 
         <section class="fun-studio-card">
           <div class="fun-mode-heading">
-            <span id="funModeEmoji">🎥</span>
+            <span id="funModeIcon" class="fun-ui-icon"><i data-lucide="video"></i></span>
             <div><h2 id="funModeTitle">Normal</h2><p id="funModeDesc">Record a family moment with the camera, or choose a video from your device.</p></div>
           </div>
 
           <div class="fun-camera-wrap">
             <video id="funCameraPreview" autoplay muted playsinline hidden></video>
-            <div class="fun-camera-empty" id="funCameraEmpty"><span>📹</span><strong>Camera is off</strong><small>Start the camera, or use your device camera below.</small></div>
+            <div class="fun-camera-empty" id="funCameraEmpty"><span class="fun-empty-icon"><i data-lucide="camera-off"></i></span><strong>Camera is off</strong><small>Start the camera, or use your device camera below.</small></div>
             <div class="fun-camera-overlay" id="funCameraOverlay" hidden><strong id="funOverlayMain"></strong><small id="funOverlaySub"></small></div>
           </div>
 
@@ -115,14 +115,14 @@
 
         <div class="fun-gallery-filters" aria-label="Gallery categories">
           <button class="active" type="button" data-gallery-filter="all">All Videos</button>
-          <button type="button" data-gallery-filter="normal">🎥 Normal</button>
-          <button type="button" data-gallery-filter="bounce">🔁 Bounce</button>
-          <button type="button" data-gallery-filter="countdown">⏱️ Countdown</button>
-          <button type="button" data-gallery-filter="pass">😂 Pass the Phone</button>
+          <button type="button" data-gallery-filter="normal"><i data-lucide="video"></i>Normal</button>
+          <button type="button" data-gallery-filter="bounce"><i data-lucide="repeat-2"></i>Bounce</button>
+          <button type="button" data-gallery-filter="countdown"><i data-lucide="timer"></i>Countdown</button>
+          <button type="button" data-gallery-filter="pass"><i data-lucide="smartphone"></i>Pass the Phone</button>
         </div>
 
         <div class="fun-gallery-empty" id="funGalleryEmpty">
-          <span>📹</span>
+          <span class="fun-empty-icon"><i data-lucide="video"></i></span>
           <strong>No Family Fun videos yet</strong>
           <p>Create a clip and tap <b>Add to Gallery</b>. It will automatically appear under the correct heading.</p>
           <button class="primary" type="button" data-fun-tab="create">Create a video</button>
@@ -167,7 +167,7 @@
     }
 
     const script=document.createElement("script");
-    script.src="js/family-fun-studio.js?v=app-route-8";
+    script.src="js/family-fun-studio.js?v=icon-system-1";
     script.dataset.familyFunRuntime="1";
     script.onload=()=>window.icons?.();
     script.onerror=()=>console.error("Could not load Family Fun.");
