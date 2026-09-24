@@ -193,7 +193,7 @@
     }
 
     const script=document.createElement("script");
-    script.src="js/family-fun-studio.js?v=camera-studio-2";
+    script.src="js/family-fun-studio.js?v=camera-studio-3";
     script.dataset.familyFunRuntime="1";
     script.onload=()=>window.icons?.();
     script.onerror=()=>console.error("Could not load Family Fun.");
