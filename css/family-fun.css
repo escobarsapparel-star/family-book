@@ -7,3 +7,60 @@
 .fun-hub{margin:0 0 18px}.fun-feature-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}.fun-feature-card{position:relative;display:flex;align-items:center;gap:14px;min-height:112px;padding:18px;border:1px solid rgba(49,92,67,.13);border-radius:20px;background:#fff;color:inherit;text-align:left;box-shadow:0 9px 26px rgba(32,52,40,.055)}button.fun-feature-card{cursor:pointer}.fun-feature-icon{width:52px;height:52px;border-radius:16px;display:grid;place-items:center;background:rgba(49,92,67,.09);font-size:26px;flex:0 0 auto}.fun-feature-copy{display:flex;flex-direction:column;gap:5px;min-width:0}.fun-feature-copy strong{font-size:1.03rem}.fun-feature-copy small{color:#69776e;line-height:1.42}.fun-feature-arrow{margin-left:auto;font-size:26px;color:#758178}.fun-feature-coming{opacity:.82}.fun-coming-badge{position:absolute;right:12px;top:12px;font-size:.58rem;font-weight:900;letter-spacing:.08em;padding:4px 6px;border-radius:999px;background:#eef3ef;color:#627067}.fun-camera-feature-panel{animation:funFeatureIn .18s ease-out}.fun-feature-topbar{display:flex;align-items:center;gap:13px;margin:0 0 14px}.fun-feature-topbar h2{margin:2px 0 0;font-size:1.42rem}.fun-feature-topbar .eyebrow{margin:0}.fun-feature-back{border:1px solid rgba(49,92,67,.14);background:#fff;color:#315c43;border-radius:999px;padding:9px 12px;font-weight:800;cursor:pointer;white-space:nowrap}@keyframes funFeatureIn{from{opacity:.4;transform:translateY(5px)}to{opacity:1;transform:none}}
 @media(max-width:680px){.fun-feature-grid{grid-template-columns:1fr}.fun-feature-card{min-height:100px;padding:15px}.fun-feature-topbar{align-items:flex-start;flex-direction:column;gap:9px}.fun-feature-back{font-size:.82rem}}
 @media(prefers-color-scheme:dark){.fun-feature-card,.fun-feature-back{background:#172019;color:#eef4f0;border-color:rgba(255,255,255,.10)}.fun-feature-copy small{color:#aab6ae}.fun-coming-badge{background:#233028;color:#b8c5bd}}
+
+/* Family Fun follows Family Book's explicit saved theme, not only the OS theme. */
+html[data-theme="dark"] .family-fun-body{background:#101512!important;color:#eef4f0!important}
+html[data-theme="dark"] .family-fun-standalone-top{color:#eef4f0}
+html[data-theme="dark"] .family-fun-back-link,
+html[data-theme="dark"] .fun-mode-card,
+html[data-theme="dark"] .fun-studio-card,
+html[data-theme="dark"] .fun-result-card,
+html[data-theme="dark"] .fun-pass-clips,
+html[data-theme="dark"] .fun-feature-card,
+html[data-theme="dark"] .fun-feature-back,
+html[data-theme="dark"] .fun-main-tabs button.active,
+html[data-theme="dark"] .fun-gallery-filters button,
+html[data-theme="dark"] .fun-gallery-empty,
+html[data-theme="dark"] .fun-gallery-card{background:#172019!important;color:#eef4f0!important;border-color:rgba(255,255,255,.10)!important}
+html[data-theme="dark"] .fun-mode-card.active{background:#1b2a21!important;border-color:#72a784!important}
+html[data-theme="dark"] .fun-countdown-options,
+html[data-theme="dark"] .fun-pass-panel{background:#121a15!important;border-color:rgba(255,255,255,.08)!important}
+html[data-theme="dark"] .fun-choice-row span{background:#1c2820!important;border-color:rgba(255,255,255,.12)!important;color:#eef4f0}
+html[data-theme="dark"] .fun-main-tabs{background:rgba(255,255,255,.06)!important}
+html[data-theme="dark"] .fun-gallery-filters button.active{background:#72a784!important;color:#0d1610!important;border-color:#72a784!important}
+html[data-theme="dark"] .fun-mode-card small,
+html[data-theme="dark"] .fun-mode-heading p,
+html[data-theme="dark"] .fun-result-heading p:last-child,
+html[data-theme="dark"] .fun-status,
+html[data-theme="dark"] .fun-pass-clip small,
+html[data-theme="dark"] .fun-privacy-note,
+html[data-theme="dark"] .fun-gallery-header p:last-child,
+html[data-theme="dark"] .fun-gallery-copy small,
+html[data-theme="dark"] .fun-gallery-empty p,
+html[data-theme="dark"] .fun-feature-copy small{color:#aab6ae!important}
+html[data-theme="dark"] .fun-coming-badge{background:#233028!important;color:#b8c5bd!important}
+html[data-theme="dark"] .fun-section-label span,
+html[data-theme="dark"] .fun-pass-label{color:#8fc19f}
+html[data-theme="dark"] .fun-feature-icon,
+html[data-theme="dark"] .fun-mode-heading>span{background:rgba(143,193,159,.10)}
+html[data-theme="dark"] .family-fun-standalone-logo{filter:none}
+
+/* Explicit Light must also beat a dark operating-system preference. */
+html[data-theme="light"] .family-fun-body{background:#f7f9f7!important;color:#172019!important}
+html[data-theme="light"] .family-fun-back-link,
+html[data-theme="light"] .fun-mode-card,
+html[data-theme="light"] .fun-studio-card,
+html[data-theme="light"] .fun-result-card,
+html[data-theme="light"] .fun-pass-clips,
+html[data-theme="light"] .fun-feature-card,
+html[data-theme="light"] .fun-feature-back,
+html[data-theme="light"] .fun-main-tabs button.active,
+html[data-theme="light"] .fun-gallery-filters button,
+html[data-theme="light"] .fun-gallery-empty,
+html[data-theme="light"] .fun-gallery-card{background:#fff!important;color:inherit!important;border-color:rgba(49,92,67,.13)!important}
+html[data-theme="light"] .fun-mode-card.active{background:#f8fbf9!important;border-color:#315c43!important}
+html[data-theme="light"] .fun-countdown-options,
+html[data-theme="light"] .fun-pass-panel{background:#f7faf8!important;border-color:rgba(49,92,67,.10)!important}
+html[data-theme="light"] .fun-choice-row span{background:#fff!important;border-color:rgba(49,92,67,.16)!important;color:inherit}
+html[data-theme="light"] .fun-main-tabs{background:rgba(49,92,67,.07)!important}
+html[data-theme="light"] .fun-gallery-filters button.active{background:#315c43!important;color:#fff!important;border-color:#315c43!important}
