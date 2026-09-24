@@ -1,6 +1,7 @@
 (()=>{
   const SEEN_PREFIX="fb_event_day_seen_v1:";
   const CAPTURE_KEY="fb_event_day_capture_v1";
+  let lastRoute="";
 
   function pad(n){return String(n).padStart(2,"0")}
   function ymd(d=new Date()){return `${d.getFullYear()}-${pad(d.getMonth()+1)}-${pad(d.getDate())}`}
@@ -30,7 +31,7 @@
       memberIds:Array.isArray(row.memberIds)?row.memberIds.map(String):[],
       type:birthday?"birthday":String(row.type||"family"),
       frameTheme:isTravel(row)?"travel":"family",
-      caption:birthday?`${row.title||"Birthday"} — captured with Family Book`:`${row.title||"Family event"} — Capture the Day`
+      caption:String(row.title||"Family event")
     };
   }
   function setCaptureContext(row){
@@ -53,7 +54,7 @@
   function closeOverlay(row){
     markSeen(row);
     document.querySelector(".fb-event-day-overlay")?.remove();
-    enhanceCurrentRoute(window.currentRoute||"");
+    enhanceCurrentRoute(lastRoute);
   }
 
   function openCapture(row){
@@ -156,6 +157,7 @@
   }
 
   async function bindRoute(route){
+    lastRoute=String(route||"");
     if(route!=="add-memory"&&getCaptureContext())clearCaptureContext();
     try{await window.FB_ORGANIZER_DATA?.init?.()}catch(_){}
     const rows=todayRows();
