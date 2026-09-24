@@ -974,7 +974,10 @@ async function deleteHistoryNote(personId,noteId){
 }
 function historyNoteTypeLabel(type){return type==="memory"?"Memory":type==="note"?"Note":"Story"}
 function historyNoteAvatar(n){
- return n.authorPhoto?`<img src="${n.authorPhoto}" alt="">`:`<span>${memberInitials(n.authorName||"Family")}</span>`;
+ const live=getMembers().find(m=>String(m.id||"")===String(n?.authorId||""));
+ const photo=live?.photo||n.authorPhoto||"";
+ const name=live?.name||n.authorName||"Family";
+ return photo?`<img src="${photo}" alt="">`:`<span>${memberInitials(name)}</span>`;
 }
 function historyNotesHtml(m){
  return `<section class="history-notes-section">
