@@ -1,6 +1,6 @@
 (()=>{
   const ROUTES=[
-    ["home","Home","house"],["memories","Memories","images"],["tree","Family tree","git-fork"],["calendar","Calendar","calendar-days"],["members","Members","users-round"]
+    ["home","Home","house"],["memories","Memories","images"],["tree","Family tree","git-fork"],["calendar","Calendar","calendar-days"],["family-fun","Family Fun","party-popper"],["members","Members","users-round"]
   ];
   const MORE=[
     ["albums","Albums","folder-heart"],["notifications","Notifications","bell-ring"],["family-access","Family access","user-plus"],["settings","Settings","settings"]
@@ -13,6 +13,10 @@
   const initials=name=>{const p=String(name||"Family").trim().split(/\s+/).filter(Boolean);return ((p[0]?.[0]||"F")+(p.length>1?(p.at(-1)?.[0]||""):"")).toUpperCase()};
 
   function navigate(route){
+    if(route==="family-fun"){
+      window.location.href="family-fun.html";
+      return;
+    }
     try{window.go?.(route)}catch(err){console.error("Desktop navigation failed",err)}
     document.querySelectorAll(".desktop-top-nav [data-desktop-route]").forEach(b=>b.classList.toggle("active",b.dataset.desktopRoute===route));
     setTimeout(refreshWidgets,50);
@@ -27,7 +31,7 @@
   }
 
   function leftRail(){
-    return `<aside class="desktop-left-rail" aria-label="Family Book navigation">${profileCard()}<div class="desktop-side-nav">${ROUTES.slice(1).map(sideButton).join("")}</div><div class="desktop-side-divider"></div><div class="desktop-side-caption">Family Book</div><div class="desktop-side-nav">${MORE.map(sideButton).join("")}</div></aside>`;
+    return `<aside class="desktop-left-rail" aria-label="Family Book navigation">${profileCard()}<div class="desktop-side-nav">${ROUTES.slice(1).filter(r=>r[0]!=="family-fun").map(sideButton).join("")}</div><div class="desktop-side-divider"></div><div class="desktop-side-caption">Family Book</div><div class="desktop-side-nav">${MORE.map(sideButton).join("")}</div></aside>`;
   }
 
   function dateLabel(d){try{return new Intl.DateTimeFormat(undefined,{day:"numeric",month:"short"}).format(d)}catch(_){return ""}}
