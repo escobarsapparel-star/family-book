@@ -183,3 +183,61 @@ html[data-theme="dark"] .family-fun-app-page{color:#f4efe7}
 html[data-theme="dark"] .fun-ui-icon{color:#8fc19f}
 html[data-theme="dark"] .fun-mode-card>.fun-ui-icon{background:rgba(143,193,159,.10)}
 html[data-theme="dark"] .fun-mode-card.active>.fun-ui-icon{background:rgba(143,193,159,.16)}
+
+/* Family Camera UX: show the full sensor frame instead of cropping/zooming the preview. */
+.fun-camera-wrap video{object-fit:contain!important;background:#090c0a}
+.fun-record-timer{
+  position:absolute;
+  top:12px;
+  left:12px;
+  z-index:5;
+  display:inline-flex;
+  align-items:center;
+  gap:7px;
+  min-width:74px;
+  padding:7px 10px;
+  border-radius:999px;
+  background:rgba(10,14,11,.78);
+  color:#fff;
+  font-variant-numeric:tabular-nums;
+  backdrop-filter:blur(8px);
+  box-shadow:0 5px 18px rgba(0,0,0,.22)
+}
+.fun-record-timer[hidden]{display:none!important}
+.fun-record-timer>span{
+  width:8px;
+  height:8px;
+  border-radius:50%;
+  background:#e24747;
+  box-shadow:0 0 0 3px rgba(226,71,71,.16)
+}
+.fun-record-timer strong{font-size:.82rem;letter-spacing:.02em}
+.fun-record-timer.recording>span{animation:funRecordPulse 1s ease-in-out infinite}
+@keyframes funRecordPulse{50%{opacity:.42}}
+.fun-result-actions .fun-discard-btn{
+  min-height:44px;
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  gap:7px;
+  padding:10px 14px;
+  border-radius:10px;
+  border:1px solid rgba(156,48,48,.22);
+  background:rgba(156,48,48,.06);
+  color:#9c3030;
+  font-weight:800;
+  cursor:pointer
+}
+.fun-result-actions .fun-discard-btn svg,
+.fun-result-actions .secondary svg{width:16px;height:16px;stroke-width:1.9}
+html[data-theme="dark"] .fun-result-actions .fun-discard-btn{
+  color:#f0a6a6;
+  background:rgba(190,74,74,.10);
+  border-color:rgba(240,166,166,.20)
+}
+@media(max-width:760px){
+  .fun-camera-wrap video{height:min(58vh,560px);object-fit:contain!important}
+  .fun-result-actions{display:grid;grid-template-columns:1fr 1fr}
+  .fun-result-actions .primary{grid-column:1/-1}
+  .fun-result-actions .fun-discard-btn{width:100%}
+}
