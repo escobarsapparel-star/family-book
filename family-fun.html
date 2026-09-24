@@ -21,7 +21,7 @@
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="css/style.css?v=5.7.4-cover-albums">
 <link rel="stylesheet" href="css/inter-global.css?v=inter-global-1">
-<link rel="stylesheet" href="css/family-fun.css?v=icon-system-1">
+<link rel="stylesheet" href="css/family-fun.css?v=camera-ux-1">
 </head>
 <body class="family-fun-body">
 <main class="family-fun-standalone">
@@ -62,6 +62,7 @@
               <video id="funCameraPreview" autoplay muted playsinline hidden></video>
               <div class="fun-camera-empty" id="funCameraEmpty"><span class="fun-empty-icon"><i data-lucide="camera-off"></i></span><strong>Camera is off</strong><small>Start the camera, or use your device camera below.</small></div>
               <div class="fun-camera-overlay" id="funCameraOverlay" hidden><strong id="funOverlayMain"></strong><small id="funOverlaySub"></small></div>
+              <div class="fun-record-timer" id="funRecordTimer" hidden><span></span><strong id="funRecordTimerText">00:00</strong></div>
             </div>
 
             <p class="fun-status" id="funStatus">Start the camera when you’re ready.</p>
@@ -101,7 +102,8 @@
             <div class="fun-result-actions">
               <button class="primary" type="button" id="funAddGalleryBtn">Add to Gallery</button>
               <a class="secondary" id="funDownloadLink" href="#" download>Download clip</a>
-              <button class="secondary" type="button" id="funRetakeBtn">Retake</button>
+              <button class="secondary" type="button" id="funRetakeBtn"><i data-lucide="rotate-ccw"></i>Record again</button>
+              <button class="fun-discard-btn" type="button" id="funDiscardBtn"><i data-lucide="trash-2"></i>Discard clip</button>
             </div>
           </section>
         </div>
@@ -140,6 +142,6 @@
 <script src="js/supabase-config.js?v=5.1-supabase-auth"></script>
 <script src="js/auth.js?v=5.1.5-route-fix"></script>
 <script src="js/settings.js?v=theme-persist-1"></script>
-<script src="js/family-fun-studio.js?v=icon-system-1"></script>
+<script src="js/family-fun-studio.js?v=camera-ux-1"></script>
 </body>
 </html>
