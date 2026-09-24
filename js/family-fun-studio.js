@@ -552,7 +552,7 @@
     if(!modes[next])return;
     if(recorder&&recorder.state!=="inactive")stopRecording();
     mode=next;
-    $("[data-fun-mode]").forEach(btn=>btn.classList.toggle("active",btn.dataset.funMode===mode));
+    document.querySelectorAll("[data-fun-mode]").forEach(btn=>btn.classList.toggle("active",btn.dataset.funMode===mode));
     $("#funModeEmoji").textContent=modes[mode].emoji;
     $("#funModeTitle").textContent=modes[mode].title;
     $("#funModeDesc").textContent=modes[mode].desc;
