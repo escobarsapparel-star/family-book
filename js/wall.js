@@ -36,6 +36,24 @@
   function avatarHtml(name,photo){
     return photo?`<img src="${e(photo)}" alt="">`:`<span>${initials(name)}</span>`;
   }
+
+  function currentMemberById(id){
+    const wanted=String(id||"");
+    if(!wanted)return null;
+    try{
+      return (window.FB_FAMILY_DATA?.getPeople?.()||[]).find(p=>String(p.id||"")===wanted)||null;
+    }catch(_){
+      return null;
+    }
+  }
+
+  function resolvedAuthor(item){
+    const member=currentMemberById(item?.authorId);
+    return {
+      name:member?.name||item?.authorName||"Family member",
+      photo:member?.photo||item?.authorPhoto||""
+    };
+  }
   function timeAgo(ts){return window.FB_TIME?.activity?.(ts)||"Earlier"}
   function cleanupUrls(){objectUrls.forEach(u=>{try{URL.revokeObjectURL(u)}catch(_){}});objectUrls=[]}
   function blobUrl(blob){
@@ -252,7 +270,7 @@
           return {
             id:`memory:${m.id}`,kind:"memory",createdAt:Number(m.createdAt)||0,
             authorId:m.authorId||(fallback.id||"owner"),authorName:m.authorName||fallback.name,
-            authorPhoto:m.authorPhoto||fallback.photo,caption:m.caption||"Family memory",
+            authorPhoto:currentMemberById(m.authorId)?.photo||m.authorPhoto||fallback.photo,caption:m.caption||"Family memory",
             memoryId:m.id,photo:photos[0]?.thumb||photos[0]?.image||m.thumb||m.image||null,
             video:photos[0]?.kind==="video",count:photos.length||1
           };
@@ -298,7 +316,7 @@
   }
 
   function feedItemHtml(item,{compact=false}={}){
-    const name=item.authorName||"Family member",photo=item.authorPhoto||"";
+    const resolved=resolvedAuthor(item),name=resolved.name,photo=resolved.photo;
     if(item.kind==="memory"){
       const src=blobUrl(item.photo);
       return `<article class="wall-post wall-memory-post ${compact?"compact":""}" data-wall-memory="${e(item.memoryId)}">
