@@ -911,3 +911,14 @@ body.fun-camera-open{overflow:hidden!important}
 .fun-camera-fullscreen .fun-camera-rail button small{
   font-size:.56rem!important;
 }
+
+/* ==========================================================
+   Family Camera orientation — front camera uses true view
+   ========================================================== */
+#funCameraPreview[data-facing="user"]{
+  transform:scaleX(-1)!important;
+  transform-origin:center center!important;
+}
+#funCameraPreview[data-facing="environment"]{
+  transform:none!important;
+}
