@@ -552,7 +552,7 @@
     if(!modes[next])return;
     if(recorder&&recorder.state!=="inactive")stopRecording();
     mode=next;
-    $$("[data-fun-mode]").forEach(btn=>btn.classList.toggle("active",btn.dataset.funMode===mode));
+    $$$("[data-fun-mode]").forEach(btn=>btn.classList.toggle("active",btn.dataset.funMode===mode));
     $("#funModeEmoji").textContent=modes[mode].emoji;
     $("#funModeTitle").textContent=modes[mode].title;
     $("#funModeDesc").textContent=modes[mode].desc;
@@ -607,10 +607,10 @@
     window.scrollTo({top:0,behavior:"smooth"});
   }
 
-  $("[data-family-fun-feature]").forEach(btn=>btn.addEventListener("click",()=>openFamilyFunFeature(btn.dataset.familyFunFeature)));
-  $("[data-family-fun-back]").forEach(btn=>btn.addEventListener("click",closeFamilyFunFeature));
+  $$("[data-family-fun-feature]").forEach(btn=>btn.addEventListener("click",()=>openFamilyFunFeature(btn.dataset.familyFunFeature)));
+  $$("[data-family-fun-back]").forEach(btn=>btn.addEventListener("click",closeFamilyFunFeature));
 
-  $("[data-fun-mode]").forEach(btn=>btn.addEventListener("click",()=>setMode(btn.dataset.funMode)));
+  $$("[data-fun-mode]").forEach(btn=>btn.addEventListener("click",()=>setMode(btn.dataset.funMode)));
   $$("[data-fun-tab]").forEach(btn=>btn.addEventListener("click",()=>switchTab(btn.dataset.funTab)));
   $$("[data-gallery-filter]").forEach(btn=>btn.addEventListener("click",()=>{
     galleryFilter=btn.dataset.galleryFilter;
