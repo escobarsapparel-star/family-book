@@ -1,5 +1,5 @@
 (()=>{
-  const SEEN_PREFIX="fb_event_day_seen_v1:";
+  const SEEN_PREFIX="fb_event_day_seen_v2:";
   const CAPTURE_KEY="fb_event_day_capture_v1";
   let lastRoute="";
 
