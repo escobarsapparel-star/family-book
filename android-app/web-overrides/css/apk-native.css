@@ -305,6 +305,7 @@ html.native-app .fun-gallery-media video{
   background:#111713!important;
   -webkit-appearance:none!important;
   opacity:1!important;
+  pointer-events:none!important;
 }
 html.native-app .fun-gallery-media video::-webkit-media-controls,
 html.native-app .fun-gallery-media video::-webkit-media-controls-enclosure,
