@@ -115,17 +115,6 @@ export function startUpdates({ Capacitor, updater, App, http, runtime, bundledVe
     if (!ready || Date.now() - started < 1500) return;
     clearInterval(timer);
     try {
-      // If a bundle was already downloaded/staged during the previous session,
-      // activate it now. Android can keep the process alive after the user
-      // "closes" the app, so relying only on a native kill event can leave the
-      // UI stuck on "update already downloaded" indefinitely.
-      const pending = await updater.getNextBundle().catch(() => null);
-      if (pending?.id) {
-        emit('applying', { version: pending.version || '' });
-        await updater.reload();
-        return;
-      }
-
       await updater.notifyAppReady();
       await App.addListener('appStateChange', ({ isActive }) => { if (isActive) void check(); });
       window.addEventListener('online', () => { lastCheck = 0; void check(); });
