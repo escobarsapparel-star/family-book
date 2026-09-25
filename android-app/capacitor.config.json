@@ -1,0 +1,17 @@
+{
+  "appId": "com.familybook.app",
+  "appName": "Family Book",
+  "webDir": "www",
+  "plugins": {
+    "CapacitorUpdater": {
+      "autoUpdate": false,
+      "appReadyTimeout": 60000,
+      "autoDeleteFailed": false,
+      "autoDeletePrevious": true,
+      "resetWhenUpdate": true,
+      "statsUrl": "",
+      "updateUrl": "",
+      "channelUrl": ""
+    }
+  }
+}

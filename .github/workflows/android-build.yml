@@ -1,0 +1,35 @@
+name: Build Android updater APK
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths: ['android-app/**', 'scripts/**', '.github/workflows/android-build.yml']
+permissions:
+  contents: read
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: npm
+          cache-dependency-path: android-app/package-lock.json
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '21'
+      - uses: android-actions/setup-android@v3
+      - run: npm ci
+        working-directory: android-app
+      - run: npm test
+        working-directory: android-app
+      - run: npm run sync:android
+        working-directory: android-app
+      - run: bash gradlew assembleRelease
+        working-directory: android-app/android
+      - uses: actions/upload-artifact@v4
+        with:
+          name: FamilyBook-unsigned-release-sign-with-existing-key
+          path: android-app/android/app/build/outputs/apk/release/*unsigned.apk

@@ -1,0 +1,190 @@
+/* Family Book APK-only runtime support. Keep the live mobile UI intact. */
+html.native-app,
+html.native-app body{
+  width:100%;
+  max-width:100%;
+  min-height:100%;
+  overscroll-behavior:none;
+}
+
+html.native-app{
+  --fb-apk-status-h:max(env(safe-area-inset-top),28px);
+  --fb-apk-navigation-h:max(env(safe-area-inset-bottom),48px);
+  --fb-apk-system-bg:#151813;
+}
+
+html.native-app body{
+  -webkit-tap-highlight-color:transparent;
+  background:var(--fb-apk-system-bg);
+}
+
+html.native-app .app{
+  min-height:100dvh;
+}
+
+html.native-app #screen{
+  will-change:transform,opacity;
+  backface-visibility:hidden;
+  transform:translateZ(0);
+}
+
+/* The APK swipe layer keeps #screen transformed for GPU acceleration. A fixed
+   descendant inside a transformed element is fixed to that element instead of
+   the viewport in Android WebView. The Home post composer modal lives inside
+   #screen, so its card can be centred far below the visible phone screen while
+   only the backdrop/blur is visible. Drop the transform while the composer is
+   open so the modal becomes truly viewport-fixed. */
+html.native-app body.home-composer-open #screen{
+  will-change:auto!important;
+  backface-visibility:visible!important;
+  transform:none!important;
+}
+
+/* Android 15 can draw the WebView edge-to-edge. Paint solid system-bar
+   surfaces ourselves and keep Family Book content out from underneath them. */
+html.native-app body::before,
+html.native-app body::after{
+  content:"";
+  position:fixed;
+  left:0;
+  right:0;
+  z-index:2147483000;
+  pointer-events:none;
+  background:var(--fb-apk-system-bg);
+}
+
+html.native-app body::before{
+  top:0;
+  height:var(--fb-apk-status-h);
+}
+
+html.native-app body::after{
+  bottom:0;
+  height:var(--fb-apk-navigation-h);
+}
+
+@media(max-width:759px){
+  /* mobile-header-stability.css fixes these rows at top:0. Move them below
+     Android's status icons and reserve the full native + Family Book header. */
+  html.native-app #app>.app>.topbar{
+    top:var(--fb-apk-status-h)!important;
+  }
+
+  html.native-app #app>.app>.bottom{
+    top:calc(var(--fb-apk-status-h) + var(--fb-mobile-brand-h,56px))!important;
+  }
+
+  html.native-app #app>.app>.screen{
+    padding-top:calc(var(--fb-apk-status-h) + var(--fb-mobile-header-h,102px) + 10px)!important;
+    padding-bottom:calc(var(--fb-apk-navigation-h) + 14px)!important;
+    min-height:calc(100dvh - var(--fb-apk-status-h) - var(--fb-apk-navigation-h))!important;
+    box-sizing:border-box;
+  }
+}
+
+html.native-app .fb-apk-startup{
+  min-height:100dvh;
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  justify-content:center;
+  gap:16px;
+  padding:calc(24px + var(--fb-apk-status-h)) 24px calc(24px + var(--fb-apk-navigation-h));
+  box-sizing:border-box;
+  background:#151813;
+  color:#dce8df;
+  font-family:Inter,Arial,sans-serif;
+  text-align:center;
+}
+
+html.native-app .fb-apk-startup img{
+  display:block;
+  width:min(330px,84vw);
+  height:auto;
+}
+
+html.native-app .fb-apk-startup-spinner{
+  width:34px;
+  height:34px;
+  border:3px solid rgba(220,232,223,.20);
+  border-top-color:#7fb58f;
+  border-radius:50%;
+  animation:fbApkStartupSpin .8s linear infinite;
+}
+
+html.native-app .fb-apk-startup small{
+  font-weight:700;
+  letter-spacing:.05em;
+}
+
+@keyframes fbApkStartupSpin{to{transform:rotate(360deg)}}
+
+/* Swipe Nav Pass 3-style adjacent-page preview. */
+html.native-app #app>.app{position:relative!important;overflow-x:clip!important}
+html.native-app #screen{position:relative;z-index:2;touch-action:pan-y pinch-zoom}
+html.native-app.fb-apk-swiping,
+html.native-app.fb-apk-swiping body{overscroll-behavior:none!important}
+html.native-app .fb-apk-swipe-preview{
+  position:absolute!important;
+  z-index:1!important;
+  pointer-events:none!important;
+  user-select:none!important;
+  overflow:hidden!important;
+  margin:0!important;
+  will-change:transform!important;
+  backface-visibility:hidden!important;
+  contain:layout paint style;
+}
+html.native-app .fb-apk-swipe-preview *{pointer-events:none!important}
+html.native-app .fb-apk-swipe-fallback{
+  min-height:55vh;
+  display:grid;
+  place-items:center;
+  align-content:center;
+  gap:12px;
+  color:var(--green,#315c43)
+}
+html.native-app .fb-apk-swipe-fallback span{
+  width:34px;height:34px;border:3px solid rgba(49,92,67,.18);border-top-color:#315c43;border-radius:50%;
+}
+html[data-theme="dark"].native-app .fb-apk-swipe-fallback{color:#8fc19f}
+
+
+/* APK bugfix: keep the full login logo below the Android status bar. */
+@media(max-width:560px){
+  html.native-app .login-photo .original-login-logo{
+    top:calc(var(--fb-apk-status-h) + 10px)!important;
+    width:min(74vw,370px)!important;
+    max-width:min(74vw,370px)!important;
+  }
+}
+@media(max-width:560px) and (max-height:720px){
+  html.native-app .login-photo .original-login-logo{
+    top:calc(var(--fb-apk-status-h) + 6px)!important;
+    width:min(68vw,330px)!important;
+    max-width:min(68vw,330px)!important;
+  }
+}
+
+/* Android WebView can let author display rules override the hidden attribute.
+   Make the live camera and its empty state mutually exclusive explicitly. */
+html.native-app .fun-camera-wrap>video,
+html.native-app .fun-camera-wrap>.fun-camera-empty{grid-area:1/1}
+html.native-app .fun-camera-wrap>video[hidden],
+html.native-app .fun-camera-wrap>.fun-camera-empty[hidden]{display:none!important}
+html.native-app .fun-camera-wrap>video:not([hidden]){display:block!important}
+html.native-app .fun-camera-wrap>.fun-camera-empty:not([hidden]){display:flex!important}
+
+/* Real-page snapshots are used for adjacent swipe previews. */
+html.native-app .fb-apk-swipe-fallback{
+  min-height:65vh;
+  background:var(--surface,#f7f4ec);
+}
+html.native-app .fb-apk-swipe-fallback .fb-apk-swipe-fallback-icon{
+  width:58px;height:58px;border-radius:18px;display:grid;place-items:center;
+  background:rgba(49,92,67,.10);color:#315c43
+}
+html.native-app .fb-apk-swipe-fallback .fb-apk-swipe-fallback-icon svg{width:28px;height:28px}
+html.native-app .fb-apk-swipe-fallback small{opacity:.6;font-weight:700}
+html[data-theme="dark"].native-app .fb-apk-swipe-fallback{background:#101512;color:#eef4f0}
+html[data-theme="dark"].native-app .fb-apk-swipe-fallback .fb-apk-swipe-fallback-icon{background:rgba(143,193,159,.12);color:#8fc19f}

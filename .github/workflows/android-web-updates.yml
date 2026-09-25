@@ -1,0 +1,41 @@
+name: Publish Android interface updates
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+permissions:
+  contents: write
+concurrency:
+  group: android-web-updates
+  cancel-in-progress: false
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: npm
+          cache-dependency-path: android-app/package-lock.json
+      - run: npm ci
+        working-directory: android-app
+      - run: npm test
+        working-directory: android-app
+      - run: node scripts/prepare-android.mjs
+      - run: python3 scripts/package-android-update.py
+      - name: Publish bundle, then update feed
+        env:
+          GH_TOKEN: ${{ github.token }}
+        shell: bash
+        run: |
+          RUNTIME=$(node -p "require('./android-app/bundle-info.json').runtime")
+          VERSION=$(node -p "require('./android-app/bundle-info.json').version")
+          TAG="android-web-$RUNTIME"
+          gh release view "$TAG" >/dev/null 2>&1 || gh release create "$TAG" --target "$GITHUB_SHA" --title "Android interface updates ($RUNTIME)" --notes "Automatic interface updates for compatible Family Book Android builds. Existing APKs without the updater must be rebuilt once. ZIP files are update bundles, not APK installers." --latest=false
+          gh release upload "$TAG" "android-app/release/$VERSION.zip" --clobber
+          gh release upload "$TAG" android-app/release/latest.json --clobber
+      - uses: actions/upload-artifact@v4
+        with:
+          name: android-interface-update
+          path: android-app/release/

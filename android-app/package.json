@@ -1,0 +1,36 @@
+{
+  "name": "familybookandroid",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "node --test tests/*.test.mjs",
+    "prepare:web": "node ../scripts/prepare-android.mjs",
+    "sync:android": "npm run prepare:web && cap sync android",
+    "open:android": "cap open android"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "dependencies": {
+    "@capacitor/android": "^8.5.2",
+    "@capacitor/app": "^8.1.1",
+    "@capacitor/browser": "^8.0.4",
+    "@capacitor/cli": "^8.5.2",
+    "@capacitor/core": "^8.5.2",
+    "@capacitor/push-notifications": "^8.1.2",
+    "@capgo/capacitor-navigation-bar": "^8.2.8",
+    "@capgo/capacitor-updater": "8.51.25"
+  },
+  "devDependencies": {
+    "@supabase/supabase-js": "2.117.1",
+    "esbuild": "^0.28.2",
+    "html2canvas": "1.4.1",
+    "lucide": "1.48.0"
+  },
+  "allowScripts": {
+    "esbuild@0.28.2": true
+  },
+  "private": true
+}
