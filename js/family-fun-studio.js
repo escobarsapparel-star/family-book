@@ -1088,7 +1088,19 @@
           $("#funGalleryGrid video").forEach(v=>{try{v.pause()}catch(_){}});
           openGalleryViewer(item,url);
         };
-        card.querySelector(".fun-gallery-media")?.addEventListener("click",openViewer);
+        const media=card.querySelector(".fun-gallery-media");
+        if(media){
+          media.setAttribute("role","button");
+          media.setAttribute("tabindex","0");
+          media.setAttribute("aria-label","Open "+(item.title||"Family Fun video")+" in player");
+          media.addEventListener("click",openViewer);
+          media.addEventListener("keydown",event=>{
+            if(event.key==="Enter"||event.key===" "){
+              event.preventDefault();
+              openViewer();
+            }
+          });
+        }
 
         const del=card.querySelector(".fun-gallery-delete");
         del.hidden=!canDelete;
