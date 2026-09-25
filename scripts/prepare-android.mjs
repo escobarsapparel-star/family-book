@@ -23,6 +23,7 @@ async function nativeFiles(dir) {
     if (['build','.gradle','.idea','assets','capacitor-cordova-android-plugins'].includes(entry.name)) continue;
     if (['local.properties','google-services.json','capacitor.build.gradle','capacitor.settings.gradle','key.properties','keystore.properties'].includes(entry.name) || /\.(jks|keystore)$/.test(entry.name)) continue;
     const full = path.join(dir, entry.name);
+    if (path.relative(app, full).replaceAll('\\','/') === 'android/app/src/main/res/xml/config.xml') continue;
     if (entry.isDirectory()) await nativeFiles(full);
     else if (entry.isFile()) { hash.update(path.relative(app,full).replaceAll('\\','/')); hash.update(await fs.readFile(full)); }
   }
