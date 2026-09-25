@@ -459,7 +459,10 @@
 
   function supportedMime(){
     if(!window.MediaRecorder)return "";
-    const types=["video/webm;codecs=vp9,opus","video/webm;codecs=vp8,opus","video/webm","video/mp4"];
+    // Prefer formats with the widest Android WebView playback support.
+    // VP9 WebM recorded successfully on some devices but later failed to
+    // render/play inside the Family Book Android WebView.
+    const types=["video/mp4","video/webm;codecs=vp8,opus","video/webm","video/webm;codecs=vp9,opus"];
     return types.find(t=>MediaRecorder.isTypeSupported?.(t))||"";
   }
 
@@ -1003,6 +1006,18 @@
 
   function openGalleryViewer(item,url){
     if(!url)return;
+
+    // Existing clips recorded as VP9 WebM can fail to decode inside some
+    // Android System WebView builds. In the native app, hand those clips to
+    // Android's browser/player instead of presenting a broken in-app video.
+    const isNative=!!document.documentElement.classList.contains("native-app");
+    const isVp9=/vp9/i.test(item?.mime_type||"")||/\.webm(?:\?|$)/i.test(item?.storage_path||"")&&/vp9/i.test(item?.mime_type||"");
+    const browser=window.Capacitor?.Plugins?.Browser;
+    if(isNative&&isVp9&&browser?.open){
+      browser.open({url}).catch(()=>{});
+      return;
+    }
+
     closeGalleryViewer();
 
     const viewer=document.createElement("div");
