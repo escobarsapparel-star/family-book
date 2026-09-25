@@ -11,6 +11,19 @@
 
   function members(){return window.FB_FAMILY_DATA?.getPeople?.()||[]}
   function memberMap(){return Object.fromEntries(members().map(m=>[m.id,m]))}
+  function currentPersonPhoto(people,personId,fallback=""){
+    const id=String(personId||"");
+    const member=people?.[id]||{};
+    let photo=member.photo||fallback||"";
+    const u=user();
+    if(id&&id===String(u.memberId||"")){
+      try{
+        if(typeof window.currentUserPhoto==="function")photo=window.currentUserPhoto()||photo;
+      }catch(_){}
+      photo=photo||u.photo||"";
+    }
+    return photo;
+  }
   function targetKey(type,id){return `${type}:${id}`}
   function parseTarget(target){
     const m=String(target||"").match(/^(post|memory):([0-9a-f-]{36})$/i);
