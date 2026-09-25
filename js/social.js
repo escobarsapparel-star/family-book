@@ -4,6 +4,7 @@
     like:{label:"Like",icon:"thumbs-up"},
     celebrate:{label:"Celebrate",icon:"party-popper"}
   };
+  let viewerKeyHandler=null;
 
   function e(v=""){return String(v??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#039;"}[c]))}
   function user(){return window.FB_AUTH?.get?.()||{}}
@@ -62,8 +63,11 @@
 
   function closeViewer(){
     const overlay=document.querySelector(".reaction-viewer-overlay");
-    if(!overlay)return;
-    overlay.remove();
+    if(overlay)overlay.remove();
+    if(viewerKeyHandler){
+      document.removeEventListener("keydown",viewerKeyHandler);
+      viewerKeyHandler=null;
+    }
     document.body.classList.remove("reaction-viewer-open");
   }
 
@@ -111,8 +115,8 @@
     const list=overlay.querySelector(".reaction-viewer-list");
     overlay.querySelector(".reaction-viewer-close")?.addEventListener("click",closeViewer);
     overlay.addEventListener("click",ev=>{if(ev.target===overlay)closeViewer()});
-    const onKey=ev=>{if(ev.key==="Escape"){document.removeEventListener("keydown",onKey);closeViewer()}};
-    document.addEventListener("keydown",onKey);
+    viewerKeyHandler=ev=>{if(ev.key==="Escape")closeViewer()};
+    document.addEventListener("keydown",viewerKeyHandler);
     overlay.querySelectorAll("[data-reaction-filter]").forEach(btn=>btn.addEventListener("click",()=>{
       if(btn.disabled)return;
       overlay.querySelectorAll("[data-reaction-filter]").forEach(x=>x.classList.toggle("active",x===btn));
