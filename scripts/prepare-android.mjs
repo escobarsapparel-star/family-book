@@ -25,7 +25,22 @@ async function nativeFiles(dir) {
     const full = path.join(dir, entry.name);
     if (path.relative(app, full).replaceAll('\\','/') === 'android/app/src/main/res/xml/config.xml') continue;
     if (entry.isDirectory()) await nativeFiles(full);
-    else if (entry.isFile()) { hash.update(path.relative(app,full).replaceAll('\\','/')); hash.update(await fs.readFile(full)); }
+    else if (entry.isFile()) {
+      const relative = path.relative(app,full).replaceAll('\\','/');
+      let content = await fs.readFile(full);
+      // Android versionCode/versionName identify the APK build, but they do not
+      // change WebView/plugin compatibility. Ignore only those two metadata lines
+      // so a normal app version bump does not strand existing installs on a new
+      // OTA feed. Any other native Gradle/source change still changes the runtime.
+      if (relative === 'android/app/build.gradle') {
+        const normalized = content.toString('utf8')
+          .replace(/(^\s*versionCode\s+)\d+/gm,'$1<RUNTIME_VERSION_CODE>')
+          .replace(/(^\s*versionName\s+)"[^"]*"/gm,'$1"<RUNTIME_VERSION_NAME>"');
+        content = Buffer.from(normalized,'utf8');
+      }
+      hash.update(relative);
+      hash.update(content);
+    }
   }
 }
 await nativeFiles(path.join(app,'android'));
