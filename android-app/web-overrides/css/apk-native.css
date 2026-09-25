@@ -234,7 +234,9 @@ html.native-app .fun-camera-fullscreen .fun-camera-topbar{
   right:10px!important;
 }
 html.native-app .fun-camera-fullscreen .fun-camera-rail{
-  top:calc(var(--fb-apk-status-h) + 76px)!important;
+  /* Start below the complete Family Book mobile header/navigation row.
+     The old status-bar-only offset left Filters hidden behind the nav. */
+  top:calc(var(--fb-apk-status-h) + var(--fb-mobile-header-h,102px) + 10px)!important;
   right:10px!important;
   display:flex!important;
   gap:8px!important;
