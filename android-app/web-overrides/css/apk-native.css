@@ -246,6 +246,12 @@ html.native-app .fun-camera-fullscreen #funFilterBtn{
   display:flex!important;
   visibility:visible!important;
 }
+
+/* Android camera rail: Countdown stays in the bottom mode strip.
+   Use the old timer slot for the existing front/rear camera control. */
+html.native-app .fun-camera-fullscreen #funTimerToolBtn{
+  display:none!important;
+}
 html.native-app .fun-camera-fullscreen .fun-camera-shutter{
   bottom:calc(var(--fb-apk-navigation-h) + 20px)!important;
 }

@@ -288,38 +288,16 @@
       },{passive:true});
     }
 
-    const timerBtn=document.querySelector('#funTimerToolBtn');
-    const timerTray=document.querySelector('#funCountdownOptions');
-    if(timerBtn&&timerTray&&timerBtn.dataset.fbNativeTimerToggle!=='1'){
-      timerBtn.dataset.fbNativeTimerToggle='1';
-      let trayWasOpen=false;
-
-      const rememberState=()=>{trayWasOpen=!timerTray.hidden};
-      timerBtn.addEventListener('pointerdown',rememberState,{passive:true});
-      timerBtn.addEventListener('touchstart',rememberState,{passive:true});
-
-      timerBtn.addEventListener('click',()=>{
-        const shouldClose=trayWasOpen;
-        setTimeout(()=>{
-          if(shouldClose){
-            timerTray.hidden=true;
-            timerBtn.classList.remove('active');
-          }else{
-            timerBtn.classList.toggle('active',!timerTray.hidden);
-          }
-          trayWasOpen=false;
-        },0);
-      });
-
-      timerTray.querySelectorAll('input[name="funCountdown"]').forEach(input=>{
-        input.addEventListener('change',()=>setTimeout(()=>{
-          if(timerTray.hidden)timerBtn.classList.remove('active');
-        },0));
-      });
-
-      modeStrip?.addEventListener('click',()=>setTimeout(()=>{
-        if(timerTray.hidden)timerBtn.classList.remove('active');
-      },0));
+    const rail=document.querySelector('.fun-camera-rail');
+    const flipBtn=document.querySelector('#funFlipCameraBtn');
+    const sourceBtn=document.querySelector('#funSourceBtn');
+    if(rail&&flipBtn&&flipBtn.dataset.fbNativeRail!=='1'){
+      flipBtn.dataset.fbNativeRail='1';
+      const label=document.createElement('small');
+      label.textContent='Flip';
+      label.dataset.fbNativeFlipLabel='1';
+      flipBtn.appendChild(label);
+      rail.insertBefore(flipBtn,sourceBtn||null);
     }
 
     const result=document.querySelector('#funResult');
