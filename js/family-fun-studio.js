@@ -531,10 +531,23 @@
     try{
       await stopStream();
       setStatus("Opening camera…");
-      stream=await navigator.mediaDevices.getUserMedia({
-        video:{facingMode:{ideal:facing}},
-        audio:true
-      });
+      let micAvailable=true;
+      try{
+        stream=await navigator.mediaDevices.getUserMedia({
+          video:{facingMode:{ideal:facing}},
+          audio:true
+        });
+      }catch(firstError){
+        try{
+          stream=await navigator.mediaDevices.getUserMedia({
+            video:{facingMode:{ideal:facing}},
+            audio:false
+          });
+          micAvailable=false;
+        }catch(_){
+          throw firstError;
+        }
+      }
       camera.srcObject=stream;
       camera.dataset.facing=facing;
       camera.muted=true;
@@ -552,7 +565,7 @@
       applyVisualEffects();
       if(lightEnabled)await syncLight();
       else if(frontFill)frontFill.hidden=true;
-      setStatus("Camera ready.");
+      setStatus(micAvailable?"Camera ready.":"Camera ready. Microphone is unavailable, so this clip will record without sound.",micAvailable?"":"warn");
       return true;
     }catch(err){
       console.warn("Family Fun camera:",err);
@@ -854,7 +867,8 @@
   }
 
   function captureFallback(){
-    fallbackInput.setAttribute("capture",facing);
+    fallbackInput.setAttribute("capture",facing==="environment"?"environment":"user");
+    fallbackInput.setAttribute("accept","video/*");
     fallbackInput.click();
   }
 
@@ -1272,17 +1286,6 @@
     }catch(_){}
   });
 
-  startBtn.addEventListener("click",startCamera);
-  flipBtn.addEventListener("click",flipCamera);
-  recordBtn.addEventListener("click",()=>{
-    if(captureState==="recording"){stopRecording();return}
-    if(mode==="pass"&&captureState==="paused"){beginRecording();return}
-    if(captureState!=="idle")return;
-    beginRecording();
-  });
-  stopBtn.addEventListener("click",stopRecording);
-  soundBtn?.addEventListener("click",()=>soundInput?.click());
-  soundInput?.addEventListener("change",()=>setSoundFile(soundInput.files?.[0]||null));
   let lastCameraTouchAction=0;
   function bindCameraTap(button,handler){
     if(!button)return;
@@ -1304,6 +1307,24 @@
     });
   }
 
+  const activateRecord=()=>{
+    if(captureState==="recording"){stopRecording();return}
+    if(mode==="pass"&&captureState==="paused"){void beginRecording();return}
+    if(captureState!=="idle")return;
+    if(!window.MediaRecorder&&!window.FB_NATIVE?.Capacitor?.isNativePlatform?.()){
+      setStatus("Opening your phone camera because direct browser recording is not supported on this device.","warn");
+      captureFallback();
+      return;
+    }
+    void beginRecording();
+  };
+
+  bindCameraTap(startBtn,()=>{void startCamera()});
+  bindCameraTap(flipBtn,()=>{void flipCamera()});
+  bindCameraTap(recordBtn,activateRecord);
+  bindCameraTap(stopBtn,stopRecording);
+  bindCameraTap(soundBtn,()=>soundInput?.click());
+  soundInput?.addEventListener("change",()=>setSoundFile(soundInput.files?.[0]||null));
   filterBtn?.setAttribute("aria-expanded","false");
   filterBtn?.setAttribute("aria-controls","funFilterTray");
   const toggleFilters=()=>{
