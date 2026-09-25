@@ -35,6 +35,21 @@ jobs:
           gh release view "$TAG" >/dev/null 2>&1 || gh release create "$TAG" --target "$GITHUB_SHA" --title "Android interface updates ($RUNTIME)" --notes "Automatic interface updates for compatible Family Book Android builds. Existing APKs without the updater must be rebuilt once. ZIP files are update bundles, not APK installers." --latest=false
           gh release upload "$TAG" "android-app/release/$VERSION.zip" --clobber
           gh release upload "$TAG" android-app/release/latest.json --clobber
+
+          # One-time compatibility bridges for updater-enabled test APKs that
+          # were built before the stable runtime fingerprint ignored version
+          # metadata. The downloaded bundle contains the NEW runtime, so after
+          # restart those installs move themselves onto the stable feed.
+          for LEGACY_RUNTIME in 4586e6b855de1e75d33c de495001b6500ae82a19; do
+            if [ "$LEGACY_RUNTIME" = "$RUNTIME" ]; then
+              continue
+            fi
+            python3 scripts/package-android-compat.py "$LEGACY_RUNTIME"
+            LEGACY_TAG="android-web-$LEGACY_RUNTIME"
+            gh release view "$LEGACY_TAG" >/dev/null 2>&1 || gh release create "$LEGACY_TAG" --target "$GITHUB_SHA" --title "Android interface updates ($LEGACY_RUNTIME)" --notes "Compatibility update feed for existing Family Book Android test builds." --latest=false
+            gh release upload "$LEGACY_TAG" "android-app/release/$VERSION.zip" --clobber
+            gh release upload "$LEGACY_TAG" "android-app/release/compat/$LEGACY_RUNTIME/latest.json" --clobber
+          done
       - uses: actions/upload-artifact@v4
         with:
           name: android-interface-update
