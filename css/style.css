@@ -2093,6 +2093,152 @@ html[data-theme="dark"] .notification-empty>svg{color:#a7cbb0}
   color:#8a8077;
   font-size:.62rem;
 }
+.reaction-total{
+  border:0;
+  background:transparent;
+  padding:6px 2px;
+  font:inherit;
+  cursor:pointer;
+  text-decoration:underline;
+  text-decoration-color:transparent;
+  text-underline-offset:3px;
+  transition:.16s ease;
+}
+.reaction-total:hover,.reaction-total:focus-visible{color:#315c43;text-decoration-color:currentColor}
+.reaction-total[hidden]{display:none!important}
+body.reaction-viewer-open{overflow:hidden}
+.reaction-viewer-overlay{
+  position:fixed;
+  inset:0;
+  z-index:2147482500;
+  display:grid;
+  place-items:end center;
+  padding:18px;
+  background:rgba(20,25,21,.58);
+  backdrop-filter:blur(5px);
+}
+.reaction-viewer{
+  width:min(460px,100%);
+  max-height:min(72vh,640px);
+  overflow:hidden;
+  display:flex;
+  flex-direction:column;
+  border:1px solid #ded4c8;
+  border-radius:24px;
+  background:#fffaf4;
+  box-shadow:0 28px 70px rgba(24,30,25,.32);
+}
+.reaction-viewer-head{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:16px;
+  padding:20px 20px 12px;
+}
+.reaction-viewer-head p{margin:0 0 4px;color:#b27a3d;font-size:.62rem;font-weight:900;letter-spacing:.09em}
+.reaction-viewer-head h2{margin:0;color:#315c43;font:700 1.55rem Georgia,serif}
+.reaction-viewer-close{
+  width:40px;
+  height:40px;
+  border:1px solid #ded4c8;
+  border-radius:50%;
+  background:#fff;
+  color:#5f5750;
+  display:grid;
+  place-items:center;
+}
+.reaction-viewer-close svg{width:19px;height:19px}
+.reaction-viewer-tabs{
+  display:flex;
+  gap:7px;
+  overflow-x:auto;
+  padding:0 20px 13px;
+  scrollbar-width:none;
+}
+.reaction-viewer-tabs::-webkit-scrollbar{display:none}
+.reaction-viewer-tabs button{
+  flex:0 0 auto;
+  border:1px solid #ded4c8;
+  border-radius:999px;
+  background:#fff;
+  color:#72675f;
+  padding:7px 10px;
+  font-size:.66rem;
+  font-weight:850;
+}
+.reaction-viewer-tabs button b{font-size:.6rem}
+.reaction-viewer-tabs button.active{background:#eaf2ec;border-color:#7aa28a;color:#315c43}
+.reaction-viewer-tabs button:disabled{opacity:.45}
+.reaction-viewer-list{
+  min-height:120px;
+  overflow:auto;
+  padding:4px 12px 16px;
+  border-top:1px solid #eee5dc;
+}
+.reaction-viewer-person{
+  display:grid;
+  grid-template-columns:auto minmax(0,1fr) auto;
+  align-items:center;
+  gap:11px;
+  padding:10px 8px;
+  border-radius:14px;
+}
+.reaction-viewer-person[role="button"]{cursor:pointer}
+.reaction-viewer-person[role="button"]:hover,.reaction-viewer-person[role="button"]:focus-visible{background:#f3eee6;outline:none}
+.reaction-viewer-avatar{
+  width:44px;
+  height:44px;
+  border-radius:50%;
+  overflow:hidden;
+  display:grid;
+  place-items:center;
+  background:#e7efe9;
+  color:#315c43;
+  font-size:.72rem;
+  font-weight:900;
+}
+.reaction-viewer-avatar img{width:100%;height:100%;object-fit:cover}
+.reaction-viewer-name{min-width:0;display:grid;gap:2px}
+.reaction-viewer-name strong{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;color:#342f2b;font-size:.78rem}
+.reaction-viewer-name small{color:#8a8077;font-size:.62rem}
+.reaction-viewer-badge{
+  width:34px;
+  height:34px;
+  border-radius:50%;
+  display:grid;
+  place-items:center;
+  background:#eef3ef;
+  color:#315c43;
+}
+.reaction-viewer-badge svg{width:17px;height:17px}
+.reaction-viewer-badge.is-love{background:#fff0f2;color:#b74459}
+.reaction-viewer-badge.is-celebrate{background:#fff3df;color:#96652f}
+.reaction-viewer-empty{
+  min-height:150px;
+  display:grid;
+  place-items:center;
+  align-content:center;
+  gap:8px;
+  color:#8a8077;
+  text-align:center;
+}
+.reaction-viewer-empty svg{width:30px;height:30px;color:#315c43}
+html[data-theme="dark"] .reaction-viewer{background:#171d18;border-color:#394037;box-shadow:0 28px 70px rgba(0,0,0,.48)}
+html[data-theme="dark"] .reaction-viewer-head h2{color:#a7cbb0}
+html[data-theme="dark"] .reaction-viewer-close,
+html[data-theme="dark"] .reaction-viewer-tabs button{background:#1e231d;border-color:#394037;color:#ddd6cc}
+html[data-theme="dark"] .reaction-viewer-tabs button.active{background:#263229;border-color:#79a989;color:#a7cbb0}
+html[data-theme="dark"] .reaction-viewer-list{border-color:#343a31}
+html[data-theme="dark"] .reaction-viewer-person[role="button"]:hover,
+html[data-theme="dark"] .reaction-viewer-person[role="button"]:focus-visible{background:#20261f}
+html[data-theme="dark"] .reaction-viewer-avatar{background:#263229;color:#a7cbb0}
+html[data-theme="dark"] .reaction-viewer-name strong{color:#f1ece5}
+html[data-theme="dark"] .reaction-viewer-name small{color:#aaa298}
+@media(min-width:621px){.reaction-viewer-overlay{place-items:center}}
+@media(max-width:620px){
+  .reaction-viewer-overlay{padding:0;align-items:end}
+  .reaction-viewer{width:100%;max-height:78vh;border-radius:24px 24px 0 0;border-bottom:0}
+}
 .reaction-bar.compact{
   gap:5px;
   margin-top:8px;
