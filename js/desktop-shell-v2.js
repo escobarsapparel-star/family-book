@@ -12,8 +12,12 @@
   const isDisplayPhoto=v=>/^data:|^blob:|^https?:/i.test(String(v||""));
   const userPhoto=()=>{
     try{
+      const shared=window.FB_PROFILE_PHOTO?.direct?.()||"";
+      if(isDisplayPhoto(shared))return shared;
       const live=window.currentUserPhoto?.()||"";
       if(isDisplayPhoto(live))return live;
+      const top=document.querySelector("#topProfileButton img")?.src||"";
+      if(isDisplayPhoto(top))return top;
       const raw=auth().photo||"";
       return isDisplayPhoto(raw)?raw:"";
     }catch(_){
@@ -21,6 +25,23 @@
       return isDisplayPhoto(raw)?raw:"";
     }
   };
+
+  async function hydrateDesktopProfilePhoto(){
+    const avatar=document.querySelector(".desktop-profile-avatar");
+    if(!avatar)return;
+    try{
+      const src=(await window.FB_PROFILE_PHOTO?.resolve?.())||userPhoto();
+      if(!isDisplayPhoto(src))return;
+      let img=avatar.querySelector("img");
+      if(!img){
+        img=document.createElement("img");
+        img.alt="";
+        img.addEventListener("error",()=>img.remove(),{once:true});
+        avatar.appendChild(img);
+      }
+      if(img.src!==src)img.src=src;
+    }catch(_){}
+  }
   const initials=name=>{const p=String(name||"Family").trim().split(/\s+/).filter(Boolean);return ((p[0]?.[0]||"F")+(p.length>1?(p.at(-1)?.[0]||""):"")).toUpperCase()};
 
   function navigate(route){
@@ -115,13 +136,14 @@
     top.insertAdjacentHTML("beforeend",`<nav class="desktop-top-nav" aria-label="Desktop primary navigation">${ROUTES.map((r,i)=>navButton(r).replace('type="button"',`type="button" class="${i===0?"active":""}"`)).join("")}</nav>`);
     screen.insertAdjacentHTML("beforebegin",leftRail());
     bottom.insertAdjacentHTML("beforebegin",rightRail());
-    bind(app);refreshStats();window.icons?.();return true;
+    bind(app);refreshStats();hydrateDesktopProfilePhoto();window.icons?.();return true;
   }
 
   const root=document.getElementById("app");
   const observer=new MutationObserver(()=>{if(document.querySelector("#app>.app:not(.desktop-shell-mounted)"))mount()});
   if(root)observer.observe(root,{childList:true,subtree:true});
   mount();
-  window.addEventListener("familybook:family-data-updated",refreshWidgets);
+  window.addEventListener("familybook:family-data-updated",()=>{refreshWidgets();hydrateDesktopProfilePhoto()});
   window.addEventListener("familybook:settings",refreshWidgets);
+  window.addEventListener("familybook:media-provider-changed",hydrateDesktopProfilePhoto);
 })();
