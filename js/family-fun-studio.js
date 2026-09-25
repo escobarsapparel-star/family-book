@@ -120,10 +120,6 @@
   const closeCameraBtn=$("#funCloseCameraBtn");
   const timerToolLabel=$("#funTimerToolLabel");
   const recordAction=$("#funRecordAction");
-  const modeStrip=$("#funCameraModeStrip");
-  let modeScrollFrame=0;
-  let modeScrollSettle=0;
-  let selectingModeFromScroll=false;
 
   const bucket=()=>window.FB_SUPABASE_CONFIG?.mediaBucket||"family-media";
 
@@ -218,10 +214,6 @@
     countdownToken++;
     clearInterval(countdownTimer);
     clearTimeout(countdownGoTimer);
-    if(modeScrollFrame)cancelAnimationFrame(modeScrollFrame);
-    clearTimeout(modeScrollSettle);
-    modeScrollFrame=0;
-    modeScrollSettle=0;
     countdownTimer=0;
     countdownGoTimer=0;
     setOverlay();
@@ -514,13 +506,8 @@
     camera.srcObject=null;
     camera.hidden=true;
     empty.hidden=false;
-    cameraWrap?.classList.remove("camera-live");
-    if(startBtn){
-      startBtn.disabled=false;
-      startBtn.hidden=false;
-      startBtn.style.pointerEvents="";
-    }
     flipBtn.disabled=true;
+    startBtn.disabled=false;
   }
 
   async function startCamera(){
@@ -531,23 +518,10 @@
     try{
       await stopStream();
       setStatus("Opening camera…");
-      let micAvailable=true;
-      try{
-        stream=await navigator.mediaDevices.getUserMedia({
-          video:{facingMode:{ideal:facing}},
-          audio:true
-        });
-      }catch(firstError){
-        try{
-          stream=await navigator.mediaDevices.getUserMedia({
-            video:{facingMode:{ideal:facing}},
-            audio:false
-          });
-          micAvailable=false;
-        }catch(_){
-          throw firstError;
-        }
-      }
+      stream=await navigator.mediaDevices.getUserMedia({
+        video:{facingMode:{ideal:facing}},
+        audio:true
+      });
       camera.srcObject=stream;
       camera.dataset.facing=facing;
       camera.muted=true;
@@ -555,17 +529,12 @@
       await camera.play().catch(()=>{});
       camera.hidden=false;
       empty.hidden=true;
-      cameraWrap?.classList.add("camera-live");
-      if(startBtn){
-        startBtn.disabled=true;
-        startBtn.hidden=true;
-        startBtn.style.pointerEvents="none";
-      }
       flipBtn.disabled=false;
+      startBtn.disabled=true;
       applyVisualEffects();
       if(lightEnabled)await syncLight();
       else if(frontFill)frontFill.hidden=true;
-      setStatus(micAvailable?"Camera ready.":"Camera ready. Microphone is unavailable, so this clip will record without sound.",micAvailable?"":"warn");
+      setStatus("Camera ready.");
       return true;
     }catch(err){
       console.warn("Family Fun camera:",err);
@@ -867,8 +836,7 @@
   }
 
   function captureFallback(){
-    fallbackInput.setAttribute("capture",facing==="environment"?"environment":"user");
-    fallbackInput.setAttribute("accept","video/*");
+    fallbackInput.setAttribute("capture",facing);
     fallbackInput.click();
   }
 
@@ -1036,32 +1004,11 @@
         const canDelete=item.created_by_user_id===userContext.supabaseUserId||userContext.role==="admin";
         const card=document.createElement("article");
         card.className="fun-gallery-card";
-        card.innerHTML='<div class="fun-gallery-media"><video muted playsinline preload="auto" disablepictureinpicture></video><button class="fun-gallery-play" type="button" aria-label="Play video"><i data-lucide="play"></i></button><span class="fun-gallery-mode"></span></div><div class="fun-gallery-copy"><strong></strong><small class="fun-gallery-date"></small><small class="fun-gallery-prompt"></small></div><button class="fun-gallery-delete" type="button" aria-label="Delete video">×</button>';
+        card.innerHTML='<div class="fun-gallery-media"><video muted playsinline preload="metadata"></video><span class="fun-gallery-mode"></span></div><div class="fun-gallery-copy"><strong></strong><small class="fun-gallery-date"></small><small class="fun-gallery-prompt"></small></div><button class="fun-gallery-delete" type="button" aria-label="Delete video">×</button>';
 
         const video=card.querySelector("video");
-        const playButton=card.querySelector(".fun-gallery-play");
+        if(url)video.src=url;
         video.loop=item.mode!=="bounce";
-        video.controls=false;
-        video.muted=true;
-        video.playsInline=true;
-        if(url){
-          video.src=url;
-          const primePreview=()=>{
-            if(!Number.isFinite(video.duration)||video.duration<=0)return;
-            const previewTime=Math.min(.4,Math.max(.08,video.duration*.04));
-            try{
-              if(Math.abs((video.currentTime||0)-previewTime)>.03)video.currentTime=previewTime;
-            }catch(_){}
-          };
-          video.addEventListener("loadedmetadata",primePreview,{once:true});
-          video.addEventListener("loadeddata",()=>{
-            video.classList.add("has-preview");
-          },{once:true});
-          video.addEventListener("seeked",()=>{
-            video.classList.add("has-preview");
-          },{once:true});
-          try{video.load()}catch(_){}
-        }
 
         card.querySelector(".fun-gallery-mode").innerHTML=`<i data-lucide="${modes[item.mode]?.icon||"video"}"></i><span>${modes[item.mode]?.title||"Video"}</span>`;
         card.querySelector(".fun-gallery-copy strong").textContent=item.title||"Family Fun";
@@ -1070,30 +1017,15 @@
         promptEl.textContent=item.prompt||"";
         promptEl.hidden=!item.prompt;
 
-        const toggleGalleryVideo=()=>{
+        video.addEventListener("click",()=>{
           if(!url)return;
           if(video.paused){
-            $("#funGalleryGrid video").forEach(v=>{if(v!==video)v.pause()});
+            $$("#funGalleryGrid video").forEach(v=>{if(v!==video)v.pause()});
             video.play().catch(()=>{});
           }else{
             video.pause();
           }
-        };
-        video.addEventListener("click",toggleGalleryVideo);
-        playButton?.addEventListener("click",event=>{
-          event.preventDefault();
-          event.stopPropagation();
-          toggleGalleryVideo();
         });
-        video.addEventListener("play",()=>{
-          card.classList.add("is-playing");
-          if(playButton)playButton.setAttribute("aria-label","Pause video");
-        });
-        video.addEventListener("pause",()=>{
-          card.classList.remove("is-playing");
-          if(playButton)playButton.setAttribute("aria-label","Play video");
-        });
-        video.addEventListener("ended",()=>card.classList.remove("is-playing"));
 
         const del=card.querySelector(".fun-gallery-delete");
         del.hidden=!canDelete;
@@ -1157,7 +1089,7 @@
     if(name==="gallery")renderGallery();
   }
 
-  function setMode(next,{scroll=true}={}){
+  function setMode(next){
     if(!modes[next])return;
     if(captureState==="countdown")cancelCountdown("Countdown cancelled.");
     if(captureState==="paused"){discardCurrentClip();return}
@@ -1166,7 +1098,7 @@
     mode=next;
     document.querySelectorAll("[data-fun-mode]").forEach(btn=>btn.classList.toggle("active",btn.dataset.funMode===mode));
     const activeModeBtn=document.querySelector('#funCameraModeStrip [data-fun-mode="'+mode+'"]');
-    if(scroll&&!selectingModeFromScroll)activeModeBtn?.scrollIntoView({behavior:"smooth",inline:"center",block:"nearest"});
+    activeModeBtn?.scrollIntoView({behavior:"smooth",inline:"center",block:"nearest"});
     const modeIcon=$("#funModeIcon");if(modeIcon){modeIcon.innerHTML=`<i data-lucide="${modes[mode].icon}"></i>`;window.icons?.()}
     $("#funModeTitle").textContent=modes[mode].title;
     $("#funModeDesc").textContent=modes[mode].desc;
@@ -1181,45 +1113,6 @@
     resetResult();
     setOverlay();
     setStatus(stream?"Camera ready.":"Start the camera when you’re ready.");
-  }
-
-  function nearestModeInStrip(){
-    if(!modeStrip)return null;
-    const stripRect=modeStrip.getBoundingClientRect();
-    const center=stripRect.left+stripRect.width/2;
-    let nearest=null;
-    let distance=Infinity;
-    modeStrip.querySelectorAll("[data-fun-mode]").forEach(btn=>{
-      const rect=btn.getBoundingClientRect();
-      const d=Math.abs((rect.left+rect.width/2)-center);
-      if(d<distance){distance=d;nearest=btn}
-    });
-    return nearest;
-  }
-
-  function selectModeFromScroll(){
-    if(!modeStrip||captureState!=="idle")return;
-    const nearest=nearestModeInStrip();
-    const next=nearest?.dataset.funMode;
-    if(!next||next===mode||!modes[next])return;
-    selectingModeFromScroll=true;
-    try{setMode(next,{scroll:false})}
-    finally{selectingModeFromScroll=false}
-  }
-
-  function bindModeStripSelection(){
-    if(!modeStrip||modeStrip.dataset.autoSelectBound==="1")return;
-    modeStrip.dataset.autoSelectBound="1";
-    modeStrip.addEventListener("scroll",()=>{
-      if(modeScrollFrame)cancelAnimationFrame(modeScrollFrame);
-      modeScrollFrame=requestAnimationFrame(()=>{
-        modeScrollFrame=0;
-        selectModeFromScroll();
-      });
-      clearTimeout(modeScrollSettle);
-      modeScrollSettle=setTimeout(selectModeFromScroll,90);
-    },{passive:true});
-    modeStrip.addEventListener("touchend",()=>setTimeout(selectModeFromScroll,30),{passive:true});
   }
 
   async function initBackend(){
@@ -1267,8 +1160,7 @@
   document.querySelectorAll("[data-family-fun-feature]").forEach(btn=>btn.addEventListener("click",()=>openFamilyFunFeature(btn.dataset.familyFunFeature)));
 
   document.querySelectorAll("[data-fun-mode]").forEach(btn=>btn.addEventListener("click",()=>setMode(btn.dataset.funMode)));
-  bindModeStripSelection();
-  $("[data-fun-tab]").forEach(btn=>btn.addEventListener("click",()=>switchTab(btn.dataset.funTab)));
+  $$("[data-fun-tab]").forEach(btn=>btn.addEventListener("click",()=>switchTab(btn.dataset.funTab)));
   $$("[data-gallery-filter]").forEach(btn=>btn.addEventListener("click",()=>{
     galleryFilter=btn.dataset.galleryFilter;
     $$("[data-gallery-filter]").forEach(x=>x.classList.toggle("active",x===btn));
@@ -1286,61 +1178,21 @@
     }catch(_){}
   });
 
-  let lastCameraTouchAction=0;
-  function bindCameraTap(button,handler){
-    if(!button)return;
-    button.style.touchAction="manipulation";
-    button.addEventListener("touchend",event=>{
-      event.preventDefault();
-      event.stopPropagation();
-      lastCameraTouchAction=Date.now();
-      handler(event);
-    },{passive:false});
-    button.addEventListener("click",event=>{
-      if(Date.now()-lastCameraTouchAction<450){
-        event.preventDefault();
-        event.stopPropagation();
-        return;
-      }
-      event.stopPropagation();
-      handler(event);
-    });
-  }
-
-  const activateRecord=()=>{
+  startBtn.addEventListener("click",startCamera);
+  flipBtn.addEventListener("click",flipCamera);
+  recordBtn.addEventListener("click",()=>{
     if(captureState==="recording"){stopRecording();return}
-    if(mode==="pass"&&captureState==="paused"){void beginRecording();return}
+    if(mode==="pass"&&captureState==="paused"){beginRecording();return}
     if(captureState!=="idle")return;
-    if(!window.MediaRecorder&&!window.FB_NATIVE?.Capacitor?.isNativePlatform?.()){
-      setStatus("Opening your phone camera because direct browser recording is not supported on this device.","warn");
-      captureFallback();
-      return;
-    }
-    void beginRecording();
-  };
-
-  bindCameraTap(startBtn,()=>{void startCamera()});
-  bindCameraTap(flipBtn,()=>{void flipCamera()});
-  bindCameraTap(recordBtn,activateRecord);
-  bindCameraTap(stopBtn,stopRecording);
-  bindCameraTap(soundBtn,()=>soundInput?.click());
+    beginRecording();
+  });
+  stopBtn.addEventListener("click",stopRecording);
+  soundBtn?.addEventListener("click",()=>soundInput?.click());
   soundInput?.addEventListener("change",()=>setSoundFile(soundInput.files?.[0]||null));
-  filterBtn?.setAttribute("aria-expanded","false");
-  filterBtn?.setAttribute("aria-controls","funFilterTray");
-  const toggleFilters=()=>{
-    togglePanel(filterTray,filterBtn);
-    if(filterTray&&!filterTray.hidden){
-      filterBtn.setAttribute("aria-expanded","true");
-      setStatus("Swipe through filters and tap one to preview it.");
-      requestAnimationFrame(()=>filterTray.querySelector("[data-fun-filter].active")?.scrollIntoView({behavior:"smooth",inline:"center",block:"nearest"}));
-    }else{
-      filterBtn?.setAttribute("aria-expanded","false");
-    }
-  };
-  bindCameraTap(filterBtn,toggleFilters);
-  bindCameraTap(lightBtn,()=>{void toggleLight()});
-  bindCameraTap(sourceBtn,()=>togglePanel(sourceMenu,sourceBtn));
-  bindCameraTap(timerToolBtn,()=>{
+  filterBtn?.addEventListener("click",()=>togglePanel(filterTray,filterBtn));
+  lightBtn?.addEventListener("click",toggleLight);
+  sourceBtn?.addEventListener("click",()=>togglePanel(sourceMenu,sourceBtn));
+  timerToolBtn?.addEventListener("click",()=>{
     setMode("countdown");
     if(filterTray)filterTray.hidden=true;
     if(sourceMenu)sourceMenu.hidden=true;
@@ -1369,11 +1221,7 @@
     document.body.classList.remove("fun-camera-open");
     document.querySelector('[data-family-fun-feature="camera"]')?.classList.remove("active");
   });
-  document.querySelectorAll("[data-fun-filter]").forEach(btn=>btn.addEventListener("click",()=>{
-    applyFilter(btn.dataset.funFilter);
-    setStatus((filterDefs[btn.dataset.funFilter]?.label||"Filter")+" filter selected.","success");
-    btn.scrollIntoView({behavior:"smooth",inline:"center",block:"nearest"});
-  }));
+  document.querySelectorAll("[data-fun-filter]").forEach(btn=>btn.addEventListener("click",()=>{applyFilter(btn.dataset.funFilter);setStatus((filterDefs[btn.dataset.funFilter]?.label||"Filter")+" preview");}));
   chooseBtn.addEventListener("click",()=>{if(sourceMenu)sourceMenu.hidden=true;chooseFile()});
   $("#funDeviceCameraBtn").addEventListener("click",()=>{if(sourceMenu)sourceMenu.hidden=true;captureFallback()});
   fallbackInput.addEventListener("change",()=>handleFile(fallbackInput.files?.[0]));

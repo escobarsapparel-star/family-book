@@ -40,21 +40,6 @@ html.native-app body.home-composer-open #screen{
   transform:none!important;
 }
 
-/* Full-screen Family Camera must be viewport-fixed, not fixed to the GPU-
-   transformed #screen. Also prevent the underlying route from moving while
-   the camera is open. */
-html.native-app body.fun-camera-open #screen{
-  will-change:auto!important;
-  backface-visibility:visible!important;
-  transform:none!important;
-  overflow:hidden!important;
-  height:100dvh!important;
-}
-html.native-app body.fun-camera-open{
-  overflow:hidden!important;
-  overscroll-behavior:none!important;
-}
-
 /* Android 15 can draw the WebView edge-to-edge. Paint solid system-bar
    surfaces ourselves and keep Family Book content out from underneath them. */
 html.native-app body::before,

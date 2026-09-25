@@ -8,11 +8,10 @@
   // Allow page-wide swipe gestures to start on cards, links and buttons. Inputs,
   // editors and true horizontal/interactive surfaces still keep their own gesture.
   const blockedSelector="input,textarea,select,[contenteditable='true'],canvas,.cropper-backdrop,.photo-action-backdrop,.fb-profile-media-viewer,.member-cover-editor,.full-tree-viewport,.memory-strip,.home-composer-modal,[data-fb-no-swipe],.fun-camera-wrap,.fun-result-card,.fun-gallery-filters";
-  const DURATION=165;
-  const EASE='cubic-bezier(.2,.78,.22,1)';
+  const DURATION=220;
+  const EASE='cubic-bezier(.22,.61,.36,1)';
   const previewCache=new Map();
   let previewCacheTimer=0;
-  let previewCacheIdle=0;
 
   function currentRoute(){
     return String(window.FB_APP_HISTORY?.current?.()||history.state?.fbRoute||'home');
@@ -87,14 +86,7 @@
     if(!tabs.includes(route)||!screen)return;
     try{
       const clone=sanitizePreview(screen.cloneNode(true));
-      clone.removeAttribute('id');
-      clone.className=(screen.className||'screen')+' fb-apk-swipe-preview';
-      clone.setAttribute('aria-hidden','true');
-      clone.inert=true;
-      clone.dataset.route=route;
-      clone.style.transition='none';
-      clone.style.pointerEvents='none';
-      previewCache.set(route,clone);
+      previewCache.set(route,clone.innerHTML);
     }catch(err){
       console.warn('Family Book swipe cache:',err);
     }
@@ -102,63 +94,38 @@
 
   function scheduleCache(){
     clearTimeout(previewCacheTimer);
-    if(previewCacheIdle&&window.cancelIdleCallback){
-      try{window.cancelIdleCallback(previewCacheIdle)}catch(_){}
-      previewCacheIdle=0;
-    }
-    previewCacheTimer=setTimeout(()=>{
-      if(document.documentElement.classList.contains('fb-apk-swiping')){
-        scheduleCache();
-        return;
-      }
-      const run=()=>{
-        previewCacheIdle=0;
-        cacheRoute();
-      };
-      if(window.requestIdleCallback){
-        previewCacheIdle=window.requestIdleCallback(run,{timeout:650});
-      }else{
-        setTimeout(run,0);
-      }
-    },180);
+    previewCacheTimer=setTimeout(()=>cacheRoute(),90);
   }
 
   function bindPreviewCache(){
     const screen=document.querySelector('#screen');
-    if(!screen)return false;
-    if(window.__fbSwipePreviewCacheBound)return true;
+    if(!screen||window.__fbSwipePreviewCacheBound)return;
     window.__fbSwipePreviewCacheBound=true;
     cacheRoute();
     try{
       const observer=new MutationObserver(scheduleCache);
       observer.observe(screen,{childList:true,subtree:true,attributes:true,attributeFilter:['class','hidden','src']});
     }catch(_){}
-    return true;
   }
 
-  function makePreview(route,dir,screen,width){
+  function makePreview(route,dir,screen){
     const host=screen?.parentElement;
     if(!host)return null;
+    const preview=document.createElement('main');
+    preview.className=(screen.className||'screen')+' fb-apk-swipe-preview';
+    preview.setAttribute('aria-hidden','true');
+    preview.inert=true;
+    preview.dataset.route=route;
+    preview.innerHTML=previewCache.get(route)||previewPlaceholder(route);
 
-    let preview=previewCache.get(route)||null;
-    if(preview){
-      if(preview.isConnected)preview.remove();
-    }else{
-      preview=document.createElement('main');
-      preview.className=(screen.className||'screen')+' fb-apk-swipe-preview';
-      preview.setAttribute('aria-hidden','true');
-      preview.inert=true;
-      preview.dataset.route=route;
-      preview.innerHTML=previewPlaceholder(route);
-    }
-
-    preview.style.transition='none';
+    const width=screen.getBoundingClientRect().width||window.innerWidth;
     preview.style.top=screen.offsetTop+'px';
     preview.style.left=screen.offsetLeft+'px';
     preview.style.width=width+'px';
     preview.style.minHeight=Math.max(screen.scrollHeight,window.innerHeight)+'px';
     preview.style.transform=`translate3d(${dir*width}px,0,0)`;
     host.appendChild(preview);
+    try{window.icons?.()}catch(_){}
     return preview;
   }
 
@@ -166,8 +133,6 @@
     if(window.__fbMainTabSwipeBound)return;
     window.__fbMainTabSwipeBound=true;
     let g=null,animating=false,preview=null;
-    let moveFrame=0;
-    let pendingMove=null;
 
     const screen=()=>document.querySelector('#screen');
     const removePreview=()=>{preview?.remove();preview=null};
@@ -178,30 +143,10 @@
       s.style.opacity='';
     };
     const cleanup=()=>{
-      if(moveFrame){cancelAnimationFrame(moveFrame);moveFrame=0}
-      pendingMove=null;
       resetScreen(screen());
       removePreview();
       document.documentElement.classList.remove('fb-apk-swiping');
       g=null;
-    };
-
-    const paintMove=()=>{
-      moveFrame=0;
-      const p=pendingMove;
-      pendingMove=null;
-      if(!p||animating)return;
-      const {s,width,valid,drag,resisted}=p;
-      s.style.transition='none';
-      if(!valid){
-        s.style.transform=`translate3d(${resisted}px,0,0)`;
-        return;
-      }
-      s.style.transform=`translate3d(${drag}px,0,0)`;
-      if(preview){
-        preview.style.transition='none';
-        preview.style.transform=`translate3d(${g.dir*width+drag}px,0,0)`;
-      }
     };
 
     function setDirection(data,dir){
@@ -213,7 +158,7 @@
       if(next<0||next>=tabs.length){data.next=-1;return false}
       data.next=next;
       const s=screen();
-      preview=makePreview(tabs[next],dir,s,data.width);
+      preview=makePreview(tabs[next],dir,s);
       return !!preview;
     }
 
@@ -224,11 +169,8 @@
       if(!tabs.includes(route))return;
       if(ev.target?.closest?.(blockedSelector))return;
       const t=ev.touches[0];
-      g={
-        x:t.clientX,y:t.clientY,dx:0,dy:0,route,axis:null,dir:0,next:-1,
-        lastX:t.clientX,lastT:performance.now(),velocity:0,
-        width:Math.max(1,document.documentElement.clientWidth||window.innerWidth)
-      };
+      cacheRoute(route,screen());
+      g={x:t.clientX,y:t.clientY,dx:0,dy:0,route,axis:null,dir:0,next:-1,lastX:t.clientX,lastT:performance.now(),velocity:0};
     },{passive:true,capture:true});
 
     document.addEventListener('touchmove',ev=>{
@@ -248,15 +190,22 @@
       ev.preventDefault();
 
       const s=screen();if(!s)return;
-      const width=g.width;
+      const width=s.getBoundingClientRect().width||window.innerWidth;
       const dir=dx<0?1:-1;
       const valid=setDirection(g,dir);
       document.documentElement.classList.add('fb-apk-swiping');
 
-      const resisted=Math.sign(dx)*Math.min(34,Math.abs(dx)*.18);
+      s.style.transition='none';
+      if(!valid){
+        const resisted=Math.sign(dx)*Math.min(34,Math.abs(dx)*.18);
+        s.style.transform=`translate3d(${resisted}px,0,0)`;
+        return;
+      }
+
       const drag=Math.max(-width,Math.min(width,dx));
-      pendingMove={s,width,valid,drag,resisted};
-      if(!moveFrame)moveFrame=requestAnimationFrame(paintMove);
+      s.style.transform=`translate3d(${drag}px,0,0)`;
+      preview.style.transition='none';
+      preview.style.transform=`translate3d(${g.dir*width+drag}px,0,0)`;
     },{passive:false,capture:true});
 
     document.addEventListener('touchend',()=>{
@@ -264,7 +213,7 @@
       const data=g;
       const s=screen();
       if(data.axis!=='x'||data.next<0||!preview){cleanup();return}
-      const width=data.width||document.documentElement.clientWidth||window.innerWidth;
+      const width=s?.getBoundingClientRect().width||window.innerWidth;
       const threshold=Math.min(105,width*.20);
       const fast=Math.abs(data.velocity)>.42&&Math.abs(data.dx)>30;
       const commit=Math.abs(data.dx)>=threshold||fast;
@@ -297,7 +246,7 @@
 
     document.addEventListener('touchcancel',()=>{
       if(!g||animating)return;
-      const data=g,s=screen(),width=data.width||document.documentElement.clientWidth||window.innerWidth;
+      const data=g,s=screen(),width=s?.getBoundingClientRect().width||window.innerWidth;
       animating=true;
       if(s){s.style.transition=`transform ${DURATION}ms ${EASE}`;s.style.transform='translate3d(0,0,0)'}
       if(preview){preview.style.transition=`transform ${DURATION}ms ${EASE}`;preview.style.transform=`translate3d(${data.dir*width}px,0,0)`}
@@ -305,17 +254,7 @@
     },{passive:true,capture:true});
   }
 
-  function start(){
-    bindBackButton();
-    bindSwipe();
-    if(!bindPreviewCache()){
-      let tries=0;
-      const retry=setInterval(()=>{
-        tries++;
-        if(bindPreviewCache()||tries>=20)clearInterval(retry);
-      },250);
-    }
-  }
+  function start(){bindBackButton();bindSwipe()}
   if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',start,{once:true});
   else start();
 })();
