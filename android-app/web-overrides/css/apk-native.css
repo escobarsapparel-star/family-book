@@ -285,6 +285,16 @@ html.native-app #funResultVideo::-webkit-media-controls-start-playback-button{
 }
 
 
+/* Family Fun Gallery — Android app only.
+   When Gallery is active, remove the generic Family Fun hero so the gallery
+   has one clean heading instead of two stacked headers. The mobile website is untouched. */
+html.native-app body.family-fun-body:has(#funGalleryPanel:not([hidden])) .family-fun-hero{
+  display:none!important;
+}
+html.native-app body.family-fun-body:has(#funGalleryPanel:not([hidden])) .fun-main-tabs{
+  margin-top:0!important;
+}
+
 /* Family Fun Gallery — Android WebView only.
    Suppress Chromium's oversized native play overlay and show the decoded
    paused video frame instead. The existing card tap still plays/pauses. */
