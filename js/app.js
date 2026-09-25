@@ -44,9 +44,9 @@ A.innerHTML=`<main class="login-page">
 <button class="primary full" type="submit">Sign in</button>
 </form>
 
-<a class="apk-download-cta" data-apk-download href="downloads/FamilyBook.apk" download hidden>
+<a class="apk-download-cta" data-apk-download href="downloads/FamilyBook-Updater-1.1-debug.apk" download hidden>
   <span class="apk-download-icon"><i data-lucide="smartphone"></i></span>
-  <span><strong>Download Family Book for Android</strong><small>Install the latest APK</small></span>
+  <span><strong>Download Family Book for Android</strong><small>Version 1.1 · live updates enabled</small></span>
   <i data-lucide="download"></i>
 </a>
         <button class="android-install-link" type="button" data-android-install-help>Install guide</button>
@@ -166,8 +166,8 @@ function setFamilyFormSaving(form,saving,label="Saving…"){
  }
 }
 
-const FB_ANDROID_APK_URL="downloads/FamilyBook.apk";
-const FB_ANDROID_RELEASE_KEY="familybook_android_release_modal_1";
+const FB_ANDROID_APK_URL="downloads/FamilyBook-Updater-1.1-debug.apk";
+const FB_ANDROID_RELEASE_KEY="familybook_android_release_modal_2";
 let fbAndroidApkAvailable=null;
 
 function runningInsideNativeApp(){
@@ -241,16 +241,16 @@ function showAndroidInstallSplash(force=false){
      <button class="android-install-close" type="button" aria-label="Close"><i data-lucide="x"></i></button>
      <div class="android-install-hero">
        <img class="android-install-logo" src="assets/logo/family-book-logo-dark-header.png" alt="Family Book">
-       <p>NOW AVAILABLE · ANDROID APP</p>
-       <h2 id="androidInstallTitle">Family Book is now an app!</h2>
-       <span>Keep your family close. Download and install Family Book on your Android phone.</span>
+       <p>ANDROID UPDATE · VERSION 1.1</p>
+       <h2 id="androidInstallTitle">Family Book live updates are here</h2>
+       <span>Install this updater-enabled build once, then compatible Family Book interface updates can arrive automatically.</span>
      </div>
      <details class="android-release-guide"><summary>How to install</summary>${androidInstallStepsHtml()}</details>
      <div class="android-install-actions">
        <a class="primary" href="${FB_ANDROID_APK_URL}" download><i data-lucide="download"></i>Download Family Book</a>
        <button class="secondary" type="button" data-android-not-now>Not now</button>
      </div>
-     <small class="android-install-note">This beta installs directly from Family Book, so Android may ask you to allow this source once.</small>
+     <small class="android-install-note">Install this over your current Family Book app. Do not uninstall the existing app first. Android may ask you to allow this source once.</small>
    </section>`;
  document.body.appendChild(d);
  document.body.classList.add("android-release-open");
