@@ -4,8 +4,33 @@
   const auth=()=>{try{return window.FB_AUTH?.get?.()||{}}catch(_){return {}}};
   const ownMemberId=()=>auth().memberId||null;
   const familyName=()=>{try{return window.familyLabel?.()||auth().family||'Family'}catch(_){return auth().family||'Family'}};
-  const photo=()=>{try{return window.currentUserPhoto?.()||auth().photo||document.querySelector('#topProfileButton img')?.src||''}catch(_){return ''}};
+  const photo=()=>{
+    try{
+      return window.FB_PROFILE_PHOTO?.direct?.()||
+        window.currentUserPhoto?.()||
+        document.querySelector('#topProfileButton img')?.src||
+        '';
+    }catch(_){return ''}
+  };
   const initials=name=>{const p=String(name||'Family User').trim().split(/\s+/).filter(Boolean);return ((p[0]?.[0]||'F')+(p.length>1?(p.at(-1)?.[0]||''):'' )).toUpperCase()};
+
+  async function hydrateAccountPhoto(pop){
+    if(!pop)return;
+    try{
+      const src=(await window.FB_PROFILE_PHOTO?.resolve?.())||photo();
+      if(!src||!/^(data:|blob:|https?:)/i.test(String(src)))return;
+      const avatar=pop.querySelector('.fb-account-avatar');
+      if(!avatar)return;
+      let img=avatar.querySelector('img');
+      if(!img){
+        img=document.createElement('img');
+        img.alt=(auth().name||'Profile')+' profile photo';
+        img.addEventListener('error',()=>img.remove(),{once:true});
+        avatar.appendChild(img);
+      }
+      if(img.src!==src)img.src=src;
+    }catch(_){}
+  }
 
   function installStyles(){
     if(document.querySelector('#fbDesktopAccountMenuStyles'))return;
@@ -185,6 +210,7 @@
       <button type="button" class="profile-popover-signout" data-fb-menu="signout"><i data-lucide="log-out"></i>Sign out</button>`;
 
     pop.dataset.fbDesktopComplete='1';
+    hydrateAccountPhoto(pop);
     pop.querySelector('[data-fb-account-profile]')?.addEventListener('click',()=>id?route(`view-member:${id}`):route('profile'));
     pop.querySelector('[data-fb-menu="notifications"]')?.addEventListener('click',()=>route('notifications'));
     pop.querySelector('[data-fb-menu="settings"]')?.addEventListener('click',()=>route('settings'));
@@ -214,6 +240,7 @@
     run();
   });
   window.addEventListener('resize',run);
+  window.addEventListener('familybook:media-provider-changed',run);
 
   const observer=new MutationObserver(records=>{
     if(records.some(r=>Array.from(r.addedNodes||[]).some(n=>n.nodeType===1)))run();
