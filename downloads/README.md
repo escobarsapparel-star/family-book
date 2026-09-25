@@ -1,15 +1,21 @@
 # Family Book Android download
 
-Upload the signed Android APK to this folder using the exact filename:
+Upload the signed updater APK to this folder using the exact filename:
 
-`FamilyBook.apk`
+`FamilyBook-Updater-1.1-debug.apk`
 
-Public download URL on the Family Book site:
+Public download path on the Family Book site:
 
-`https://escobarsapparel-star.github.io/family-book/downloads/FamilyBook.apk`
+`/family-book/downloads/FamilyBook-Updater-1.1-debug.apk`
 
-The website checks that this file exists before showing its Android install banner/splash.
+The website checks that this file exists and is a binary file larger than 1 MB before showing its Android download controls.
 
-## Updating the app
+## Version 1.1 updater build
 
-Replace `downloads/FamilyBook.apk` with the newly signed APK. No website code change is required.
+This is the one-time updater-enabled Android build. Install it over the existing Family Book app; do not uninstall the current app first.
+
+After this updater-enabled APK is installed, compatible HTML/CSS/JavaScript interface releases can be staged through the Family Book live-update system. Native Android changes still require a new APK.
+
+## Updating the installer
+
+Replace this file only with an APK signed by the same Android signing key used by the currently installed Family Book app.
