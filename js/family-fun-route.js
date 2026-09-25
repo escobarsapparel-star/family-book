@@ -7,7 +7,7 @@
 
   function galleryPanelMarkup(standalone=false){
     const createAction=standalone
-      ? '<button class="primary" type="button" data-family-fun-record><i data-lucide="video"></i>Record a video</button>'
+      ? ''
       : '<button class="primary" type="button" data-fun-tab="create">Create a video</button>';
     return `<section id="funGalleryPanel" ${standalone?"":"hidden"}>
       <div class="fun-gallery-header">
@@ -204,7 +204,6 @@
           <h1>Family Fun Gallery</h1>
           <p>Watch the videos your family has saved together.</p>
         </div>
-        <button class="primary fun-gallery-record" type="button" data-family-fun-record><i data-lucide="video"></i>Record video</button>
       </div>
 
       ${galleryPanelMarkup(true)}
@@ -267,12 +266,6 @@
   function bindGalleryRoute(){
     cleanup();
     window.icons?.();
-
-    document.querySelectorAll("[data-family-fun-record]").forEach(btn=>btn.onclick=()=>{
-      try{sessionStorage.setItem("fb_family_fun_open_camera","1")}catch(_){}
-      window.go?.("family-fun");
-    });
-
     loadStudio();
   }
 
