@@ -2,6 +2,8 @@
   const $=s=>document.querySelector(s);
   const $$=s=>[...document.querySelectorAll(s)];
 
+  const galleryOnly=!!document.querySelector("[data-family-fun-gallery-page]");
+
   const modes={
     normal:{title:"Normal",desc:"Record a family moment with the camera, or choose a video from your device.",icon:"video"},
     bounce:{title:"Bounce",desc:"Record a quick 3-second clip and Family Fun plays it forward and backward.",icon:"repeat-2"},
@@ -957,8 +959,7 @@
       document.documentElement.classList.remove("fun-camera-open");
       document.body.classList.remove("fun-camera-open");
       document.querySelector('[data-family-fun-feature="camera"]')?.classList.remove("active");
-      switchTab("gallery");
-      setTimeout(()=>panel?.scrollIntoView({behavior:"smooth",block:"start"}),60);
+      window.go?.("family-fun-gallery");
     }catch(err){
       console.error("Family Fun upload:",err);
       if(storagePath){
@@ -1150,10 +1151,12 @@
     }catch(err){
       console.error("Family Fun Supabase setup:",err);
       setStatus(err?.message||"Family Fun could not connect to Family Book.","warn");
-      addGalleryBtn.disabled=true;
-      galleryEmpty.hidden=false;
-      galleryEmpty.querySelector("strong").textContent="Family Book sign-in required";
-      galleryEmpty.querySelector("p").textContent="Return to Family Book, sign in, then open Family Fun again.";
+      if(addGalleryBtn)addGalleryBtn.disabled=true;
+      if(galleryEmpty){
+        galleryEmpty.hidden=false;
+        galleryEmpty.querySelector("strong").textContent="Family Book sign-in required";
+        galleryEmpty.querySelector("p").textContent="Return to Family Book, sign in, then open Family Fun again.";
+      }
     }
   }
 
@@ -1209,6 +1212,22 @@
       }
     }catch(_){}
   });
+
+  if(galleryOnly){
+    function disposeGalleryOnly(){
+      clearTimeout(galleryRefreshTimer);
+      if(realtimeChannel&&client){
+        try{client.removeChannel(realtimeChannel)}catch(_){}
+      }
+      realtimeChannel=null;
+      if(window.FB_FAMILY_FUN_STUDIO_DISPOSE===disposeGalleryOnly)delete window.FB_FAMILY_FUN_STUDIO_DISPOSE;
+    }
+
+    window.FB_FAMILY_FUN_STUDIO_DISPOSE=disposeGalleryOnly;
+    window.addEventListener("beforeunload",disposeGalleryOnly,{once:true});
+    initBackend();
+    return;
+  }
 
   startBtn.addEventListener("click",startCamera);
   flipBtn.addEventListener("click",flipCamera);

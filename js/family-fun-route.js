@@ -5,6 +5,35 @@
     try{return window.familyLabel?.()||window.FB_AUTH?.get?.()?.family||"Family"}catch(_){return "Family"}
   }
 
+  function galleryPanelMarkup(standalone=false){
+    const createAction=standalone
+      ? '<button class="primary" type="button" data-family-fun-record><i data-lucide="video"></i>Record a video</button>'
+      : '<button class="primary" type="button" data-fun-tab="create">Create a video</button>';
+    return `<section id="funGalleryPanel" ${standalone?"":"hidden"}>
+      <div class="fun-gallery-header">
+        <div><p class="eyebrow">FAMILY FUN GALLERY</p><h2>Your family videos</h2><p>Videos shared here are visible to signed-in members of your family.</p></div>
+        <span id="funGalleryCount">0 videos</span>
+      </div>
+
+      <div class="fun-gallery-filters" aria-label="Gallery categories">
+        <button class="active" type="button" data-gallery-filter="all">All Videos</button>
+        <button type="button" data-gallery-filter="normal"><i data-lucide="video"></i>Normal</button>
+        <button type="button" data-gallery-filter="bounce"><i data-lucide="repeat-2"></i>Bounce</button>
+        <button type="button" data-gallery-filter="countdown"><i data-lucide="timer"></i>Countdown</button>
+        <button type="button" data-gallery-filter="pass"><i data-lucide="smartphone"></i>Pass the Phone</button>
+      </div>
+
+      <div class="fun-gallery-empty" id="funGalleryEmpty">
+        <span class="fun-empty-icon"><i data-lucide="video"></i></span>
+        <strong>No Family Fun videos yet</strong>
+        <p>Create a clip and save it to the Family Fun Gallery. It will automatically appear under the correct heading.</p>
+        ${createAction}
+      </div>
+
+      <div class="fun-gallery-grid" id="funGalleryGrid"></div>
+    </section>`;
+  }
+
   function pageShell(){
     return `<section class="calendar-page family-fun-app-page">
       <div class="calendar-title-row family-fun-title-row">
@@ -26,7 +55,7 @@
             </span>
             <span class="fun-feature-arrow"><i data-lucide="chevron-down"></i></span>
           </button>
-          <button class="fun-feature-card family-gallery-feature" type="button" data-family-fun-feature="gallery">
+          <button class="fun-feature-card family-gallery-feature" type="button" data-r="family-fun-gallery">
             <span class="fun-feature-icon"><i data-lucide="film"></i></span>
             <span class="fun-feature-copy">
               <strong>Family Fun Gallery</strong>
@@ -158,31 +187,27 @@
         </div>
       </div>
 
-      <section id="funGalleryPanel" hidden>
-        <div class="fun-gallery-header">
-          <div><p class="eyebrow">FAMILY FUN GALLERY</p><h2>Your family videos</h2><p>Videos shared here are visible to signed-in members of your family.</p></div>
-          <span id="funGalleryCount">0 videos</span>
-        </div>
-
-        <div class="fun-gallery-filters" aria-label="Gallery categories">
-          <button class="active" type="button" data-gallery-filter="all">All Videos</button>
-          <button type="button" data-gallery-filter="normal"><i data-lucide="video"></i>Normal</button>
-          <button type="button" data-gallery-filter="bounce"><i data-lucide="repeat-2"></i>Bounce</button>
-          <button type="button" data-gallery-filter="countdown"><i data-lucide="timer"></i>Countdown</button>
-          <button type="button" data-gallery-filter="pass"><i data-lucide="smartphone"></i>Pass the Phone</button>
-        </div>
-
-        <div class="fun-gallery-empty" id="funGalleryEmpty">
-          <span class="fun-empty-icon"><i data-lucide="video"></i></span>
-          <strong>No Family Fun videos yet</strong>
-          <p>Create a clip and tap <b>Add to Gallery</b>. It will automatically appear under the correct heading.</p>
-          <button class="primary" type="button" data-fun-tab="create">Create a video</button>
-        </div>
-
-        <div class="fun-gallery-grid" id="funGalleryGrid"></div>
-      </section>
+      ${galleryPanelMarkup(false)}
 
       </section>
+
+      <p class="fun-privacy-note">Family Fun videos are stored privately in Family Book cloud storage. Only signed-in members of your family can view them.</p>
+    </section>`;
+  }
+
+  function galleryShell(){
+    return `<section class="calendar-page family-fun-app-page fun-gallery-page" data-family-fun-gallery-page>
+      <div class="fun-gallery-page-head">
+        <button class="fun-feature-back" type="button" data-r="family-fun"><i data-lucide="arrow-left"></i>Family Fun</button>
+        <div class="fun-gallery-page-title">
+          <p class="eyebrow">${e(String(familyLabel()).toUpperCase())}</p>
+          <h1>Family Fun Gallery</h1>
+          <p>Watch the videos your family has saved together.</p>
+        </div>
+        <button class="primary fun-gallery-record" type="button" data-family-fun-record><i data-lucide="video"></i>Record video</button>
+      </div>
+
+      ${galleryPanelMarkup(true)}
 
       <p class="fun-privacy-note">Family Fun videos are stored privately in Family Book cloud storage. Only signed-in members of your family can view them.</p>
     </section>`;
@@ -192,6 +217,18 @@
     try{window.FB_FAMILY_FUN_STUDIO_DISPOSE?.()}catch(err){console.warn("Family Fun cleanup:",err)}
     const script=document.querySelector('script[data-family-fun-runtime]');
     script?.remove();
+  }
+
+  function loadStudio(onLoad){
+    const script=document.createElement("script");
+    script.src="js/family-fun-studio.js?v=gallery-route-1";
+    script.dataset.familyFunRuntime="1";
+    script.onload=()=>{
+      window.icons?.();
+      try{onLoad?.()}catch(err){console.warn("Family Fun route setup:",err)}
+    };
+    script.onerror=()=>console.error("Could not load Family Fun.");
+    document.body.appendChild(script);
   }
 
   function bindRoute(){
@@ -217,13 +254,27 @@
       cameraCard.setAttribute("aria-controls","funCameraPanel");
     }
 
-    const script=document.createElement("script");
-    script.src="js/family-fun-studio.js?v=app-camera-stability-1";
-    script.dataset.familyFunRuntime="1";
-    script.onload=()=>window.icons?.();
-    script.onerror=()=>console.error("Could not load Family Fun.");
-    document.body.appendChild(script);
+    loadStudio(()=>{
+      let openCamera=false;
+      try{
+        openCamera=sessionStorage.getItem("fb_family_fun_open_camera")==="1";
+        if(openCamera)sessionStorage.removeItem("fb_family_fun_open_camera");
+      }catch(_){}
+      if(openCamera)cameraCard?.click();
+    });
   }
 
-  window.FB_FAMILY_FUN={pageShell,bindRoute,cleanup};
+  function bindGalleryRoute(){
+    cleanup();
+    window.icons?.();
+
+    document.querySelectorAll("[data-family-fun-record]").forEach(btn=>btn.onclick=()=>{
+      try{sessionStorage.setItem("fb_family_fun_open_camera","1")}catch(_){}
+      window.go?.("family-fun");
+    });
+
+    loadStudio();
+  }
+
+  window.FB_FAMILY_FUN={pageShell,galleryShell,bindRoute,bindGalleryRoute,cleanup};
 })();
