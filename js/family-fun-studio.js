@@ -459,10 +459,7 @@
 
   function supportedMime(){
     if(!window.MediaRecorder)return "";
-    // Prefer formats with the widest Android WebView playback support.
-    // VP9 WebM recorded successfully on some devices but later failed to
-    // render/play inside the Family Book Android WebView.
-    const types=["video/mp4","video/webm;codecs=vp8,opus","video/webm","video/webm;codecs=vp9,opus"];
+    const types=["video/webm;codecs=vp9,opus","video/webm;codecs=vp8,opus","video/webm","video/mp4"];
     return types.find(t=>MediaRecorder.isTypeSupported?.(t))||"";
   }
 
@@ -667,7 +664,7 @@
         setStatus("Recording failed. Please try again.","warn");
         finishRecordUi();
       };
-      recorder.start();
+      recorder.start(250);
       setCaptureState("recording");
       startRecordTimer();
 
@@ -750,49 +747,6 @@
     downloadLink.hidden=false;
   }
 
-  async function validateRecordedBlob(blob){
-    if(!blob?.size)return false;
-    const url=URL.createObjectURL(blob);
-    const probe=document.createElement("video");
-    probe.muted=true;
-    probe.playsInline=true;
-    probe.preload="metadata";
-
-    try{
-      return await new Promise(resolve=>{
-        let settled=false;
-        const finish=value=>{
-          if(settled)return;
-          settled=true;
-          clearTimeout(timer);
-          probe.onloadedmetadata=null;
-          probe.oncanplay=null;
-          probe.onerror=null;
-          try{probe.pause()}catch(_){}
-          probe.removeAttribute("src");
-          try{probe.load()}catch(_){}
-          URL.revokeObjectURL(url);
-          resolve(value);
-        };
-        const good=()=>{
-          const hasVideo=(Number(probe.videoWidth)||0)>0&&(Number(probe.videoHeight)||0)>0;
-          const duration=Number(probe.duration);
-          const hasTimeline=(Number.isFinite(duration)&&duration>0)||duration===Infinity;
-          finish(hasVideo&&hasTimeline);
-        };
-        probe.onloadedmetadata=good;
-        probe.oncanplay=good;
-        probe.onerror=()=>finish(false);
-        const timer=setTimeout(()=>finish(false),6000);
-        probe.src=url;
-        try{probe.load()}catch(_){finish(false)}
-      });
-    }catch(_){
-      try{URL.revokeObjectURL(url)}catch(_){}
-      return false;
-    }
-  }
-
   async function handleRecorded(){
     const mime=recorder?.mimeType||chunks[0]?.type||"video/webm";
     const blob=new Blob(chunks,{type:mime});
@@ -811,13 +765,6 @@
     if(!blob.size||blob.size<1024){
       resetResult();
       setStatus("No usable video was captured. Try recording again.","warn");
-      return;
-    }
-
-    const playable=await validateRecordedBlob(blob);
-    if(!playable){
-      resetResult();
-      setStatus("This recording could not be finalized correctly, so it was not saved. Please record again.","warn");
       return;
     }
 
