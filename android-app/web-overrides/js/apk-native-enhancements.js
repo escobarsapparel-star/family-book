@@ -311,11 +311,34 @@
     }
   }
 
+  function bindFamilyGalleryEnhancements(){
+    document.querySelectorAll('.fun-gallery-media video').forEach(video=>{
+      if(video.dataset.fbNativeGalleryPreview==='1')return;
+      video.dataset.fbNativeGalleryPreview='1';
+      video.controls=false;
+      video.disablePictureInPicture=true;
+      video.preload='auto';
+      const prime=()=>{
+        video.controls=false;
+        if(!video.src||video.readyState<1)return;
+        const duration=Number(video.duration);
+        if(Number.isFinite(duration)&&duration>0.12&&video.paused){
+          try{video.currentTime=Math.min(.35,Math.max(.08,duration*.04))}catch(_){}
+        }
+      };
+      video.addEventListener('loadedmetadata',()=>setTimeout(prime,0));
+      video.addEventListener('loadeddata',prime);
+      video.addEventListener('seeked',()=>video.classList.add('fb-gallery-preview-ready'),{once:true});
+      try{video.load()}catch(_){}
+    });
+  }
+
   function watchFamilyCamera(){
     bindFamilyCameraEnhancements();
+    bindFamilyGalleryEnhancements();
     if(window.__fbNativeFamilyCameraObserver)return;
     window.__fbNativeFamilyCameraObserver=true;
-    const observer=new MutationObserver(()=>bindFamilyCameraEnhancements());
+    const observer=new MutationObserver(()=>{bindFamilyCameraEnhancements();bindFamilyGalleryEnhancements()});
     observer.observe(document.body,{childList:true,subtree:true});
   }
 

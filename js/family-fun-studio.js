@@ -518,10 +518,19 @@
     try{
       await stopStream();
       setStatus("Opening camera…");
-      stream=await navigator.mediaDevices.getUserMedia({
-        video:{facingMode:{ideal:facing}},
-        audio:true
-      });
+      try{
+        stream=await navigator.mediaDevices.getUserMedia({
+          video:{facingMode:{ideal:facing}},
+          audio:true
+        });
+      }catch(firstError){
+        console.warn("Family Fun microphone/camera request:",firstError);
+        stream=await navigator.mediaDevices.getUserMedia({
+          video:{facingMode:{ideal:facing}},
+          audio:false
+        });
+        setStatus("Camera ready. Microphone permission is off, so this clip will record without sound.","warn");
+      }
       camera.srcObject=stream;
       camera.dataset.facing=facing;
       camera.muted=true;
@@ -534,7 +543,7 @@
       applyVisualEffects();
       if(lightEnabled)await syncLight();
       else if(frontFill)frontFill.hidden=true;
-      setStatus("Camera ready.");
+      if(stream?.getAudioTracks?.().length)setStatus("Camera ready.");
       return true;
     }catch(err){
       console.warn("Family Fun camera:",err);
@@ -1065,20 +1074,23 @@
     galleryRefreshTimer=setTimeout(()=>renderGallery(),250);
   }
 
-  function startRealtime(){
+  async function startRealtime(){
     if(!client||!userContext?.familyId)return;
     if(realtimeChannel){
-      try{client.removeChannel(realtimeChannel)}catch(_){}
+      try{await client.removeChannel(realtimeChannel)}catch(_){}
+      realtimeChannel=null;
     }
-    realtimeChannel=client
-      .channel("family-fun-"+userContext.familyId)
+    const suffix=(globalThis.crypto?.randomUUID?.()||Date.now().toString(36)).replace(/-/g,"").slice(0,12);
+    const channel=client
+      .channel("family-fun-"+userContext.familyId+"-"+suffix)
       .on("postgres_changes",{
         event:"*",
         schema:"public",
         table:"family_fun_videos",
         filter:"family_id=eq."+userContext.familyId
-      },scheduleGalleryRefresh)
-      .subscribe();
+      },scheduleGalleryRefresh);
+    realtimeChannel=channel;
+    channel.subscribe();
   }
 
   function switchTab(name){
@@ -1129,7 +1141,11 @@
         throw new Error("Sign in to Family Book and join a family before using the shared Family Fun Gallery.");
       }
 
-      startRealtime();
+      try{
+        await startRealtime();
+      }catch(realtimeError){
+        console.warn("Family Fun realtime:",realtimeError);
+      }
       await renderGallery();
     }catch(err){
       console.error("Family Fun Supabase setup:",err);

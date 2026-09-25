@@ -277,3 +277,21 @@ html.native-app #funResultVideo::-webkit-media-controls-start-playback-button{
   display:none!important;
   -webkit-appearance:none!important;
 }
+
+
+/* Family Fun Gallery — Android WebView only.
+   Suppress Chromium's oversized native play overlay and show the decoded
+   paused video frame instead. The existing card tap still plays/pauses. */
+html.native-app .fun-gallery-media video{
+  background:#111713!important;
+  -webkit-appearance:none!important;
+}
+html.native-app .fun-gallery-media video::-webkit-media-controls,
+html.native-app .fun-gallery-media video::-webkit-media-controls-enclosure,
+html.native-app .fun-gallery-media video::-webkit-media-controls-panel,
+html.native-app .fun-gallery-media video::-webkit-media-controls-play-button,
+html.native-app .fun-gallery-media video::-webkit-media-controls-overlay-play-button,
+html.native-app .fun-gallery-media video::-webkit-media-controls-start-playback-button{
+  display:none!important;
+  -webkit-appearance:none!important;
+}
