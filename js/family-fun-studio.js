@@ -1022,11 +1022,32 @@
         const canDelete=item.created_by_user_id===userContext.supabaseUserId||userContext.role==="admin";
         const card=document.createElement("article");
         card.className="fun-gallery-card";
-        card.innerHTML='<div class="fun-gallery-media"><video muted playsinline preload="metadata"></video><span class="fun-gallery-mode"></span></div><div class="fun-gallery-copy"><strong></strong><small class="fun-gallery-date"></small><small class="fun-gallery-prompt"></small></div><button class="fun-gallery-delete" type="button" aria-label="Delete video">×</button>';
+        card.innerHTML='<div class="fun-gallery-media"><video muted playsinline preload="auto" disablepictureinpicture></video><button class="fun-gallery-play" type="button" aria-label="Play video"><i data-lucide="play"></i></button><span class="fun-gallery-mode"></span></div><div class="fun-gallery-copy"><strong></strong><small class="fun-gallery-date"></small><small class="fun-gallery-prompt"></small></div><button class="fun-gallery-delete" type="button" aria-label="Delete video">×</button>';
 
         const video=card.querySelector("video");
-        if(url)video.src=url;
+        const playButton=card.querySelector(".fun-gallery-play");
         video.loop=item.mode!=="bounce";
+        video.controls=false;
+        video.muted=true;
+        video.playsInline=true;
+        if(url){
+          video.src=url;
+          const primePreview=()=>{
+            if(!Number.isFinite(video.duration)||video.duration<=0)return;
+            const previewTime=Math.min(.4,Math.max(.08,video.duration*.04));
+            try{
+              if(Math.abs((video.currentTime||0)-previewTime)>.03)video.currentTime=previewTime;
+            }catch(_){}
+          };
+          video.addEventListener("loadedmetadata",primePreview,{once:true});
+          video.addEventListener("loadeddata",()=>{
+            video.classList.add("has-preview");
+          },{once:true});
+          video.addEventListener("seeked",()=>{
+            video.classList.add("has-preview");
+          },{once:true});
+          try{video.load()}catch(_){}
+        }
 
         card.querySelector(".fun-gallery-mode").innerHTML=`<i data-lucide="${modes[item.mode]?.icon||"video"}"></i><span>${modes[item.mode]?.title||"Video"}</span>`;
         card.querySelector(".fun-gallery-copy strong").textContent=item.title||"Family Fun";
@@ -1035,15 +1056,30 @@
         promptEl.textContent=item.prompt||"";
         promptEl.hidden=!item.prompt;
 
-        video.addEventListener("click",()=>{
+        const toggleGalleryVideo=()=>{
           if(!url)return;
           if(video.paused){
-            $$("#funGalleryGrid video").forEach(v=>{if(v!==video)v.pause()});
+            $("#funGalleryGrid video").forEach(v=>{if(v!==video)v.pause()});
             video.play().catch(()=>{});
           }else{
             video.pause();
           }
+        };
+        video.addEventListener("click",toggleGalleryVideo);
+        playButton?.addEventListener("click",event=>{
+          event.preventDefault();
+          event.stopPropagation();
+          toggleGalleryVideo();
         });
+        video.addEventListener("play",()=>{
+          card.classList.add("is-playing");
+          if(playButton)playButton.setAttribute("aria-label","Pause video");
+        });
+        video.addEventListener("pause",()=>{
+          card.classList.remove("is-playing");
+          if(playButton)playButton.setAttribute("aria-label","Play video");
+        });
+        video.addEventListener("ended",()=>card.classList.remove("is-playing"));
 
         const del=card.querySelector(".fun-gallery-delete");
         del.hidden=!canDelete;
