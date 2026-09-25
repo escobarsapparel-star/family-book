@@ -6,9 +6,6 @@
   }
 
   function galleryPanelMarkup(standalone=false){
-    const createAction=standalone
-      ? ''
-      : '<button class="primary" type="button" data-fun-tab="create">Create a video</button>';
     return `<section id="funGalleryPanel" ${standalone?"":"hidden"}>
       <div class="fun-gallery-header">
         <div><p class="eyebrow">FAMILY FUN GALLERY</p><h2>Your family videos</h2><p>Videos shared here are visible to signed-in members of your family.</p></div>
@@ -27,7 +24,6 @@
         <span class="fun-empty-icon"><i data-lucide="video"></i></span>
         <strong>No Family Fun videos yet</strong>
         <p>Create a clip and save it to the Family Fun Gallery. It will automatically appear under the correct heading.</p>
-        ${createAction}
       </div>
 
       <div class="fun-gallery-grid" id="funGalleryGrid"></div>
