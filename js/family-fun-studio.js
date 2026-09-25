@@ -1016,16 +1016,11 @@
     viewer.innerHTML='<div class="fun-gallery-viewer-shell"><button class="fun-gallery-viewer-close" type="button" aria-label="Close video player"><i data-lucide="x"></i></button><div class="fun-gallery-viewer-stage"><video controls autoplay playsinline preload="auto"></video></div><div class="fun-gallery-viewer-info"><strong></strong><small class="fun-gallery-viewer-date"></small><p class="fun-gallery-viewer-prompt" hidden></p></div></div>';
 
     const player=viewer.querySelector("video");
+    player.src=url;
     player.muted=false;
     player.volume=1;
     player.controls=true;
     player.playsInline=true;
-    player.preload="auto";
-
-    const source=document.createElement("source");
-    source.src=url;
-    if(item.mime_type)source.type=item.mime_type;
-    player.appendChild(source);
 
     viewer.querySelector(".fun-gallery-viewer-info strong").textContent=item.title||"Family Fun";
     viewer.querySelector(".fun-gallery-viewer-date").textContent=formatDate(item.created_at);
@@ -1041,16 +1036,12 @@
     document.body.appendChild(viewer);
     document.body.classList.add("fun-gallery-viewer-open");
     window.icons?.();
+    viewer.querySelector(".fun-gallery-viewer-close")?.focus();
 
-    // Load only after the player is attached to the document. This is more
-    // reliable in fresh/incognito sessions and Android WebView.
-    try{player.load()}catch(_){}
-    const start=()=>player.play().catch(()=>{});
-    if(player.readyState>=2)start();
-    else player.addEventListener("canplay",start,{once:true});
-
-    // Keep keyboard focus behavior without consuming the original media tap.
-    setTimeout(()=>viewer.querySelector(".fun-gallery-viewer-close")?.focus(),0);
+    // This runs directly from the user's card tap, so browsers normally allow
+    // playback with sound. If a browser blocks autoplay, native controls remain
+    // visible so the user can press Play.
+    player.play().catch(()=>{});
   }
 
   async function renderGallery(){
@@ -1097,38 +1088,7 @@
           $("#funGalleryGrid video").forEach(v=>{try{v.pause()}catch(_){}});
           openGalleryViewer(item,url);
         };
-        const media=card.querySelector(".fun-gallery-media");
-        if(media){
-          media.setAttribute("role","button");
-          media.setAttribute("tabindex","0");
-          media.setAttribute("aria-label","Open "+(item.title||"Family Fun video")+" in player");
-
-          // Desktop/laptop: preview silently while hovering the thumbnail.
-          if(window.matchMedia?.("(hover: hover) and (pointer: fine)")?.matches){
-            media.addEventListener("mouseenter",()=>{
-              if(!video.src)return;
-              video.muted=true;
-              video.play().catch(()=>{});
-            });
-            media.addEventListener("mouseleave",()=>{
-              try{video.pause()}catch(_){}
-            });
-          }
-
-          media.addEventListener("click",event=>{
-            event.preventDefault();
-            event.stopPropagation();
-            try{video.pause()}catch(_){}
-            openViewer();
-          });
-          media.addEventListener("keydown",event=>{
-            if(event.key==="Enter"||event.key===" "){
-              event.preventDefault();
-              try{video.pause()}catch(_){}
-              openViewer();
-            }
-          });
-        }
+        card.querySelector(".fun-gallery-media")?.addEventListener("click",openViewer);
 
         const del=card.querySelector(".fun-gallery-delete");
         del.hidden=!canDelete;
