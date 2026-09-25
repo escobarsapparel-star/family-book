@@ -288,6 +288,40 @@
       },{passive:true});
     }
 
+    const timerBtn=document.querySelector('#funTimerToolBtn');
+    const timerTray=document.querySelector('#funCountdownOptions');
+    if(timerBtn&&timerTray&&timerBtn.dataset.fbNativeTimerToggle!=='1'){
+      timerBtn.dataset.fbNativeTimerToggle='1';
+      let trayWasOpen=false;
+
+      const rememberState=()=>{trayWasOpen=!timerTray.hidden};
+      timerBtn.addEventListener('pointerdown',rememberState,{passive:true});
+      timerBtn.addEventListener('touchstart',rememberState,{passive:true});
+
+      timerBtn.addEventListener('click',()=>{
+        const shouldClose=trayWasOpen;
+        setTimeout(()=>{
+          if(shouldClose){
+            timerTray.hidden=true;
+            timerBtn.classList.remove('active');
+          }else{
+            timerBtn.classList.toggle('active',!timerTray.hidden);
+          }
+          trayWasOpen=false;
+        },0);
+      });
+
+      timerTray.querySelectorAll('input[name="funCountdown"]').forEach(input=>{
+        input.addEventListener('change',()=>setTimeout(()=>{
+          if(timerTray.hidden)timerBtn.classList.remove('active');
+        },0));
+      });
+
+      modeStrip?.addEventListener('click',()=>setTimeout(()=>{
+        if(timerTray.hidden)timerBtn.classList.remove('active');
+      },0));
+    }
+
     const result=document.querySelector('#funResult');
     const video=document.querySelector('#funResultVideo');
     if(result&&video&&video.dataset.fbNativePreview!=='1'){
