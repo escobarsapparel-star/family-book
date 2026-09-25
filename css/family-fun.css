@@ -1015,3 +1015,45 @@ body.fun-camera-open{overflow:hidden!important}
     bottom:max(192px,calc(env(safe-area-inset-bottom) + 182px))!important;
   }
 }
+
+
+/* Android/WebView camera controls: keep every control above the live preview
+   and out of the transparent camera-start hit layer. */
+.fun-camera-fullscreen .fun-camera-wrap>video#funCameraPreview{
+  pointer-events:none!important;
+}
+.fun-camera-fullscreen .fun-start-camera-hit{
+  z-index:16!important;
+  touch-action:manipulation!important;
+}
+.fun-camera-fullscreen .fun-camera-wrap.camera-live .fun-start-camera-hit,
+.fun-camera-fullscreen .fun-start-camera-hit[hidden]{
+  display:none!important;
+  pointer-events:none!important;
+}
+.fun-camera-fullscreen .fun-camera-rail{
+  z-index:60!important;
+  pointer-events:auto!important;
+  isolation:isolate;
+}
+.fun-camera-fullscreen .fun-camera-rail button{
+  position:relative!important;
+  z-index:1!important;
+  pointer-events:auto!important;
+  touch-action:manipulation!important;
+  -webkit-user-select:none;
+  user-select:none;
+}
+.fun-camera-fullscreen .fun-filter-tray,
+.fun-camera-fullscreen .fun-source-menu,
+.fun-camera-fullscreen .fun-timer-tray{
+  z-index:65!important;
+  pointer-events:auto!important;
+}
+.fun-camera-fullscreen .fun-filter-tray button,
+.fun-camera-fullscreen .fun-source-menu button,
+.fun-camera-fullscreen .fun-timer-tray label,
+.fun-camera-fullscreen .fun-timer-tray span{
+  pointer-events:auto!important;
+  touch-action:manipulation!important;
+}
