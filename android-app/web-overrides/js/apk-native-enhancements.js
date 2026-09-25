@@ -254,7 +254,72 @@
     },{passive:true,capture:true});
   }
 
-  function start(){bindBackButton();bindSwipe()}
+
+  function bindFamilyCameraEnhancements(){
+    const modeStrip=document.querySelector('#funCameraModeStrip');
+    if(modeStrip&&modeStrip.dataset.fbNativeAutoMode!=='1'){
+      modeStrip.dataset.fbNativeAutoMode='1';
+      let frame=0,settle=0;
+      const selectNearest=()=>{
+        frame=0;
+        const wrap=modeStrip.closest('.fun-camera-wrap');
+        if(wrap?.classList.contains('capture-recording')||
+           wrap?.classList.contains('capture-countdown')||
+           wrap?.classList.contains('capture-paused'))return;
+        const rect=modeStrip.getBoundingClientRect();
+        const center=rect.left+rect.width/2;
+        let best=null,bestDistance=Infinity;
+        modeStrip.querySelectorAll('[data-fun-mode]').forEach(btn=>{
+          const r=btn.getBoundingClientRect();
+          const d=Math.abs((r.left+r.width/2)-center);
+          if(d<bestDistance){bestDistance=d;best=btn}
+        });
+        if(best&&!best.classList.contains('active'))best.click();
+      };
+      modeStrip.addEventListener('scroll',()=>{
+        if(frame)cancelAnimationFrame(frame);
+        frame=requestAnimationFrame(selectNearest);
+        clearTimeout(settle);
+        settle=setTimeout(selectNearest,80);
+      },{passive:true});
+      modeStrip.addEventListener('touchend',()=>{
+        clearTimeout(settle);
+        settle=setTimeout(selectNearest,30);
+      },{passive:true});
+    }
+
+    const result=document.querySelector('#funResult');
+    const video=document.querySelector('#funResultVideo');
+    if(result&&video&&video.dataset.fbNativePreview!=='1'){
+      video.dataset.fbNativePreview='1';
+      video.controls=false;
+      video.disablePictureInPicture=true;
+      const primeFrame=()=>{
+        video.controls=false;
+        if(!video.src||video.readyState<1)return;
+        const duration=Number(video.duration);
+        if(Number.isFinite(duration)&&duration>0.15){
+          try{video.currentTime=Math.min(.18,Math.max(.06,duration*.04))}catch(_){}
+        }
+      };
+      video.addEventListener('loadedmetadata',()=>setTimeout(primeFrame,0));
+      video.addEventListener('loadeddata',primeFrame);
+      const reviewObserver=new MutationObserver(()=>{
+        if(!result.hidden)setTimeout(primeFrame,20);
+      });
+      reviewObserver.observe(result,{attributes:true,attributeFilter:['hidden','style','class']});
+    }
+  }
+
+  function watchFamilyCamera(){
+    bindFamilyCameraEnhancements();
+    if(window.__fbNativeFamilyCameraObserver)return;
+    window.__fbNativeFamilyCameraObserver=true;
+    const observer=new MutationObserver(()=>bindFamilyCameraEnhancements());
+    observer.observe(document.body,{childList:true,subtree:true});
+  }
+
+  function start(){bindBackButton();bindSwipe();watchFamilyCamera()}
   if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',start,{once:true});
   else start();
 })();

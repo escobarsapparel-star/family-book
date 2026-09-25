@@ -188,3 +188,90 @@ html.native-app .fb-apk-swipe-fallback .fb-apk-swipe-fallback-icon svg{width:28p
 html.native-app .fb-apk-swipe-fallback small{opacity:.6;font-weight:700}
 html[data-theme="dark"].native-app .fb-apk-swipe-fallback{background:#101512;color:#eef4f0}
 html[data-theme="dark"].native-app .fb-apk-swipe-fallback .fb-apk-swipe-fallback-icon{background:rgba(143,193,159,.12);color:#8fc19f}
+
+
+/* ==========================================================
+   Family Camera — Android app only
+   Keep the proven mobile website untouched. In the APK, #screen
+   is normally GPU-transformed for page swiping; fixed camera UI
+   must escape that transform so it is truly viewport-fixed.
+   ========================================================== */
+html.native-app.fun-camera-open #screen,
+html.native-app body.fun-camera-open #screen{
+  transform:none!important;
+  will-change:auto!important;
+  backface-visibility:visible!important;
+}
+html.native-app.fun-camera-open,
+html.native-app body.fun-camera-open{
+  overflow:hidden!important;
+  overscroll-behavior:none!important;
+}
+html.native-app .fun-camera-inline-panel.fun-camera-fullscreen{
+  position:fixed!important;
+  inset:0!important;
+  width:100vw!important;
+  height:100dvh!important;
+  max-height:100dvh!important;
+  margin:0!important;
+  padding:0!important;
+  overflow:hidden!important;
+}
+html.native-app .fun-camera-fullscreen #funCreatePanel,
+html.native-app .fun-camera-fullscreen .fun-camera-studio,
+html.native-app .fun-camera-fullscreen .fun-camera-wrap{
+  width:100vw!important;
+  height:100dvh!important;
+  min-height:100dvh!important;
+  max-height:100dvh!important;
+  margin:0!important;
+  border-radius:0!important;
+  overflow:hidden!important;
+}
+html.native-app .fun-camera-fullscreen .fun-camera-topbar{
+  top:calc(var(--fb-apk-status-h) + 10px)!important;
+  left:10px!important;
+  right:10px!important;
+}
+html.native-app .fun-camera-fullscreen .fun-camera-rail{
+  top:calc(var(--fb-apk-status-h) + 76px)!important;
+  right:10px!important;
+  display:flex!important;
+  gap:8px!important;
+}
+html.native-app .fun-camera-fullscreen .fun-camera-rail button,
+html.native-app .fun-camera-fullscreen #funFilterBtn{
+  display:flex!important;
+  visibility:visible!important;
+}
+html.native-app .fun-camera-fullscreen .fun-camera-shutter{
+  bottom:calc(var(--fb-apk-navigation-h) + 20px)!important;
+}
+html.native-app .fun-camera-fullscreen .fun-camera-mode-strip{
+  bottom:calc(var(--fb-apk-navigation-h) + 118px)!important;
+}
+html.native-app .fun-camera-fullscreen .fun-camera-status{
+  bottom:calc(var(--fb-apk-navigation-h) + 174px)!important;
+}
+html.native-app .fun-camera-fullscreen .fun-filter-tray{
+  bottom:calc(var(--fb-apk-navigation-h) + 176px)!important;
+}
+html.native-app .fun-camera-fullscreen .fun-review-caption{
+  bottom:calc(var(--fb-apk-navigation-h) + 142px)!important;
+}
+
+/* Android WebView can draw a giant native play glyph over a paused recording.
+   The Family Camera review uses its own Save/Discard controls, so suppress it
+   and let the decoded video frame be the preview. */
+html.native-app #funResultVideo{
+  -webkit-appearance:none!important;
+}
+html.native-app #funResultVideo::-webkit-media-controls,
+html.native-app #funResultVideo::-webkit-media-controls-enclosure,
+html.native-app #funResultVideo::-webkit-media-controls-panel,
+html.native-app #funResultVideo::-webkit-media-controls-play-button,
+html.native-app #funResultVideo::-webkit-media-controls-overlay-play-button,
+html.native-app #funResultVideo::-webkit-media-controls-start-playback-button{
+  display:none!important;
+  -webkit-appearance:none!important;
+}
