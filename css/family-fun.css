@@ -484,10 +484,13 @@ body.fun-camera-open{overflow:hidden!important}
   position:fixed!important;
   inset:0!important;
   z-index:100000!important;
+  width:100vw!important;
+  height:100dvh!important;
+  max-height:100dvh!important;
   margin:0!important;
   padding:max(10px,env(safe-area-inset-top)) 12px max(10px,env(safe-area-inset-bottom))!important;
-  overflow-y:auto!important;
-  overscroll-behavior:contain;
+  overflow:hidden!important;
+  overscroll-behavior:none!important;
   background:#080c09!important;
   color:#fff!important;
 }
