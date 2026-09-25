@@ -6,25 +6,43 @@ There is no Capgo subscription or account requirement.
 
 ## One-time build on your existing Windows PC
 
+The easiest route for the current Family Book test install is the included
+PowerShell builder. It deliberately builds a **debug APK on your own PC**, so
+Gradle uses that PC's existing Android debug signing key. If the currently
+installed Family Book app was also built as a debug APK on that same PC, Android
+will accept it as an in-place update and keep the app's data.
+
 1. Download this repository (Code > Download ZIP) and extract it.
 2. Install Node.js 22 or newer if it is not already installed.
-3. Open a terminal in `android-app` and run:
+3. If the original project uses Firebase push, copy your existing
+   `android/app/google-services.json` to the same place in this project locally.
+4. Open PowerShell in `android-app` and run:
 
    ```powershell
-   npm ci
-   npm run sync:android
-   npm run open:android
+   powershell -ExecutionPolicy Bypass -File .\build-updater-windows.ps1
    ```
 
-4. Let Android Studio sync. Use JDK 21 and Android SDK 36.
-5. If the original project uses Firebase push, copy your existing
-   `android/app/google-services.json` to the same place in this project locally.
-6. Build an APK with the SAME signing key as your installed app. If you have been
-   using Android Studio's debug APK on this PC, use Build APK(s) on this PC again;
-   it normally uses the existing local debug key. If the installed app was signed
-   for release, use that original release key instead.
-7. Install the new APK over the existing app. Do not uninstall the old app to work
-   around a signature mismatch; check which signing key was used instead.
+   The finished APK is copied to:
+
+   ```text
+   android-app\dist\FamilyBook-Updater-1.1-debug.apk
+   ```
+
+5. Install that APK **over** the current Family Book app. Do not uninstall the
+   current app first. To build and install over USB in one command, after enabling
+   USB debugging and making `adb` available, run:
+
+   ```powershell
+   powershell -ExecutionPolicy Bypass -File .\build-updater-windows.ps1 -Install
+   ```
+
+If Android reports that the signatures do not match, stop there. The currently
+installed APK was signed with a different key, so use the original release/debug
+key rather than uninstalling the app. The manual Android Studio route is still
+available: `npm ci`, `npm run sync:android`, `npm run open:android`, then
+build/sign with the original key.
+
+Use JDK 21 and Android SDK 36 for the Android project.
 
 The version code is now 2 / version 1.1. No signing keys or passwords are stored
 in this repository. CI's release APK is unsigned and must be signed with your
