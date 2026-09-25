@@ -959,7 +959,7 @@ body.fun-camera-open{overflow:hidden!important}
 .fun-gallery-page{max-width:1180px;margin:0 auto}
 .fun-gallery-page-head{
   display:grid;
-  grid-template-columns:auto minmax(0,1fr) auto;
+  grid-template-columns:auto minmax(0,1fr);
   align-items:center;
   gap:16px;
   margin:0 0 18px;
@@ -968,14 +968,21 @@ body.fun-camera-open{overflow:hidden!important}
 .fun-gallery-page-title .eyebrow{margin:0 0 4px}
 .fun-gallery-page-title h1{margin:0;font-size:clamp(1.65rem,4vw,2.35rem);line-height:1.08}
 .fun-gallery-page-title p:last-child{margin:6px 0 0;color:#69776e}
+.fun-gallery-page-head .fun-feature-back{
+  display:inline-flex;
+  align-items:center;
+  gap:7px;
+  justify-self:start;
+}
 .fun-gallery-page-head .fun-feature-back svg{width:17px;height:17px}
 .fun-gallery-page>#funGalleryPanel{display:block}
 @media(max-width:720px){
-  .fun-gallery-page-head{grid-template-columns:1fr auto;align-items:start;gap:12px}
-  .fun-gallery-page-head .fun-feature-back{grid-column:1/-1;justify-self:start}
-  .fun-gallery-page-title{grid-column:1}
+  .fun-gallery-page-head{
+    grid-template-columns:1fr;
+    align-items:start;
+    gap:12px;
   }
-@media(max-width:480px){
-  .fun-gallery-page-head{grid-template-columns:1fr}
-  .fun-gallery-page-title,  }
+  .fun-gallery-page-head .fun-feature-back{grid-column:1}
+  .fun-gallery-page-title{grid-column:1}
+}
 html[data-theme="dark"] .fun-gallery-page-title p:last-child{color:#aab6ae}
