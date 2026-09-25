@@ -667,7 +667,7 @@
         setStatus("Recording failed. Please try again.","warn");
         finishRecordUi();
       };
-      recorder.start(250);
+      recorder.start();
       setCaptureState("recording");
       startRecordTimer();
 
@@ -750,6 +750,49 @@
     downloadLink.hidden=false;
   }
 
+  async function validateRecordedBlob(blob){
+    if(!blob?.size)return false;
+    const url=URL.createObjectURL(blob);
+    const probe=document.createElement("video");
+    probe.muted=true;
+    probe.playsInline=true;
+    probe.preload="metadata";
+
+    try{
+      return await new Promise(resolve=>{
+        let settled=false;
+        const finish=value=>{
+          if(settled)return;
+          settled=true;
+          clearTimeout(timer);
+          probe.onloadedmetadata=null;
+          probe.oncanplay=null;
+          probe.onerror=null;
+          try{probe.pause()}catch(_){}
+          probe.removeAttribute("src");
+          try{probe.load()}catch(_){}
+          URL.revokeObjectURL(url);
+          resolve(value);
+        };
+        const good=()=>{
+          const hasVideo=(Number(probe.videoWidth)||0)>0&&(Number(probe.videoHeight)||0)>0;
+          const duration=Number(probe.duration);
+          const hasTimeline=(Number.isFinite(duration)&&duration>0)||duration===Infinity;
+          finish(hasVideo&&hasTimeline);
+        };
+        probe.onloadedmetadata=good;
+        probe.oncanplay=good;
+        probe.onerror=()=>finish(false);
+        const timer=setTimeout(()=>finish(false),6000);
+        probe.src=url;
+        try{probe.load()}catch(_){finish(false)}
+      });
+    }catch(_){
+      try{URL.revokeObjectURL(url)}catch(_){}
+      return false;
+    }
+  }
+
   async function handleRecorded(){
     const mime=recorder?.mimeType||chunks[0]?.type||"video/webm";
     const blob=new Blob(chunks,{type:mime});
@@ -770,6 +813,14 @@
       setStatus("No usable video was captured. Try recording again.","warn");
       return;
     }
+
+    const playable=await validateRecordedBlob(blob);
+    if(!playable){
+      resetResult();
+      setStatus("This recording could not be finalized correctly, so it was not saved. Please record again.","warn");
+      return;
+    }
+
     showResult(blob,mode);
     if(shouldSave)setTimeout(()=>addCurrentToGallery(),50);
   }
@@ -1006,17 +1057,6 @@
 
   function openGalleryViewer(item,url){
     if(!url)return;
-
-    // Existing clips recorded as VP9 WebM can fail to decode inside some
-    // Android System WebView builds. In the native app, hand those clips to
-    // Android's browser/player instead of presenting a broken in-app video.
-    const isNative=!!document.documentElement.classList.contains("native-app");
-    const isVp9=/vp9/i.test(item?.mime_type||"")||/\.webm(?:\?|$)/i.test(item?.storage_path||"")&&/vp9/i.test(item?.mime_type||"");
-    const browser=window.Capacitor?.Plugins?.Browser;
-    if(isNative&&isVp9&&browser?.open){
-      browser.open({url}).catch(()=>{});
-      return;
-    }
 
     closeGalleryViewer();
 
