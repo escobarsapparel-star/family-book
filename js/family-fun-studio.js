@@ -988,6 +988,60 @@
     return map;
   }
 
+  function closeGalleryViewer(){
+    const viewer=document.querySelector("#funGalleryViewer");
+    if(!viewer)return;
+    const player=viewer.querySelector("video");
+    try{player?.pause()}catch(_){}
+    if(player){
+      player.removeAttribute("src");
+      try{player.load()}catch(_){}
+    }
+    viewer.remove();
+    document.body.classList.remove("fun-gallery-viewer-open");
+  }
+
+  function openGalleryViewer(item,url){
+    if(!url)return;
+    closeGalleryViewer();
+
+    const viewer=document.createElement("div");
+    viewer.id="funGalleryViewer";
+    viewer.className="fun-gallery-viewer";
+    viewer.setAttribute("role","dialog");
+    viewer.setAttribute("aria-modal","true");
+    viewer.setAttribute("aria-label",(item.title||"Family Fun video")+" player");
+    viewer.innerHTML='<div class="fun-gallery-viewer-shell"><button class="fun-gallery-viewer-close" type="button" aria-label="Close video player"><i data-lucide="x"></i></button><div class="fun-gallery-viewer-stage"><video controls autoplay playsinline preload="auto"></video></div><div class="fun-gallery-viewer-info"><strong></strong><small class="fun-gallery-viewer-date"></small><p class="fun-gallery-viewer-prompt" hidden></p></div></div>';
+
+    const player=viewer.querySelector("video");
+    player.src=url;
+    player.muted=false;
+    player.volume=1;
+    player.controls=true;
+    player.playsInline=true;
+
+    viewer.querySelector(".fun-gallery-viewer-info strong").textContent=item.title||"Family Fun";
+    viewer.querySelector(".fun-gallery-viewer-date").textContent=formatDate(item.created_at);
+    const prompt=viewer.querySelector(".fun-gallery-viewer-prompt");
+    prompt.textContent=item.prompt||"";
+    prompt.hidden=!item.prompt;
+
+    const close=()=>closeGalleryViewer();
+    viewer.querySelector(".fun-gallery-viewer-close").onclick=close;
+    viewer.addEventListener("click",event=>{if(event.target===viewer)close()});
+    viewer.addEventListener("keydown",event=>{if(event.key==="Escape")close()});
+
+    document.body.appendChild(viewer);
+    document.body.classList.add("fun-gallery-viewer-open");
+    window.icons?.();
+    viewer.querySelector(".fun-gallery-viewer-close")?.focus();
+
+    // This runs directly from the user's card tap, so browsers normally allow
+    // playback with sound. If a browser blocks autoplay, native controls remain
+    // visible so the user can press Play.
+    player.play().catch(()=>{});
+  }
+
   async function renderGallery(){
     if(!client||!userContext?.familyId)return;
 
@@ -1014,11 +1068,11 @@
         const canDelete=item.created_by_user_id===userContext.supabaseUserId||userContext.role==="admin";
         const card=document.createElement("article");
         card.className="fun-gallery-card";
-        card.innerHTML='<div class="fun-gallery-media"><video muted playsinline preload="metadata"></video><span class="fun-gallery-mode"></span></div><div class="fun-gallery-copy"><strong></strong><small class="fun-gallery-date"></small><small class="fun-gallery-prompt"></small></div><button class="fun-gallery-delete" type="button" aria-label="Delete video">×</button>';
+        card.innerHTML='<div class="fun-gallery-media"><video muted playsinline preload="metadata"></video><span class="fun-gallery-play" aria-hidden="true"><i data-lucide="play"></i></span><span class="fun-gallery-mode"></span></div><div class="fun-gallery-copy"><strong></strong><small class="fun-gallery-date"></small><small class="fun-gallery-prompt"></small></div><button class="fun-gallery-delete" type="button" aria-label="Delete video">×</button>';
 
         const video=card.querySelector("video");
         if(url)video.src=url;
-        video.loop=item.mode!=="bounce";
+        video.loop=false;
 
         card.querySelector(".fun-gallery-mode").innerHTML=`<i data-lucide="${modes[item.mode]?.icon||"video"}"></i><span>${modes[item.mode]?.title||"Video"}</span>`;
         card.querySelector(".fun-gallery-copy strong").textContent=item.title||"Family Fun";
@@ -1027,15 +1081,12 @@
         promptEl.textContent=item.prompt||"";
         promptEl.hidden=!item.prompt;
 
-        video.addEventListener("click",()=>{
+        const openViewer=()=>{
           if(!url)return;
-          if(video.paused){
-            $$("#funGalleryGrid video").forEach(v=>{if(v!==video)v.pause()});
-            video.play().catch(()=>{});
-          }else{
-            video.pause();
-          }
-        });
+          $("#funGalleryGrid video").forEach(v=>{try{v.pause()}catch(_){}});
+          openGalleryViewer(item,url);
+        };
+        card.querySelector(".fun-gallery-media")?.addEventListener("click",openViewer);
 
         const del=card.querySelector(".fun-gallery-delete");
         del.hidden=!canDelete;
@@ -1215,6 +1266,7 @@
 
   if(galleryOnly){
     function disposeGalleryOnly(){
+      closeGalleryViewer();
       clearTimeout(galleryRefreshTimer);
       if(realtimeChannel&&client){
         try{client.removeChannel(realtimeChannel)}catch(_){}
@@ -1304,6 +1356,7 @@
   };
 
   function dispose(){
+    closeGalleryViewer();
     stopBounce();
     try{stopRecording()}catch(_){}
     try{stopStream()}catch(_){}

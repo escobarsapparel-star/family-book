@@ -216,7 +216,7 @@
 
   function loadStudio(onLoad){
     const script=document.createElement("script");
-    script.src="js/family-fun-studio.js?v=gallery-route-1";
+    script.src="js/family-fun-studio.js?v=gallery-player-1";
     script.dataset.familyFunRuntime="1";
     script.onload=()=>{
       window.icons?.();
