@@ -6,11 +6,11 @@
   }
 
   function galleryPanelMarkup(standalone=false){
+    const heading=standalone
+      ? '<div class="fun-gallery-standalone-meta"><span id="funGalleryCount">0 videos</span></div>'
+      : '<div class="fun-gallery-header"><div><p class="eyebrow">FAMILY FUN GALLERY</p><h2>Your family videos</h2><p>Videos shared here are visible to signed-in members of your family.</p></div><span id="funGalleryCount">0 videos</span></div>';
     return `<section id="funGalleryPanel" ${standalone?"":"hidden"}>
-      <div class="fun-gallery-header">
-        <div><p class="eyebrow">FAMILY FUN GALLERY</p><h2>Your family videos</h2><p>Videos shared here are visible to signed-in members of your family.</p></div>
-        <span id="funGalleryCount">0 videos</span>
-      </div>
+      ${heading}
 
       <div class="fun-gallery-filters" aria-label="Gallery categories">
         <button class="active" type="button" data-gallery-filter="all">All Videos</button>
