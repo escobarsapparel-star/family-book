@@ -210,7 +210,7 @@
     }
 
     const script=document.createElement("script");
-    script.src="js/family-fun-studio.js?v=mode-scroll-filters-1";
+    script.src="js/family-fun-studio.js?v=camera-controls-touch-1";
     script.dataset.familyFunRuntime="1";
     script.onload=()=>window.icons?.();
     script.onerror=()=>console.error("Could not load Family Fun.");
