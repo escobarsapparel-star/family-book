@@ -7,7 +7,7 @@
   const tabs=['home','memories','tree','calendar','family-fun','members','profile'];
   // Allow page-wide swipe gestures to start on cards, links and buttons. Inputs,
   // editors and true horizontal/interactive surfaces still keep their own gesture.
-  const blockedSelector="input,textarea,select,[contenteditable='true'],canvas,.cropper-backdrop,.photo-action-backdrop,.fb-profile-media-viewer,.member-cover-editor,.full-tree-viewport,.memory-strip,.home-composer-modal,[data-fb-no-swipe],.fun-camera-wrap,.fun-result-card,.fun-gallery-filters";
+  const blockedSelector="input,textarea,select,[contenteditable='true'],canvas,.cropper-backdrop,.photo-action-backdrop,.fb-profile-media-viewer,.member-cover-editor,.full-tree-viewport,.memory-strip,.home-composer-modal,[data-fb-no-swipe],.fun-camera-wrap,.fun-result-card,.fun-gallery-filters,.fun-gallery-media,.fun-gallery-viewer";
   const DURATION=220;
   const EASE='cubic-bezier(.22,.61,.36,1)';
   const previewCache=new Map();
@@ -329,20 +329,18 @@
       video.dataset.fbNativeGalleryPreview='1';
       video.controls=false;
       video.disablePictureInPicture=true;
-      video.preload='auto';
-      const prime=()=>{
-        video.controls=false;
-        if(!video.src||video.readyState<1)return;
-        const duration=Number(video.duration);
-        if(Number.isFinite(duration)&&duration>0.12&&video.paused){
-          try{video.currentTime=Math.min(.35,Math.max(.08,duration*.04))}catch(_){}
-        }
-      };
-      video.addEventListener('loadedmetadata',()=>setTimeout(prime,0));
-      video.addEventListener('loadeddata',prime);
-      video.addEventListener('seeked',()=>video.classList.add('fb-gallery-preview-ready'),{once:true});
-      try{video.load()}catch(_){}
+      video.preload='metadata';
     });
+
+    const viewer=document.querySelector('#funGalleryViewer');
+    const player=viewer?.querySelector('video');
+    if(player&&player.dataset.fbNativeViewer!=='1'){
+      player.dataset.fbNativeViewer='1';
+      player.controls=true;
+      player.playsInline=true;
+      player.preload='auto';
+      try{player.load()}catch(_){}
+    }
   }
 
   function watchFamilyCamera(){
