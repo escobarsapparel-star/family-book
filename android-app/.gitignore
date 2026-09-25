@@ -13,3 +13,4 @@ android/local.properties
 **/key.properties
 **/keystore.properties
 bundle-info.json
+dist/
