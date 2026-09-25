@@ -299,17 +299,11 @@ html.native-app body.family-fun-body:has(#funGalleryPanel:not([hidden])) .fun-ma
    Suppress Chromium's oversized native play overlay and show the decoded
    paused video frame instead. The existing card tap still plays/pauses. */
 html.native-app .fun-gallery-media{
-  background:
-    radial-gradient(circle at 50% 42%,rgba(255,255,255,.08),transparent 38%),
-    #111713!important;
+  background:#111713!important;
 }
 html.native-app .fun-gallery-media video{
   background:#111713!important;
   -webkit-appearance:none!important;
-  opacity:0!important;
-  transition:opacity .16s ease!important;
-}
-html.native-app .fun-gallery-media video.fb-gallery-preview-ready{
   opacity:1!important;
 }
 html.native-app .fun-gallery-media video::-webkit-media-controls,
