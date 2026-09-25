@@ -514,8 +514,13 @@
     camera.srcObject=null;
     camera.hidden=true;
     empty.hidden=false;
+    cameraWrap?.classList.remove("camera-live");
+    if(startBtn){
+      startBtn.disabled=false;
+      startBtn.hidden=false;
+      startBtn.style.pointerEvents="";
+    }
     flipBtn.disabled=true;
-    startBtn.disabled=false;
   }
 
   async function startCamera(){
@@ -537,8 +542,13 @@
       await camera.play().catch(()=>{});
       camera.hidden=false;
       empty.hidden=true;
+      cameraWrap?.classList.add("camera-live");
+      if(startBtn){
+        startBtn.disabled=true;
+        startBtn.hidden=true;
+        startBtn.style.pointerEvents="none";
+      }
       flipBtn.disabled=false;
-      startBtn.disabled=true;
       applyVisualEffects();
       if(lightEnabled)await syncLight();
       else if(frontFill)frontFill.hidden=true;
@@ -1237,9 +1247,30 @@
   stopBtn.addEventListener("click",stopRecording);
   soundBtn?.addEventListener("click",()=>soundInput?.click());
   soundInput?.addEventListener("change",()=>setSoundFile(soundInput.files?.[0]||null));
+  let lastCameraTouchAction=0;
+  function bindCameraTap(button,handler){
+    if(!button)return;
+    button.style.touchAction="manipulation";
+    button.addEventListener("touchend",event=>{
+      event.preventDefault();
+      event.stopPropagation();
+      lastCameraTouchAction=Date.now();
+      handler(event);
+    },{passive:false});
+    button.addEventListener("click",event=>{
+      if(Date.now()-lastCameraTouchAction<450){
+        event.preventDefault();
+        event.stopPropagation();
+        return;
+      }
+      event.stopPropagation();
+      handler(event);
+    });
+  }
+
   filterBtn?.setAttribute("aria-expanded","false");
   filterBtn?.setAttribute("aria-controls","funFilterTray");
-  filterBtn?.addEventListener("click",()=>{
+  const toggleFilters=()=>{
     togglePanel(filterTray,filterBtn);
     if(filterTray&&!filterTray.hidden){
       filterBtn.setAttribute("aria-expanded","true");
@@ -1248,10 +1279,11 @@
     }else{
       filterBtn?.setAttribute("aria-expanded","false");
     }
-  });
-  lightBtn?.addEventListener("click",toggleLight);
-  sourceBtn?.addEventListener("click",()=>togglePanel(sourceMenu,sourceBtn));
-  timerToolBtn?.addEventListener("click",()=>{
+  };
+  bindCameraTap(filterBtn,toggleFilters);
+  bindCameraTap(lightBtn,()=>{void toggleLight()});
+  bindCameraTap(sourceBtn,()=>togglePanel(sourceMenu,sourceBtn));
+  bindCameraTap(timerToolBtn,()=>{
     setMode("countdown");
     if(filterTray)filterTray.hidden=true;
     if(sourceMenu)sourceMenu.hidden=true;
