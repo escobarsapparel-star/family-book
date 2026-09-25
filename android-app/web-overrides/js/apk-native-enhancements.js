@@ -8,8 +8,8 @@
   // Allow page-wide swipe gestures to start on cards, links and buttons. Inputs,
   // editors and true horizontal/interactive surfaces still keep their own gesture.
   const blockedSelector="input,textarea,select,[contenteditable='true'],canvas,.cropper-backdrop,.photo-action-backdrop,.fb-profile-media-viewer,.member-cover-editor,.full-tree-viewport,.memory-strip,.home-composer-modal,[data-fb-no-swipe],.fun-camera-wrap,.fun-result-card,.fun-gallery-filters";
-  const DURATION=220;
-  const EASE='cubic-bezier(.22,.61,.36,1)';
+  const DURATION=165;
+  const EASE='cubic-bezier(.2,.78,.22,1)';
   const previewCache=new Map();
   let previewCacheTimer=0;
   let previewCacheIdle=0;
@@ -87,9 +87,14 @@
     if(!tabs.includes(route)||!screen)return;
     try{
       const clone=sanitizePreview(screen.cloneNode(true));
-      const fragment=document.createDocumentFragment();
-      while(clone.firstChild)fragment.appendChild(clone.firstChild);
-      previewCache.set(route,fragment);
+      clone.removeAttribute('id');
+      clone.className=(screen.className||'screen')+' fb-apk-swipe-preview';
+      clone.setAttribute('aria-hidden','true');
+      clone.inert=true;
+      clone.dataset.route=route;
+      clone.style.transition='none';
+      clone.style.pointerEvents='none';
+      previewCache.set(route,clone);
     }catch(err){
       console.warn('Family Book swipe cache:',err);
     }
@@ -120,28 +125,34 @@
 
   function bindPreviewCache(){
     const screen=document.querySelector('#screen');
-    if(!screen||window.__fbSwipePreviewCacheBound)return;
+    if(!screen)return false;
+    if(window.__fbSwipePreviewCacheBound)return true;
     window.__fbSwipePreviewCacheBound=true;
     cacheRoute();
     try{
       const observer=new MutationObserver(scheduleCache);
       observer.observe(screen,{childList:true,subtree:true,attributes:true,attributeFilter:['class','hidden','src']});
     }catch(_){}
+    return true;
   }
 
   function makePreview(route,dir,screen,width){
     const host=screen?.parentElement;
     if(!host)return null;
-    const preview=document.createElement('main');
-    preview.className=(screen.className||'screen')+' fb-apk-swipe-preview';
-    preview.setAttribute('aria-hidden','true');
-    preview.inert=true;
-    preview.dataset.route=route;
 
-    const cached=previewCache.get(route);
-    if(cached)preview.appendChild(cached.cloneNode(true));
-    else preview.innerHTML=previewPlaceholder(route);
+    let preview=previewCache.get(route)||null;
+    if(preview){
+      if(preview.isConnected)preview.remove();
+    }else{
+      preview=document.createElement('main');
+      preview.className=(screen.className||'screen')+' fb-apk-swipe-preview';
+      preview.setAttribute('aria-hidden','true');
+      preview.inert=true;
+      preview.dataset.route=route;
+      preview.innerHTML=previewPlaceholder(route);
+    }
 
+    preview.style.transition='none';
     preview.style.top=screen.offsetTop+'px';
     preview.style.left=screen.offsetLeft+'px';
     preview.style.width=width+'px';
@@ -155,6 +166,8 @@
     if(window.__fbMainTabSwipeBound)return;
     window.__fbMainTabSwipeBound=true;
     let g=null,animating=false,preview=null;
+    let moveFrame=0;
+    let pendingMove=null;
 
     const screen=()=>document.querySelector('#screen');
     const removePreview=()=>{preview?.remove();preview=null};
@@ -165,10 +178,30 @@
       s.style.opacity='';
     };
     const cleanup=()=>{
+      if(moveFrame){cancelAnimationFrame(moveFrame);moveFrame=0}
+      pendingMove=null;
       resetScreen(screen());
       removePreview();
       document.documentElement.classList.remove('fb-apk-swiping');
       g=null;
+    };
+
+    const paintMove=()=>{
+      moveFrame=0;
+      const p=pendingMove;
+      pendingMove=null;
+      if(!p||animating)return;
+      const {s,width,valid,drag,resisted}=p;
+      s.style.transition='none';
+      if(!valid){
+        s.style.transform=`translate3d(${resisted}px,0,0)`;
+        return;
+      }
+      s.style.transform=`translate3d(${drag}px,0,0)`;
+      if(preview){
+        preview.style.transition='none';
+        preview.style.transform=`translate3d(${g.dir*width+drag}px,0,0)`;
+      }
     };
 
     function setDirection(data,dir){
@@ -220,17 +253,10 @@
       const valid=setDirection(g,dir);
       document.documentElement.classList.add('fb-apk-swiping');
 
-      s.style.transition='none';
-      if(!valid){
-        const resisted=Math.sign(dx)*Math.min(34,Math.abs(dx)*.18);
-        s.style.transform=`translate3d(${resisted}px,0,0)`;
-        return;
-      }
-
+      const resisted=Math.sign(dx)*Math.min(34,Math.abs(dx)*.18);
       const drag=Math.max(-width,Math.min(width,dx));
-      s.style.transform=`translate3d(${drag}px,0,0)`;
-      preview.style.transition='none';
-      preview.style.transform=`translate3d(${g.dir*width+drag}px,0,0)`;
+      pendingMove={s,width,valid,drag,resisted};
+      if(!moveFrame)moveFrame=requestAnimationFrame(paintMove);
     },{passive:false,capture:true});
 
     document.addEventListener('touchend',()=>{
@@ -279,7 +305,17 @@
     },{passive:true,capture:true});
   }
 
-  function start(){bindBackButton();bindSwipe()}
+  function start(){
+    bindBackButton();
+    bindSwipe();
+    if(!bindPreviewCache()){
+      let tries=0;
+      const retry=setInterval(()=>{
+        tries++;
+        if(bindPreviewCache()||tries>=20)clearInterval(retry);
+      },250);
+    }
+  }
   if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',start,{once:true});
   else start();
 })();
