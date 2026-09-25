@@ -120,6 +120,10 @@
   const closeCameraBtn=$("#funCloseCameraBtn");
   const timerToolLabel=$("#funTimerToolLabel");
   const recordAction=$("#funRecordAction");
+  const modeStrip=$("#funCameraModeStrip");
+  let modeScrollFrame=0;
+  let modeScrollSettle=0;
+  let selectingModeFromScroll=false;
 
   const bucket=()=>window.FB_SUPABASE_CONFIG?.mediaBucket||"family-media";
 
@@ -214,6 +218,10 @@
     countdownToken++;
     clearInterval(countdownTimer);
     clearTimeout(countdownGoTimer);
+    if(modeScrollFrame)cancelAnimationFrame(modeScrollFrame);
+    clearTimeout(modeScrollSettle);
+    modeScrollFrame=0;
+    modeScrollSettle=0;
     countdownTimer=0;
     countdownGoTimer=0;
     setOverlay();
@@ -1089,7 +1097,7 @@
     if(name==="gallery")renderGallery();
   }
 
-  function setMode(next){
+  function setMode(next,{scroll=true}={}){
     if(!modes[next])return;
     if(captureState==="countdown")cancelCountdown("Countdown cancelled.");
     if(captureState==="paused"){discardCurrentClip();return}
@@ -1098,7 +1106,7 @@
     mode=next;
     document.querySelectorAll("[data-fun-mode]").forEach(btn=>btn.classList.toggle("active",btn.dataset.funMode===mode));
     const activeModeBtn=document.querySelector('#funCameraModeStrip [data-fun-mode="'+mode+'"]');
-    activeModeBtn?.scrollIntoView({behavior:"smooth",inline:"center",block:"nearest"});
+    if(scroll&&!selectingModeFromScroll)activeModeBtn?.scrollIntoView({behavior:"smooth",inline:"center",block:"nearest"});
     const modeIcon=$("#funModeIcon");if(modeIcon){modeIcon.innerHTML=`<i data-lucide="${modes[mode].icon}"></i>`;window.icons?.()}
     $("#funModeTitle").textContent=modes[mode].title;
     $("#funModeDesc").textContent=modes[mode].desc;
@@ -1113,6 +1121,45 @@
     resetResult();
     setOverlay();
     setStatus(stream?"Camera ready.":"Start the camera when you’re ready.");
+  }
+
+  function nearestModeInStrip(){
+    if(!modeStrip)return null;
+    const stripRect=modeStrip.getBoundingClientRect();
+    const center=stripRect.left+stripRect.width/2;
+    let nearest=null;
+    let distance=Infinity;
+    modeStrip.querySelectorAll("[data-fun-mode]").forEach(btn=>{
+      const rect=btn.getBoundingClientRect();
+      const d=Math.abs((rect.left+rect.width/2)-center);
+      if(d<distance){distance=d;nearest=btn}
+    });
+    return nearest;
+  }
+
+  function selectModeFromScroll(){
+    if(!modeStrip||captureState!=="idle")return;
+    const nearest=nearestModeInStrip();
+    const next=nearest?.dataset.funMode;
+    if(!next||next===mode||!modes[next])return;
+    selectingModeFromScroll=true;
+    try{setMode(next,{scroll:false})}
+    finally{selectingModeFromScroll=false}
+  }
+
+  function bindModeStripSelection(){
+    if(!modeStrip||modeStrip.dataset.autoSelectBound==="1")return;
+    modeStrip.dataset.autoSelectBound="1";
+    modeStrip.addEventListener("scroll",()=>{
+      if(modeScrollFrame)cancelAnimationFrame(modeScrollFrame);
+      modeScrollFrame=requestAnimationFrame(()=>{
+        modeScrollFrame=0;
+        selectModeFromScroll();
+      });
+      clearTimeout(modeScrollSettle);
+      modeScrollSettle=setTimeout(selectModeFromScroll,90);
+    },{passive:true});
+    modeStrip.addEventListener("touchend",()=>setTimeout(selectModeFromScroll,30),{passive:true});
   }
 
   async function initBackend(){
@@ -1160,7 +1207,8 @@
   document.querySelectorAll("[data-family-fun-feature]").forEach(btn=>btn.addEventListener("click",()=>openFamilyFunFeature(btn.dataset.familyFunFeature)));
 
   document.querySelectorAll("[data-fun-mode]").forEach(btn=>btn.addEventListener("click",()=>setMode(btn.dataset.funMode)));
-  $$("[data-fun-tab]").forEach(btn=>btn.addEventListener("click",()=>switchTab(btn.dataset.funTab)));
+  bindModeStripSelection();
+  $("[data-fun-tab]").forEach(btn=>btn.addEventListener("click",()=>switchTab(btn.dataset.funTab)));
   $$("[data-gallery-filter]").forEach(btn=>btn.addEventListener("click",()=>{
     galleryFilter=btn.dataset.galleryFilter;
     $$("[data-gallery-filter]").forEach(x=>x.classList.toggle("active",x===btn));
@@ -1189,7 +1237,18 @@
   stopBtn.addEventListener("click",stopRecording);
   soundBtn?.addEventListener("click",()=>soundInput?.click());
   soundInput?.addEventListener("change",()=>setSoundFile(soundInput.files?.[0]||null));
-  filterBtn?.addEventListener("click",()=>togglePanel(filterTray,filterBtn));
+  filterBtn?.setAttribute("aria-expanded","false");
+  filterBtn?.setAttribute("aria-controls","funFilterTray");
+  filterBtn?.addEventListener("click",()=>{
+    togglePanel(filterTray,filterBtn);
+    if(filterTray&&!filterTray.hidden){
+      filterBtn.setAttribute("aria-expanded","true");
+      setStatus("Swipe through filters and tap one to preview it.");
+      requestAnimationFrame(()=>filterTray.querySelector("[data-fun-filter].active")?.scrollIntoView({behavior:"smooth",inline:"center",block:"nearest"}));
+    }else{
+      filterBtn?.setAttribute("aria-expanded","false");
+    }
+  });
   lightBtn?.addEventListener("click",toggleLight);
   sourceBtn?.addEventListener("click",()=>togglePanel(sourceMenu,sourceBtn));
   timerToolBtn?.addEventListener("click",()=>{
@@ -1221,7 +1280,11 @@
     document.body.classList.remove("fun-camera-open");
     document.querySelector('[data-family-fun-feature="camera"]')?.classList.remove("active");
   });
-  document.querySelectorAll("[data-fun-filter]").forEach(btn=>btn.addEventListener("click",()=>{applyFilter(btn.dataset.funFilter);setStatus((filterDefs[btn.dataset.funFilter]?.label||"Filter")+" preview");}));
+  document.querySelectorAll("[data-fun-filter]").forEach(btn=>btn.addEventListener("click",()=>{
+    applyFilter(btn.dataset.funFilter);
+    setStatus((filterDefs[btn.dataset.funFilter]?.label||"Filter")+" filter selected.","success");
+    btn.scrollIntoView({behavior:"smooth",inline:"center",block:"nearest"});
+  }));
   chooseBtn.addEventListener("click",()=>{if(sourceMenu)sourceMenu.hidden=true;chooseFile()});
   $("#funDeviceCameraBtn").addEventListener("click",()=>{if(sourceMenu)sourceMenu.hidden=true;captureFallback()});
   fallbackInput.addEventListener("change",()=>handleFile(fallbackInput.files?.[0]));
