@@ -14,7 +14,52 @@ function Require-Command([string]$Name, [string]$Help) {
 
 Require-Command "node" "Install Node.js 22 or newer, then reopen PowerShell."
 Require-Command "npm" "Install Node.js 22 or newer, then reopen PowerShell."
-Require-Command "java" "Use the JDK configured for Android Studio (JDK 21 recommended)."
+
+function Get-JavaMajor([string]$JavaExe) {
+  try {
+    $versionText = (& $JavaExe -version 2>&1 | Out-String)
+    if ($versionText -match 'version\s+"1\.(\d+)') { return [int]$Matches[1] }
+    if ($versionText -match 'version\s+"(\d+)') { return [int]$Matches[1] }
+  } catch {}
+  return 0
+}
+
+function Use-CompatibleJava {
+  $candidates = @()
+
+  if ($env:JAVA_HOME) {
+    $candidates += (Join-Path $env:JAVA_HOME "bin\java.exe")
+  }
+
+  if ($env:STUDIO_JDK) {
+    $candidates += (Join-Path $env:STUDIO_JDK "bin\java.exe")
+  }
+
+  $candidates += @(
+    "C:\Program Files\Android\Android Studio\jbr\bin\java.exe",
+    "C:\Program Files\Android\Android Studio\jre\bin\java.exe"
+  )
+
+  $pathJava = Get-Command java -ErrorAction SilentlyContinue
+  if ($pathJava) { $candidates += $pathJava.Source }
+
+  foreach ($candidate in ($candidates | Select-Object -Unique)) {
+    if (-not $candidate -or -not (Test-Path $candidate)) { continue }
+    $major = Get-JavaMajor $candidate
+    if ($major -ge 17) {
+      $javaHome = Split-Path -Parent (Split-Path -Parent $candidate)
+      $env:JAVA_HOME = $javaHome
+      $env:Path = "$javaHome\bin;$env:Path"
+      Write-Host "Using Java $major from $javaHome" -ForegroundColor Green
+      return
+    }
+  }
+
+  $found = if ($pathJava) { "Current PATH Java is version $(Get-JavaMajor $pathJava.Source)." } else { "No Java command was found on PATH." }
+  throw "Gradle requires Java 17 or newer. $found Install/open Android Studio so its bundled JDK is available, or set JAVA_HOME to a JDK 17+ installation."
+}
+
+Use-CompatibleJava
 
 $nodeMajor = [int]((node -p "process.versions.node.split('.')[0]") 2>$null)
 if ($nodeMajor -lt 22) {
