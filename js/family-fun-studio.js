@@ -1143,16 +1143,32 @@
 
 
   function openFamilyFunFeature(name){
-    if(name!=="camera")return;
     const panel=$("#funCameraPanel");
-    const card=$('[data-family-fun-feature="camera"]');
-    if(panel){
+    if(!panel)return;
+
+    if(name==="gallery"){
       panel.hidden=false;
-      panel.classList.add("fun-camera-fullscreen");
+      panel.removeAttribute("hidden");
+      panel.style.display="";
+      panel.classList.remove("fun-camera-fullscreen");
+      document.documentElement.classList.remove("fun-camera-open");
+      document.body.classList.remove("fun-camera-open");
+      document.querySelector('[data-family-fun-feature="camera"]')?.classList.remove("active");
+      if(stream)stopStream().catch(()=>{});
+      switchTab("gallery");
+      window.icons?.();
+      setTimeout(()=>panel.scrollIntoView({behavior:"smooth",block:"start"}),40);
+      return;
     }
+
+    if(name!=="camera")return;
+    const card=$('[data-family-fun-feature="camera"]');
+    panel.hidden=false;
+    panel.classList.add("fun-camera-fullscreen");
     document.documentElement.classList.add("fun-camera-open");
     document.body.classList.add("fun-camera-open");
     card?.classList.add("active");
+    switchTab("create");
     window.icons?.();
     if(!stream)setTimeout(()=>startCamera().catch(()=>{}),80);
   }

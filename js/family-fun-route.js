@@ -26,6 +26,14 @@
             </span>
             <span class="fun-feature-arrow"><i data-lucide="chevron-down"></i></span>
           </button>
+          <button class="fun-feature-card family-gallery-feature" type="button" data-family-fun-feature="gallery">
+            <span class="fun-feature-icon"><i data-lucide="film"></i></span>
+            <span class="fun-feature-copy">
+              <strong>Family Fun Gallery</strong>
+              <small>View the Family Fun videos your family has saved and shared.</small>
+            </span>
+            <span class="fun-feature-arrow"><i data-lucide="chevron-right"></i></span>
+          </button>
           <div class="fun-feature-card fun-feature-coming" aria-label="Family Games coming soon">
             <span class="fun-feature-icon"><i data-lucide="gamepad-2"></i></span>
             <span class="fun-feature-copy">
@@ -210,7 +218,7 @@
     }
 
     const script=document.createElement("script");
-    script.src="js/family-fun-studio.js?v=full-bleed-camera-1";
+    script.src="js/family-fun-studio.js?v=gallery-entry-1";
     script.dataset.familyFunRuntime="1";
     script.onload=()=>window.icons?.();
     script.onerror=()=>console.error("Could not load Family Fun.");
