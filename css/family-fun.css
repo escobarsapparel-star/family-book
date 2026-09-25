@@ -956,3 +956,62 @@ body.fun-camera-open{overflow:hidden!important}
 .fun-camera-fullscreen .fun-camera-shutter{z-index:31!important}
 .fun-camera-fullscreen .fun-record-timer{z-index:32!important}
 .fun-camera-fullscreen .fun-camera-status{z-index:26!important}
+
+
+/* Family Camera mode wheel: scrolling is the selection gesture. */
+.fun-camera-mode-strip{
+  scroll-snap-stop:always;
+}
+.fun-camera-mode-strip button{
+  scroll-snap-stop:always;
+}
+
+/* Keep live filters clearly visible above all camera controls. */
+.fun-camera-fullscreen .fun-filter-tray{
+  z-index:42!important;
+  left:50%!important;
+  right:auto!important;
+  width:min(360px,calc(100vw - 28px))!important;
+  max-width:calc(100vw - 28px)!important;
+  transform:translateX(-50%)!important;
+  bottom:max(198px,calc(env(safe-area-inset-bottom) + 188px))!important;
+  padding:11px 12px!important;
+  gap:10px!important;
+  background:rgba(8,12,9,.90)!important;
+  border:1px solid rgba(255,255,255,.20)!important;
+  box-shadow:0 12px 34px rgba(0,0,0,.32)!important;
+  backdrop-filter:blur(18px)!important;
+  -webkit-backdrop-filter:blur(18px)!important;
+}
+.fun-camera-fullscreen .fun-filter-tray button{
+  flex:0 0 62px!important;
+  min-width:62px!important;
+  color:#fff!important;
+  opacity:.72;
+  transition:opacity .14s ease,transform .14s ease;
+}
+.fun-camera-fullscreen .fun-filter-tray button.active{
+  opacity:1;
+  transform:scale(1.05);
+}
+.fun-camera-fullscreen .fun-filter-tray .filter-preview{
+  width:50px!important;
+  height:50px!important;
+  border-width:2px!important;
+}
+.fun-camera-fullscreen .fun-filter-tray button.active .filter-preview{
+  border-color:#a8d7b5!important;
+  box-shadow:0 0 0 2px rgba(168,215,181,.20),0 4px 14px rgba(0,0,0,.32)!important;
+}
+#funFilterBtn.active{
+  background:rgba(49,92,67,.92)!important;
+  border-color:#a9d1b6!important;
+  color:#fff!important;
+}
+@media(max-width:380px){
+  .fun-camera-fullscreen .fun-filter-tray{
+    width:calc(100vw - 18px)!important;
+    max-width:calc(100vw - 18px)!important;
+    bottom:max(192px,calc(env(safe-area-inset-bottom) + 182px))!important;
+  }
+}
