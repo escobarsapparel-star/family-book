@@ -168,6 +168,25 @@
     return `<div class="theme-choice-grid">${options.map(o=>`<button type="button" class="theme-choice ${current===o.id?"active":""}" data-theme-choice="${o.id}" aria-pressed="${current===o.id?"true":"false"}"><span><i data-lucide="${o.icon}"></i></span><strong>${e(o.title)}</strong><small>${e(o.desc)}</small><i class="theme-choice-check" data-lucide="check-circle-2"></i></button>`).join("")}</div>`;
   }
 
+  function isNativeFamilyBook(){
+    return document.documentElement.classList.contains("native-app") ||
+      !!window.FB_NATIVE?.Capacitor?.isNativePlatform?.();
+  }
+
+  function nativeUpdateShell(){
+    if(!isNativeFamilyBook())return "";
+    return `<section class="settings-card fb-native-update-card" id="settingsAppUpdate">
+      <div class="settings-card-head"><span class="settings-card-icon"><i data-lucide="download-cloud"></i></span><div><p>APP UPDATE</p><h2>Family Book updates</h2><span>Check GitHub immediately instead of waiting for the automatic update check.</span></div></div>
+      <div class="settings-version-row"><span>App version</span><strong id="fbNativeAppVersion">Loading…</strong></div>
+      <div class="settings-version-row"><span>Interface build</span><strong id="fbNativeInterfaceVersion">Loading…</strong></div>
+      <div class="settings-version-row" id="fbNativePendingRow" hidden><span>Ready update</span><strong id="fbNativePendingVersion"></strong></div>
+      <div class="fb-native-update-status" id="fbNativeUpdateStatus" data-state="idle" aria-live="polite">
+        <i data-lucide="circle-check"></i><span>Ready to check for updates.</span>
+      </div>
+      <button type="button" class="secondary fb-native-update-button" id="checkFamilyBookUpdate"><i data-lucide="refresh-cw"></i><span>Check for updates</span></button>
+    </section>`;
+  }
+
   function notificationPermissionText(){
     if(!("Notification" in window))return {state:"unsupported",title:"Browser notifications unavailable",text:"This browser does not support notification permission."};
     if(Notification.permission==="granted")return {state:"granted",title:"Notification permission granted",text:"Family Book is allowed to show notifications on this device."};
@@ -240,6 +259,8 @@
         <button type="button" class="settings-nav-row" data-r="tree"><span><i data-lucide="git-fork"></i><strong>Family tree</strong></span><i data-lucide="chevron-right"></i></button>
       </section>
 
+      ${nativeUpdateShell()}
+
       <section class="settings-card settings-about-card">
         <div class="settings-card-head"><span class="settings-card-icon"><i data-lucide="info"></i></span><div><p>APP</p><h2>Family Book</h2><span>Build 5.7 • Cloud production baseline</span></div></div>
         <div class="settings-version-row"><span>Current build</span><strong>5.7 — Cloud Production</strong></div>
@@ -276,6 +297,89 @@
     }catch(_){
       if(btn){btn.disabled=false;btn.textContent="Enable"}
     }
+  }
+
+  function shortInterfaceVersion(value){
+    const v=String(value||"");
+    if(v.startsWith("web-")&&v.length>12)return "web-"+v.slice(4,12);
+    return v||"Built in";
+  }
+
+  function paintNativeUpdateStatus(status,detail={}){
+    const box=document.querySelector("#fbNativeUpdateStatus");
+    const btn=document.querySelector("#checkFamilyBookUpdate");
+    if(!box)return;
+    const messages={
+      checking:"Checking GitHub for updates…",
+      downloading:"Update found — downloading now…",
+      downloaded:"Download complete — preparing update…",
+      staged:"Update downloaded and ready. Fully close and reopen Family Book to apply it.",
+      pending:"Update already downloaded. Fully close and reopen Family Book to apply it.",
+      unchanged:"Family Book is up to date.",
+      unavailable:"The update feed could not be reached. Check your connection and try again.",
+      rejected:"This update was previously rolled back on this device, so it will not be installed again.",
+      error:detail.message||"The update check failed. Please try again."
+    };
+    const busy=status==="checking"||status==="downloading"||status==="downloaded";
+    box.dataset.state=status||"idle";
+    box.querySelector("span").textContent=messages[status]||"Ready to check for updates.";
+    if(btn){
+      btn.disabled=busy;
+      const label=btn.querySelector("span");
+      if(label)label.textContent=status==="checking"?"Checking…":status==="downloading"?"Downloading…":"Check for updates";
+    }
+  }
+
+  async function refreshNativeUpdateInfo(){
+    if(!isNativeFamilyBook())return;
+    const api=window.FB_NATIVE?.updates;
+    const appVersion=document.querySelector("#fbNativeAppVersion");
+    const interfaceVersion=document.querySelector("#fbNativeInterfaceVersion");
+    const pendingRow=document.querySelector("#fbNativePendingRow");
+    const pendingVersion=document.querySelector("#fbNativePendingVersion");
+    const button=document.querySelector("#checkFamilyBookUpdate");
+    if(!api?.getInfo){
+      if(button)button.disabled=true;
+      paintNativeUpdateStatus("error",{message:"Update checker is not available in this installed app build."});
+      return;
+    }
+    try{
+      const info=await api.getInfo();
+      if(appVersion)appVersion.textContent=info.appVersion?("v"+info.appVersion+(info.buildNumber?" • build "+info.buildNumber:"")):"Installed app";
+      if(interfaceVersion)interfaceVersion.textContent=shortInterfaceVersion(info.interfaceVersion);
+      const hasPending=!!info.pendingVersion;
+      if(pendingRow)pendingRow.hidden=!hasPending;
+      if(pendingVersion)pendingVersion.textContent=shortInterfaceVersion(info.pendingVersion);
+      if(hasPending)paintNativeUpdateStatus("pending");
+    }catch(err){
+      paintNativeUpdateStatus("error",{message:err?.message||"Could not read update information."});
+    }
+  }
+
+  function bindNativeUpdates(){
+    if(!isNativeFamilyBook())return;
+    const button=document.querySelector("#checkFamilyBookUpdate");
+    if(!button)return;
+
+    if(!window.__fbNativeUpdateStatusBound){
+      window.__fbNativeUpdateStatusBound=true;
+      window.addEventListener("familybook:update-status",event=>{
+        paintNativeUpdateStatus(event.detail?.status,event.detail||{});
+        if(["staged","pending","unchanged"].includes(event.detail?.status))setTimeout(()=>refreshNativeUpdateInfo(),80);
+      });
+    }
+
+    button.onclick=async()=>{
+      const api=window.FB_NATIVE?.updates;
+      if(!api?.checkNow){
+        paintNativeUpdateStatus("error",{message:"Update checker is not available in this installed app build."});
+        return;
+      }
+      paintNativeUpdateStatus("checking");
+      await api.checkNow();
+      await refreshNativeUpdateInfo();
+    };
+    refreshNativeUpdateInfo();
   }
 
   function bindMenu(){
@@ -340,6 +444,7 @@
     });
 
     syncConditional();
+    bindNativeUpdates();
 
     const focus=consumeFocus();
     if(focus){

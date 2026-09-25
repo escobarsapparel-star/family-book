@@ -59,4 +59,12 @@ if (document.readyState === "loading") {
 } else {
   startNavigationBarSync();
 }
-startUpdates({ Capacitor, updater: CapacitorUpdater, App, http: CapacitorHttp, runtime: __FB_RUNTIME__, bundledVersion: __FB_BUNDLE_VERSION__ });
+const familyBookUpdates = startUpdates({
+  Capacitor,
+  updater: CapacitorUpdater,
+  App,
+  http: CapacitorHttp,
+  runtime: __FB_RUNTIME__,
+  bundledVersion: __FB_BUNDLE_VERSION__
+});
+window.FB_NATIVE.updates = familyBookUpdates;

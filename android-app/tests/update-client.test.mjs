@@ -25,6 +25,11 @@ test('stages verified download for a killed/reopened app, without immediate relo
   assert.equal(calls[0][1].checksum,manifest.checksum);
   assert.deepEqual(calls[1][1],{delayConditions:[{kind:'kill'}]});
 });
+test('reports download state so the app can show visible progress',async()=>{
+  const {args}=setup();const states=[];args.onStatus=(status)=>states.push(status);
+  assert.equal(await checkForUpdate(args),'staged');
+  assert.deepEqual(states,['downloading','downloaded']);
+});
 test('failed download cannot become the next bundle',async()=>{
   const {calls,args}=setup({downloadFails:true});await assert.rejects(checkForUpdate(args),/network interrupted/);
   assert.deepEqual(calls.map(x=>x[0]),['download']);

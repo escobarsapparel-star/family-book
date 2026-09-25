@@ -301,3 +301,52 @@ html.native-app .fun-gallery-media video::-webkit-media-controls-start-playback-
   display:none!important;
   -webkit-appearance:none!important;
 }
+
+
+/* Native Settings update checker. Rendered only inside the Android app. */
+html.native-app .fb-native-update-card .settings-version-row{
+  gap:12px;
+}
+html.native-app .fb-native-update-status{
+  margin:12px 0;
+  padding:11px 12px;
+  border-radius:12px;
+  display:flex;
+  align-items:flex-start;
+  gap:8px;
+  background:rgba(49,92,67,.08);
+  color:var(--green,#315c43);
+  font-size:.78rem;
+  font-weight:750;
+  line-height:1.4;
+}
+html.native-app .fb-native-update-status svg{
+  width:17px;
+  height:17px;
+  flex:0 0 17px;
+  margin-top:1px;
+}
+html.native-app .fb-native-update-status[data-state="checking"],
+html.native-app .fb-native-update-status[data-state="downloading"],
+html.native-app .fb-native-update-status[data-state="downloaded"]{
+  background:rgba(49,92,67,.12);
+}
+html.native-app .fb-native-update-status[data-state="error"],
+html.native-app .fb-native-update-status[data-state="unavailable"],
+html.native-app .fb-native-update-status[data-state="rejected"]{
+  background:rgba(156,48,48,.09);
+  color:#9c3030;
+}
+html.native-app .fb-native-update-button{
+  width:100%;
+  min-height:46px;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  gap:8px;
+}
+html.native-app .fb-native-update-button svg{width:18px;height:18px}
+html[data-theme="dark"].native-app .fb-native-update-status{
+  color:#b9d7a9;
+  background:rgba(143,193,159,.10);
+}

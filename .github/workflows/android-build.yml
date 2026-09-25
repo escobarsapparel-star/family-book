@@ -29,7 +29,14 @@ jobs:
         working-directory: android-app
       - run: bash gradlew assembleRelease
         working-directory: android-app/android
+      - name: Read Family Book app version
+        id: app_version
+        shell: bash
+        run: |
+          VERSION=$(sed -n 's/.*versionName "\([^"]*\)".*/\1/p' android-app/android/app/build.gradle | head -1)
+          test -n "$VERSION"
+          echo "version=$VERSION" >> "$GITHUB_OUTPUT"
       - uses: actions/upload-artifact@v4
         with:
-          name: FamilyBook-unsigned-release-sign-with-existing-key
+          name: FamilyBook-v${{ steps.app_version.outputs.version }}-unsigned-release-sign-with-existing-key
           path: android-app/android/app/build/outputs/apk/release/*unsigned.apk

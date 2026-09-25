@@ -96,9 +96,16 @@ if (-not (Test-Path $sourceApk)) {
   throw "Build completed but the debug APK was not found at $sourceApk"
 }
 
+$gradleFile = Join-Path $Here "android\app\build.gradle"
+$gradleText = Get-Content $gradleFile -Raw
+if ($gradleText -notmatch 'versionName\s+"([^"]+)"') {
+  throw "Could not read versionName from $gradleFile"
+}
+$appVersion = $Matches[1]
+
 $dist = Join-Path $Here "dist"
 New-Item -ItemType Directory -Force -Path $dist | Out-Null
-$targetApk = Join-Path $dist "FamilyBook-Updater-1.1-debug.apk"
+$targetApk = Join-Path $dist "FamilyBook-Updater-$appVersion-debug.apk"
 Copy-Item $sourceApk $targetApk -Force
 
 $hash = (Get-FileHash -Algorithm SHA256 $targetApk).Hash.ToLowerInvariant()
