@@ -80,6 +80,17 @@ html.native-app body::after{
     min-height:calc(100dvh - var(--fb-apk-status-h) - var(--fb-apk-navigation-h))!important;
     box-sizing:border-box;
   }
+
+  /* The mobile profile sheet is positioned below the web header by default.
+     Native Android adds a status-bar safe area above that header, so include it
+     here or the sheet header/close button sits underneath the fixed nav. */
+  html.native-app .mobile-profile-menu{
+    top:calc(var(--fb-apk-status-h) + var(--fb-mobile-header-h,102px))!important;
+    bottom:var(--fb-apk-navigation-h)!important;
+    left:0!important;
+    right:0!important;
+    z-index:999!important;
+  }
 }
 
 html.native-app .fb-apk-startup{
