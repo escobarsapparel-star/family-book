@@ -306,18 +306,40 @@
       video.dataset.fbNativePreview='1';
       video.controls=false;
       video.disablePictureInPicture=true;
+      let posterCaptured=false;
+      const capturePoster=()=>{
+        if(posterCaptured||!video.videoWidth||!video.videoHeight)return;
+        try{
+          const canvas=document.createElement('canvas');
+          const maxWidth=720;
+          const scale=Math.min(1,maxWidth/video.videoWidth);
+          canvas.width=Math.max(1,Math.round(video.videoWidth*scale));
+          canvas.height=Math.max(1,Math.round(video.videoHeight*scale));
+          const ctx=canvas.getContext('2d');
+          if(!ctx)return;
+          ctx.drawImage(video,0,0,canvas.width,canvas.height);
+          video.poster=canvas.toDataURL('image/jpeg',.82);
+          posterCaptured=true;
+        }catch(_){}
+      };
       const primeFrame=()=>{
-        video.controls=false;
         if(!video.src||video.readyState<1)return;
         const duration=Number(video.duration);
         if(Number.isFinite(duration)&&duration>0.15){
-          try{video.currentTime=Math.min(.18,Math.max(.06,duration*.04))}catch(_){}
+          try{
+            const target=Math.min(.18,Math.max(.06,duration*.04));
+            if(Math.abs((video.currentTime||0)-target)>.03)video.currentTime=target;
+            else capturePoster();
+          }catch(_){}
+        }else{
+          capturePoster();
         }
       };
-      video.addEventListener('loadedmetadata',()=>setTimeout(primeFrame,0));
+      video.addEventListener('loadedmetadata',()=>{posterCaptured=false;setTimeout(primeFrame,0)});
       video.addEventListener('loadeddata',primeFrame);
+      video.addEventListener('seeked',capturePoster);
       const reviewObserver=new MutationObserver(()=>{
-        if(!result.hidden)setTimeout(primeFrame,20);
+        if(!result.hidden){posterCaptured=false;setTimeout(primeFrame,20)}
       });
       reviewObserver.observe(result,{attributes:true,attributeFilter:['hidden','style','class']});
     }
