@@ -1568,7 +1568,20 @@ window.FB_APP_AUTH_CHANGED=event=>{
  // Returning to a browser tab refreshes cloud caches without changing route.
 };
 window.FB_APP_AUTH_ERROR=err=>{console.error(err);alert(err.message||"Family Book authentication could not be loaded.")};
-(async()=>{try{await FB_AUTH.init();await routeAfterBackendAuth()}catch(err){console.error(err);auth();setTimeout(()=>alert(err.message||"Could not connect Family Book to Supabase."),50)}})();
+(async()=>{try{
+ if(window.FB_MAINTENANCE_MODE){
+   try{await window.FB_SUPABASE?.client?.auth?.signOut({scope:"local"})}
+   catch(err){console.warn("Family Book maintenance sign-out:",err)}
+   return;
+ }
+ await FB_AUTH.init();
+ await routeAfterBackendAuth();
+}catch(err){
+ console.error(err);
+ if(window.FB_MAINTENANCE_MODE)return;
+ auth();
+ setTimeout(()=>alert(err.message||"Could not connect Family Book to Supabase."),50);
+}})();
 
 if(!window.__familyUnitBound){
  window.__familyUnitBound=true;
