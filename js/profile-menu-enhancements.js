@@ -25,8 +25,10 @@
       if(!img){
         img=document.createElement('img');
         img.alt=(auth().name||'Profile')+' profile photo';
-        img.addEventListener('error',()=>img.remove(),{once:true});
-        avatar.appendChild(img);
+        img.addEventListener('error',()=>{
+          avatar.textContent=initials(auth().name);
+        },{once:true});
+        avatar.replaceChildren(img);
       }
       if(img.src!==src)img.src=src;
     }catch(_){}
