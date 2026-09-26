@@ -2,7 +2,7 @@ window.FB_SUPABASE_CONFIG={
   url:"https://tuxfbyzeyocfbrtwizdq.supabase.co",
   publishableKey:"sb_publishable_2MMLkqzf9QxP8J1qiDGUxg_VY4NvKPi",
   mediaBucket:"family-media",
-  productionUrl:"https://escobarsapparel-star.github.io/family-book/"
+  productionUrl:"https://familybook.co.za/"
 };
 
 (function(){
