@@ -992,8 +992,8 @@ function relationshipsFor(id){
 function members(){
  let list=activeMembers(),family=esc(familyLabel());
  let cards=list.map(m=>{
- const mode=memberEditMode(m),remove=canRemoveMember(m);
- return `<article class="member-card ${m.phone&&canSeeMemberField(m.id,"phoneVisibility")?"has-contact":""}"><button class="member-card-view" data-view-member="${esc(m.id)}" aria-label="View ${esc(m.name)}"><div class="member-avatar">${m.photo?`<img src="${m.photo}" alt="">`:`<span>${memberInitials(m.name)}</span>`}</div><div class="member-info"><h3>${esc(m.name)}</h3>${m.birthday?`<small><i data-lucide="cake-slice"></i>${esc(memberBirthdayText(m))}</small>`:""}${m.accountId?`<small class="member-linked-account"><i data-lucide="badge-check"></i>Account linked</small>`:""}${m.managedProfile?`<small class="member-managed-profile"><i data-lucide="shield-user"></i>Managed profile</small>`:""}</div></button>${memberContactActions(m,true)}<div class="member-actions"><button class="member-more member-menu-btn" data-member-menu="${esc(m.id)}" aria-label="Options for ${esc(m.name)}"><i data-lucide="ellipsis-vertical"></i></button><div class="member-menu" data-member-menu-panel="${esc(m.id)}"><button data-view-member="${esc(m.id)}"><i data-lucide="eye"></i>View member</button>${mode!=="none"?`<button data-edit-member="${esc(m.id)}"><i data-lucide="pencil"></i>${mode==="structure"?"Edit family details":"Edit member"}</button>`:""}${remove?`<button class="danger" data-remove-member="${esc(m.id)}"><i data-lucide="trash-2"></i>Remove member</button>`:""}</div></div></article>`}).join("");
+ const mode=memberEditMode(m),remove=canRemoveMember(m),contact=memberContactActions(m,true);
+ return `<article class="member-card ${contact?"has-contact":""}"><button class="member-card-view" data-view-member="${esc(m.id)}" aria-label="View ${esc(m.name)}"><div class="member-avatar">${m.photo?`<img src="${m.photo}" alt="">`:`<span>${memberInitials(m.name)}</span>`}</div><div class="member-info"><h3>${esc(m.name)}</h3>${m.birthday?`<small><i data-lucide="cake-slice"></i>${esc(memberBirthdayText(m))}</small>`:""}${m.accountId?`<small class="member-linked-account"><i data-lucide="badge-check"></i>Account linked</small>`:""}${m.managedProfile?`<small class="member-managed-profile"><i data-lucide="shield-user"></i>Managed profile</small>`:""}</div></button>${contact}<div class="member-actions"><button class="member-more member-menu-btn" data-member-menu="${esc(m.id)}" aria-label="Options for ${esc(m.name)}"><i data-lucide="ellipsis-vertical"></i></button><div class="member-menu" data-member-menu-panel="${esc(m.id)}"><button data-view-member="${esc(m.id)}"><i data-lucide="eye"></i>View member</button>${mode!=="none"?`<button data-edit-member="${esc(m.id)}"><i data-lucide="pencil"></i>${mode==="structure"?"Edit family details":"Edit member"}</button>`:""}${remove?`<button class="danger" data-remove-member="${esc(m.id)}"><i data-lucide="trash-2"></i>Remove member</button>`:""}</div></div></article>`}).join("");
  return `<section class="members-page"><div class="members-head"><div><p class="eyebrow">${family.toUpperCase()}</p><h1>Family Members</h1><p>Members are current family profiles with contact or account features. Each adult controls their own personal details.</p></div>${isFamilyAdmin()?`<button class="primary member-add" data-r="add-member"><i data-lucide="user-plus"></i>Add member</button>`:""}</div>${cards?`<div class="members-grid">${cards}</div>`:`<div class="members-empty"><div class="empty-icon"><i data-lucide="users-round"></i></div><h2>No members yet</h2><p>Add a current family member here, or add older generations from the Family Tree.</p></div>`}</section>`;
 }
 function memberSexOptions(value=""){
@@ -1230,11 +1230,24 @@ async function removeHistoryPerson(id){
  go("tree");
 }
 
+function familyBirthSortKey(person){
+ const raw=String(person?.birthday||"").trim();
+ const iso=raw.match(/^(\d{4})-(\d{2})-(\d{2})$/);
+ if(!iso)return Number.POSITIVE_INFINITY;
+ return Number(iso[1])*10000+Number(iso[2])*100+Number(iso[3]);
+}
 function familyGraph(){
  const members=ensureOwner(), byId=Object.fromEntries(members.map(m=>[m.id,m])), rel=migrateRelationships();
  const parents={},children={},spouse={};
  rel.filter(r=>r.type==="parent_of"&&byId[r.from]&&byId[r.to]).forEach(r=>{
    (parents[r.to]??=[]).push(r.from);(children[r.from]??=[]).push(r.to)
+ });
+ Object.keys(children).forEach(parentId=>{
+   children[parentId].sort((a,b)=>{
+     const aKey=familyBirthSortKey(byId[a]),bKey=familyBirthSortKey(byId[b]);
+     if(aKey!==bKey)return aKey-bKey;
+     return String(byId[a]?.name||"").localeCompare(String(byId[b]?.name||""));
+   });
  });
  rel.filter(r=>r.type==="spouse_of"&&byId[r.from]&&byId[r.to]).forEach(r=>spouse[r.from]=r.to);
  return {members,byId,parents,children,spouse};
