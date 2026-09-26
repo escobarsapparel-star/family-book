@@ -1,6 +1,0 @@
-Build 2.6.1
-- Fixed relationship chips rendering as blank pills.
-- Restored the label/person view model expected by the Members screen.
-- Derived sibling/grandparent relationships now display normally.
-- Automatically calculated relationships receive a small AUTO marker.
-- Relationship Engine v2 logic itself is unchanged.
