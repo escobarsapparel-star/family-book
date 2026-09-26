@@ -3511,49 +3511,49 @@ html[data-theme="dark"] .qcard small{
   color:#b9b1a7!important;
 }
 
-/* ---- Dark theme: complete Family Tree ---- */
+/* ---- Dark theme: Family Tree aligned to the main Family Book shell ---- */
 html[data-theme="dark"] .ct-board{
-  background:#181c17!important;
-  border-color:#394037!important;
+  background:var(--fb-shell-bg,#0f1511)!important;
+  border-color:var(--fb-shell-border,#39483d)!important;
 }
 html[data-theme="dark"] .ct-lines path{
-  stroke:#776b5d!important;
+  stroke:color-mix(in srgb,var(--fb-shell-border,#526257) 82%,#9aa99e)!important;
 }
 html[data-theme="dark"] .ct-person{
-  background:#232820!important;
-  border-color:#41493e!important;
-  color:#f0ebe3!important;
+  background:var(--fb-shell-panel,#18211b)!important;
+  border-color:var(--fb-shell-border,#3d4b40)!important;
+  color:var(--fb-shell-text,#f0ebe3)!important;
 }
 html[data-theme="dark"] .ct-person strong,
 html[data-theme="dark"] .ct-person-copy strong{
-  color:#f0ebe3!important;
+  color:var(--fb-shell-text,#f0ebe3)!important;
 }
 html[data-theme="dark"] .ct-avatar{
-  background:#314037!important;
-  color:#b9d5c0!important;
+  background:var(--fb-shell-accent-soft,#2d4034)!important;
+  color:var(--fb-shell-accent,#b9d5c0)!important;
 }
 html[data-theme="dark"] .ct-couple{
-  background:#302b23!important;
-  border-color:#615645!important;
+  background:var(--fb-shell-panel-2,#1d2821)!important;
+  border-color:var(--fb-shell-border,#425146)!important;
 }
 html[data-theme="dark"] .ct-couple:hover{
-  background:#393229!important;
-  border-color:#7b6b56!important;
+  background:color-mix(in srgb,var(--fb-shell-panel-2,#1d2821) 80%,var(--fb-shell-accent,#8fb79a))!important;
+  border-color:var(--fb-shell-accent,#8fb79a)!important;
 }
 html[data-theme="dark"] .ct-heart{
-  background:#3b292d!important;
-  color:#e48d99!important;
+  background:rgba(190,83,100,.13)!important;
+  color:#df8a97!important;
 }
 html[data-theme="dark"] .ct-person.history-person{
-  background:#28251d!important;
-  border-color:#5a4f3d!important;
+  background:var(--fb-shell-panel,#18211b)!important;
+  border-color:var(--fb-shell-border,#3d4b40)!important;
 }
 html[data-theme="dark"] .ct-person.history-person .ct-avatar{
-  background:#393328!important;
-  color:#e2c595!important;
+  background:var(--fb-shell-accent-soft,#2d4034)!important;
+  color:var(--fb-shell-accent,#b9d5c0)!important;
 }
 html[data-theme="dark"] .ct-person.history-person small{
-  color:#d7bd92!important;
+  color:var(--fb-shell-muted,#c8c0b5)!important;
 }
 
 /* ---- Mixed photo/video Memories ---- */

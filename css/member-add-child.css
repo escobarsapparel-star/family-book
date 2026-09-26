@@ -20,6 +20,14 @@
   gap:8px;
   white-space:nowrap;
   font-weight:800;
+  border-color:var(--fb-shell-border,var(--line))!important;
+  background:var(--fb-shell-panel,var(--paper))!important;
+  color:var(--fb-shell-accent,var(--accent))!important;
+}
+.member-child-add:hover,
+.member-child-add:focus-visible{
+  background:var(--fb-shell-accent-soft,color-mix(in srgb,var(--accent) 10%,var(--paper)))!important;
+  border-color:var(--fb-shell-accent,var(--accent))!important;
 }
 .member-child-add svg{width:18px;height:18px}
 
