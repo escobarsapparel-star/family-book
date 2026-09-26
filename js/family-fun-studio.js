@@ -817,7 +817,7 @@
       try{video.currentTime=next}catch(_){}
       if(next<=0.02){
         if(token!==bounceToken)return;
-        video.play().then(()=>funPlayerDebug("play resolved",{readyState:video.readyState,currentTime:video.currentTime})).catch(err=>funPlayerDebug("play rejected",{name:err?.name,message:err?.message,readyState:video.readyState,networkState:video.networkState,error:video.error?.code||null}));
+        video.play().catch(()=>{});
         return;
       }
       setTimeout(reverseStep,45);
