@@ -2,6 +2,7 @@
   const ROUTES=[
     ["home","Home","house"],["memories","Memories","images"],["tree","Family tree","git-fork"],["calendar","Calendar","calendar-days"],["family-fun","Family Fun","party-popper"],["members","Members","users-round"]
   ];
+  const LEFT_ROUTE_ORDER=["members","memories","tree","calendar"];
   const MORE=[
     ["albums","Albums","folder-heart"],["notifications","Notifications","bell-ring"],["family-access","Family access","user-plus"],["settings","Settings","settings"]
   ];
@@ -60,7 +61,8 @@
   }
 
   function leftRail(){
-    return `<aside class="desktop-left-rail" aria-label="Family Book navigation">${profileCard()}<div class="desktop-side-nav">${ROUTES.slice(1).filter(r=>r[0]!=="family-fun").map(sideButton).join("")}</div><div class="desktop-side-divider"></div><div class="desktop-side-caption">Family Book</div><div class="desktop-side-nav">${MORE.map(sideButton).join("")}</div></aside>`;
+    const primary=LEFT_ROUTE_ORDER.map(id=>ROUTES.find(r=>r[0]===id)).filter(Boolean);
+    return `<aside class="desktop-left-rail" aria-label="Family Book navigation">${profileCard()}<div class="desktop-side-nav">${primary.map(sideButton).join("")}</div><div class="desktop-side-divider"></div><div class="desktop-side-caption">Family Book</div><div class="desktop-side-nav">${MORE.map(sideButton).join("")}</div></aside>`;
   }
 
   function dateLabel(d){try{return new Intl.DateTimeFormat(undefined,{day:"numeric",month:"short"}).format(d)}catch(_){return ""}}
