@@ -395,7 +395,29 @@
     observer.observe(document.body,{childList:true,subtree:true});
   }
 
-  function start(){bindBackButton();bindSwipe();watchFamilyCamera()}
+  function watchCalendarCards(){
+    const screen=document.querySelector('#screen');
+    if(!screen||window.__fbNativeCalendarCardsBound)return;
+    window.__fbNativeCalendarCardsBound=true;
+    let timer=0;
+    const apply=()=>{
+      clearTimeout(timer);
+      timer=setTimeout(()=>{
+        const route=currentRoute();
+        if(String(route).startsWith('view-event:')){
+          try{window.FB_EVENT_DAY?.enhanceCurrentRoute?.(route)}catch(err){console.warn('Family Book Android calendar theme:',err)}
+        }
+      },40);
+    };
+    apply();
+    try{
+      const observer=new MutationObserver(apply);
+      observer.observe(screen,{childList:true,subtree:true});
+    }catch(_){}
+    window.addEventListener('popstate',apply);
+  }
+
+  function start(){bindBackButton();bindSwipe();watchFamilyCamera();watchCalendarCards()}
   if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',start,{once:true});
   else start();
 })();
