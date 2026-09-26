@@ -1,7 +1,0 @@
-Build 2.8.3
-- Corrected focused family-branch connector alignment.
-- Vertical trunk now stays centered under the clickable couple block.
-- Child/sibling horizontal rail now runs from the center of the first child to the center of the last child.
-- Each child's vertical connector is centered on that child's card.
-- Single-child branches remain centered beneath the couple.
-- No family data, relationship logic, Members layout, or clickable-couple behavior changed.
