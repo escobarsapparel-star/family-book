@@ -9,6 +9,19 @@
   function e(v=""){return String(v??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#039;"}[c]))}
   function user(){return window.FB_AUTH?.get?.()||{}}
   function targetRows(target){return window.FB_SOCIAL_DATA?.getReactions?.(target)||{}}
+  function currentPersonById(id){
+    const key=String(id||"");
+    if(!key)return null;
+    try{return (window.FB_FAMILY_DATA?.getPeople?.()||[]).find(p=>String(p.id)===key)||null}catch(_){return null}
+  }
+  function resolvedReaction(row){
+    const live=currentPersonById(row?.personId);
+    return {
+      ...row,
+      name:live?.name||row?.name||"Family member",
+      photo:live?.photo||row?.photo||""
+    };
+  }
   function initials(name){
     const parts=String(name||"Family member").trim().split(/\s+/).filter(Boolean);
     return e(((parts[0]?.[0]||"F")+(parts.length>1?(parts.at(-1)?.[0]||""):"")).toUpperCase());
@@ -74,7 +87,8 @@
   function viewerRowsHtml(target,filter=""){
     const rows=reactionRows(target,filter);
     if(!rows.length)return '<div class="reaction-viewer-empty"><i data-lucide="users-round"></i><strong>No reactions here yet</strong></div>';
-    return rows.map(row=>{
+    return rows.map(rawRow=>{
+      const row=resolvedReaction(rawRow);
       const t=TYPES[row.type];
       const avatar=row.photo?'<img src="'+e(row.photo)+'" alt="">':'<span>'+initials(row.name)+'</span>';
       const attrs=row.personId?' data-reaction-person="'+e(row.personId)+'" role="button" tabindex="0"':"";
