@@ -1078,7 +1078,7 @@
         const canDelete=item.created_by_user_id===userContext.supabaseUserId||userContext.role==="admin";
         const card=document.createElement("article");
         card.className="fun-gallery-card";
-        card.innerHTML='<div class="fun-gallery-media"><video muted playsinline preload="metadata"></video><span class="fun-gallery-play" aria-hidden="true"><i data-lucide="play"></i></span><span class="fun-gallery-mode"></span></div><div class="fun-gallery-copy"><strong></strong><small class="fun-gallery-date"></small><small class="fun-gallery-prompt"></small></div><button class="fun-gallery-delete" type="button" aria-label="Delete video">×</button>';
+        card.innerHTML='<div class="fun-gallery-media"><video muted playsinline preload="metadata"></video><button class="fun-gallery-open" type="button" aria-label="Open video player"></button><span class="fun-gallery-play" aria-hidden="true"><i data-lucide="play"></i></span><span class="fun-gallery-mode"></span></div><div class="fun-gallery-copy"><strong></strong><small class="fun-gallery-date"></small><small class="fun-gallery-prompt"></small></div><button class="fun-gallery-delete" type="button" aria-label="Delete video">×</button>';
 
         const media=card.querySelector(".fun-gallery-media");
         if(media)media.dataset.galleryMediaId=item.id;
@@ -1099,7 +1099,11 @@
           $("#funGalleryGrid video").forEach(v=>{if(v!==video){try{v.pause()}catch(_){}}});
           openGalleryViewer(item,video);
         };
-        media?.addEventListener("click",openViewer);
+        card.querySelector(".fun-gallery-open")?.addEventListener("click",event=>{
+          event.preventDefault();
+          event.stopPropagation();
+          openViewer();
+        });
 
         const del=card.querySelector(".fun-gallery-delete");
         del.hidden=!canDelete;
