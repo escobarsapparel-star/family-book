@@ -138,10 +138,21 @@
     const group=siblingComponent(rootId);
     if(group.length<2)return rawBase;
 
-    const memberOrder=new Map(members().map((m,i)=>[String(m.id),i]));
+    const memberList=members();
+    const memberOrder=new Map(memberList.map((m,i)=>[String(m.id),i]));
+    const memberById=new Map(memberList.map(m=>[String(m.id),m]));
+    const birthKey=id=>{
+      const raw=String(memberById.get(String(id))?.birthday||"").trim();
+      const iso=raw.match(/^(\d{4})-(\d{2})-(\d{2})$/);
+      return iso?Number(iso[1])*10000+Number(iso[2])*100+Number(iso[3]):Number.POSITIVE_INFINITY;
+    };
     const missing=group
       .filter(id=>String(id)!==String(rootId)&&!containsPerson(rawBase.html,id))
-      .sort((a,b)=>(memberOrder.get(a)??9999)-(memberOrder.get(b)??9999));
+      .sort((a,b)=>{
+        const aBirth=birthKey(a),bBirth=birthKey(b);
+        if(aBirth!==bBirth)return aBirth-bBirth;
+        return (memberOrder.get(a)??9999)-(memberOrder.get(b)??9999);
+      });
     if(!missing.length)return rawBase;
 
     const ids=[String(rootId),...missing];
