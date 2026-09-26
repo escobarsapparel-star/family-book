@@ -1083,6 +1083,7 @@
         if(media)media.dataset.galleryMediaId=item.id;
         const video=card.querySelector("video");
         video.dataset.funGalleryMediaId=item.id;
+        video.crossOrigin="anonymous";
         if(url)video.src=url;
         video.loop=false;
 
