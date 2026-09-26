@@ -259,10 +259,13 @@
     lastRoute=String(route||"");
     if(route!=="add-memory"&&getCaptureContext())clearCaptureContext();
     try{await window.FB_ORGANIZER_DATA?.init?.()}catch(_){}
+
+    // Event detail theming applies to any opened event, not only events occurring today.
+    enhanceCurrentRoute(route);
+
     const rows=todayRows();
     if(!rows.length)return;
 
-    enhanceCurrentRoute(route);
     const unseen=rows.find(row=>!isSeen(row));
     if(unseen && !["add-memory","add-event"].includes(route) && !String(route).startsWith("edit-")){
       setTimeout(()=>showWelcome(unseen),120);
