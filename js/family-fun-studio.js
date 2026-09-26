@@ -992,18 +992,26 @@
   function closeGalleryViewer(){
     const viewer=document.querySelector("#funGalleryViewer");
     if(!viewer)return;
-    const player=viewer.querySelector("video");
-    try{player?.pause()}catch(_){}
+
+    const player=viewer.querySelector("video[data-fun-promoted-player='1']");
     if(player){
-      player.removeAttribute("src");
-      try{player.load()}catch(_){}
+      try{player.pause()}catch(_){}
+      player.controls=false;
+      player.muted=true;
+      player.removeAttribute("data-fun-promoted-player");
+      const mediaId=player.dataset.funGalleryMediaId||"";
+      const home=mediaId?document.querySelector(`.fun-gallery-media[data-gallery-media-id="${mediaId}"]`):null;
+      if(home){
+        home.insertBefore(player,home.firstChild);
+      }
     }
+
     viewer.remove();
     document.body.classList.remove("fun-gallery-viewer-open");
   }
 
-  function openGalleryViewer(item,url){
-    if(!url)return;
+  function openGalleryViewer(item,video){
+    if(!video)return;
 
     closeGalleryViewer();
 
@@ -1013,20 +1021,21 @@
     viewer.setAttribute("role","dialog");
     viewer.setAttribute("aria-modal","true");
     viewer.setAttribute("aria-label",(item.title||"Family Fun video")+" player");
-    viewer.innerHTML='<div class="fun-gallery-viewer-shell"><button class="fun-gallery-viewer-close" type="button" aria-label="Close video player"><i data-lucide="x"></i></button><div class="fun-gallery-viewer-stage"><video controls autoplay playsinline preload="auto"></video></div><div class="fun-gallery-viewer-info"><strong></strong><small class="fun-gallery-viewer-date"></small><p class="fun-gallery-viewer-prompt" hidden></p></div></div>';
-
-    const player=viewer.querySelector("video");
-    player.src=url;
-    player.muted=false;
-    player.volume=1;
-    player.controls=true;
-    player.playsInline=true;
+    viewer.innerHTML='<div class="fun-gallery-viewer-shell"><button class="fun-gallery-viewer-close" type="button" aria-label="Close video player"><i data-lucide="x"></i></button><div class="fun-gallery-viewer-stage"></div><div class="fun-gallery-viewer-info"><strong></strong><small class="fun-gallery-viewer-date"></small><p class="fun-gallery-viewer-prompt" hidden></p></div></div>';
 
     viewer.querySelector(".fun-gallery-viewer-info strong").textContent=item.title||"Family Fun";
     viewer.querySelector(".fun-gallery-viewer-date").textContent=formatDate(item.created_at);
     const prompt=viewer.querySelector(".fun-gallery-viewer-prompt");
     prompt.textContent=item.prompt||"";
     prompt.hidden=!item.prompt;
+
+    const stage=viewer.querySelector(".fun-gallery-viewer-stage");
+    video.dataset.funPromotedPlayer="1";
+    video.controls=true;
+    video.muted=false;
+    video.volume=1;
+    video.playsInline=true;
+    stage.appendChild(video);
 
     const close=()=>closeGalleryViewer();
     viewer.querySelector(".fun-gallery-viewer-close").onclick=close;
@@ -1036,12 +1045,11 @@
     document.body.appendChild(viewer);
     document.body.classList.add("fun-gallery-viewer-open");
     window.icons?.();
-    viewer.querySelector(".fun-gallery-viewer-close")?.focus();
 
-    // This runs directly from the user's card tap, so browsers normally allow
-    // playback with sound. If a browser blocks autoplay, native controls remain
-    // visible so the user can press Play.
-    player.play().catch(()=>{});
+    // The same video element that already rendered successfully in the gallery
+    // is now the full player. No second fetch or decoder instance is created.
+    try{video.currentTime=Math.max(0,video.currentTime||0)}catch(_){}
+    video.play().catch(()=>{});
   }
 
   async function renderGallery(){
@@ -1072,7 +1080,10 @@
         card.className="fun-gallery-card";
         card.innerHTML='<div class="fun-gallery-media"><video muted playsinline preload="metadata"></video><span class="fun-gallery-play" aria-hidden="true"><i data-lucide="play"></i></span><span class="fun-gallery-mode"></span></div><div class="fun-gallery-copy"><strong></strong><small class="fun-gallery-date"></small><small class="fun-gallery-prompt"></small></div><button class="fun-gallery-delete" type="button" aria-label="Delete video">×</button>';
 
+        const media=card.querySelector(".fun-gallery-media");
+        if(media)media.dataset.galleryMediaId=item.id;
         const video=card.querySelector("video");
+        video.dataset.funGalleryMediaId=item.id;
         if(url)video.src=url;
         video.loop=false;
 
@@ -1084,11 +1095,11 @@
         promptEl.hidden=!item.prompt;
 
         const openViewer=()=>{
-          if(!url)return;
-          $("#funGalleryGrid video").forEach(v=>{try{v.pause()}catch(_){}});
-          openGalleryViewer(item,url);
+          if(!url||!video)return;
+          $("#funGalleryGrid video").forEach(v=>{if(v!==video){try{v.pause()}catch(_){}}});
+          openGalleryViewer(item,video);
         };
-        card.querySelector(".fun-gallery-media")?.addEventListener("click",openViewer);
+        media?.addEventListener("click",openViewer);
 
         const del=card.querySelector(".fun-gallery-delete");
         del.hidden=!canDelete;
