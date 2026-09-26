@@ -989,18 +989,6 @@
     return map;
   }
 
-  function funPlayerDebug(message,data){
-    let box=document.querySelector("#funPlayerDebug");
-    if(!box){
-      box=document.createElement("div");
-      box.id="funPlayerDebug";
-      box.style.cssText="position:fixed;left:8px;bottom:8px;z-index:2147483600;background:rgba(0,0,0,.88);color:#fff;padding:6px 8px;border-radius:8px;font:11px/1.3 monospace;width:min(420px,72vw);max-height:110px;overflow:auto;white-space:pre-wrap;pointer-events:none";
-      document.body.appendChild(box);
-    }
-    const details=data?(" "+JSON.stringify(data)):"";
-    box.textContent=(new Date().toLocaleTimeString()+" "+message+details+"\n"+box.textContent).slice(0,5000);
-  }
-
   function closeGalleryViewer(){
     const viewer=document.querySelector("#funGalleryViewer");
     if(!viewer)return;
@@ -1024,8 +1012,6 @@
 
   function openGalleryViewer(item,video){
     if(!video)return;
-
-    funPlayerDebug("openGalleryViewer called",{id:item?.id,src:video.currentSrc||video.src,readyState:video.readyState,networkState:video.networkState});
     closeGalleryViewer();
 
     const viewer=document.createElement("div");
@@ -1099,9 +1085,6 @@
         video.dataset.funGalleryMediaId=item.id;
         if(url)video.src=url;
         video.loop=false;
-        video.addEventListener("loadedmetadata",()=>funPlayerDebug("thumbnail loadedmetadata",{id:item.id,readyState:video.readyState,duration:video.duration}));
-        video.addEventListener("canplay",()=>funPlayerDebug("thumbnail canplay",{id:item.id,readyState:video.readyState}));
-        video.addEventListener("error",()=>funPlayerDebug("thumbnail error",{id:item.id,error:video.error?.code||null,networkState:video.networkState,readyState:video.readyState}));
 
         card.querySelector(".fun-gallery-mode").innerHTML=`<i data-lucide="${modes[item.mode]?.icon||"video"}"></i><span>${modes[item.mode]?.title||"Video"}</span>`;
         card.querySelector(".fun-gallery-copy strong").textContent=item.title||"Family Fun";
@@ -1118,7 +1101,6 @@
         card.querySelector(".fun-gallery-open")?.addEventListener("click",event=>{
           event.preventDefault();
           event.stopPropagation();
-          funPlayerDebug("gallery launcher clicked",{id:item.id,src:video.currentSrc||video.src,readyState:video.readyState,networkState:video.networkState,error:video.error?.code||null});
           openViewer();
         });
 
