@@ -317,6 +317,11 @@ html.native-app .fun-gallery-media video::-webkit-media-controls-start-playback-
 }
 
 
+html.native-app .fun-gallery-viewer-close{
+  top:calc(var(--fb-apk-status-h) + 8px)!important;
+  right:12px!important;
+}
+
 /* Native Settings update checker. Rendered only inside the Android app. */
 html.native-app .fb-native-update-card .settings-version-row{
   gap:12px;
