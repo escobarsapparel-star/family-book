@@ -329,7 +329,21 @@
       video.dataset.fbNativeGalleryPreview='1';
       video.controls=false;
       video.disablePictureInPicture=true;
-      video.preload='metadata';
+      video.preload='auto';
+
+      const primeFrame=()=>{
+        if(!video.src||video.readyState<1)return;
+        const duration=Number(video.duration);
+        if(Number.isFinite(duration)&&duration>0.12&&video.paused){
+          try{
+            const target=Math.min(.22,Math.max(.06,duration*.03));
+            if(Math.abs((video.currentTime||0)-target)>.03)video.currentTime=target;
+          }catch(_){}
+        }
+      };
+      video.addEventListener('loadedmetadata',()=>setTimeout(primeFrame,0));
+      video.addEventListener('loadeddata',primeFrame);
+      if(video.readyState>=1)setTimeout(primeFrame,0);
     });
 
     const viewer=document.querySelector('#funGalleryViewer');
@@ -339,7 +353,8 @@
       player.controls=true;
       player.playsInline=true;
       player.preload='auto';
-      try{player.load()}catch(_){}
+      // Do not call load() here: this is the already-loaded thumbnail video
+      // promoted into the full player.
     }
   }
 
