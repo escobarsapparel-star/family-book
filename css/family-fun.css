@@ -1078,3 +1078,6 @@ html[data-theme="dark"] .fun-gallery-standalone-meta>span{color:#8fc19f;backgrou
   .fun-gallery-viewer-stage video{max-height:none;height:100%;object-fit:contain}
   .fun-gallery-viewer-info{padding-bottom:max(15px,env(safe-area-inset-bottom))}
 }
+
+/* Safety: never expose temporary Family Fun diagnostics in production. */
+#funPlayerDebug{display:none!important}
