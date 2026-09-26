@@ -994,7 +994,7 @@
     if(!box){
       box=document.createElement("div");
       box.id="funPlayerDebug";
-      box.style.cssText="position:fixed;left:8px;right:8px;bottom:8px;z-index:2147483600;background:rgba(0,0,0,.88);color:#fff;padding:8px 10px;border-radius:10px;font:12px/1.35 monospace;max-height:34vh;overflow:auto;white-space:pre-wrap;pointer-events:none";
+      box.style.cssText="position:fixed;left:8px;bottom:8px;z-index:2147483600;background:rgba(0,0,0,.88);color:#fff;padding:6px 8px;border-radius:8px;font:11px/1.3 monospace;width:min(420px,72vw);max-height:110px;overflow:auto;white-space:pre-wrap;pointer-events:none";
       document.body.appendChild(box);
     }
     const details=data?(" "+JSON.stringify(data)):"";
