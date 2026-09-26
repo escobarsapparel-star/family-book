@@ -1112,7 +1112,7 @@
 
         const openViewer=()=>{
           if(!url||!video)return;
-          $("#funGalleryGrid video").forEach(v=>{if(v!==video){try{v.pause()}catch(_){}}});
+          document.querySelectorAll("#funGalleryGrid video").forEach(v=>{if(v!==video){try{v.pause()}catch(_){}}});
           openGalleryViewer(item,video);
         };
         card.querySelector(".fun-gallery-open")?.addEventListener("click",event=>{
