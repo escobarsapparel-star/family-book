@@ -331,19 +331,47 @@
       video.disablePictureInPicture=true;
       video.preload='auto';
 
-      const primeFrame=()=>{
-        if(!video.src||video.readyState<1)return;
-        const duration=Number(video.duration);
-        if(Number.isFinite(duration)&&duration>0.12&&video.paused){
-          try{
-            const target=Math.min(.22,Math.max(.06,duration*.03));
-            if(Math.abs((video.currentTime||0)-target)>.03)video.currentTime=target;
-          }catch(_){}
+      let captured=false;
+      const capturePoster=()=>{
+        if(captured||!video.videoWidth||!video.videoHeight)return;
+        try{
+          const maxWidth=360;
+          const scale=Math.min(1,maxWidth/video.videoWidth);
+          const canvas=document.createElement('canvas');
+          canvas.width=Math.max(1,Math.round(video.videoWidth*scale));
+          canvas.height=Math.max(1,Math.round(video.videoHeight*scale));
+          const ctx=canvas.getContext('2d');
+          if(!ctx)return;
+          ctx.drawImage(video,0,0,canvas.width,canvas.height);
+          video.poster=canvas.toDataURL('image/jpeg',.78);
+          video.classList.add('fb-gallery-poster-ready');
+          captured=true;
+        }catch(err){
+          // If frame export is blocked on a device, keep the decoded frame
+          // visible rather than replacing it with Android's grey placeholder.
+          video.classList.add('fb-gallery-frame-ready');
         }
       };
-      video.addEventListener('loadedmetadata',()=>setTimeout(primeFrame,0));
-      video.addEventListener('loadeddata',primeFrame);
-      if(video.readyState>=1)setTimeout(primeFrame,0);
+
+      const prime=()=>{
+        if(!video.src||video.readyState<1)return;
+        const duration=Number(video.duration);
+        const target=Number.isFinite(duration)&&duration>0
+          ? Math.min(.65,Math.max(.18,duration*.06))
+          : .35;
+        try{
+          if(Math.abs((video.currentTime||0)-target)>.03)video.currentTime=target;
+          else capturePoster();
+        }catch(_){}
+      };
+
+      video.addEventListener('loadedmetadata',()=>setTimeout(prime,0),{once:true});
+      video.addEventListener('loadeddata',prime,{once:true});
+      video.addEventListener('seeked',()=>{
+        try{video.pause()}catch(_){}
+        capturePoster();
+      });
+      if(video.readyState>=1)setTimeout(prime,0);
     });
 
     const viewer=document.querySelector('#funGalleryViewer');
@@ -353,8 +381,8 @@
       player.controls=true;
       player.playsInline=true;
       player.preload='auto';
-      // Do not call load() here: this is the already-loaded thumbnail video
-      // promoted into the full player.
+      // This is the already-loaded gallery video promoted into the player.
+      // Do not call load() here.
     }
   }
 
