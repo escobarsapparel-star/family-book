@@ -8,7 +8,7 @@
     protocol==="file:";
 
   // Temporary public-site gate. Set this to false when Family Book is ready to reopen.
-  const WEB_MAINTENANCE=true;
+  const WEB_MAINTENANCE=false;
 
   window.FB_WEB_MAINTENANCE=WEB_MAINTENANCE;
   window.FB_MAINTENANCE_MODE=WEB_MAINTENANCE&&!isLocalAppOrigin;
