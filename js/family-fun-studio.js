@@ -817,7 +817,7 @@
       try{video.currentTime=next}catch(_){}
       if(next<=0.02){
         if(token!==bounceToken)return;
-        video.play().catch(()=>{});
+        video.play().then(()=>funPlayerDebug("play resolved",{readyState:video.readyState,currentTime:video.currentTime})).catch(err=>funPlayerDebug("play rejected",{name:err?.name,message:err?.message,readyState:video.readyState,networkState:video.networkState,error:video.error?.code||null}));
         return;
       }
       setTimeout(reverseStep,45);
@@ -989,6 +989,18 @@
     return map;
   }
 
+  function funPlayerDebug(message,data){
+    let box=document.querySelector("#funPlayerDebug");
+    if(!box){
+      box=document.createElement("div");
+      box.id="funPlayerDebug";
+      box.style.cssText="position:fixed;left:8px;right:8px;bottom:8px;z-index:2147483600;background:rgba(0,0,0,.88);color:#fff;padding:8px 10px;border-radius:10px;font:12px/1.35 monospace;max-height:34vh;overflow:auto;white-space:pre-wrap;pointer-events:none";
+      document.body.appendChild(box);
+    }
+    const details=data?(" "+JSON.stringify(data)):"";
+    box.textContent=(new Date().toLocaleTimeString()+" "+message+details+"\n"+box.textContent).slice(0,5000);
+  }
+
   function closeGalleryViewer(){
     const viewer=document.querySelector("#funGalleryViewer");
     if(!viewer)return;
@@ -1013,6 +1025,7 @@
   function openGalleryViewer(item,video){
     if(!video)return;
 
+    funPlayerDebug("openGalleryViewer called",{id:item?.id,src:video.currentSrc||video.src,readyState:video.readyState,networkState:video.networkState});
     closeGalleryViewer();
 
     const viewer=document.createElement("div");
@@ -1086,6 +1099,9 @@
         video.dataset.funGalleryMediaId=item.id;
         if(url)video.src=url;
         video.loop=false;
+        video.addEventListener("loadedmetadata",()=>funPlayerDebug("thumbnail loadedmetadata",{id:item.id,readyState:video.readyState,duration:video.duration}));
+        video.addEventListener("canplay",()=>funPlayerDebug("thumbnail canplay",{id:item.id,readyState:video.readyState}));
+        video.addEventListener("error",()=>funPlayerDebug("thumbnail error",{id:item.id,error:video.error?.code||null,networkState:video.networkState,readyState:video.readyState}));
 
         card.querySelector(".fun-gallery-mode").innerHTML=`<i data-lucide="${modes[item.mode]?.icon||"video"}"></i><span>${modes[item.mode]?.title||"Video"}</span>`;
         card.querySelector(".fun-gallery-copy strong").textContent=item.title||"Family Fun";
@@ -1102,6 +1118,7 @@
         card.querySelector(".fun-gallery-open")?.addEventListener("click",event=>{
           event.preventDefault();
           event.stopPropagation();
+          funPlayerDebug("gallery launcher clicked",{id:item.id,src:video.currentSrc||video.src,readyState:video.readyState,networkState:video.networkState,error:video.error?.code||null});
           openViewer();
         });
 
