@@ -99,7 +99,10 @@
             <div class="fun-front-fill" id="funFrontFill" hidden aria-hidden="true"></div>
 
             <div class="fun-capture-review" id="funResult" hidden>
-              <video id="funResultVideo" playsinline preload="metadata"></video>
+              <video id="funResultVideo" playsinline preload="auto"></video>
+              <button class="fun-review-play" type="button" id="funReviewPlayBtn" aria-label="Play recorded clip">
+                <i data-lucide="play"></i><span>Preview</span>
+              </button>
               <div class="fun-review-caption">
                 <strong id="funResultTitle">Family Fun clip</strong>
                 <small id="funResultMeta"></small>
@@ -216,7 +219,7 @@
 
   function loadStudio(onLoad){
     const script=document.createElement("script");
-    script.src="js/family-fun-studio.js?v=gallery-player-1";
+    script.src="js/family-fun-studio.js?v=recording-preview-1";
     script.dataset.familyFunRuntime="1";
     script.onload=()=>{
       window.icons?.();

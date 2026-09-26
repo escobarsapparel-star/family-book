@@ -92,6 +92,7 @@
   const chooseBtn=$("#funChooseBtn");
   const result=$("#funResult");
   const resultVideo=$("#funResultVideo");
+  const reviewPlayBtn=$("#funReviewPlayBtn");
   const resultTitle=$("#funResultTitle");
   const resultMeta=$("#funResultMeta");
   const downloadLink=$("#funDownloadLink");
@@ -772,6 +773,34 @@
     if(shouldSave)setTimeout(()=>addCurrentToGallery(),50);
   }
 
+  function syncReviewPlayButton(){
+    if(!reviewPlayBtn)return;
+    const playing=!resultVideo.paused&&!resultVideo.ended;
+    reviewPlayBtn.classList.toggle("is-playing",playing);
+    reviewPlayBtn.setAttribute("aria-label",playing?"Pause recorded clip":"Play recorded clip");
+    reviewPlayBtn.querySelector("span").textContent=playing?"Pause":"Preview";
+    const icon=reviewPlayBtn.querySelector("[data-lucide]");
+    if(icon)icon.setAttribute("data-lucide",playing?"pause":"play");
+    window.lucide?.createIcons?.();
+  }
+
+  async function toggleReviewPlayback(){
+    if(!resultVideo?.src)return;
+    if(resultVideo.paused||resultVideo.ended){
+      if(resultVideo.ended){
+        try{resultVideo.currentTime=0}catch(_){}
+      }
+      resultVideo.muted=false;
+      try{await resultVideo.play()}catch(err){
+        console.warn("Family Fun preview playback:",err);
+        setStatus("Tap Preview again to play this clip.","warn");
+      }
+    }else{
+      try{resultVideo.pause()}catch(_){}
+    }
+    syncReviewPlayButton();
+  }
+
   function showResult(blob,sourceMode=mode,fileName=""){
     resetResult();
     currentBlob=blob;
@@ -783,30 +812,30 @@
     resultVideo.src=currentUrl;
     resultVideo.playsInline=true;
     resultVideo.controls=false;
-    resultVideo.muted=true;
+    resultVideo.muted=false;
+    resultVideo.preload="auto";
     setReviewing(true);
 
     if(sourceMode==="bounce"){
       resultTitle.textContent="Your Bounce";
-      resultMeta.textContent="Ready to save";
+      resultMeta.textContent="Ready to preview";
     }else if(sourceMode==="pass"){
       resultTitle.textContent="Pass the Phone";
-      resultMeta.textContent="Combined clip ready to save";
+      resultMeta.textContent="Combined clip ready to preview";
     }else{
       resultTitle.textContent=fileName||((modes[sourceMode]?.title||"Family Fun")+" clip");
-      resultMeta.textContent=sourceMode==="countdown"?"Countdown clip ready":"Ready to save";
+      resultMeta.textContent=sourceMode==="countdown"?"Countdown clip ready to preview":"Ready to preview";
     }
 
     resultVideo.onloadedmetadata=()=>{
-      const duration=Number(resultVideo.duration);
-      if(Number.isFinite(duration)&&duration>0.12){
-        try{resultVideo.currentTime=Math.max(0,duration-0.08)}catch(_){}
-      }
+      try{resultVideo.currentTime=0}catch(_){}
+      syncReviewPlayButton();
     };
-    resultVideo.onseeked=()=>{try{resultVideo.pause()}catch(_){}};
+    resultVideo.onseeked=null;
     setDownload(blob);
     setSaveButtonState("Save",false);
-    setStatus("Preview paused. Save ✓ or discard ✕.");
+    syncReviewPlayButton();
+    setStatus("Preview your clip before saving. Tap the video or Preview to play.");
   }
 
   function startBouncePreview(video){
@@ -1347,6 +1376,11 @@
   fallbackInput.addEventListener("change",()=>handleFile(fallbackInput.files?.[0]));
   retakeBtn.addEventListener("click",()=>{resetResult();setStatus(stream?"Camera ready.":"Start the camera when you’re ready.");document.querySelector(".fun-studio-card")?.scrollIntoView({behavior:"smooth",block:"nearest"})});
   discardBtn?.addEventListener("click",discardCurrentClip);
+  reviewPlayBtn?.addEventListener("click",event=>{event.stopPropagation();toggleReviewPlayback()});
+  resultVideo?.addEventListener("click",toggleReviewPlayback);
+  resultVideo?.addEventListener("play",syncReviewPlayButton);
+  resultVideo?.addEventListener("pause",syncReviewPlayButton);
+  resultVideo?.addEventListener("ended",syncReviewPlayButton);
   addGalleryBtn.addEventListener("click",()=>{
     if(mode==="pass"&&captureState==="paused"&&recorder&&recorder.state!=="inactive"){
       pendingAutoSave=true;
