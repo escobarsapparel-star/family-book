@@ -3545,15 +3545,31 @@ html[data-theme="dark"] .ct-heart{
   color:#df8a97!important;
 }
 html[data-theme="dark"] .ct-person.history-person{
-  background:var(--fb-shell-panel,#18211b)!important;
-  border-color:var(--fb-shell-border,#3d4b40)!important;
+  background:#28251d!important;
+  border-color:#6b573d!important;
+  box-shadow:0 0 0 1px rgba(210,171,116,.08),0 8px 20px rgba(0,0,0,.24)!important;
 }
 html[data-theme="dark"] .ct-person.history-person .ct-avatar{
-  background:var(--fb-shell-accent-soft,#2d4034)!important;
-  color:var(--fb-shell-accent,#b9d5c0)!important;
+  background:#393328!important;
+  color:#e2c595!important;
+}
+html[data-theme="dark"] .ct-person.history-person strong{
+  color:#f4e8d5!important;
 }
 html[data-theme="dark"] .ct-person.history-person small{
-  color:var(--fb-shell-muted,#c8c0b5)!important;
+  color:#d7bd92!important;
+}
+html[data-theme="dark"] .ct-couple:has(.ct-person.history-person){
+  background:#302b23!important;
+  border-color:#6b573d!important;
+}
+html[data-theme="dark"] .ct-couple:has(.ct-person.history-person):hover{
+  background:#393229!important;
+  border-color:#8a714e!important;
+}
+html[data-theme="dark"] .ct-couple:has(.ct-person.history-person) .ct-heart{
+  background:#3b292d!important;
+  color:#e48d99!important;
 }
 
 /* ---- Mixed photo/video Memories ---- */
