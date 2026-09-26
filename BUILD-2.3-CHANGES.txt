@@ -1,9 +1,0 @@
-Family Book Build 2.3 — Edit Member
-- Pencil button on each member card opens Edit Family Member.
-- Edit first name, surname, birthday and email.
-- Upload a replacement profile photo; leaving it blank keeps the existing photo.
-- Add relationships while editing.
-- Remove existing relationships while editing.
-- Saving relationship changes removes/rebuilds the matching reverse links safely.
-- Simplified six relationship types remain.
-- Locked Login and Home UI preserved.
