@@ -1,4 +1,67 @@
-@import url("members-directory-refresh.css?v=members-directory-refresh-2");
+/* Shared Members theme rules are kept here because this file is the active
+   directory layer on both desktop and mobile. Do not depend on deleted legacy imports. */
+.members-page{
+  color:var(--fb-shell-text,var(--ink));
+}
+.members-head .eyebrow{
+  color:var(--fb-shell-muted,var(--muted))!important;
+  font-weight:900!important;
+  letter-spacing:.08em!important;
+}
+.members-head h1{
+  color:var(--fb-shell-accent,var(--green))!important;
+  letter-spacing:-.02em;
+}
+.members-head>div>p:last-child{
+  color:var(--fb-shell-muted,var(--muted))!important;
+}
+.member-card{
+  background:var(--fb-shell-panel,#fff)!important;
+  border-color:var(--fb-shell-border,var(--line))!important;
+  color:var(--fb-shell-text,var(--ink))!important;
+}
+.member-info h3{
+  color:var(--fb-shell-text,var(--ink))!important;
+  font-weight:750!important;
+  letter-spacing:-.01em;
+}
+.member-info small{
+  color:var(--fb-shell-muted,var(--muted))!important;
+  font-weight:550!important;
+}
+.member-info .member-linked-account,
+.member-info .member-managed-profile{
+  color:var(--fb-shell-accent,var(--green))!important;
+  opacity:1!important;
+  font-weight:700!important;
+}
+.member-more,
+.member-menu-btn{
+  color:var(--fb-shell-muted,var(--muted))!important;
+}
+.member-contact-actions.compact a{
+  background:var(--fb-shell-panel-2,#f7f4ec)!important;
+  border-color:var(--fb-shell-border,var(--line))!important;
+  color:var(--fb-shell-accent,var(--green))!important;
+  box-shadow:none!important;
+}
+.member-contact-actions.compact a:hover,
+.member-contact-actions.compact a:focus-visible{
+  background:var(--fb-shell-accent-soft,#e7efe9)!important;
+}
+html[data-theme="dark"] .members-head h1{
+  color:var(--fb-shell-accent,#a7cbb0)!important;
+}
+html[data-theme="dark"] .member-contact-actions.compact a{
+  background:var(--fb-shell-panel-2,#223128)!important;
+  border-color:var(--fb-shell-border,#3b4a40)!important;
+  color:var(--fb-shell-text,#f3ecdd)!important;
+}
+html[data-theme="dark"] .member-contact-actions.compact a:hover,
+html[data-theme="dark"] .member-contact-actions.compact a:focus-visible{
+  background:var(--fb-shell-accent-soft,#294033)!important;
+  color:var(--fb-shell-accent,#b9d5c0)!important;
+}
 
 /* Family Book — desktop Members directory polish.
    Matches the compact mobile directory while preserving all member actions/permissions. */
@@ -127,19 +190,30 @@
   }
 
   .member-contact-actions.compact{
-    left:85px!important;
+    left:14px!important;
     right:46px!important;
     bottom:11px!important;
     width:auto!important;
+    display:grid!important;
+    grid-auto-flow:column!important;
+    grid-auto-columns:minmax(0,1fr)!important;
     gap:7px!important;
-    justify-content:flex-start!important;
+    justify-content:stretch!important;
   }
   .member-contact-actions.compact a{
+    min-width:0!important;
     min-height:30px!important;
-    padding:5px 10px!important;
+    padding:5px 8px!important;
     border-radius:9px!important;
     gap:5px!important;
-    font-size:.67rem!important;
+    font-size:.66rem!important;
+    white-space:nowrap!important;
+    overflow:hidden!important;
+  }
+  .member-contact-actions.compact a span{
+    min-width:0!important;
+    overflow:hidden!important;
+    text-overflow:ellipsis!important;
   }
   .member-contact-actions.compact a svg{
     width:14px!important;
