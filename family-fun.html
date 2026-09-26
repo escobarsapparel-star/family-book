@@ -100,7 +100,12 @@
 
           <section class="fun-result-card" id="funResult" hidden>
             <div class="fun-result-heading"><p class="eyebrow">YOUR CLIP</p><h2 id="funResultTitle">Family Fun clip</h2><p id="funResultMeta"></p></div>
-            <video id="funResultVideo" controls playsinline preload="metadata"></video>
+            <div class="fun-result-preview">
+              <video id="funResultVideo" playsinline preload="auto"></video>
+              <button class="fun-review-play" type="button" id="funReviewPlayBtn" aria-label="Play recorded clip">
+                <i data-lucide="play"></i><span>Preview</span>
+              </button>
+            </div>
             <div class="fun-result-actions">
               <button class="primary" type="button" id="funAddGalleryBtn">Add to Gallery</button>
               <a class="secondary" id="funDownloadLink" href="#" download>Download clip</a>
