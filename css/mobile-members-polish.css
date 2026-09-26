@@ -57,8 +57,8 @@
     box-shadow:none!important;
   }
   .member-card.has-contact{
-    min-height:108px;
-    padding-bottom:42px!important;
+    min-height:82px;
+    padding-bottom:12px!important;
   }
 
   .member-card-view{
@@ -121,23 +121,30 @@
   }
 
   .member-contact-actions.compact{
-    left:77px!important;
-    right:42px!important;
-    bottom:9px!important;
+    position:static!important;
+    left:auto!important;
+    right:auto!important;
+    bottom:auto!important;
     width:auto!important;
+    margin:8px 0 0 65px!important;
+    display:flex!important;
+    flex-wrap:wrap!important;
     gap:6px!important;
     justify-content:flex-start!important;
   }
   .member-contact-actions.compact a{
-    min-height:28px!important;
-    padding:4px 9px!important;
+    min-width:0!important;
+    min-height:30px!important;
+    padding:5px 9px!important;
     border-radius:9px!important;
     gap:5px!important;
     font-size:.64rem!important;
+    white-space:nowrap!important;
   }
   .member-contact-actions.compact a svg{
     width:13px!important;
     height:13px!important;
+    flex:0 0 13px!important;
   }
 
   .member-card:active{
