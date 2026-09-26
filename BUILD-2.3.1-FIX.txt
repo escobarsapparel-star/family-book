@@ -1,8 +1,0 @@
-Family Book Build 2.3.1
-FIXED:
-- Edit Member form now receives the same Family Book styling as Add Member.
-- Old Build 2.2 relationship values are migrated to the simplified six-type model.
-- Invalid/obsolete relationship rows are removed instead of showing a blank "Relationship".
-- Duplicate relationship records are de-duplicated during migration.
-- Existing saved member data is retained.
-- Locked Home and Login unchanged.
