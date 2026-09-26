@@ -1,7 +1,0 @@
-Build 2.8.1
-- Fixed invalid nested-button markup in couple blocks.
-- The entire darker/highlighted couple block is now one clickable Family Branch button.
-- Removed the confusing separate green arrow/open controls.
-- Clicking anywhere on Theodore + Carol, Christiaan + Hettie, Paul + Grace, Teddy + Priscilla, Arla + Lloyd opens that couple's branch.
-- The heart remains only a visual marriage/partner indicator.
-- No family relationship data changed.
