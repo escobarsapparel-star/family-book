@@ -21,25 +21,3 @@
     }
   };
 })();
-
-// Small UI enhancement loader. Kept separate from Wall/backend logic so
-// media permissions and storage behaviour stay unchanged.
-(()=>{
-  if(window.__FB_WALL_VIEWER_LOADER__)return;
-  window.__FB_WALL_VIEWER_LOADER__=true;
-
-  if(!document.querySelector('link[data-fb-wall-viewer]')){
-    const link=document.createElement('link');
-    link.rel='stylesheet';
-    link.href='css/wall-image-viewer.css?v=wall-image-viewer-1';
-    link.dataset.fbWallViewer='1';
-    document.head.appendChild(link);
-  }
-
-  if(!document.querySelector('script[data-fb-wall-viewer]')){
-    const script=document.createElement('script');
-    script.src='js/wall-image-viewer.js?v=wall-image-viewer-1';
-    script.dataset.fbWallViewer='1';
-    document.body.appendChild(script);
-  }
-})();
