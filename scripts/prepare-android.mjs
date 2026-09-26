@@ -72,6 +72,14 @@ html = html.replace('</body>','<script src="js/apk-native-enhancements.js"></scr
 // intercept it and return files from an older bundle.
 html = html.replace("if('serviceWorker' in navigator)","if(!window.Capacitor?.isNativePlatform?.() && 'serviceWorker' in navigator)");
 await fs.writeFile(path.join(www,'index.html'),html);
+
+// Family Fun is a standalone document inside the Android bundle, so it must
+// receive the same native bridge/overrides as index.html. Without this, the
+// app loads website behavior here and bypasses Android-specific gallery fixes.
+let familyFunHtml = await fs.readFile(path.join(www,'family-fun.html'),'utf8');
+familyFunHtml = familyFunHtml.replace('</head>','<link rel="stylesheet" href="css/apk-native.css">\n<script src="js/apk-native-bridge.js"></script>\n</head>');
+familyFunHtml = familyFunHtml.replace('</body>','<script src="js/apk-native-enhancements.js"></script>\n</body>');
+await fs.writeFile(path.join(www,'family-fun.html'),familyFunHtml);
 await build({entryPoints:[path.join(app,'native-bridge-entry.js')],bundle:true,format:'iife',target:'es2020',outfile:path.join(www,'js/apk-native-bridge.js'),define:{__FB_RUNTIME__:JSON.stringify(runtime),__FB_BUNDLE_VERSION__:JSON.stringify(version)}});
 // Catch broken static entrypoint references before publishing any update.
 for (const match of html.matchAll(/(?:src|href)="([^"?#]+)[^"]*"/g)) {
