@@ -369,3 +369,6 @@ html[data-theme="dark"].native-app .fb-native-update-status{
   color:#b9d7a9;
   background:rgba(143,193,159,.10);
 }
+
+/* Never show temporary Family Fun diagnostics inside the Android app. */
+html.native-app #funPlayerDebug{display:none!important}
