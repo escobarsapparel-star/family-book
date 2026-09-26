@@ -126,6 +126,17 @@
     await load();
   }
 
+  // Family profiles and social data start in parallel. If social data wins that race,
+  // names/photos may have been cached as generic fallbacks. Refresh once the family
+  // people bundle is ready so posts, comments and reactions resolve real members.
+  window.addEventListener("familybook:family-data-ready",()=>{
+    const u=user();
+    if(!u.familyId||loadedFamilyId!==u.familyId)return;
+    load()
+      .then(()=>window.dispatchEvent(new CustomEvent("familybook:social-data-ready")))
+      .catch(err=>console.warn("Family Book social member refresh:",err));
+  });
+
   function getPosts(){return posts.slice()}
   function getComments(target){return (commentsByTarget[target]||[]).slice()}
   function getReactions(target){return {...(reactionsByTarget[target]||{})}}
