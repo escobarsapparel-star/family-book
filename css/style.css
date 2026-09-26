@@ -629,8 +629,10 @@ button.empty-memory:hover{border-color:var(--green);background:#f7f0e5}.empty-me
     margin:0 0 9px!important;
     padding:5px!important;
     border-radius:18px!important;
-    background:rgba(238,229,217,.94)!important;
-    backdrop-filter:blur(8px)!important;
+    background:rgba(20,28,22,.82)!important;
+    border:1px solid rgba(177,205,177,.20)!important;
+    backdrop-filter:blur(10px)!important;
+    box-shadow:0 8px 24px rgba(0,0,0,.16)!important;
   }
 
   .tab{
@@ -640,9 +642,11 @@ button.empty-memory:hover{border-color:var(--green);background:#f7f0e5}.empty-me
     font-size:1rem!important;
     font-weight:800!important;
   }
+  .tab{color:#d8d0c5!important}
   .tab.active{
-    background:#fff!important;
-    color:#315c43!important;
+    background:rgba(49,92,67,.96)!important;
+    color:#fffaf2!important;
+    box-shadow:0 4px 14px rgba(0,0,0,.18)!important;
   }
 
   .auth-card .form{
@@ -675,12 +679,29 @@ button.empty-memory:hover{border-color:var(--green);background:#f7f0e5}.empty-me
     min-height:48px!important;
     margin:0!important;
     padding:0 15px!important;
-    border:1px solid rgba(255,255,255,.85)!important;
+    border:1px solid rgba(177,205,177,.28)!important;
     border-radius:15px!important;
-    background:rgba(255,255,255,.96)!important;
-    color:#28241f!important;
+    background:rgba(22,30,23,.84)!important;
+    color:#fffaf2!important;
     font-size:16px!important;
-    box-shadow:0 5px 16px rgba(0,0,0,.08)!important;
+    caret-color:#9ec7aa!important;
+    box-shadow:0 6px 18px rgba(0,0,0,.16)!important;
+    backdrop-filter:blur(8px)!important;
+  }
+
+  .auth-card .form input::placeholder{
+    color:#bdb5aa!important;
+    opacity:1!important;
+  }
+  .auth-card .form select option{
+    background:#1b241d!important;
+    color:#fffaf2!important;
+  }
+  .auth-card .form input:focus,
+  .auth-card .form select:focus{
+    border-color:rgba(126,177,141,.82)!important;
+    box-shadow:0 0 0 3px rgba(126,177,141,.16),0 6px 18px rgba(0,0,0,.18)!important;
+    outline:none!important;
   }
 
   .auth-card .primary.full{
