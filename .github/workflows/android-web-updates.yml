@@ -13,31 +13,6 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - name: Assemble Family Book social preview
-        shell: bash
-        run: |
-          shopt -s nullglob
-          parts=(assets/images/.social-preview-part-*)
-          if [ ${#parts[@]} -eq 0 ]; then
-            exit 0
-          fi
-          cat "${parts[@]}" | base64 -d > assets/images/family-book-social-share-v3.jpg
-          rm -f "${parts[@]}"
-          python3 - <<'PY'
-          from pathlib import Path
-          p = Path("index.html")
-          s = p.read_text()
-          s = s.replace(
-              "https://familybook.co.za/assets/images/family-book-social-share.jpg?v=20260926-2",
-              "https://familybook.co.za/assets/images/family-book-social-share-v3.jpg?v=20260926-3",
-          )
-          p.write_text(s)
-          PY
-          git config user.name "github-actions[bot]"
-          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add -A assets/images index.html
-          git commit -m "Deploy improved social preview image"
-          git push
       - uses: actions/setup-node@v4
         with:
           node-version: '22'
