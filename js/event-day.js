@@ -273,7 +273,7 @@
   }
 
   window.FB_EVENT_DAY={
-    bindRoute,isSeen,markSeen,getCaptureContext,clearCaptureContext,setCaptureContext,
+    bindRoute,enhanceCurrentRoute,isSeen,markSeen,getCaptureContext,clearCaptureContext,setCaptureContext,
     capture:openCapture,todayRows,showWelcome
   };
 })();
