@@ -1,0 +1,53 @@
+/* Android app Home: native-style pull-to-refresh for the family feed. */
+@media(max-width:759px){
+  body.fb-native-home-refresh.fb-home-refresh-tracking,
+  body.fb-native-home-refresh.fb-home-refreshing{
+    overscroll-behavior-y:contain;
+  }
+
+  body.fb-native-home-refresh #app>.app>.screen{
+    will-change:transform;
+    transition:transform .16s ease;
+  }
+  body.fb-native-home-refresh.fb-home-refresh-tracking #app>.app>.screen{transition:none}
+
+  body.fb-native-home-refresh .fb-home-refresh-indicator{
+    position:fixed;
+    z-index:998;
+    top:calc(var(--fb-apk-status-h,0px) + var(--fb-mobile-header-h,102px) + 7px);
+    left:50%;
+    min-width:132px;
+    height:38px;
+    padding:0 14px;
+    border-radius:999px;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    gap:8px;
+    transform:translate(-50%,calc(-48px + var(--fb-home-refresh-y,0px))) scale(.95);
+    opacity:0;
+    pointer-events:none;
+    background:color-mix(in srgb,var(--paper,#fffdfa) 95%,transparent);
+    color:var(--ink,#20251f);
+    border:1px solid var(--line,#e5ddd1);
+    box-shadow:0 7px 24px rgba(0,0,0,.18);
+    backdrop-filter:blur(12px);
+    transition:opacity .16s ease,transform .16s ease;
+  }
+  body.fb-native-home-refresh .fb-home-refresh-indicator svg{
+    width:18px;
+    height:18px;
+    color:var(--accent,var(--green,#315c43));
+  }
+  body.fb-native-home-refresh .fb-home-refresh-indicator span{font-size:.78rem;font-weight:700;white-space:nowrap}
+  body.fb-native-home-refresh .fb-home-refresh-indicator.is-visible{opacity:1}
+  body.fb-native-home-refresh .fb-home-refresh-indicator.is-ready span{font-weight:800}
+  body.fb-native-home-refresh .fb-home-refresh-indicator.is-refreshing svg{animation:fbHomeRefreshSpin .8s linear infinite}
+  @keyframes fbHomeRefreshSpin{to{transform:rotate(360deg)}}
+}
+
+@media(prefers-reduced-motion:reduce){
+  body.fb-native-home-refresh #app>.app>.screen,
+  body.fb-native-home-refresh .fb-home-refresh-indicator{transition:none}
+  body.fb-native-home-refresh .fb-home-refresh-indicator.is-refreshing svg{animation:none}
+}
