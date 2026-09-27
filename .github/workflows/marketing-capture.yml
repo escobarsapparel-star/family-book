@@ -60,11 +60,50 @@ jobs:
           test -f marketing/screenshots/09-family-camera.png
           file marketing/screenshots/*.png
 
+      - name: Build CapCut asset ZIP
+        run: |
+          rm -rf /tmp/FamilyBook_CapCut_Assets
+          mkdir -p /tmp/FamilyBook_CapCut_Assets/logos /tmp/FamilyBook_CapCut_Assets/screenshots
+          cp assets/logo/family-book-logo.png /tmp/FamilyBook_CapCut_Assets/logos/family-book-logo.png
+          cp assets/logo/family-book-logo-header.png /tmp/FamilyBook_CapCut_Assets/logos/family-book-logo-header.png
+          cp assets/logo/family-book-logo-dark-header.png /tmp/FamilyBook_CapCut_Assets/logos/family-book-logo-dark-header.png
+          cp marketing/screenshots/*.png /tmp/FamilyBook_CapCut_Assets/screenshots/
+          cp marketing/brand-guide.txt /tmp/FamilyBook_CapCut_Assets/brand-guide.txt
+          cat > /tmp/FamilyBook_CapCut_Assets/README.txt <<'EOF'
+FamilyBook CapCut Marketing Asset Pack
+
+Public demo: https://familybook.co.za/demo/
+Brand: FamilyBook
+Tagline: Our family. Our memories. Our story.
+Font: Inter
+Demo data: Fictional Williams Family only.
+
+Contents:
+- Official FamilyBook PNG logos
+- 1920x1080 screenshots captured from the real public Guest Demo
+- Brand guide
+
+Use these real assets rather than recreating or inventing FamilyBook interface screens.
+EOF
+          python3 - <<'PY'
+          import os, zipfile
+          root="/tmp/FamilyBook_CapCut_Assets"
+          out="marketing/FamilyBook_CapCut_Assets.zip"
+          with zipfile.ZipFile(out,"w",zipfile.ZIP_DEFLATED) as z:
+              for base,_,files in os.walk(root):
+                  for name in files:
+                      full=os.path.join(base,name)
+                      arc=os.path.relpath(full,os.path.dirname(root))
+                      z.write(full,arc)
+          print(out, os.path.getsize(out))
+          PY
+          test -f marketing/FamilyBook_CapCut_Assets.zip
+
       - name: Commit generated marketing media
         run: |
           git config user.name "FamilyBook Media Bot"
           git config user.email "actions@users.noreply.github.com"
-          git add marketing/screenshots
+          git add marketing/screenshots marketing/FamilyBook_CapCut_Assets.zip
           if git diff --cached --quiet; then
             echo "No media changes to commit."
             exit 0
