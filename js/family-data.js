@@ -456,7 +456,7 @@
 
     const {error}=await sb().rpc(rpcName,args);
     if(error)throw error;
-    await reload();
+    await reloadFresh();
     return cloneRows(relationships);
   }
 
@@ -485,6 +485,21 @@
     loadedFamilyId=null;
     reloadPromise=load().finally(()=>{reloadPromise=null});
     return reloadPromise;
+  }
+
+  async function reloadFresh(){
+    // A person/profile write can trigger realtime just before the relationship
+    // RPC finishes. If we reuse that older reload, the database is correct but
+    // the UI can immediately redraw from a stale relationship snapshot.
+    clearTimeout(realtimeTimer);
+    realtimeTimer=null;
+    const pending=reloadPromise;
+    if(pending){
+      try{await pending}catch(_){}
+    }
+    clearTimeout(realtimeTimer);
+    realtimeTimer=null;
+    return reload();
   }
 
   window.addEventListener("beforeunload",()=>{
