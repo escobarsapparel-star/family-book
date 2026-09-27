@@ -87,6 +87,27 @@ await page.evaluate(()=>{
   document.body.classList.remove("fun-camera-open");
 }).catch(()=>{});
 
+console.log("profile");
+try{
+  const profilePage=await browser.newPage({viewport:{width:1920,height:1080},deviceScaleFactor:1});
+  profilePage.setDefaultTimeout(5000);
+  await profilePage.goto(base,{waitUntil:"domcontentloaded",timeout:30000});
+  await profilePage.waitForSelector("#screen",{timeout:30000});
+  await profilePage.waitForFunction(()=>!!document.querySelector(".topbar"),null,{timeout:30000});
+  await profilePage.evaluate(r=>{window.scrollTo(0,0); if(typeof window.go==="function") window.go(r);},"view-member:owner");
+  await sleep(1100);
+  await profilePage.evaluate(()=>{
+    document.querySelector(".fb-demo-badge")?.remove();
+    document.querySelector("#androidInstallSplash")?.remove();
+    document.body.classList.remove("android-release-open");
+    window.scrollTo(0,0);
+  }).catch(()=>{});
+  await profilePage.screenshot({path:path.join(out,"10-profile.png"),fullPage:false,timeout:5000});
+  console.log("captured 10-profile.png");
+  await profilePage.close();
+}catch(err){
+  console.warn("profile capture skipped:",err?.message||err);
+}
 
 await browser.close();
 console.log("FamilyBook marketing screenshots captured.");
