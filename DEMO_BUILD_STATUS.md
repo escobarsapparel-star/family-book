@@ -4,6 +4,6 @@ Branch: `guest-demo-replica`
 
 The demo now boots the production Family Book stylesheet/component stack and loads `js/demo-mode.js` before `js/app.js`. Demo data is fictional and the demo does not load Supabase configuration/auth.
 
-Current checkpoint commit: production UI wiring + fictional Williams Family adapter.
+Current checkpoint: production UI wiring + fictional Williams Family adapter.
 
 Next QA: verify which production data modules assume Supabase globals, then shim/disable those modules as required before merging `/demo` to main.
