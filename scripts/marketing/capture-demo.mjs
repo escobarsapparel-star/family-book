@@ -96,39 +96,5 @@ await go(page,"profile",900);
 await shot(page,"10-profile.png");
 
 await page.close();
-
-const ctx=await browser.newContext({
-  viewport:{width:1920,height:1080},
-  recordVideo:{dir:videoOut,size:{width:1920,height:1080}}
-});
-const tour=await ctx.newPage();
-await ready(tour);
-const hold=async(route,ms=3800)=>{
-  await go(tour,route,900);
-  await sleep(ms);
-};
-await hold("home",4200);
-const tourWall=tour.locator(".family-wall-panel").first();
-if(await tourWall.count()){await tourWall.scrollIntoViewIfNeeded();await sleep(3800)}
-await hold("members",3400);
-await hold("tree",4000);
-await hold("memories",3800);
-await hold("calendar",3800);
-await hold("family-fun",3400);
-await tour.evaluate(()=>{
-  const panel=document.querySelector("#funCameraPanel");
-  if(panel){
-    panel.hidden=false;panel.removeAttribute("hidden");panel.style.display="";
-    panel.classList.add("fun-camera-fullscreen");
-    document.documentElement.classList.add("fun-camera-open");
-    document.body.classList.add("fun-camera-open");
-  }
-});
-await sleep(4200);
-await ctx.close();
-
-const videos=fs.readdirSync(videoOut).filter(f=>f.endsWith(".webm")).sort((a,b)=>fs.statSync(path.join(videoOut,b)).mtimeMs-fs.statSync(path.join(videoOut,a)).mtimeMs);
-if(videos[0]){
-  fs.renameSync(path.join(videoOut,videos[0]),path.join(videoOut,"FamilyBook-Demo-Navigation.webm"));
-}
 await browser.close();
+console.log("FamilyBook marketing screenshots captured.");
