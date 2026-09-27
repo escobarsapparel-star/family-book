@@ -38,10 +38,7 @@ jobs:
 
       - name: Prepare marketing folders and official logos
         run: |
-          mkdir -p marketing/assets marketing/screenshots marketing/video
-          cp assets/logo/family-book-logo-header.png marketing/assets/FamilyBook-Logo-Light.png
-          cp assets/logo/family-book-logo-dark-header.png marketing/assets/FamilyBook-Logo-Dark.png
-          cp assets/logo/family-book-logo.png marketing/assets/FamilyBook-Logo-Full.png
+          mkdir -p marketing/screenshots
 
       - name: Start local FamilyBook server
         run: |
@@ -61,14 +58,13 @@ jobs:
         run: |
           test -f marketing/screenshots/01-dashboard-navigation.png
           test -f marketing/screenshots/09-family-camera.png
-          test -f marketing/screenshots/10-profile.png
-          file marketing/assets/*.png marketing/screenshots/*.png
+          file marketing/screenshots/*.png
 
       - name: Commit generated marketing media
         run: |
           git config user.name "FamilyBook Media Bot"
           git config user.email "actions@users.noreply.github.com"
-          git add marketing/assets marketing/screenshots
+          git add marketing/screenshots
           if git diff --cached --quiet; then
             echo "No media changes to commit."
             exit 0
