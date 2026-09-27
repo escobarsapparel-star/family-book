@@ -36,9 +36,8 @@ jobs:
           npm install --no-save --package-lock=false playwright@1.56.0
           npx playwright install --with-deps chromium
 
-      - name: Prepare marketing folders and official logos
-        run: |
-          mkdir -p marketing/screenshots
+      - name: Prepare marketing folders
+        run: mkdir -p marketing/screenshots
 
       - name: Start local FamilyBook server
         run: |
@@ -51,7 +50,7 @@ jobs:
           cat /tmp/familybook-http.log
           exit 1
 
-      - name: Capture real Guest Demo screens and navigation recording
+      - name: Capture real Guest Demo screens
         run: node scripts/marketing/capture-demo.mjs
 
       - name: Verify media
@@ -69,34 +68,23 @@ jobs:
           cp assets/logo/family-book-logo-dark-header.png /tmp/FamilyBook_CapCut_Assets/logos/family-book-logo-dark-header.png
           cp marketing/screenshots/*.png /tmp/FamilyBook_CapCut_Assets/screenshots/
           cp marketing/brand-guide.txt /tmp/FamilyBook_CapCut_Assets/brand-guide.txt
-          cat > /tmp/FamilyBook_CapCut_Assets/README.txt <<'EOF'
-FamilyBook CapCut Marketing Asset Pack
-
-Public demo: https://familybook.co.za/demo/
-Brand: FamilyBook
-Tagline: Our family. Our memories. Our story.
-Font: Inter
-Demo data: Fictional Williams Family only.
-
-Contents:
-- Official FamilyBook PNG logos
-- 1920x1080 screenshots captured from the real public Guest Demo
-- Brand guide
-
-Use these real assets rather than recreating or inventing FamilyBook interface screens.
-EOF
-          python3 - <<'PY'
-          import os, zipfile
-          root="/tmp/FamilyBook_CapCut_Assets"
-          out="marketing/FamilyBook_CapCut_Assets.zip"
-          with zipfile.ZipFile(out,"w",zipfile.ZIP_DEFLATED) as z:
-              for base,_,files in os.walk(root):
-                  for name in files:
-                      full=os.path.join(base,name)
-                      arc=os.path.relpath(full,os.path.dirname(root))
-                      z.write(full,arc)
-          print(out, os.path.getsize(out))
-          PY
+          printf '%s\n' \
+            'FamilyBook CapCut Marketing Asset Pack' \
+            '' \
+            'Public demo: https://familybook.co.za/demo/' \
+            'Brand: FamilyBook' \
+            'Tagline: Our family. Our memories. Our story.' \
+            'Font: Inter' \
+            'Demo data: Fictional Williams Family only.' \
+            '' \
+            'Contents:' \
+            '- Official FamilyBook PNG logos' \
+            '- 1920x1080 screenshots captured from the real public Guest Demo' \
+            '- Brand guide' \
+            '' \
+            'Use these real assets rather than recreating or inventing FamilyBook interface screens.' \
+            > /tmp/FamilyBook_CapCut_Assets/README.txt
+          python3 -c "import os,zipfile; root='/tmp/FamilyBook_CapCut_Assets'; out='marketing/FamilyBook_CapCut_Assets.zip'; z=zipfile.ZipFile(out,'w',zipfile.ZIP_DEFLATED); [z.write(os.path.join(base,n),os.path.relpath(os.path.join(base,n),os.path.dirname(root))) for base,_,files in os.walk(root) for n in files]; z.close(); print(out,os.path.getsize(out))"
           test -f marketing/FamilyBook_CapCut_Assets.zip
 
       - name: Commit generated marketing media
