@@ -60,10 +60,11 @@ await go(page,"memories",1500);
 await page.waitForSelector(".memory-card",{timeout:15000}).catch(()=>{});
 await shot(page,"05-memories.png");
 
-const firstMemory=page.locator(".memory-card").first();
-if(await firstMemory.count()){
-  await firstMemory.click();
+const firstMemoryId=await page.locator(".memory-card").first().getAttribute("data-r").catch(()=>"");
+if(firstMemoryId){
+  await page.evaluate(r=>{ if(typeof window.go==="function") window.go(r); },firstMemoryId);
   await sleep(900);
+  await page.evaluate(()=>window.scrollTo(0,0));
 }
 await shot(page,"06-memory-detail.png");
 
