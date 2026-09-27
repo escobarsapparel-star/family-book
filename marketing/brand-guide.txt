@@ -1,0 +1,47 @@
+# FamilyBook Marketing Brand Guide
+
+## Product name
+FamilyBook
+
+Display wording: **Family Book** in marketing copy when the two-word brand treatment is preferred.
+Pronunciation: normal English “Family Book”.
+
+## Approved tagline
+**Our family. Our memories. Our story.**
+
+Supporting approved line used in the product:
+**Family is everything.**
+
+## Brand colours
+- Primary green: #315C43
+- Dark green: #244A35
+- Warm brown accent: #A66B38
+- Cream background: #F8F3E9
+- Paper / warm white: #FFFDFA
+- Main ink: #20251F
+- Muted text: #6F756E
+- Divider / border: #E5DDD1
+
+## Typography
+Primary interface font: **Inter**
+Use Inter for headings, body copy, navigation, buttons and captions.
+Supported weights in the current product: 400, 500, 600, 700, 800, 900.
+
+## Demo identity
+Use **fictional/anonymised demo names only** in public promotional material.
+Current public demo family: **Williams Family**.
+Do not use real FamilyBook member names or private family data.
+
+## Product positioning
+FamilyBook is a private family space for:
+- family profiles
+- family relationships and family tree
+- family wall / family updates
+- photo and video memories
+- birthdays and family calendar events
+- Family Fun camera and family video experiences
+
+## Marketing accuracy
+Use screenshots and footage from the public Guest Demo.
+Do not imply that public demo content is a real family.
+Do not expose or request production login credentials.
