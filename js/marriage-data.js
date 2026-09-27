@@ -11,7 +11,8 @@
     init:base.init?.bind(base),
     reload:base.reload?.bind(base),
     getRelationships:base.getRelationships?.bind(base),
-    syncRelationships:base.syncRelationships?.bind(base)
+    syncRelationships:base.syncRelationships?.bind(base),
+    syncPersonRelationships:base.syncPersonRelationships?.bind(base)
   };
 
   let dates=new Map();
@@ -109,6 +110,49 @@
       ...r,
       marriageDate:dates.get(key(r.from,r.to,r.type))||r.marriageDate||""
     }));
+  }
+
+  if(original.syncPersonRelationships){
+    base.syncPersonRelationships=async(personId,rows)=>{
+      const enriched=applyPlan(rows);
+      const result=await original.syncPersonRelationships(personId,enriched);
+      const client=sb(),u=auth();
+      if(!client||u.role!=="admin")return result;
+
+      const spousePayload=[];
+      const seen=new Set();
+      enriched.filter(isSpouse).forEach(r=>{
+        const date=r.marriageDate||null;
+        [
+          {from:r.from,to:r.to,type:"spouse_of",marriageDate:date},
+          {from:r.to,to:r.from,type:"spouse_of",marriageDate:date}
+        ].forEach(item=>{
+          const k=key(item.from,item.to,item.type);
+          if(seen.has(k))return;
+          seen.add(k);
+          spousePayload.push(item);
+        });
+      });
+
+      const {error}=await client.rpc("set_relationship_marriage_dates",{p_relationships:spousePayload});
+      if(error){
+        migrationReady=false;
+        console.warn("Could not save marriage dates:",error.message||error);
+        return result;
+      }
+
+      const target=String(personId||"");
+      const next=new Map(dates);
+      for(const k of [...next.keys()]){
+        const [from,type,to]=String(k).split("|");
+        if(type==="spouse_of"&&(from===target||to===target))next.delete(k);
+      }
+      spousePayload.forEach(r=>{
+        if(r.marriageDate)next.set(key(r.from,r.to,r.type),String(r.marriageDate));
+      });
+      commitDates(next);
+      return result;
+    };
   }
 
   if(original.syncRelationships){
