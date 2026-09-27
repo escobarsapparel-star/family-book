@@ -42,6 +42,10 @@ A.innerHTML=`<main class="login-page">
 <label>Password<input id="pass" type="password" placeholder="••••••••" minlength="6" required></label>
 <div class="backend-auth-message" id="signinMessage" hidden></div>
 <button class="primary full" type="submit">Sign in</button>
+<a class="demo auth-demo-entry" href="demo/" aria-label="Explore the FamilyBook guest demo">
+  <i data-lucide="play-circle"></i>
+  <span><strong>Explore Guest Demo</strong><small>No account needed · fictional family</small></span>
+</a>
 </form>
 
 <a class="apk-download-cta" data-apk-download href="downloads/FamilyBook-Updater-1.1-debug.apk" download hidden>
