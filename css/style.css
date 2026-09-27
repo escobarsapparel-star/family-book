@@ -4993,3 +4993,26 @@ html[data-theme="dark"] .apk-download-cta{
     background:transparent!important;border:0!important;min-height:34px!important;
   }
 }
+
+
+/* Public Guest Demo entry on the authentication screen */
+.auth-demo-entry{
+  display:flex;
+  width:100%;
+  align-items:center;
+  justify-content:center;
+  gap:10px;
+  text-decoration:none;
+  text-align:left;
+  line-height:1.12;
+}
+.auth-demo-entry>svg{width:20px;height:20px;flex:0 0 auto}
+.auth-demo-entry>span{display:grid;gap:2px}
+.auth-demo-entry strong{font-size:.84rem}
+.auth-demo-entry small{font-size:.62rem;font-weight:700;color:#7b857e}
+@media(max-width:560px){
+  .auth-demo-entry{justify-content:center!important;text-align:left!important}
+  .auth-demo-entry>svg{width:18px!important;height:18px!important}
+  .auth-demo-entry strong{font-size:.82rem!important;color:inherit}
+  .auth-demo-entry small{font-size:.58rem!important;color:rgba(255,255,255,.76)!important}
+}
