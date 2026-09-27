@@ -87,6 +87,5 @@ await page.evaluate(()=>{
   document.body.classList.remove("fun-camera-open");
 }).catch(()=>{});
 
-await route("profile","10-profile.png",800);
 await browser.close();
 console.log("FamilyBook marketing screenshots captured.");
