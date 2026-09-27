@@ -1,0 +1,89 @@
+name: Capture FamilyBook marketing media
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths:
+      - ".github/workflows/marketing-capture.yml"
+      - "scripts/marketing/**"
+      - "demo/**"
+      - "assets/**"
+      - "css/**"
+      - "js/**"
+      - "index.html"
+
+permissions:
+  contents: write
+
+jobs:
+  capture:
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Set up Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+
+      - name: Install Playwright
+        run: |
+          npm install --no-save --package-lock=false playwright@1.56.0
+          npx playwright install --with-deps chromium
+
+      - name: Prepare marketing folders and official logos
+        run: |
+          mkdir -p marketing/assets marketing/screenshots marketing/video
+          cp assets/logo/family-book-logo-header.png marketing/assets/FamilyBook-Logo-Light.png
+          cp assets/logo/family-book-logo-dark-header.png marketing/assets/FamilyBook-Logo-Dark.png
+          cp assets/logo/family-book-logo.png marketing/assets/FamilyBook-Logo-Full.png
+
+      - name: Start local FamilyBook server
+        run: |
+          python3 -m http.server 4173 --bind 127.0.0.1 > /tmp/familybook-http.log 2>&1 &
+          echo $! > /tmp/familybook-http.pid
+          for i in {1..30}; do
+            if curl -fsS http://127.0.0.1:4173/demo/ >/dev/null; then exit 0; fi
+            sleep 1
+          done
+          cat /tmp/familybook-http.log
+          exit 1
+
+      - name: Capture real Guest Demo screens and navigation recording
+        run: node scripts/marketing/capture-demo.mjs
+
+      - name: Convert navigation recording to MP4
+        run: |
+          if ! command -v ffmpeg >/dev/null 2>&1; then
+            sudo apt-get update
+            sudo apt-get install -y ffmpeg
+          fi
+          ffmpeg -y -i marketing/video/FamilyBook-Demo-Navigation.webm \
+            -c:v libx264 -preset medium -crf 24 -pix_fmt yuv420p \
+            -movflags +faststart -an marketing/video/FamilyBook-Demo-Navigation.mp4
+          rm -f marketing/video/FamilyBook-Demo-Navigation.webm
+
+      - name: Verify media
+        run: |
+          test -f marketing/screenshots/01-dashboard-navigation.png
+          test -f marketing/screenshots/09-family-camera.png
+          test -f marketing/video/FamilyBook-Demo-Navigation.mp4
+          file marketing/assets/*.png marketing/screenshots/*.png marketing/video/*.mp4
+          du -h marketing/video/FamilyBook-Demo-Navigation.mp4
+
+      - name: Commit generated marketing media
+        run: |
+          git config user.name "FamilyBook Media Bot"
+          git config user.email "actions@users.noreply.github.com"
+          git add marketing/assets marketing/screenshots marketing/video
+          if git diff --cached --quiet; then
+            echo "No media changes to commit."
+            exit 0
+          fi
+          git commit -m "Generate FamilyBook marketing media [skip ci]"
+          git push
