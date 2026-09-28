@@ -227,6 +227,7 @@ function closeAndroidInstallSplash(days=7){
 }
 
 function showAndroidInstallSplash(force=false){
+ if(window.FB_DEMO_MODE)return;
  if(runningInsideNativeApp())return;
  if(document.querySelector("#androidInstallSplash"))return;
  if(!force){
@@ -275,6 +276,7 @@ function showAndroidInstallHelp(){
 }
 
 async function initAndroidDownloadUi(){
+ if(window.FB_DEMO_MODE)return;
  if(runningInsideNativeApp())return;
  const available=await androidApkAvailable();
  document.querySelectorAll("[data-apk-download]").forEach(el=>{
