@@ -50,3 +50,15 @@ body.fb-demo-mode .android-release-modal{display:none!important}
   .fb-demo-badge span{display:none}
   .fb-demo-toast{bottom:64px}
 }
+/* Safety: production-only modal classes must never lock the public Guest Demo. */
+body.fb-demo-mode,
+body.fb-demo-mode.android-release-open,
+html:has(body.fb-demo-mode){
+  overflow-y:auto!important;
+  overflow-x:hidden;
+}
+body.fb-demo-mode #androidInstallSplash,
+body.fb-demo-mode dialog.android-release-modal{
+  display:none!important;
+  pointer-events:none!important;
+}
