@@ -1,6 +1,29 @@
 (()=>{
   window.FB_DEMO_MODE=true;
 
+  // Guest Demo must never open the production Android release modal.
+  // A hidden modal dialog still makes the rest of the document inert and the
+  // production body class also locks scrolling, which can make the demo appear frozen.
+  const clearProductionModalLocks=()=>{
+    document.querySelectorAll("#androidInstallSplash, dialog.android-release-modal").forEach(d=>{
+      try{ if(d.open) d.close(); }catch(_){}
+      d.remove();
+    });
+    document.body?.classList.remove("android-release-open","fun-camera-open");
+    document.documentElement?.classList.remove("fun-camera-open");
+  };
+
+  const installDemoInteractionGuard=()=>{
+    clearProductionModalLocks();
+    const observer=new MutationObserver(()=>clearProductionModalLocks());
+    observer.observe(document.documentElement,{subtree:true,childList:true,attributes:true,attributeFilter:["class","open"]});
+    window.addEventListener("pageshow",clearProductionModalLocks);
+    window.addEventListener("focus",clearProductionModalLocks);
+  };
+
+  if(document.readyState==="loading") document.addEventListener("DOMContentLoaded",installDemoInteractionGuard,{once:true});
+  else installDemoInteractionGuard();
+
   const clone=v=>JSON.parse(JSON.stringify(v));
   const now=Date.now();
   const day=24*60*60*1000;
