@@ -1,6 +1,28 @@
 (()=>{
   window.FB_DEMO_MODE=true;
 
+  // Demo-only recovery for transient production UI that can lock the page.
+  function resetDemoTransientUi(){
+    document.querySelectorAll("#androidInstallSplash, dialog.android-release-modal").forEach(d=>{
+      try{ if(d.open) d.close(); }catch(_){}
+      d.remove();
+    });
+    document.querySelector(".mobile-profile-menu")?.remove();
+    const pop=document.querySelector("#profilePopover");
+    if(pop)pop.hidden=true;
+    document.querySelector("#topProfileButton")?.setAttribute("aria-expanded","false");
+    document.body?.classList.remove("android-release-open","fb-mobile-menu-open","fun-camera-open");
+    document.documentElement?.classList.remove("fun-camera-open");
+    const panel=document.querySelector("#funCameraPanel");
+    if(panel){
+      panel.hidden=true;
+      panel.setAttribute("hidden","");
+      panel.classList.remove("fun-camera-fullscreen");
+      panel.style.removeProperty("display");
+    }
+  }
+  window.FB_DEMO_RESET_UI=resetDemoTransientUi;
+
 
   const clone=v=>JSON.parse(JSON.stringify(v));
   const now=Date.now();
@@ -294,7 +316,12 @@
       ...funApi,
       bindRoute:()=>{
         window.icons?.();
-        document.querySelector('[data-family-fun-feature="camera"]')?.addEventListener("click",()=>demoNotice("Camera recording is disabled in Guest Demo."));
+        const camera=document.querySelector('[data-family-fun-feature="camera"]');
+        if(camera)camera.onclick=event=>{
+          event.preventDefault();
+          resetDemoTransientUi();
+          demoNotice("Camera recording is disabled in Guest Demo.");
+        };
       },
       bindGalleryRoute:()=>{
         window.icons?.();
@@ -311,6 +338,24 @@
   }
 
   document.addEventListener("click",event=>{
+    const profileButton=event.target.closest("#topProfileButton");
+    if(profileButton){
+      event.preventDefault();
+      event.stopPropagation();
+      event.stopImmediatePropagation();
+      resetDemoTransientUi();
+      window.go?.("view-member:owner");
+      return;
+    }
+    const cameraButton=event.target.closest('[data-family-fun-feature="camera"]');
+    if(cameraButton){
+      event.preventDefault();
+      event.stopPropagation();
+      event.stopImmediatePropagation();
+      resetDemoTransientUi();
+      demoNotice("Camera recording is disabled in Guest Demo.");
+      return;
+    }
     const signout=event.target.closest("#logout,.profile-popover-signout,[data-fb-menu='signout']");
     if(signout){
       event.preventDefault();
