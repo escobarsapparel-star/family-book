@@ -52,7 +52,7 @@ if (!/^[a-f0-9]{40}$/.test(commit)) throw new Error('Invalid source commit');
 const version = `web-${commit}`;
 await fs.rm(www,{recursive:true,force:true}); await fs.mkdir(www,{recursive:true});
 for (const dir of ['js','css','assets','legal']) await fs.cp(path.join(root,dir),path.join(www,dir),{recursive:true});
-for (const name of ['index.html','family-fun.html','manifest.json','sw.js']) await fs.copyFile(path.join(root,name),path.join(www,name));
+for (const name of ['index.html','family-fun.html','manifest.json']) await fs.copyFile(path.join(root,name),path.join(www,name));
 await fs.cp(path.join(app,'web-overrides'),www,{recursive:true});
 await fs.mkdir(path.join(www,'vendor'),{recursive:true});
 const vendors = [
@@ -68,13 +68,9 @@ for (const [url,source,target] of vendors) {
 }
 html = html.replace('</head>','<link rel="stylesheet" href="css/apk-native.css">\n<script src="js/apk-native-bridge.js"></script>\n</head>');
 html = html.replace('</body>','<script src="js/apk-native-enhancements.js"></script>\n</body>');
-// The native updater owns the app bundle cache, so Android uses the service
-// worker in MEDIA-ONLY mode. It may cache previously viewed B2 images, but it
-// must never intercept HTML/JS/CSS from an OTA bundle.
-html = html.replace(
-  "navigator.serviceWorker.register('./sw.js')",
-  "navigator.serviceWorker.register('./sw.js?native=media-only-v1')"
-);
+// The native updater owns the bundle cache; a website service worker must not
+// intercept it and return files from an older bundle.
+html = html.replace("if('serviceWorker' in navigator)","if(!window.Capacitor?.isNativePlatform?.() && 'serviceWorker' in navigator)");
 await fs.writeFile(path.join(www,'index.html'),html);
 
 // Family Fun is a standalone document inside the Android bundle, so it must
