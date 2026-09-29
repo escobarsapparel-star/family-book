@@ -1,3 +1,5 @@
+const FB_NATIVE_MEDIA_ONLY = new URL(self.location.href).searchParams.get('native') === 'media-only-v1';
+
 self.addEventListener('install',event=>{
   event.waitUntil(self.skipWaiting());
 });
@@ -58,10 +60,13 @@ self.addEventListener('notificationclick',event=>{
 const FB_MEDIA_CACHE = 'family-book-b2-images-v1';
 
 function isBackblazeImageRequest(request){
-  if(request.method!=='GET'||request.destination!=='image')return false;
+  if(request.method!=='GET')return false;
   try{
     const url=new URL(request.url);
-    return /(^|\.)backblazeb2\.com$/i.test(url.hostname);
+    if(!/(^|\.)backblazeb2\.com$/i.test(url.hostname))return false;
+    if(request.destination==='image')return true;
+    // Native cache warming uses fetch(), whose request.destination is empty.
+    return request.destination==='' && /\.(?:avif|gif|jpe?g|png|webp)$/i.test(decodeURIComponent(url.pathname));
   }catch(_){return false}
 }
 
@@ -132,6 +137,7 @@ async function navigationFetch(request){
 }
 
 self.addEventListener('install',event=>{
+  if(FB_NATIVE_MEDIA_ONLY)return;
   event.waitUntil((async()=>{
     try{
       const cache=await caches.open(FB_APP_CACHE);
@@ -143,6 +149,7 @@ self.addEventListener('install',event=>{
 self.addEventListener('fetch',event=>{
   const request=event.request;
   if(request.method!=='GET'||isBackblazeImageRequest(request))return;
+  if(FB_NATIVE_MEDIA_ONLY)return;
 
   if(request.mode==='navigate'){
     event.respondWith(navigationFetch(request));
