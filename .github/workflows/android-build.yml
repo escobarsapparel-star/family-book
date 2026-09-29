@@ -5,7 +5,7 @@ on:
     branches: [main]
     paths: ['android-app/**', 'scripts/**', '.github/workflows/android-build.yml']
 permissions:
-  contents: read
+  contents: write
 jobs:
   build:
     runs-on: ubuntu-latest
@@ -27,7 +27,7 @@ jobs:
         working-directory: android-app
       - run: npm run sync:android
         working-directory: android-app
-      - run: bash gradlew assembleRelease
+      - run: bash gradlew assembleRelease assembleDebug
         working-directory: android-app/android
       - name: Read Family Book app version
         id: app_version
@@ -40,3 +40,26 @@ jobs:
         with:
           name: FamilyBook-v${{ steps.app_version.outputs.version }}-unsigned-release-sign-with-existing-key
           path: android-app/android/app/build/outputs/apk/release/*unsigned.apk
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: FamilyBook-v${{ steps.app_version.outputs.version }}-cache-test-debug
+          path: android-app/android/app/build/outputs/apk/debug/app-debug.apk
+
+      - name: Publish cache-test APK beside existing installer
+        env:
+          VERSION: ${{ steps.app_version.outputs.version }}
+        shell: bash
+        run: |
+          TARGET="downloads/FamilyBook-v${VERSION}-cache-test.apk"
+          cp android-app/android/app/build/outputs/apk/debug/app-debug.apk "$TARGET"
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add "$TARGET"
+          if git diff --cached --quiet; then
+            echo "APK already matches published copy."
+            exit 0
+          fi
+          git commit -m "Publish Family Book v${VERSION} cache test APK"
+          git pull --rebase origin main
+          git push origin main
