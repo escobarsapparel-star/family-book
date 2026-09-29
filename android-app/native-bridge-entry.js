@@ -6,13 +6,15 @@ import { Browser } from "@capacitor/browser";
 import { NavigationBar } from "@capgo/capacitor-navigation-bar";
 
 const ShareImage = registerPlugin("ShareImage");
+const MediaCache = registerPlugin("MediaCache");
 
 window.FB_NATIVE = {
   Capacitor,
   App,
   Browser,
   NavigationBar,
-  ShareImage
+  ShareImage,
+  MediaCache
 };
 
 // Apply the native marker immediately while this head script is executing.

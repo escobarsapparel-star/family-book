@@ -169,6 +169,7 @@
     try{await client()?.auth.signOut({scope:"local"})}
     finally{
       try{await window.FB_OFFLINE_CACHE?.clearUser?.(userId)}catch(_){}
+      try{await window.FB_NATIVE?.MediaCache?.clearAll?.()}catch(_){}
       current=null;
       session=null;
       sessionStorage.removeItem(PENDING_INVITE);

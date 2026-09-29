@@ -40,7 +40,7 @@ public class ShareImagePlugin extends Plugin {
             ArrayList<String> cachedMimes = intent.getStringArrayListExtra(EXTRA_CACHED_MIMES);
             if (cachedPaths != null && !cachedPaths.isEmpty()) {
                 JSObject cached = resultFromCached(cachedPaths, cachedNames, cachedMimes);
-                if (cached.getBool("hasShare", false)) {
+                if (cached.getBool("hasShare")) {
                     call.resolve(cached);
                     return;
                 }
