@@ -225,6 +225,11 @@
     setTimeout(()=>overlay?.querySelector('#quickMemoryChoose')?.focus(),0);
   }
 
+  async function openWithFiles(files){
+    if(!overlay)open();
+    await handleFiles(files);
+  }
+
   document.addEventListener('keydown',e=>{if(e.key==='Escape'&&overlay)close()});
-  window.FB_QUICK_MEMORY={open,close};
+  window.FB_QUICK_MEMORY={open,openWithFiles,close};
 })();
