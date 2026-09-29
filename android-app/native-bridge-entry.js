@@ -1,15 +1,18 @@
 import { CapacitorUpdater } from '@capgo/capacitor-updater';
 import { startUpdates } from './update-client.mjs';
-import { Capacitor, CapacitorHttp } from "@capacitor/core";
+import { Capacitor, CapacitorHttp, registerPlugin } from "@capacitor/core";
 import { App } from "@capacitor/app";
 import { Browser } from "@capacitor/browser";
 import { NavigationBar } from "@capgo/capacitor-navigation-bar";
+
+const ShareImage = registerPlugin("ShareImage");
 
 window.FB_NATIVE = {
   Capacitor,
   App,
   Browser,
-  NavigationBar
+  NavigationBar,
+  ShareImage
 };
 
 // Apply the native marker immediately while this head script is executing.
