@@ -62,6 +62,21 @@
                     android:host="login-callback" />
             </intent-filter>
 
+            <!-- Receive photos/videos shared from Android Gallery / Google Photos. -->
+            <intent-filter>
+                <action android:name="android.intent.action.SEND" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <data android:mimeType="image/*" />
+                <data android:mimeType="video/*" />
+            </intent-filter>
+
+            <intent-filter>
+                <action android:name="android.intent.action.SEND_MULTIPLE" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <data android:mimeType="image/*" />
+                <data android:mimeType="video/*" />
+            </intent-filter>
+
         </activity>
 
         <!-- Allows Family Book to securely share generated files -->
