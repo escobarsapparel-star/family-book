@@ -439,7 +439,51 @@
     window.addEventListener('popstate',apply);
   }
 
-  function start(){bindBackButton();bindSwipe();watchFamilyCamera();watchCalendarCards()}
+  function bindIncomingGalleryShare(){
+    if(window.__fbIncomingGalleryShareBound)return;
+    window.__fbIncomingGalleryShareBound=true;
+    const ShareImage=native.ShareImage;
+    if(!ShareImage?.getPendingShare)return;
+
+    let busy=false;
+    const consume=async()=>{
+      if(busy||!window.FB_AUTH?.isSession?.()||window.FB_AUTH?.needsSetup?.()||!window.FB_QUICK_MEMORY?.openWithFiles)return;
+      busy=true;
+      try{
+        const shared=await ShareImage.getPendingShare();
+        if(!shared?.hasShare)return;
+        const raw=Array.isArray(shared.items)&&shared.items.length
+          ? shared.items
+          : (shared.path?[{path:shared.path,name:shared.name,mimeType:shared.mimeType}]:[]);
+        const files=[];
+        for(const item of raw){
+          if(!item?.path)continue;
+          const url=native.Capacitor.convertFileSrc?.(item.path)||item.path;
+          const response=await fetch(url);
+          if(!response.ok)throw new Error('Could not open shared media.');
+          const blob=await response.blob();
+          const type=item.mimeType||blob.type||'image/jpeg';
+          const name=item.name||(`${type.startsWith('video/')?'shared-video':'shared-photo'}.${type.includes('png')?'png':type.includes('webp')?'webp':type.startsWith('video/')?'mp4':'jpg'}`);
+          files.push(new File([blob],name,{type,lastModified:Date.now()}));
+        }
+        if(!files.length)return;
+        window.go?.('home');
+        await window.FB_QUICK_MEMORY.openWithFiles(files);
+        await ShareImage.clearPendingShare();
+      }catch(err){
+        console.warn('Family Book incoming share:',err);
+      }finally{
+        busy=false;
+      }
+    };
+
+    setTimeout(consume,900);
+    window.addEventListener('familybook:family-data-ready',consume);
+    window.addEventListener('focus',()=>setTimeout(consume,120));
+    native.App?.addListener?.('appStateChange',({isActive})=>{if(isActive)setTimeout(consume,120)}).catch?.(()=>{});
+  }
+
+  function start(){bindBackButton();bindSwipe();watchFamilyCamera();watchCalendarCards();bindIncomingGalleryShare()}
   if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',start,{once:true});
   else start();
 })();
