@@ -439,45 +439,7 @@
     window.addEventListener('popstate',apply);
   }
 
-
-  function bindOfflineMediaCache(){
-    if(window.__fbNativeOfflineMediaCacheBound)return;
-    window.__fbNativeOfflineMediaCacheBound=true;
-    if(!('serviceWorker' in navigator))return;
-
-    const isB2Image=url=>{
-      try{
-        const u=new URL(url,location.href);
-        return /(^|\\.)backblazeb2\\.com$/i.test(u.hostname) && /\\.(?:avif|gif|jpe?g|png|webp)$/i.test(decodeURIComponent(u.pathname));
-      }catch(_){return false}
-    };
-    const warmed=new Set();
-    let timer=0;
-
-    const warm=async()=>{
-      clearTimeout(timer);
-      if(navigator.onLine===false)return;
-      try{await navigator.serviceWorker.ready}catch(_){return}
-      document.querySelectorAll('img[src]').forEach(img=>{
-        const src=img.currentSrc||img.src||'';
-        if(!src||warmed.has(src)||!isB2Image(src))return;
-        warmed.add(src);
-        fetch(src,{mode:'no-cors'}).catch(()=>warmed.delete(src));
-      });
-    };
-    const schedule=()=>{clearTimeout(timer);timer=setTimeout(warm,180)};
-
-    schedule();
-    window.addEventListener('online',schedule);
-    window.addEventListener('familybook:family-data-ready',schedule);
-    window.addEventListener('familybook:offline-cache-used',schedule);
-    try{
-      const observer=new MutationObserver(schedule);
-      observer.observe(document.body,{childList:true,subtree:true,attributes:true,attributeFilter:['src']});
-    }catch(_){}
-  }
-
-  function start(){bindBackButton();bindSwipe();watchFamilyCamera();watchCalendarCards();bindOfflineMediaCache()}
+  function start(){bindBackButton();bindSwipe();watchFamilyCamera();watchCalendarCards()}
   if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',start,{once:true});
   else start();
 })();
