@@ -320,7 +320,7 @@ function go(r,opts={}){if(window.FB_DEMO_MODE)window.FB_DEMO_RESET_UI?.();if(r==
      list[idx]={...list[idx],name,birthday,sex,email:$("#mfEmail").value.trim(),phone:$("#mfPhone").value.trim(),photo,managedProfile:$("#mfManaged")?!!$("#mfManaged").checked:!!list[idx].managedProfile};
      if(wasCurrent)nextAuth={photo,name,email:$("#mfEmail").value.trim()};
    }
-   setFamilyFormSaving(f,true,"Saving photo…");
+   setFamilyFormSaving(f,true,"Saving changes…");
    try{
      await saveMembers(list);
      await saveRelationshipPlan(id,plan);
@@ -345,7 +345,7 @@ function go(r,opts={}){if(window.FB_DEMO_MODE)window.FB_DEMO_RESET_UI?.();if(r==
   if(!guard.ok){showFamilySafetyMessage(f,guard.message);return}
   if(!confirmDuplicatePerson(name,birthday,""))return;
   let member={id,name,profileType:"member",relationship:"Family member",birthday,sex,email:$("#mfEmail").value.trim(),phone:$("#mfPhone").value.trim(),photo,managedProfile:!!$("#mfManaged")?.checked};list.push(member);
-  setFamilyFormSaving(f,true,"Saving photo…");
+  setFamilyFormSaving(f,true,"Saving changes…");
   try{
     await saveMembers(list);
     await saveRelationshipPlan(id,plan);
@@ -1091,7 +1091,7 @@ function bindHistoryForm(id=""){
      email:"",phone:""
    };
    if(idx>=0)list[idx]=person;else list.push(person);
-   setFamilyFormSaving(f,true,"Saving photo…");
+   setFamilyFormSaving(f,true,"Saving changes…");
    try{
      await saveMembers(list);
      await saveRelationshipPlan(personId,plan);
