@@ -1049,3 +1049,279 @@ html[data-fb-visual-theme="midnight-aurora"] .family-prayer-next:hover{
     background:rgba(6,20,35,.72)!important;
   }
 }
+
+
+/* ============================================================
+   MIDNIGHT AURORA V2 — RIGHT RAIL SCENE SYSTEM
+   Shared scenic/glass identity for Clock, Prayer, Countdown and Birthdays.
+   ============================================================ */
+
+/* ---------- Clock: forest aurora card ---------- */
+html[data-fb-visual-theme="midnight-aurora"] .desktop-date-time-card{
+  isolation:isolate;
+  position:relative;
+  overflow:hidden;
+  min-height:74px;
+  border:1px solid rgba(83,225,255,.48)!important;
+  background:
+    radial-gradient(110% 120% at 88% 0%,rgba(34,211,238,.18),transparent 42%),
+    radial-gradient(80% 120% at 8% 0%,rgba(139,92,246,.14),transparent 52%),
+    linear-gradient(155deg,rgba(8,20,48,.94),rgba(5,15,36,.90))!important;
+  box-shadow:
+    0 0 19px rgba(34,211,238,.13),
+    0 14px 34px rgba(0,0,0,.28),
+    inset 0 1px 0 rgba(255,255,255,.08)!important;
+}
+html[data-fb-visual-theme="midnight-aurora"] .desktop-date-time-card:before{
+  content:"";
+  position:absolute;
+  inset:0 0 0 42%;
+  z-index:0;
+  opacity:.9;
+  background:
+    radial-gradient(90% 80% at 55% 18%,rgba(45,212,191,.24),transparent 56%),
+    linear-gradient(114deg,transparent 6%,rgba(45,212,191,.13) 34%,rgba(34,211,238,.09) 50%,transparent 69%),
+    url("data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%20380%20140'%20preserveAspectRatio='xMidYMax%20slice'%3E%3Cg%20fill='%23030b18'%20opacity='.92'%3E%3Cpath%20d='M270%20140V58l-14%2022h9l-17%2025h13l-20%2035z'/%3E%3Cpath%20d='M310%20140V40l-18%2028h11l-22%2031h16l-25%2041z'/%3E%3Cpath%20d='M346%20140V69l-12%2019h8l-16%2023h11l-18%2029z'/%3E%3Cpath%20d='M230%20140V78l-11%2017h7l-14%2020h10l-16%2025z'/%3E%3C/g%3E%3C/svg%3E") right bottom/cover no-repeat;
+  pointer-events:none;
+}
+html[data-fb-visual-theme="midnight-aurora"] .desktop-date-time-card:after{
+  content:"";
+  position:absolute;
+  inset:0;
+  z-index:0;
+  background:linear-gradient(90deg,rgba(5,14,34,.94) 0%,rgba(5,14,34,.72) 45%,rgba(5,14,34,.14) 100%);
+  pointer-events:none;
+}
+html[data-fb-visual-theme="midnight-aurora"] .desktop-date-time-icon,
+html[data-fb-visual-theme="midnight-aurora"] .desktop-date-time-copy{
+  position:relative;
+  z-index:2;
+}
+html[data-fb-visual-theme="midnight-aurora"] .desktop-date-time-icon{
+  background:linear-gradient(145deg,rgba(16,50,68,.78),rgba(11,31,58,.80))!important;
+  color:#8cf6e5!important;
+  border:1px solid rgba(103,232,249,.18)!important;
+  box-shadow:
+    0 0 17px rgba(34,211,238,.08),
+    inset 0 1px 0 rgba(255,255,255,.05)!important;
+}
+html[data-fb-visual-theme="midnight-aurora"] .desktop-date-time-copy strong{
+  color:#f6fbff!important;
+  text-shadow:0 1px 14px rgba(103,232,249,.10);
+}
+html[data-fb-visual-theme="midnight-aurora"] .desktop-date-time-copy span{
+  color:#a6b8d8!important;
+}
+
+/* ---------- Prayer: stronger scene visibility across the full card ---------- */
+html[data-fb-visual-theme="midnight-aurora"] .family-prayer-widget{
+  border-color:rgba(72,230,255,.72)!important;
+  box-shadow:
+    0 0 0 1px rgba(103,232,249,.04),
+    0 0 24px rgba(34,211,238,.22),
+    -9px 0 24px rgba(168,85,247,.12),
+    0 18px 42px rgba(0,0,0,.36),
+    inset 0 1px 0 rgba(255,255,255,.11)!important;
+}
+html[data-fb-visual-theme="midnight-aurora"] .family-prayer-widget:before{
+  height:67%!important;
+  opacity:1!important;
+  filter:drop-shadow(0 -10px 20px rgba(12,57,84,.24)) saturate(112%)!important;
+}
+html[data-fb-visual-theme="midnight-aurora"] .family-prayer-widget:after{
+  opacity:1!important;
+  filter:blur(5px) saturate(140%)!important;
+}
+html[data-fb-visual-theme="midnight-aurora"] .family-prayer-slide{
+  background:
+    linear-gradient(145deg,rgba(6,23,39,.57),rgba(5,17,34,.42))!important;
+  border-color:rgba(72,236,225,.55)!important;
+  box-shadow:
+    0 0 18px rgba(34,211,238,.10),
+    inset 0 1px 0 rgba(255,255,255,.09),
+    inset 0 0 30px rgba(20,184,166,.045)!important;
+}
+
+/* ---------- Countdown: same aurora glass family ---------- */
+html[data-fb-visual-theme="midnight-aurora"] .family-countdown-widget{
+  isolation:isolate;
+  position:relative;
+  overflow:hidden;
+  border:1px solid rgba(60,226,255,.56)!important;
+  background:
+    radial-gradient(110% 95% at 95% 6%,rgba(34,211,238,.18),transparent 44%),
+    radial-gradient(100% 110% at 7% 96%,rgba(139,92,246,.18),transparent 54%),
+    linear-gradient(150deg,rgba(8,20,45,.94),rgba(5,16,36,.92))!important;
+  box-shadow:
+    0 0 22px rgba(34,211,238,.15),
+    -6px 0 20px rgba(139,92,246,.07),
+    0 16px 36px rgba(0,0,0,.31),
+    inset 0 1px 0 rgba(255,255,255,.08)!important;
+}
+html[data-fb-visual-theme="midnight-aurora"] .family-countdown-widget:before{
+  content:"";
+  position:absolute;
+  inset:0;
+  z-index:0;
+  background:
+    linear-gradient(118deg,transparent 12%,rgba(45,212,191,.08) 31%,transparent 49%),
+    radial-gradient(60% 48% at 82% 36%,rgba(45,212,191,.12),transparent 70%);
+  pointer-events:none;
+}
+html[data-fb-visual-theme="midnight-aurora"] .family-countdown-widget>*{
+  position:relative;
+  z-index:2;
+}
+html[data-fb-visual-theme="midnight-aurora"] .family-countdown-head h3 svg{
+  color:#7cf7ff!important;
+  filter:drop-shadow(0 0 7px rgba(34,211,238,.38));
+}
+html[data-fb-visual-theme="midnight-aurora"] .family-countdown-head button{
+  color:#67f4ff!important;
+  text-shadow:0 0 12px rgba(34,211,238,.20);
+}
+html[data-fb-visual-theme="midnight-aurora"] .family-countdown-hero{
+  border:1px solid rgba(62,232,255,.42)!important;
+  background:
+    radial-gradient(100% 120% at 90% 0%,rgba(139,92,246,.20),transparent 48%),
+    linear-gradient(145deg,rgba(7,31,49,.72),rgba(15,25,64,.68))!important;
+  box-shadow:
+    0 0 17px rgba(34,211,238,.08),
+    inset 0 1px 0 rgba(255,255,255,.07),
+    inset 0 0 28px rgba(139,92,246,.045)!important;
+}
+html[data-fb-visual-theme="midnight-aurora"] .family-countdown-icon{
+  background:rgba(4,20,38,.82)!important;
+  color:#74f7ff!important;
+  border-color:rgba(72,229,255,.30)!important;
+  box-shadow:
+    0 0 16px rgba(34,211,238,.11),
+    inset 0 1px 0 rgba(255,255,255,.05)!important;
+}
+html[data-fb-visual-theme="midnight-aurora"] .family-countdown-clock{
+  background:rgba(4,17,35,.68)!important;
+  border-color:rgba(77,231,255,.28)!important;
+  box-shadow:
+    0 0 14px rgba(34,211,238,.08),
+    inset 0 1px 0 rgba(255,255,255,.05)!important;
+}
+html[data-fb-visual-theme="midnight-aurora"] .family-countdown-unit strong{
+  color:#72efff!important;
+  text-shadow:0 0 12px rgba(34,211,238,.25);
+}
+html[data-fb-visual-theme="midnight-aurora"] .family-countdown-unit small,
+html[data-fb-visual-theme="midnight-aurora"] .family-countdown-sep{
+  color:#9fb2cf!important;
+}
+html[data-fb-visual-theme="midnight-aurora"] .family-countdown-next-wrap{
+  border-color:rgba(103,232,249,.12)!important;
+}
+html[data-fb-visual-theme="midnight-aurora"] .family-countdown-next-label{
+  color:#a1b5d4!important;
+}
+html[data-fb-visual-theme="midnight-aurora"] .family-countdown-row:hover{
+  background:rgba(22,52,82,.22)!important;
+}
+html[data-fb-visual-theme="midnight-aurora"] .family-countdown-row-icon{
+  background:linear-gradient(145deg,rgba(20,111,103,.34),rgba(14,58,79,.46))!important;
+  color:#77f5d6!important;
+  box-shadow:0 0 13px rgba(45,212,191,.08);
+}
+
+/* ---------- Birthdays: purple/cyan glass identity ---------- */
+html[data-fb-visual-theme="midnight-aurora"] .desktop-widget:has(#desktopBirthdayRows){
+  isolation:isolate;
+  position:relative;
+  overflow:hidden;
+  border:1px solid rgba(84,222,255,.45)!important;
+  background:
+    radial-gradient(105% 105% at 0% 0%,rgba(139,92,246,.16),transparent 48%),
+    radial-gradient(90% 80% at 100% 100%,rgba(34,211,238,.10),transparent 54%),
+    linear-gradient(150deg,rgba(8,20,45,.94),rgba(5,15,34,.92))!important;
+  box-shadow:
+    0 0 18px rgba(34,211,238,.11),
+    -5px 0 18px rgba(168,85,247,.08),
+    0 14px 34px rgba(0,0,0,.28),
+    inset 0 1px 0 rgba(255,255,255,.07)!important;
+}
+html[data-fb-visual-theme="midnight-aurora"] .desktop-widget:has(#desktopBirthdayRows):before{
+  content:"";
+  position:absolute;
+  inset:0;
+  z-index:0;
+  background:linear-gradient(122deg,rgba(139,92,246,.035),transparent 35%,rgba(34,211,238,.025) 76%,transparent);
+  pointer-events:none;
+}
+html[data-fb-visual-theme="midnight-aurora"] .desktop-widget:has(#desktopBirthdayRows)>*{
+  position:relative;
+  z-index:2;
+}
+html[data-fb-visual-theme="midnight-aurora"] .desktop-widget:has(#desktopBirthdayRows) .desktop-widget-head h3{
+  display:flex;
+  align-items:center;
+  gap:8px;
+}
+html[data-fb-visual-theme="midnight-aurora"] .desktop-widget:has(#desktopBirthdayRows) .desktop-widget-head h3:before{
+  content:"🎁";
+  display:inline-grid;
+  place-items:center;
+  width:28px;
+  height:28px;
+  font-size:1rem;
+  border-radius:9px;
+  background:linear-gradient(145deg,rgba(139,92,246,.24),rgba(217,70,239,.16));
+  border:1px solid rgba(196,181,253,.16);
+  box-shadow:
+    0 0 16px rgba(168,85,247,.22),
+    inset 0 1px 0 rgba(255,255,255,.07);
+  filter:drop-shadow(0 0 5px rgba(217,70,239,.36));
+}
+html[data-fb-visual-theme="midnight-aurora"] .desktop-widget:has(#desktopBirthdayRows) .desktop-widget-head button{
+  color:#6ef2ff!important;
+  text-shadow:0 0 12px rgba(34,211,238,.18);
+}
+html[data-fb-visual-theme="midnight-aurora"] #desktopBirthdayRows .desktop-widget-list{
+  gap:5px!important;
+}
+html[data-fb-visual-theme="midnight-aurora"] #desktopBirthdayRows .desktop-widget-row{
+  padding:7px 7px;
+  border:1px solid rgba(103,232,249,.10)!important;
+  border-radius:11px;
+  background:linear-gradient(145deg,rgba(12,31,59,.52),rgba(7,20,42,.42));
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.025);
+}
+html[data-fb-visual-theme="midnight-aurora"] #desktopBirthdayRows .desktop-widget-row:hover{
+  border-color:rgba(103,232,249,.20)!important;
+  background:linear-gradient(145deg,rgba(17,41,72,.62),rgba(10,25,51,.52))!important;
+}
+html[data-fb-visual-theme="midnight-aurora"] #desktopBirthdayRows .desktop-widget-icon{
+  background:linear-gradient(145deg,rgba(34,211,238,.17),rgba(139,92,246,.24))!important;
+  color:#7cf4ff!important;
+  border-color:rgba(103,232,249,.20)!important;
+  box-shadow:
+    0 0 14px rgba(34,211,238,.09),
+    inset 0 1px 0 rgba(255,255,255,.05)!important;
+}
+html[data-fb-visual-theme="midnight-aurora"] #desktopBirthdayRows .desktop-widget-row strong{
+  color:#f3f8ff!important;
+}
+html[data-fb-visual-theme="midnight-aurora"] #desktopBirthdayRows .desktop-widget-row small{
+  color:#9eb0cc!important;
+}
+
+/* Right rail spacing: allow each scenic card to breathe like the reference. */
+html[data-fb-visual-theme="midnight-aurora"] .desktop-right-rail>.desktop-widget{
+  margin-bottom:13px;
+}
+
+/* Keep the scenic effects cheap on narrower/mobile layouts. */
+@media(max-width:1179px){
+  html[data-fb-visual-theme="midnight-aurora"] .desktop-date-time-card,
+  html[data-fb-visual-theme="midnight-aurora"] .family-countdown-widget,
+  html[data-fb-visual-theme="midnight-aurora"] .desktop-widget:has(#desktopBirthdayRows){
+    box-shadow:
+      0 0 14px rgba(34,211,238,.09),
+      0 10px 26px rgba(0,0,0,.26),
+      inset 0 1px 0 rgba(255,255,255,.06)!important;
+  }
+}
