@@ -29,7 +29,7 @@ try{
   console.log("VISUAL_THEME",visualTheme);
   if(visualTheme!=="midnight-aurora")throw new Error(`Expected midnight-aurora, got ${visualTheme}`);
 
-  await page.locator('[data-desktop-route="tree"]').click();
+  await page.locator('.desktop-top-nav [data-desktop-route="tree"]').click();
   await page.waitForSelector(".coordinate-tree-page");
   await responsive("tree-loaded");
 
