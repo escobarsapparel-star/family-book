@@ -58,7 +58,7 @@
                 <category android:name="android.intent.category.BROWSABLE" />
 
                 <data
-                    android:scheme="com.familybook.app"
+                    android:scheme="${authScheme}"
                     android:host="login-callback" />
             </intent-filter>
 
