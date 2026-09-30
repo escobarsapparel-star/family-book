@@ -5018,8 +5018,10 @@ html[data-theme="dark"] .apk-download-cta{
 }
 
 
-/* Family Book — desktop login uses the same original logo treatment as mobile */
+
+/* Family Book — definitive desktop authentication logo treatment */
 @media(min-width:901px){
+  /* Cover the older baked-in hero logo with the current green/gold FamilyBook mark. */
   .login-photo .original-login-logo{
     display:block!important;
     position:absolute!important;
@@ -5027,31 +5029,19 @@ html[data-theme="dark"] .apk-download-cta{
     top:3.2%!important;
     left:4.2%!important;
     transform:none!important;
-    width:min(450px,86%)!important;
+    width:min(470px,86%)!important;
     max-width:86%!important;
     height:auto!important;
     margin:0!important;
-    padding:12px 18px!important;
+    padding:14px 20px!important;
     object-fit:contain!important;
     object-position:center!important;
     border-radius:20px!important;
-    background:rgba(255,250,242,.94)!important;
+    background:rgba(255,250,242,.97)!important;
     box-shadow:0 10px 30px rgba(37,27,18,.10)!important;
   }
-  .auth-card .mobile-logo.original-login-logo{
-    display:none!important;
-  }
-}
 
-
-/* Family Book — corrected desktop login logo source/placement */
-@media(min-width:901px){
-  /* Keep the left photo untouched; it already contains its own artwork. */
-  .login-photo .original-login-logo{
-    display:none!important;
-  }
-
-  /* Match the live logo used by the mobile FamilyBook interface. */
+  /* Use the exact same live green/gold logo above the desktop sign-in form. */
   .auth-card .mobile-logo.original-login-logo{
     display:block!important;
     width:min(78%,330px)!important;
@@ -5063,5 +5053,6 @@ html[data-theme="dark"] .apk-download-cta{
     background:transparent!important;
     box-shadow:none!important;
     object-fit:contain!important;
+    object-position:center!important;
   }
 }
