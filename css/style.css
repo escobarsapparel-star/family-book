@@ -5016,3 +5016,29 @@ html[data-theme="dark"] .apk-download-cta{
   .auth-demo-entry strong{font-size:.82rem!important;color:inherit}
   .auth-demo-entry small{font-size:.58rem!important;color:rgba(255,255,255,.76)!important}
 }
+
+
+/* Family Book — desktop login uses the same original logo treatment as mobile */
+@media(min-width:901px){
+  .login-photo .original-login-logo{
+    display:block!important;
+    position:absolute!important;
+    z-index:4!important;
+    top:3.2%!important;
+    left:4.2%!important;
+    transform:none!important;
+    width:min(450px,86%)!important;
+    max-width:86%!important;
+    height:auto!important;
+    margin:0!important;
+    padding:12px 18px!important;
+    object-fit:contain!important;
+    object-position:center!important;
+    border-radius:20px!important;
+    background:rgba(255,250,242,.94)!important;
+    box-shadow:0 10px 30px rgba(37,27,18,.10)!important;
+  }
+  .auth-card .mobile-logo.original-login-logo{
+    display:none!important;
+  }
+}
