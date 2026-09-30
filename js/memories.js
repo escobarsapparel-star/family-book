@@ -65,7 +65,13 @@
         type:row.mime_type||"",
         width:row.width==null?null:Number(row.width),
         height:row.height==null?null:Number(row.height),
-        duration:row.duration_seconds==null?null:Number(row.duration_seconds)
+        duration:row.duration_seconds==null?null:Number(row.duration_seconds),
+        detectedDate:row.captured_date||"",
+        detectedTime:row.captured_time?String(row.captured_time).slice(0,5):"",
+        detectedSource:row.metadata_source||"",
+        gpsLat:row.gps_latitude==null?null:Number(row.gps_latitude),
+        gpsLng:row.gps_longitude==null?null:Number(row.gps_longitude),
+        gpsAltitude:row.gps_altitude_m==null?null:Number(row.gps_altitude_m)
       };
       (mediaByMemory[mid]??=[]).push({
         id:String(row.id),
@@ -157,7 +163,13 @@
         width:meta.width==null?null:Number(meta.width),
         height:meta.height==null?null:Number(meta.height),
         duration_seconds:meta.duration==null?null:Number(meta.duration),
-        sort_order:index
+        sort_order:index,
+        captured_date:meta.detectedDate||null,
+        captured_time:meta.detectedTime||null,
+        metadata_source:meta.detectedSource||null,
+        gps_latitude:Number.isFinite(Number(meta.gpsLat))?Number(meta.gpsLat):null,
+        gps_longitude:Number.isFinite(Number(meta.gpsLng))?Number(meta.gpsLng):null,
+        gps_altitude_m:Number.isFinite(Number(meta.gpsAltitude))?Number(meta.gpsAltitude):null
       };
     }
 
@@ -191,6 +203,12 @@
       height:meta.height==null?null:Number(meta.height),
       duration_seconds:meta.duration==null?null:Number(meta.duration),
       sort_order:index,
+      captured_date:meta.detectedDate||null,
+      captured_time:meta.detectedTime||null,
+      metadata_source:meta.detectedSource||null,
+      gps_latitude:Number.isFinite(Number(meta.gpsLat))?Number(meta.gpsLat):null,
+      gps_longitude:Number.isFinite(Number(meta.gpsLng))?Number(meta.gpsLng):null,
+      gps_altitude_m:Number.isFinite(Number(meta.gpsAltitude))?Number(meta.gpsAltitude):null,
       _new_paths:uploaded
     };
   }
@@ -402,6 +420,7 @@
       <form id="memoryForm" novalidate>
         <div class="memory-photo-section">
           <div id="memoryPhotoPreview" class="memory-photo-preview"></div>
+          <div id="memoryDetectedMeta" class="memory-detected-details hidden" aria-live="polite"></div>
           <div class="memory-photo-actions memory-media-actions"><button type="button" class="secondary" id="memoryGalleryBtn"><i data-lucide="images"></i>Add photos / videos</button><button type="button" class="secondary" id="memoryCameraBtn"><i data-lucide="camera"></i>Take photo</button><button type="button" class="secondary" id="memoryVideoBtn"><i data-lucide="video"></i>Record video</button><button type="button" class="memory-remove-all hidden" id="memoryRemoveAllBtn"><i data-lucide="trash-2"></i>Remove all</button></div>
           <input id="memoryGalleryInput" type="file" accept="image/*,video/*" multiple hidden><input id="memoryCameraInput" type="file" accept="image/*" capture="environment" hidden><input id="memoryVideoInput" type="file" accept="video/*" capture="environment" hidden>
           ${eventCapture?`<label class="fb-event-frame-option"><input id="eventFrameToggle" type="checkbox" checked><span><strong>Event photo frame</strong><small>Add a Family Book ${eventCapture.frameTheme==="travel"?"travel":"event"} frame to photos added here. Videos stay unchanged.</small></span></label>`:""}
@@ -418,7 +437,7 @@
 
     let photos=memoryPhotos(existing).map(p=>({id:p.id||photoId(),kind:p.kind||"image",image:p.image,thumb:p.thumb||p.image,meta:p.meta||{}}));
     let dateSource=existing?.dateSource||"manual",dateAuto=!(existing?.date||eventCapture?.date);
-    const preview=mount.querySelector("#memoryPhotoPreview"),status=mount.querySelector("#memoryProcessStatus"),statusText=status.querySelector("span:last-child"),metaNote=mount.querySelector("#memoryMetaNote"),dateInput=mount.querySelector("#memoryDate"),timeInput=mount.querySelector("#memoryTime"),removeAllBtn=mount.querySelector("#memoryRemoveAllBtn"),frameToggle=mount.querySelector("#eventFrameToggle");
+    const preview=mount.querySelector("#memoryPhotoPreview"),detectedMeta=mount.querySelector("#memoryDetectedMeta"),status=mount.querySelector("#memoryProcessStatus"),statusText=status.querySelector("span:last-child"),metaNote=mount.querySelector("#memoryMetaNote"),dateInput=mount.querySelector("#memoryDate"),timeInput=mount.querySelector("#memoryTime"),removeAllBtn=mount.querySelector("#memoryRemoveAllBtn"),frameToggle=mount.querySelector("#eventFrameToggle");
 
     function setMetaNote(kind,message){
       const detected=kind==="exif"||kind==="file";metaNote.classList.toggle("detected",detected);
@@ -426,16 +445,49 @@
       const title=kind==="exif"?"Date detected from photo":kind==="camera"?"Date set from camera":kind==="file"?"Date detected from file":"Memory date & time";
       metaNote.innerHTML=`<i data-lucide="${icon}"></i><div><strong>${title}</strong><span>${e(message)}</span></div>`;window.icons?.();
     }
+    function hasGps(meta){
+      return Number.isFinite(Number(meta?.gpsLat))&&Number.isFinite(Number(meta?.gpsLng));
+    }
+    function gpsLabel(meta){
+      if(!hasGps(meta))return "";
+      const lat=Number(meta.gpsLat),lng=Number(meta.gpsLng);
+      const coord=`${Math.abs(lat).toFixed(5)}° ${lat<0?"S":"N"}, ${Math.abs(lng).toFixed(5)}° ${lng<0?"W":"E"}`;
+      const altitude=Number.isFinite(Number(meta.gpsAltitude))?` · ${Math.round(Number(meta.gpsAltitude))} m`:"";
+      return coord+altitude;
+    }
+    function gpsMapUrl(meta){
+      return hasGps(meta)?`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(`${Number(meta.gpsLat)},${Number(meta.gpsLng)}`)}`:"";
+    }
+    function detectedMediaSummary(photo,index){
+      const meta=photo?.meta||{};
+      const hasDate=!!meta.detectedDate,hasLocation=hasGps(meta);
+      if(!hasDate&&!hasLocation)return "";
+      return `<div class="memory-detected-row">
+        <span class="memory-detected-index">${photo.kind==="video"?"Video":"Photo"} ${index+1}</span>
+        <div>
+          ${hasDate?`<span><i data-lucide="clock-3"></i><strong>Taken</strong> ${e(formatDateTime(meta.detectedDate,meta.detectedTime||""))}</span>`:""}
+          ${hasLocation?`<span><i data-lucide="map-pin"></i><strong>Location</strong> ${e(gpsLabel(meta))} <a href="${gpsMapUrl(meta)}" target="_blank" rel="noopener">Open map</a></span>`:""}
+        </div>
+      </div>`;
+    }
+    function renderDetectedMeta(){
+      if(!detectedMeta)return;
+      const rows=photos.map(detectedMediaSummary).filter(Boolean);
+      detectedMeta.classList.toggle("hidden",!rows.length);
+      detectedMeta.innerHTML=rows.length?`<div class="memory-detected-head"><i data-lucide="scan-line"></i><div><strong>Photo details detected</strong><span>Saved with this Memory when available.</span></div></div>${rows.join("")}`:"";
+    }
+
     function renderPhotos(){
       cleanupUrls();
       if(!photos.length){
         preview.className="memory-photo-preview";
         preview.innerHTML=`<div class="memory-photo-empty"><i data-lucide="image-plus"></i><strong>Choose family photos or videos</strong><span>Select one or multiple photos / video clips from your gallery</span></div>`;
-        removeAllBtn.classList.add("hidden");window.icons?.();return;
+        removeAllBtn.classList.add("hidden");renderDetectedMeta();window.icons?.();return;
       }
       preview.className="memory-photo-preview has-photo multi-photo";
       preview.innerHTML=`<div class="memory-selected-head"><div><strong>${photos.length} ${photos.length===1?"item":"items"} selected</strong><span>${photos.length>1?"The first item is used as the Memory cover.":"You can add more photos or videos to this Memory."}</span></div></div><div class="memory-selected-grid">${photos.map((p,i)=>`<div class="memory-selected-photo ${p.kind==="video"?"is-video":""}"><img src="${blobUrl(p.thumb||p.image)}" alt="Selected memory item ${i+1}">${p.kind==="video"?`<span class="memory-video-overlay"><i data-lucide="play"></i></span><span class="memory-media-type"><i data-lucide="video"></i>Video</span>`:""}${i===0?`<span class="memory-cover-badge">Cover</span>`:""}<button type="button" class="memory-photo-remove" data-photo-remove="${e(p.id)}" aria-label="Remove item ${i+1}"><i data-lucide="x"></i></button></div>`).join("")}</div>`;
       removeAllBtn.classList.remove("hidden");
+      renderDetectedMeta();
       preview.querySelectorAll("[data-photo-remove]").forEach(btn=>btn.onclick=()=>{
         photos=photos.filter(p=>p.id!==btn.dataset.photoRemove);
         renderPhotos();
@@ -484,7 +536,7 @@
             if(framed)prepared=await applyEventFrame(prepared,eventCapture);
             added.push({
               id:photoId(),kind:"image",image:prepared.image,thumb:prepared.thumb,
-              meta:{name:file.name,type:file.type,size:file.size,width:prepared.width,height:prepared.height,exifDateTime:meta?.raw||"",detectedDate:meta?.date||"",detectedTime:meta?.time||"",detectedSource:meta?"exif":"",eventFramed:framed}
+              meta:{name:file.name,type:file.type,size:file.size,width:prepared.width,height:prepared.height,exifDateTime:meta?.raw||"",detectedDate:meta?.date||"",detectedTime:meta?.time||"",detectedSource:meta?.date?"exif":"",gpsLat:meta?.lat??null,gpsLng:meta?.lng??null,gpsAltitude:meta?.altitude??null,eventFramed:framed}
             });
           }
         }
@@ -556,9 +608,20 @@
           : `<img id="memoryDetailMainPhoto" src="${src}" alt="${label}">`;
       };
       mount.className="memory-detail-card";
-      mount.innerHTML=`<div class="memory-detail-gallery"><div class="memory-detail-photo" id="memoryDetailStage">${mediaStage(0)}${photos.length>1?`<span class="memory-detail-counter">1 / ${photos.length}</span>`:""}</div>${photos.length>1?`<div class="memory-detail-thumbs">${photos.map((p,i)=>`<button type="button" class="${i===0?"active":""}" data-photo-index="${i}" aria-label="View media ${i+1}"><img src="${thumbUrls[i]}" alt="Media ${i+1}">${p.kind==="video"?`<span class="memory-thumb-play"><i data-lucide="play"></i></span>`:""}</button>`).join("")}</div>`:""}</div><div class="memory-detail-copy"><div class="memory-detail-head"><div><p class="eyebrow">FAMILY MEMORY</p><h1>${e(m.caption||"A family moment")}</h1><p class="memory-detail-date"><i data-lucide="calendar-days"></i>${e(formatDateTime(m.date,m.time))}</p></div><button class="secondary icon-button" data-r="edit-memory:${e(m.id)}" aria-label="Edit memory"><i data-lucide="pencil"></i></button></div>${tags.length?`<div class="memory-detail-tags"><span>In this memory</span><div>${tags.map(x=>`<button class="${x.profileType==="history"?"memory-history-person":""}" data-r="view-member:${e(x.id)}">${x.photo?`<img src="${x.photo}" alt="">`:`<b>${initials(x.name)}</b>`}<strong>${e(x.name)}</strong>${x.profileType==="history"?`<small><i data-lucide="leaf"></i>Family history</small>`:""}</button>`).join("")}</div></div>`:""}<div class="memory-detail-meta"><div><i data-lucide="files"></i><span>Media</span><strong>${photos.length}</strong></div><div><i data-lucide="clock-3"></i><span>Date & time</span><strong>${e(formatDateTime(m.date,m.time))}</strong></div><div><i data-lucide="scan-line"></i><span>Date source</span><strong>${e(sourceLabel(m.dateSource))}</strong></div></div>${window.FB_REACTIONS?.controlsHtml?.(`memory:${m.id}`)||""}${window.FB_COMMENTS?.threadHtml?.(`memory:${m.id}`,{open:true})||""}<div class="memory-detail-actions"><button class="secondary" data-r="edit-memory:${e(m.id)}"><i data-lucide="pencil"></i>Edit memory</button><button class="memory-delete" id="deleteMemory"><i data-lucide="trash-2"></i>Delete</button></div></div>`;
+      mount.innerHTML=`<div class="memory-detail-gallery"><div class="memory-detail-photo" id="memoryDetailStage">${mediaStage(0)}${photos.length>1?`<span class="memory-detail-counter">1 / ${photos.length}</span>`:""}</div>${photos.length>1?`<div class="memory-detail-thumbs">${photos.map((p,i)=>`<button type="button" class="${i===0?"active":""}" data-photo-index="${i}" aria-label="View media ${i+1}"><img src="${thumbUrls[i]}" alt="Media ${i+1}">${p.kind==="video"?`<span class="memory-thumb-play"><i data-lucide="play"></i></span>`:""}</button>`).join("")}</div>`:""}</div><div class="memory-detail-copy"><div class="memory-detail-head"><div><p class="eyebrow">FAMILY MEMORY</p><h1>${e(m.caption||"A family moment")}</h1><p class="memory-detail-date"><i data-lucide="calendar-days"></i>${e(formatDateTime(m.date,m.time))}</p></div><button class="secondary icon-button" data-r="edit-memory:${e(m.id)}" aria-label="Edit memory"><i data-lucide="pencil"></i></button></div>${tags.length?`<div class="memory-detail-tags"><span>In this memory</span><div>${tags.map(x=>`<button class="${x.profileType==="history"?"memory-history-person":""}" data-r="view-member:${e(x.id)}">${x.photo?`<img src="${x.photo}" alt="">`:`<b>${initials(x.name)}</b>`}<strong>${e(x.name)}</strong>${x.profileType==="history"?`<small><i data-lucide="leaf"></i>Family history</small>`:""}</button>`).join("")}</div></div>`:""}<div class="memory-detail-meta"><div><i data-lucide="files"></i><span>Media</span><strong>${photos.length}</strong></div><div><i data-lucide="clock-3"></i><span>Date & time</span><strong>${e(formatDateTime(m.date,m.time))}</strong></div><div><i data-lucide="scan-line"></i><span>Date source</span><strong>${e(sourceLabel(m.dateSource))}</strong></div></div><div id="memoryExifDetails" class="memory-exif-details"></div>${window.FB_REACTIONS?.controlsHtml?.(`memory:${m.id}`)||""}${window.FB_COMMENTS?.threadHtml?.(`memory:${m.id}`,{open:true})||""}<div class="memory-detail-actions"><button class="secondary" data-r="edit-memory:${e(m.id)}"><i data-lucide="pencil"></i>Edit memory</button><button class="memory-delete" id="deleteMemory"><i data-lucide="trash-2"></i>Delete</button></div></div>`;
       rebindRoutes();window.FB_REACTIONS?.bind?.(mount);window.FB_COMMENTS?.bind?.(mount);window.icons?.();
-      const stage=mount.querySelector("#memoryDetailStage"),counter=mount.querySelector(".memory-detail-counter");
+      const stage=mount.querySelector("#memoryDetailStage"),counter=mount.querySelector(".memory-detail-counter"),exifDetails=mount.querySelector("#memoryExifDetails");
+      const renderSavedMediaDetails=index=>{
+        const p=photos[index]||photos[0],meta=p?.meta||{};
+        const rows=[];
+        if(meta.detectedDate)rows.push(`<div><i data-lucide="clock-3"></i><span><small>Date taken</small><strong>${e(formatDateTime(meta.detectedDate,meta.detectedTime||""))}</strong></span></div>`);
+        if(hasGps(meta))rows.push(`<div><i data-lucide="map-pin"></i><span><small>Photo location</small><strong>${e(gpsLabel(meta))}</strong><a href="${gpsMapUrl(meta)}" target="_blank" rel="noopener">Open in Google Maps</a></span></div>`);
+        if(meta.name)rows.push(`<div><i data-lucide="file-image"></i><span><small>Original file</small><strong>${e(meta.name)}</strong></span></div>`);
+        exifDetails.innerHTML=rows.length?`<div class="memory-exif-title"><i data-lucide="scan-line"></i><strong>${photos.length>1?`Media ${index+1} details`:"Photo details"}</strong></div><div class="memory-exif-grid">${rows.join("")}</div>`:"";
+        exifDetails.classList.toggle("hidden",!rows.length);
+        window.icons?.();
+      };
+      renderSavedMediaDetails(0);
       mount.querySelectorAll("[data-photo-index]").forEach(btn=>btn.onclick=()=>{
         const index=Number(btn.dataset.photoIndex)||0;
         stage.querySelector("video")?.pause();
@@ -566,6 +629,7 @@
         stage.insertAdjacentHTML("afterbegin",mediaStage(index));
         mount.querySelectorAll("[data-photo-index]").forEach(x=>x.classList.toggle("active",x===btn));
         if(counter)counter.textContent=`${index+1} / ${photos.length}`;
+        renderSavedMediaDetails(index);
         window.icons?.();
       });
       mount.querySelector("#deleteMemory").onclick=async()=>{if(!confirm("Delete this memory from Family Book?"))return;await remove(m.id);window.go?.("memories")};
@@ -765,17 +829,92 @@
     let off=2;
     while(off+4<v.byteLength){
       if(v.getUint8(off)!==0xFF){off++;continue}
-      const marker=v.getUint8(off+1);off+=2;if(marker===0xDA||marker===0xD9)break;if(off+2>v.byteLength)break;
-      const len=v.getUint16(off,false);if(len<2||off+len>v.byteLength)break;
+      const marker=v.getUint8(off+1);off+=2;
+      if(marker===0xDA||marker===0xD9)break;
+      if(off+2>v.byteLength)break;
+      const len=v.getUint16(off,false);
+      if(len<2||off+len>v.byteLength)break;
       if(marker===0xE1&&len>=8&&ascii(v,off+2,6)==="Exif\0\0"){
-        const tiff=off+8;if(tiff+8>v.byteLength)return null;const endian=v.getUint16(tiff,false),little=endian===0x4949;if(!little&&endian!==0x4D4D)return null;
+        const tiff=off+8;if(tiff+8>v.byteLength)return null;
+        const endian=v.getUint16(tiff,false),little=endian===0x4949;
+        if(!little&&endian!==0x4D4D)return null;
         const u16=p=>v.getUint16(p,little),u32=p=>v.getUint32(p,little);
-        if(u16(tiff+2)!==42)return null;const ifd0=tiff+u32(tiff+4);if(ifd0+2>v.byteLength)return null;
-        let exifPtr=0,fallback="";
-        const scanIfd=base=>{if(base+2>v.byteLength)return {};const n=u16(base),out={};for(let i=0;i<n;i++){const p=base+2+i*12;if(p+12>v.byteLength)break;const tag=u16(p),type=u16(p+2),count=u32(p+4),size=type===2?count:0;let value="";if(type===2&&size>0){const at=size<=4?p+8:tiff+u32(p+8);if(at>=0&&at+size<=v.byteLength)value=ascii(v,at,size).replace(/\0+$/g,"").trim()}if(tag===0x8769)out.exif=tiff+u32(p+8);if(tag===0x0132)out.fallback=value;if(tag===0x9003)out.original=value;if(tag===0x9004)out.digitized=value}return out};
-        const first=scanIfd(ifd0);exifPtr=first.exif||0;fallback=first.fallback||"";let exif={};if(exifPtr)exif=scanIfd(exifPtr);
-        const raw=exif.original||exif.digitized||first.original||first.digitized||fallback;if(!raw)return null;const m=raw.match(/^(\d{4}):(\d{2}):(\d{2})[ T](\d{2}):(\d{2})(?::(\d{2}))?/);if(!m)return null;
-        return {date:`${m[1]}-${m[2]}-${m[3]}`,time:`${m[4]}:${m[5]}`,raw};
+        if(u16(tiff+2)!==42)return null;
+        const ifd0=tiff+u32(tiff+4);if(ifd0+2>v.byteLength)return null;
+
+        const typeSize={1:1,2:1,3:2,4:4,5:8,7:1,9:4,10:8};
+        const scanIfd=base=>{
+          const out=new Map();if(!base||base+2>v.byteLength)return out;
+          const n=u16(base);
+          for(let i=0;i<n;i++){
+            const p=base+2+i*12;if(p+12>v.byteLength)break;
+            out.set(u16(p),{p,type:u16(p+2),count:u32(p+4)});
+          }
+          return out;
+        };
+        const dataOffset=entry=>{
+          if(!entry)return null;
+          const bytes=(typeSize[entry.type]||0)*entry.count;
+          const at=bytes<=4?entry.p+8:tiff+u32(entry.p+8);
+          return at>=0&&at+bytes<=v.byteLength?at:null;
+        };
+        const readAscii=entry=>{
+          if(!entry||entry.type!==2||!entry.count)return "";
+          const at=dataOffset(entry);if(at==null)return "";
+          return ascii(v,at,entry.count).replace(/\0+$/g,"").trim();
+        };
+        const readLong=entry=>{
+          if(!entry||entry.type!==4||entry.count<1)return 0;
+          const at=dataOffset(entry);return at==null?0:u32(at);
+        };
+        const readByte=entry=>{
+          if(!entry||entry.count<1)return null;
+          const at=dataOffset(entry);return at==null?null:v.getUint8(at);
+        };
+        const readRationals=entry=>{
+          if(!entry||!(entry.type===5||entry.type===10)||!entry.count)return [];
+          const at=dataOffset(entry);if(at==null)return [];
+          const signed=entry.type===10;
+          const read32=p=>signed?v.getInt32(p,little):v.getUint32(p,little);
+          const out=[];
+          for(let i=0;i<entry.count;i++){
+            const p=at+i*8;if(p+8>v.byteLength)break;
+            const num=read32(p),den=read32(p+4);
+            out.push(den?num/den:null);
+          }
+          return out;
+        };
+
+        const first=scanIfd(ifd0);
+        const exif=scanIfd(tiff+readLong(first.get(0x8769)));
+        const raw=readAscii(exif.get(0x9003))||readAscii(exif.get(0x9004))||readAscii(first.get(0x0132));
+        let date="",time="";
+        const dm=raw&&raw.match(/^(\d{4}):(\d{2}):(\d{2})[ T](\d{2}):(\d{2})(?::(\d{2}))?/);
+        if(dm){date=`${dm[1]}-${dm[2]}-${dm[3]}`;time=`${dm[4]}:${dm[5]}`}
+
+        let lat=null,lng=null,altitude=null;
+        const gpsPtr=readLong(first.get(0x8825));
+        if(gpsPtr){
+          const gps=scanIfd(tiff+gpsPtr);
+          const latRef=readAscii(gps.get(0x0001)).toUpperCase();
+          const lngRef=readAscii(gps.get(0x0003)).toUpperCase();
+          const latParts=readRationals(gps.get(0x0002));
+          const lngParts=readRationals(gps.get(0x0004));
+          const toDegrees=parts=>{
+            if(parts.length<3||parts.slice(0,3).some(x=>!Number.isFinite(x)))return null;
+            return Number(parts[0])+Number(parts[1])/60+Number(parts[2])/3600;
+          };
+          lat=toDegrees(latParts);lng=toDegrees(lngParts);
+          if(lat!=null&&latRef==="S")lat=-lat;
+          if(lng!=null&&lngRef==="W")lng=-lng;
+          const altParts=readRationals(gps.get(0x0006));
+          if(altParts.length&&Number.isFinite(altParts[0])){
+            altitude=Number(altParts[0]);
+            if(readByte(gps.get(0x0005))===1)altitude=-altitude;
+          }
+        }
+        if(!raw&&lat==null&&lng==null)return null;
+        return {date,time,raw:raw||"",lat,lng,altitude};
       }
       off+=len;
     }
