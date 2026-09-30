@@ -184,6 +184,10 @@
         <i data-lucide="circle-check"></i><span>Ready to check for updates.</span>
       </div>
       <button type="button" class="secondary fb-native-update-button" id="checkFamilyBookUpdate"><i data-lucide="refresh-cw"></i><span>Check for updates</span></button>
+      <a class="secondary fb-native-update-button" id="installFamilyBook143" href="/downloads/FamilyBook-v1.4.3-cache-test.apk" download>
+        <i data-lucide="smartphone-download"></i><span>Install Android 1.4.3 test</span>
+      </a>
+      <p class="settings-note"><i data-lucide="info"></i>This 1.4.3 test installer contains the fullscreen fix and installs as a separate test app. A production in-place APK requires the existing Family Book signing key.</p>
     </section>`;
   }
 
