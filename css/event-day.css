@@ -78,9 +78,43 @@
 .fb-balloon.b2{right:12%;top:74%;background:#e47a91;animation-delay:-3.2s;transform:scale(.86)}
 .fb-balloon.b3{left:72%;top:82%;background:#8bc59b;animation-delay:-5s;transform:scale(.72)}
 .fb-confetti{position:absolute;top:-30px;width:9px;height:19px;border-radius:3px;animation:fbConfettiFall 5.2s linear infinite}
-.fb-confetti.k1{left:18%;background:#f0b85b;animation-delay:-.4s}.fb-confetti.k2{left:33%;background:#8bc59b;animation-delay:-2.1s}.fb-confetti.k3{left:48%;background:#e47a91;animation-delay:-3.7s}.fb-confetti.k4{left:62%;background:#f3d27d;animation-delay:-1.2s}.fb-confetti.k5{left:77%;background:#93bed8;animation-delay:-4.3s}.fb-confetti.k6{left:89%;background:#d69bc9;animation-delay:-2.8s}
+.fb-confetti.k1{left:6%;background:#f0b85b;animation-delay:-.4s}.fb-confetti.k2{left:14%;background:#8bc59b;animation-delay:-2.1s}.fb-confetti.k3{left:23%;background:#e47a91;animation-delay:-3.7s}.fb-confetti.k4{left:32%;background:#f3d27d;animation-delay:-1.2s}.fb-confetti.k5{left:41%;background:#93bed8;animation-delay:-4.3s}.fb-confetti.k6{left:50%;background:#d69bc9;animation-delay:-2.8s}.fb-confetti.k7{left:59%;background:#f0b85b;animation-delay:-4.8s}.fb-confetti.k8{left:68%;background:#77b78b;animation-delay:-1.8s}.fb-confetti.k9{left:76%;background:#e47a91;animation-delay:-3.1s}.fb-confetti.k10{left:84%;background:#f3d27d;animation-delay:-.9s}.fb-confetti.k11{left:91%;background:#93bed8;animation-delay:-2.5s}.fb-confetti.k12{left:96%;background:#d69bc9;animation-delay:-4s}
 @keyframes fbBalloonFloat{0%{translate:0 15vh;rotate:-4deg}45%{translate:12px -42vh;rotate:5deg}100%{translate:-8px -92vh;rotate:-3deg}}
 @keyframes fbConfettiFall{0%{transform:translateY(-10vh) rotate(0deg);opacity:0}10%{opacity:1}100%{transform:translateY(112vh) rotate(680deg);opacity:.15}}
+/* Romantic wedding anniversary celebration */
+.fb-event-day-card.is-anniversary{background:linear-gradient(160deg,#321820,#1c1117 58%,#321b23);border-color:rgba(239,190,173,.34)}
+.fb-event-day-card.is-anniversary .fb-event-kicker{color:#f0bdad}
+.fb-event-day-card.is-anniversary .fb-event-day-copy h2{color:#f3d19a}
+.fb-event-day-card.is-anniversary .fb-event-meta{color:#e8bbb4}
+.fb-event-day-card.is-anniversary .fb-event-bonvoyage{background:linear-gradient(135deg,#f3d596,#e9b9a6);color:#4a2529}
+.fb-event-day-card.is-anniversary .fb-event-view{background:linear-gradient(135deg,#dca58f,#e9c878);color:#3e2423;border-color:rgba(255,229,194,.38)}
+.fb-event-day-card.is-anniversary .fb-event-capture{background:rgba(87,42,50,.82);color:#ffe7df;border-color:rgba(244,193,181,.30)}
+.fb-anniversary-art{display:grid;place-items:center;background:
+ radial-gradient(circle at 50% 42%,rgba(255,224,203,.24),transparent 31%),
+ radial-gradient(circle at 24% 18%,rgba(235,182,181,.18),transparent 22%),
+ linear-gradient(145deg,#6b2f3b 0%,#3e202b 46%,#1d1720 100%)}
+.fb-anniversary-glow{position:absolute;inset:0;background:radial-gradient(circle at 50% 50%,rgba(255,234,203,.16),transparent 42%)}
+.fb-anniversary-rings{position:absolute;left:50%;top:46%;transform:translate(-50%,-50%);width:150px;height:92px;z-index:2}
+.fb-anniversary-rings span{position:absolute;top:7px;width:78px;height:78px;border:9px solid #edca78;border-radius:50%;box-shadow:0 0 0 2px rgba(255,246,207,.45),0 12px 26px rgba(0,0,0,.28),inset 0 0 12px rgba(255,255,255,.28)}
+.fb-anniversary-rings span:first-child{left:10px;transform:rotate(-12deg)}.fb-anniversary-rings span:last-child{right:10px;transform:rotate(12deg)}
+.fb-anniversary-couple{position:absolute;left:50%;top:47%;transform:translate(-50%,-50%);display:flex;align-items:center;justify-content:center;z-index:4}
+.fb-anniversary-person{width:104px;height:104px;border-radius:50%;padding:4px;background:linear-gradient(145deg,#f6d699,#d8928a);box-shadow:0 14px 36px rgba(0,0,0,.30)}
+.fb-anniversary-person img{width:100%;height:100%;display:block;border-radius:50%;object-fit:cover}
+.fb-anniversary-person.p1{transform:translateX(12px)}.fb-anniversary-person.p2{transform:translateX(-12px)}
+.fb-anniversary-mini-heart{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);width:34px;height:34px;border-radius:50%;display:grid;place-items:center;background:#fff0df;color:#b95463;font-size:18px;box-shadow:0 5px 14px rgba(0,0,0,.24);z-index:6}
+.fb-anniversary-script{position:absolute;left:50%;bottom:20px;transform:translateX(-50%);z-index:5;color:#f4d8bd;font:italic 700 1rem Georgia,serif;white-space:nowrap;text-shadow:0 3px 12px rgba(0,0,0,.34)}
+.fb-anniversary-petal{position:absolute;color:#efb8ad;font-size:22px;opacity:.7;animation:fbHeartDrift 4.8s ease-in-out infinite}.fb-anniversary-petal.p1{left:15%;top:18%}.fb-anniversary-petal.p2{right:17%;top:26%;animation-delay:-1.7s}.fb-anniversary-petal.p3{left:26%;bottom:17%;animation-delay:-3.1s}
+.fb-anniversary-celebration-layer{position:fixed;inset:0;pointer-events:none;z-index:1201;overflow:hidden}
+.fb-love-heart{position:absolute;bottom:-60px;color:#e8a19d;font-size:clamp(20px,3vw,38px);filter:drop-shadow(0 6px 5px rgba(0,0,0,.22));opacity:0;animation:fbLoveFloat 7.4s ease-in infinite}
+.fb-love-heart.h1{left:5%;animation-delay:-.6s}.fb-love-heart.h2{left:15%;animation-delay:-4.3s;font-size:24px}.fb-love-heart.h3{left:27%;animation-delay:-2.1s;color:#f0c7a6}.fb-love-heart.h4{left:39%;animation-delay:-5.8s}.fb-love-heart.h5{left:52%;animation-delay:-1.4s;color:#efc7b7}.fb-love-heart.h6{left:64%;animation-delay:-4.9s;font-size:28px}.fb-love-heart.h7{left:75%;animation-delay:-2.9s;color:#d98591}.fb-love-heart.h8{left:84%;animation-delay:-6.1s}.fb-love-heart.h9{left:92%;animation-delay:-3.6s;font-size:24px}.fb-love-heart.h10{left:47%;animation-delay:-6.8s;font-size:22px}
+.fb-screen-ring-pair{position:absolute;width:68px;height:45px;opacity:.66;animation:fbRingFloat 8s ease-in-out infinite}
+.fb-screen-ring-pair:before,.fb-screen-ring-pair:after{content:"";position:absolute;width:34px;height:34px;border:4px solid #efcf83;border-radius:50%;box-shadow:0 0 8px rgba(255,224,151,.35)}
+.fb-screen-ring-pair:before{left:5px;transform:rotate(-10deg)}.fb-screen-ring-pair:after{right:5px;transform:rotate(10deg)}
+.fb-screen-ring-pair.r1{left:9%;top:18%;animation-delay:-1.2s}.fb-screen-ring-pair.r2{right:10%;top:24%;animation-delay:-4.2s;transform:scale(.8)}.fb-screen-ring-pair.r3{right:22%;bottom:14%;animation-delay:-6.4s;transform:scale(.65)}
+@keyframes fbLoveFloat{0%{transform:translateY(0) translateX(0) rotate(-8deg) scale(.7);opacity:0}12%{opacity:.78}55%{transform:translateY(-52vh) translateX(18px) rotate(7deg) scale(1)}100%{transform:translateY(-112vh) translateX(-14px) rotate(-5deg) scale(.82);opacity:0}}
+@keyframes fbRingFloat{0%,100%{translate:0 8px;rotate:-3deg;opacity:.35}50%{translate:9px -18px;rotate:5deg;opacity:.82}}
+@keyframes fbHeartDrift{0%,100%{transform:translateY(4px) rotate(-5deg);opacity:.45}50%{transform:translateY(-10px) rotate(7deg);opacity:.9}}
+
 .fb-family-art{display:grid;place-items:center;background:
  radial-gradient(circle at 50% 48%,rgba(230,201,142,.22),transparent 27%),
  linear-gradient(145deg,#315c43,#173523 56%,#102519)}
@@ -194,6 +228,26 @@ html[data-theme="dark"] .cal-upcoming-item.birthday.sex-neutral .cal-up-date{bac
 .calendar-detail-card.fb-themed-event-detail.is-birthday.birthday-neutral>h1{color:#e9c97f}
 .calendar-detail-card.fb-themed-event-detail.is-birthday.birthday-neutral .fb-detail-hero-label{background:#eef5e8;color:#294936}
 .calendar-detail-card.fb-themed-event-detail.is-birthday.birthday-neutral .fb-detail-hero-label svg{color:#5e8b6c}
+.fb-event-detail-hero.is-anniversary{display:grid;place-items:center;background:
+ radial-gradient(circle at 50% 43%,rgba(247,211,175,.24),transparent 30%),
+ linear-gradient(145deg,#6c3240,#3a202a 50%,#1c171d)}
+.fb-detail-anniversary-glow{position:absolute;inset:0;background:radial-gradient(circle at 50% 50%,rgba(255,237,205,.16),transparent 40%)}
+.fb-detail-rings{position:absolute;left:50%;top:45%;transform:translate(-50%,-50%);width:112px;height:70px}
+.fb-detail-rings span{position:absolute;width:58px;height:58px;border:7px solid #edca78;border-radius:50%;box-shadow:0 0 0 1px rgba(255,246,207,.4),0 9px 18px rgba(0,0,0,.25)}.fb-detail-rings span:first-child{left:7px;transform:rotate(-11deg)}.fb-detail-rings span:last-child{right:7px;transform:rotate(11deg)}
+.fb-detail-anniversary-couple{position:absolute;left:50%;top:45%;transform:translate(-50%,-50%);display:flex;align-items:center;z-index:4}
+.fb-detail-anniversary-person{width:78px;height:78px;border-radius:50%;padding:3px;background:linear-gradient(145deg,#f3d494,#d99089);box-shadow:0 10px 25px rgba(0,0,0,.28)}.fb-detail-anniversary-person img{width:100%;height:100%;object-fit:cover;border-radius:50%;display:block}.fb-detail-anniversary-person.p1{transform:translateX(8px)}.fb-detail-anniversary-person.p2{transform:translateX(-8px)}
+.fb-detail-anniversary-couple b{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);width:26px;height:26px;border-radius:50%;display:grid;place-items:center;background:#fff0df;color:#b95463;font-size:14px;z-index:5}
+.fb-detail-heart{position:absolute;color:#edb2aa;font-size:20px;animation:fbHeartDrift 4.5s ease-in-out infinite}.fb-detail-heart.a1{left:16%;top:20%}.fb-detail-heart.a2{right:18%;top:24%;animation-delay:-1.5s}.fb-detail-heart.a3{left:24%;bottom:20%;animation-delay:-2.7s}.fb-detail-heart.a4{right:27%;bottom:24%;animation-delay:-3.5s}
+.calendar-detail-card.fb-themed-event-detail.is-anniversary{background:linear-gradient(160deg,#311820,#1b1116 58%,#302029);border-color:rgba(238,190,175,.28)}
+.calendar-detail-card.fb-themed-event-detail.is-anniversary>.eyebrow{color:#efbaa8}
+.calendar-detail-card.fb-themed-event-detail.is-anniversary>h1{color:#f2ce98}
+.calendar-detail-card.fb-themed-event-detail.is-anniversary>.cal-detail-date{color:#e6bbb1}
+.calendar-detail-card.fb-themed-event-detail.is-anniversary .fb-detail-hero-label{background:#fff0df;color:#572c31}
+.calendar-detail-card.fb-themed-event-detail.is-anniversary .fb-detail-hero-label svg{color:#b85666}
+.calendar-detail-card.fb-themed-event-detail.is-anniversary .cal-detail-list svg{color:#d49a86}
+.calendar-detail-card.fb-themed-event-detail.is-anniversary .cal-detail-actions .primary{background:linear-gradient(135deg,#dca58f,#e9c878);color:#3e2423;border-color:rgba(255,229,194,.36)}
+.calendar-chip.anniversary{background:#f9e9e6;color:#a45160;border-color:rgba(183,96,108,.16)}
+html[data-theme="dark"] .calendar-chip.anniversary{background:rgba(139,67,80,.28);color:#efb9b7}
 .fb-event-detail-hero.is-family{display:grid;place-items:center;background:radial-gradient(circle at 50% 48%,rgba(230,201,142,.22),transparent 27%),linear-gradient(145deg,#315c43,#173523 56%,#102519)}
 .fb-detail-family-orbit{position:absolute;width:152px;height:152px;border:1px solid rgba(238,211,159,.30);border-radius:50%;box-shadow:0 0 0 28px rgba(154,200,169,.07),0 0 0 53px rgba(231,198,139,.04)}
 .fb-detail-family-icon{position:relative;width:88px;height:88px;border-radius:27px;background:linear-gradient(145deg,#e0c48c,#b28c54);color:#183522;display:grid;place-items:center;z-index:2}
@@ -202,6 +256,6 @@ html[data-theme="dark"] .cal-upcoming-item.birthday.sex-neutral .cal-up-date{bac
 .fb-event-memory-banner>span{width:44px;height:44px;border-radius:14px;background:#28583a;display:grid;place-items:center;color:#bde4c8;flex:0 0 auto}.fb-event-memory-banner svg{width:23px;height:23px}
 .fb-event-memory-banner strong,.fb-event-memory-banner small{display:block}.fb-event-memory-banner small{color:#9fb3a4;margin-top:3px}
 .fb-event-frame-option{display:flex;align-items:center;gap:12px;border:1px solid #d9c9aa;background:#fff9ee;border-radius:15px;padding:12px 14px;margin:12px 0;color:#26382c}.fb-event-frame-option input{width:20px;height:20px;accent-color:#315c43}.fb-event-frame-option span{display:grid;gap:2px}.fb-event-frame-option small{color:#6f756e}
-@media(max-width:620px){.fb-event-detail-hero{height:180px}.fb-detail-mountain{bottom:48px}.fb-detail-person{width:96px;height:96px}.fb-detail-cake{font-size:48px;left:calc(50% + 58px)}.calendar-detail-card.fb-themed-event-detail>h1{font-size:1.85rem}.fb-event-day-overlay{padding:9px}.fb-event-day-card{width:100%;border-radius:23px}.fb-event-day-art{height:235px;border-radius:23px 23px 0 0}.fb-event-day-copy{padding:18px 16px 20px}.fb-event-day-actions{grid-template-columns:1fr 1fr;gap:8px}.fb-event-day-actions button{height:46px;min-height:46px;padding:0 10px;font-size:.84rem;border-radius:13px}.fb-event-day-actions button svg{width:17px;height:17px;min-width:17px;flex-basis:17px}.fb-event-plane{top:8%;font-size:42px;animation-duration:5.7s}.fb-event-flight-trail{top:17%;width:78vw}.fb-event-palm{font-size:66px}.fb-event-island{transform:scale(.78)}.fb-event-island.island-a{left:0;transform:scale(.84)}.fb-event-day-copy h2{font-size:2rem}.fb-birthday-person{width:116px;height:116px}.fb-birthday-cake{font-size:60px;left:calc(50% + 70px)}.fb-birthday-stars{font-size:28px;letter-spacing:10px}.fb-calendar-capture span{display:none}.fb-calendar-capture{width:28px;height:28px;padding:0;margin:4px auto 0;border-radius:50%}.calendar-detail-card .cal-detail-actions{gap:8px}.calendar-detail-card .cal-detail-actions button{height:48px;min-height:48px;flex:1 1 calc(50% - 4px);padding:0 12px;font-size:.9rem;border-radius:13px}}
+@media(max-width:620px){.fb-event-detail-hero{height:180px}.fb-detail-mountain{bottom:48px}.fb-detail-person{width:96px;height:96px}.fb-detail-cake{font-size:48px;left:calc(50% + 58px)}.calendar-detail-card.fb-themed-event-detail>h1{font-size:1.85rem}.fb-event-day-overlay{padding:9px}.fb-event-day-card{width:100%;border-radius:23px}.fb-event-day-art{height:235px;border-radius:23px 23px 0 0}.fb-event-day-copy{padding:18px 16px 20px}.fb-event-day-actions{grid-template-columns:1fr 1fr;gap:8px}.fb-event-day-actions button{height:46px;min-height:46px;padding:0 10px;font-size:.84rem;border-radius:13px}.fb-event-day-actions button svg{width:17px;height:17px;min-width:17px;flex-basis:17px}.fb-event-plane{top:8%;font-size:42px;animation-duration:5.7s}.fb-event-flight-trail{top:17%;width:78vw}.fb-event-palm{font-size:66px}.fb-event-island{transform:scale(.78)}.fb-event-island.island-a{left:0;transform:scale(.84)}.fb-event-day-copy h2{font-size:2rem}.fb-birthday-person{width:116px;height:116px}.fb-birthday-cake{font-size:60px;left:calc(50% + 70px)}.fb-birthday-stars{font-size:28px;letter-spacing:10px}.fb-anniversary-person{width:82px;height:82px}.fb-anniversary-rings{transform:translate(-50%,-50%) scale(.82)}.fb-anniversary-script{font-size:.84rem;bottom:14px}.fb-detail-anniversary-person{width:66px;height:66px}.fb-detail-rings{transform:translate(-50%,-50%) scale(.82)}.fb-calendar-capture span{display:none}.fb-calendar-capture{width:28px;height:28px;padding:0;margin:4px auto 0;border-radius:50%}.calendar-detail-card .cal-detail-actions{gap:8px}.calendar-detail-card .cal-detail-actions button{height:48px;min-height:48px;flex:1 1 calc(50% - 4px);padding:0 12px;font-size:.9rem;border-radius:13px}}
 @media(max-width:380px){.fb-event-day-actions{grid-template-columns:1fr}.calendar-detail-card .cal-detail-actions button{flex:1 1 100%}}
-@media(prefers-reduced-motion:reduce){.fb-event-plane,.fb-event-flight-trail,.fb-event-cloud,.fb-balloon,.fb-confetti,.fb-family-event-spark,.fb-detail-plane,.fb-detail-confetti{animation:none!important}.fb-event-plane{left:72%;top:8%}.fb-balloon{display:none}.fb-confetti{display:none}}
+@media(prefers-reduced-motion:reduce){.fb-event-plane,.fb-event-flight-trail,.fb-event-cloud,.fb-balloon,.fb-confetti,.fb-family-event-spark,.fb-detail-plane,.fb-detail-confetti,.fb-love-heart,.fb-screen-ring-pair,.fb-anniversary-petal,.fb-detail-heart{animation:none!important}.fb-event-plane{left:72%;top:8%}.fb-balloon,.fb-confetti,.fb-love-heart,.fb-screen-ring-pair{display:none}}
