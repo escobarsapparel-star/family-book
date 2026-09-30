@@ -90,12 +90,17 @@
     window.addEventListener("familybook:settings",refreshChoices);
     installThemeSection();
 
-    let lastApp=document.getElementById("app");
+    const app=document.getElementById("app");
+    // Watch only for route/render changes that remove the Settings page.
+    // Do not call createIcons/refreshChoices for every child mutation: Lucide itself
+    // replaces <i data-lucide> nodes with SVG nodes, which can otherwise create a
+    // mutation-observer loop and freeze the page while opening Settings.
     const observer=new MutationObserver(()=>{
-      installThemeSection();
-      refreshChoices();
+      if(document.getElementById("settingsAppearance")&&!document.getElementById("settingsVisualThemes")){
+        installThemeSection();
+      }
     });
-    if(lastApp)observer.observe(lastApp,{childList:true,subtree:true});
+    if(app)observer.observe(app,{childList:true,subtree:true});
   }
 
   applyTheme(getTheme());
