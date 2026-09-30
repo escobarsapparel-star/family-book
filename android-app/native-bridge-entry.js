@@ -3,6 +3,7 @@ import { startUpdates } from './update-client.mjs';
 import { Capacitor, CapacitorHttp, registerPlugin } from "@capacitor/core";
 import { App } from "@capacitor/app";
 import { Browser } from "@capacitor/browser";
+import { PushNotifications } from "@capacitor/push-notifications";
 import { NavigationBar } from "@capgo/capacitor-navigation-bar";
 
 const ShareImage = registerPlugin("ShareImage");
@@ -12,6 +13,7 @@ window.FB_NATIVE = {
   Capacitor,
   App,
   Browser,
+  PushNotifications,
   NavigationBar,
   ShareImage,
   MediaCache
