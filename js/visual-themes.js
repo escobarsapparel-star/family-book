@@ -86,25 +86,19 @@
       event.preventDefault();
       choice(button.dataset.visualTheme||"classic");
     });
-
     window.addEventListener("familybook:settings",refreshChoices);
-    installThemeSection();
+    // Settings explicitly asks for the optional theme card after its DOM exists.
+    // Avoid a global MutationObserver here: route rendering and Lucide icon replacement
+    // both mutate #app and can otherwise cause unnecessary render churn.
+  }
 
-    const app=document.getElementById("app");
-    // Watch only for route/render changes that remove the Settings page.
-    // Do not call createIcons/refreshChoices for every child mutation: Lucide itself
-    // replaces <i data-lucide> nodes with SVG nodes, which can otherwise create a
-    // mutation-observer loop and freeze the page while opening Settings.
-    const observer=new MutationObserver(()=>{
-      if(document.getElementById("settingsAppearance")&&!document.getElementById("settingsVisualThemes")){
-        installThemeSection();
-      }
-    });
-    if(app)observer.observe(app,{childList:true,subtree:true});
+  function install(){
+    installThemeSection();
+    refreshChoices();
   }
 
   applyTheme(getTheme());
   if(document.readyState==="loading")document.addEventListener("DOMContentLoaded",bind,{once:true});
   else bind();
-  window.FB_VISUAL_THEME={get:getTheme,apply:applyTheme,themes:THEMES};
+  window.FB_VISUAL_THEME={get:getTheme,apply:applyTheme,themes:THEMES,install};
 })();
