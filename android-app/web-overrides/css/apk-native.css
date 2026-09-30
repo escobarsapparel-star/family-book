@@ -8,8 +8,11 @@ html.native-app body{
 }
 
 html.native-app{
-  --fb-apk-status-h:max(env(safe-area-inset-top),28px);
-  --fb-apk-navigation-h:max(env(safe-area-inset-bottom),48px);
+  /* Capacitor 8 SystemBars injects device-correct CSS inset variables.
+     Fall back to browser safe-area values, then zero, so older Android
+     versions do not receive an artificial 28/48px offset. */
+  --fb-apk-status-h:var(--safe-area-inset-top,env(safe-area-inset-top,0px));
+  --fb-apk-navigation-h:var(--safe-area-inset-bottom,env(safe-area-inset-bottom,0px));
   --fb-apk-system-bg:#151813;
 }
 

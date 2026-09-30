@@ -12,6 +12,9 @@
       "statsUrl": "",
       "updateUrl": "",
       "channelUrl": ""
+    },
+    "SystemBars": {
+      "insetsHandling": "css"
     }
   }
 }
