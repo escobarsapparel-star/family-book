@@ -21,7 +21,10 @@
     }catch(_){return false}
   }
   function nativeAuthRedirectUrl(){
-    return "com.familybook.app://login-callback";
+    // Supabase only honors redirectTo values on its allow-list. The Android
+    // custom scheme is not currently in that list, so use the existing allowed
+    // FamilyBook web origin as a bridge, then bounce straight back into the app.
+    return "https://escobarsapparel-star.github.io/family-book/?fbNativeOAuth=1";
   }
   function authRedirectUrl(){
     if(location.protocol==="file:")return null;
