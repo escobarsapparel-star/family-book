@@ -57,13 +57,19 @@
     const authError=query.get("error_description")||query.get("error")||hash.get("error_description")||hash.get("error");
     if(authError)throw new Error(authError);
 
+    const finishNativeSignIn=()=>{
+      // The OAuth session is already persisted by Supabase. Reloading the
+      // WebView gives Family Book the same clean startup path as reopening the
+      // app manually, which avoids getting stranded on the Google loading state.
+      setTimeout(()=>location.reload(),80);
+    };
+
     const code=query.get("code");
     if(code){
       const {data,error}=await client().auth.exchangeCodeForSession(code);
       if(error)throw error;
       session=data?.session||null;
-      await loadContext();
-      window.FB_APP_AUTH_CHANGED?.("SIGNED_IN");
+      finishNativeSignIn();
       return true;
     }
 
@@ -76,8 +82,7 @@
       });
       if(error)throw error;
       session=data?.session||null;
-      await loadContext();
-      window.FB_APP_AUTH_CHANGED?.("SIGNED_IN");
+      finishNativeSignIn();
       return true;
     }
     return false;
