@@ -5028,15 +5028,21 @@ html[data-theme="dark"] .apk-download-cta{
     content:""!important;
     position:absolute!important;
     z-index:1!important;
-    inset:0!important;
+    left:0!important;
+    right:0!important;
+    top:0!important;
+    height:24%!important;
     pointer-events:none!important;
-    background:
-      radial-gradient(ellipse 52% 23% at 22% 8%,
-        rgba(235,228,218,.98) 0%,
-        rgba(235,228,218,.94) 34%,
-        rgba(235,228,218,.78) 48%,
-        rgba(235,228,218,.35) 62%,
-        rgba(235,228,218,0) 78%)!important;
+    background:linear-gradient(
+      180deg,
+      #cec3b8 0%,
+      #c4bfb8 20%,
+      #cfc4b7 40%,
+      #e2cdb7 58%,
+      #edd3b9 78%,
+      rgba(235,211,185,.98) 84%,
+      rgba(229,206,182,0) 100%
+    )!important;
   }
   .login-photo:after{z-index:2!important}
 
