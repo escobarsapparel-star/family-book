@@ -7,10 +7,10 @@ android {
         applicationId "com.familybook.app"
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
-        versionCode 5
-        versionName "1.4.1"
+        versionCode 6
+        versionName "1.4.2"
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
-        manifestPlaceholders = [appLabel: "Family Book"]
+        manifestPlaceholders = [appLabel: "Family Book", authScheme: "com.familybook.app"]
         aaptOptions {
              // Files and dirs to omit from the packaged assets dir, modified to accommodate modern web apps.
              // Default: https://android.googlesource.com/platform/frameworks/base/+/282e181b58cf72b6ca770dc7ca5f91f135444502/tools/aapt/AaptAssets.cpp#61
@@ -21,7 +21,7 @@ android {
         debug {
             applicationIdSuffix ".cachetest"
             versionNameSuffix "-cache"
-            manifestPlaceholders = [appLabel: "Family Book Cache Test"]
+            manifestPlaceholders = [appLabel: "Family Book Cache Test", authScheme: "com.familybook.app.cachetest"]
         }
         release {
             minifyEnabled false
