@@ -1479,7 +1479,23 @@ function bindFullTreeViewer(){
  function fit(){let sx=(vp.clientWidth-24)/baseW,sy=(vp.clientHeight-24)/baseH;apply(Math.min(1,sx,sy));vp.scrollTo({left:0,top:0})}
  $("#treeZoomOut").onclick=()=>apply(scale-.15);$("#treeZoomIn").onclick=()=>apply(scale+.15);$("#treeFit").onclick=fit;
  $("#treeExport").onclick=async()=>{let btn=$("#treeExport"),old=btn.innerHTML;btn.disabled=true;btn.textContent="Creating image…";let oldTransform=canvas.style.transform;canvas.style.transform="none";
-   try{if(!window.html2canvas)throw new Error("Image export library is still loading. Try again in a moment.");let out=await html2canvas(canvas,{backgroundColor:"#f9f5ed",scale:2,useCORS:true,logging:false,width:baseW,height:baseH});let a=document.createElement("a");a.download=`${familyLabel().replace(/\s+/g,"-").toLowerCase()}-tree.png`;a.href=out.toDataURL("image/png");a.click()}catch(err){alert(err.message||"Could not export the tree image.")}finally{canvas.style.transform=oldTransform;btn.disabled=false;btn.innerHTML=old;icons()}};
+   try{
+     if(!window.html2canvas)throw new Error("Image export library is still loading. Try again in a moment.");
+     let out=await html2canvas(canvas,{
+       backgroundColor:"#f9f5ed",scale:2,useCORS:true,logging:false,width:baseW,height:baseH,
+       onclone:clonedDoc=>{
+         const exportCanvas=clonedDoc.querySelector("#fullTreeStage .ct-canvas")||clonedDoc.querySelector(".ct-canvas");
+         exportCanvas?.querySelectorAll(".ct-person").forEach(card=>{
+           const name=card.querySelector(".ct-person-copy strong")?.textContent||"Family Member";
+           const parts=String(name).trim().split(/\s+/).filter(Boolean);
+           const initials=((parts[0]?.[0]||"F")+(parts.length>1?(parts.at(-1)?.[0]||""):"")).toUpperCase();
+           const avatar=card.querySelector(".ct-avatar");
+           if(avatar)avatar.textContent=initials;
+         });
+       }
+     });
+     let a=document.createElement("a");a.download=`${familyLabel().replace(/\s+/g,"-").toLowerCase()}-tree.png`;a.href=out.toDataURL("image/png");a.click();
+   }catch(err){alert(err.message||"Could not export the tree image.")}finally{canvas.style.transform=oldTransform;btn.disabled=false;btn.innerHTML=old;icons()}};
  setTimeout(fit,40);window.addEventListener("resize",fit,{once:true});
 }
 function familyUnitView(id){
