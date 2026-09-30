@@ -3,7 +3,14 @@
   window.__fbFamilyCountdown=true;
 
   const esc=v=>String(v??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#039;'}[c]));
-  const members=()=>{try{return window.ensureOwner?.()||window.FB_FAMILY_DATA?.getPeople?.()||[]}catch(_){return []}};
+  const members=()=>{
+    try{
+      const people=window.FB_FAMILY_DATA?.getPeople?.();
+      if(Array.isArray(people))return people;
+      const owner=window.ensureOwner?.();
+      return Array.isArray(owner)?owner:[];
+    }catch(_){return []}
+  };
   const events=()=>{try{return window.FB_ORGANIZER_DATA?.getEvents?.()||[]}catch(_){return []}};
   let activeKey='',lastSecond=-1;
 
