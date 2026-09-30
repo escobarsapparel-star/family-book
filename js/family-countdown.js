@@ -182,9 +182,31 @@
     return upcoming;
   }
 
+  let hasValidData=false;
   function refresh(){
     const card=findOrConvertHost();if(!card)return false;
-    const list=collect();renderQueue(list);updateClock(list[0]);bind(card);window.icons?.();return true;
+    const list=collect();
+    // Background family-data refreshes can briefly expose an empty collection.
+    // Never wipe a working countdown during that transient state.
+    if(list.length){
+      hasValidData=true;
+      renderQueue(list);
+      updateClock(list[0]);
+    }else if(!hasValidData){
+      renderQueue([]);
+    }else{
+      // Keep the existing countdown alive while data is temporarily unavailable.
+      const active=document.querySelector('[data-countdown-days]');
+      if(active){
+        const current=active.closest('.family-countdown-hero');
+        if(current){
+          const title=current.querySelector('.family-countdown-copy strong')?.textContent||'';
+          const currentList=collect();
+          if(currentList.length)updateClock(currentList[0]);
+        }
+      }
+    }
+    bind(card);window.icons?.();return true;
   }
 
   const root=document.getElementById('app');
