@@ -267,7 +267,7 @@
     const parts=[];
     const base=filterDefs[activeFilter]?.css||"none";
     if(base&&base!=="none")parts.push(base);
-    if(needsDigitalLight())parts.push("brightness(1.16) contrast(1.06)");
+    if(needsDigitalLight())parts.push("brightness(1.34) contrast(1.04) saturate(1.03)");
     return parts.length?parts.join(" "):"none";
   }
 
