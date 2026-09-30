@@ -1538,3 +1538,174 @@ html[data-fb-visual-theme="midnight-aurora"] .desktop-widget:has(#desktopBirthda
     background:rgba(4,15,31,.52)!important;
   }
 }
+
+
+/* ============================================================
+   MIDNIGHT AURORA V2 — CONTINUOUS WIDGET FLOW
+   One tall scenic artwork behind the whole widget stack.
+   ============================================================ */
+
+/* One continuous scene for desktop and the compact Family Widgets drawer. */
+html[data-fb-visual-theme="midnight-aurora"] .desktop-right-rail{
+  background-color:#030b1d!important;
+  background-image:
+    linear-gradient(180deg,rgba(3,10,26,.10) 0%,rgba(3,10,26,.05) 45%,rgba(3,10,26,.24) 78%,#030b1d 100%),
+    url("../assets/midnight-aurora-widget-flow.webp")!important;
+  background-position:center top!important;
+  background-size:100% auto!important;
+  background-repeat:no-repeat!important;
+  background-attachment:local!important;
+  border-left-color:rgba(103,232,249,.14)!important;
+}
+
+@media(min-width:760px) and (max-width:1179px){
+  html[data-fb-visual-theme="midnight-aurora"] .compact-widgets-panel{
+    background:#030b1d!important;
+    border-left-color:rgba(103,232,249,.20)!important;
+  }
+  html[data-fb-visual-theme="midnight-aurora"] .compact-widgets-head{
+    background:linear-gradient(180deg,rgba(4,12,30,.96),rgba(5,13,31,.92))!important;
+    border-bottom-color:rgba(103,232,249,.16)!important;
+  }
+  html[data-fb-visual-theme="midnight-aurora"] .compact-widgets-body{
+    background:#030b1d!important;
+  }
+}
+
+/* Keep the clock treatment intact as its own top card. */
+html[data-fb-visual-theme="midnight-aurora"] .desktop-date-time-card{
+  position:relative;
+  z-index:2;
+}
+
+/* All cards below the clock become glass instead of repeating a photo. */
+html[data-fb-visual-theme="midnight-aurora"] .desktop-right-rail>.desktop-widget:not(.desktop-date-time-card),
+html[data-fb-visual-theme="midnight-aurora"] .compact-widgets-rail>.desktop-widget:not(.desktop-date-time-card){
+  background:
+    linear-gradient(145deg,rgba(4,15,34,.56),rgba(4,14,32,.38))!important;
+  border:1px solid rgba(73,229,255,.48)!important;
+  box-shadow:
+    0 14px 32px rgba(0,0,0,.27),
+    inset 0 1px 0 rgba(255,255,255,.075)!important;
+}
+
+/* Prayer: clearest window into the mountain section of the shared artwork. */
+html[data-fb-visual-theme="midnight-aurora"] .family-prayer-widget{
+  background:
+    linear-gradient(145deg,rgba(3,13,31,.34),rgba(3,13,29,.18))!important;
+  border-color:rgba(74,235,255,.68)!important;
+  border-left-color:rgba(196,132,252,.94)!important;
+  box-shadow:
+    -5px 0 18px rgba(168,85,247,.34),
+    0 0 22px rgba(34,211,238,.17),
+    0 17px 36px rgba(0,0,0,.30),
+    inset 2px 0 0 rgba(192,132,252,.64),
+    inset 0 1px 0 rgba(255,255,255,.10)!important;
+}
+html[data-fb-visual-theme="midnight-aurora"] .family-prayer-widget:before{
+  content:""!important;
+  position:absolute!important;
+  inset:0!important;
+  width:auto!important;
+  height:auto!important;
+  background:
+    linear-gradient(90deg,rgba(5,10,31,.20),transparent 46%),
+    linear-gradient(180deg,rgba(3,10,25,.05),transparent 58%,rgba(3,9,23,.12))!important;
+  opacity:1!important;
+  filter:none!important;
+  z-index:1!important;
+  pointer-events:none!important;
+}
+html[data-fb-visual-theme="midnight-aurora"] .family-prayer-widget:after{
+  inset:0!important;
+  border:0!important;
+  border-radius:inherit!important;
+  transform:none!important;
+  filter:none!important;
+  box-shadow:none!important;
+  background:
+    radial-gradient(74% 64% at 0% 7%,rgba(168,85,247,.13),transparent 60%),
+    radial-gradient(78% 72% at 100% 5%,rgba(34,211,238,.10),transparent 62%)!important;
+  opacity:1!important;
+  z-index:1!important;
+}
+html[data-fb-visual-theme="midnight-aurora"] .family-prayer-slide,
+html[data-fb-visual-theme="midnight-aurora"] .family-prayer-slide.prayer,
+html[data-fb-visual-theme="midnight-aurora"] .family-prayer-slide.encouragement{
+  background:linear-gradient(145deg,rgba(3,15,31,.46),rgba(3,12,28,.32))!important;
+  border-color:rgba(73,239,227,.55)!important;
+}
+
+/* Countdown: the scene is beginning to fade; retain aurora colour, less detail. */
+html[data-fb-visual-theme="midnight-aurora"] .family-countdown-widget{
+  background:
+    linear-gradient(145deg,rgba(4,16,35,.48),rgba(5,14,35,.34))!important;
+  border-color:rgba(70,231,255,.60)!important;
+  border-left-color:rgba(178,119,250,.90)!important;
+  box-shadow:
+    -4px 0 16px rgba(168,85,247,.24),
+    0 0 18px rgba(34,211,238,.13),
+    0 15px 34px rgba(0,0,0,.28),
+    inset 2px 0 0 rgba(168,85,247,.48),
+    inset 0 1px 0 rgba(255,255,255,.08)!important;
+}
+html[data-fb-visual-theme="midnight-aurora"] .family-countdown-widget:before{
+  background:
+    radial-gradient(78% 78% at 100% 2%,rgba(34,211,238,.09),transparent 62%),
+    radial-gradient(72% 92% at 0% 98%,rgba(139,92,246,.10),transparent 65%)!important;
+}
+html[data-fb-visual-theme="midnight-aurora"] .family-countdown-hero{
+  background:linear-gradient(145deg,rgba(5,24,43,.42),rgba(13,20,57,.34))!important;
+  border-color:rgba(72,232,255,.42)!important;
+}
+html[data-fb-visual-theme="midnight-aurora"] .family-countdown-clock{
+  background:rgba(3,13,30,.45)!important;
+}
+
+/* Birthdays: mostly atmospheric colour wash; shared artwork is now very subtle. */
+html[data-fb-visual-theme="midnight-aurora"] .desktop-widget:has(#desktopBirthdayRows){
+  background:
+    linear-gradient(145deg,rgba(5,14,34,.58),rgba(5,14,34,.44))!important;
+  border-color:rgba(69,222,255,.48)!important;
+  border-left-color:rgba(168,105,244,.84)!important;
+  box-shadow:
+    -4px 0 15px rgba(168,85,247,.20),
+    0 0 15px rgba(34,211,238,.10),
+    0 14px 32px rgba(0,0,0,.27),
+    inset 2px 0 0 rgba(168,85,247,.40),
+    inset 0 1px 0 rgba(255,255,255,.07)!important;
+}
+html[data-fb-visual-theme="midnight-aurora"] .desktop-widget:has(#desktopBirthdayRows):before{
+  background:
+    radial-gradient(72% 88% at 0% 0%,rgba(139,92,246,.10),transparent 62%),
+    radial-gradient(70% 82% at 100% 10%,rgba(34,211,238,.055),transparent 64%)!important;
+}
+html[data-fb-visual-theme="midnight-aurora"] #desktopBirthdayRows .desktop-widget-row{
+  background:rgba(3,14,31,.43)!important;
+  border-color:rgba(103,232,249,.12)!important;
+}
+
+/* Lower widgets live in the dark tail of the artwork. */
+html[data-fb-visual-theme="midnight-aurora"] .desktop-right-rail>.desktop-widget:not(.desktop-date-time-card):not(.family-prayer-widget):not(.family-countdown-widget):not(:has(#desktopBirthdayRows)),
+html[data-fb-visual-theme="midnight-aurora"] .compact-widgets-rail>.desktop-widget:not(.desktop-date-time-card):not(.family-prayer-widget):not(.family-countdown-widget):not(:has(#desktopBirthdayRows)){
+  background:linear-gradient(145deg,rgba(5,14,34,.78),rgba(6,15,35,.68))!important;
+  border-color:rgba(78,181,231,.28)!important;
+}
+
+/* Glass blur only on the card surfaces, never on the shared artwork itself. */
+@supports ((backdrop-filter:blur(1px)) or (-webkit-backdrop-filter:blur(1px))){
+  @media(min-width:760px){
+    html[data-fb-visual-theme="midnight-aurora"] .family-prayer-widget,
+    html[data-fb-visual-theme="midnight-aurora"] .family-countdown-widget,
+    html[data-fb-visual-theme="midnight-aurora"] .desktop-widget:has(#desktopBirthdayRows){
+      -webkit-backdrop-filter:blur(2px) saturate(112%)!important;
+      backdrop-filter:blur(2px) saturate(112%)!important;
+    }
+    html[data-fb-visual-theme="midnight-aurora"] .family-prayer-slide,
+    html[data-fb-visual-theme="midnight-aurora"] .family-countdown-clock,
+    html[data-fb-visual-theme="midnight-aurora"] #desktopBirthdayRows .desktop-widget-row{
+      -webkit-backdrop-filter:blur(6px) saturate(116%)!important;
+      backdrop-filter:blur(6px) saturate(116%)!important;
+    }
+  }
+}
