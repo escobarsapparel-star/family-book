@@ -15,7 +15,25 @@
   }
   function authRedirectUrl(){
     if(location.protocol==="file:")return null;
-    const u=new URL(location.href);u.search="";u.hash="";return u.toString();
+    let nativeRuntime=false;
+    try{
+      nativeRuntime=!!window.FB_NATIVE?.Capacitor?.isNativePlatform?.()||
+        document.documentElement.classList.contains("native-app")||
+        location.protocol==="capacitor:";
+    }catch(_){}
+    if(nativeRuntime){
+      const u=new URL(location.href);u.search="";u.hash="";return u.toString();
+    }
+    // Browser sign-in must always return to the web site, never fall back to
+    // the installed Android app/custom scheme. This also normalises people who
+    // opened the GitHub Pages origin instead of the custom domain.
+    const base=window.FB_SUPABASE_CONFIG?.productionUrl||"https://familybook.co.za/";
+    const u=new URL(base);
+    const invite=sessionStorage.getItem(PENDING_INVITE)||new URLSearchParams(location.search).get("familybookInvite")||"";
+    if(invite)u.searchParams.set("familybookInvite",invite);
+    u.searchParams.set("fbWebAuth","1");
+    u.hash="";
+    return u.toString();
   }
   function setPendingInvite(code){
     const clean=String(code||"").trim();
