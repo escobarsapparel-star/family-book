@@ -483,7 +483,99 @@
     native.App?.addListener?.('appStateChange',({isActive})=>{if(isActive)setTimeout(consume,120)}).catch?.(()=>{});
   }
 
-  function start(){bindBackButton();bindSwipe();watchFamilyCamera();watchCalendarCards();bindIncomingGalleryShare()}
+
+  function bindPushNotifications(){
+    if(window.__fbPushNotificationsBound)return;
+    const PushNotifications=native.PushNotifications;
+    if(!PushNotifications?.register||!PushNotifications?.addListener)return;
+    window.__fbPushNotificationsBound=true;
+
+    let registering=false;
+    let lastToken="";
+
+    const registerToken=async(token)=>{
+      const value=String(token||"").trim();
+      if(!value||value===lastToken)return;
+      if(!window.FB_AUTH?.isSession?.()||window.FB_AUTH?.needsSetup?.())return;
+      const sb=window.FB_SUPABASE?.client;
+      if(!sb?.rpc)return;
+      try{
+        const {error}=await sb.rpc("register_push_device",{
+          p_token:value,
+          p_platform:"android",
+          p_app_id:"com.familybook.app"
+        });
+        if(error)throw error;
+        lastToken=value;
+        try{localStorage.setItem("fb_android_push_token",value)}catch(_){}
+      }catch(err){
+        console.warn("Family Book push token registration:",err);
+      }
+    };
+
+    const ensureRegistration=async()=>{
+      if(registering)return;
+      if(!window.FB_AUTH?.isSession?.()||window.FB_AUTH?.needsSetup?.())return;
+      registering=true;
+      try{
+        let permission=await PushNotifications.checkPermissions();
+        if(permission?.receive==="prompt"||permission?.receive==="prompt-with-rationale"){
+          permission=await PushNotifications.requestPermissions();
+        }
+        if(permission?.receive!=="granted")return;
+        await PushNotifications.register();
+      }catch(err){
+        console.warn("Family Book push registration:",err);
+      }finally{
+        registering=false;
+      }
+    };
+
+    PushNotifications.addListener("registration",token=>{
+      registerToken(token?.value);
+    }).catch?.(err=>console.warn("Family Book push registration listener:",err));
+
+    PushNotifications.addListener("registrationError",err=>{
+      console.warn("Family Book push registration error:",err);
+    }).catch?.(()=>{});
+
+    PushNotifications.addListener("pushNotificationActionPerformed",event=>{
+      const route=String(event?.notification?.data?.route||"").trim();
+      if(!route)return;
+      const openRoute=()=>{
+        if(window.FB_AUTH?.isSession?.()&&!window.FB_AUTH?.needsSetup?.()&&window.go){
+          try{window.go(route);return true}catch(_){}
+        }
+        return false;
+      };
+      if(openRoute())return;
+      try{sessionStorage.setItem("fb_pending_push_route",route)}catch(_){}
+    }).catch?.(()=>{});
+
+    const consumePendingRoute=()=>{
+      let route="";
+      try{route=sessionStorage.getItem("fb_pending_push_route")||""}catch(_){}
+      if(!route||!window.FB_AUTH?.isSession?.()||window.FB_AUTH?.needsSetup?.()||!window.go)return;
+      try{
+        sessionStorage.removeItem("fb_pending_push_route");
+        window.go(route);
+      }catch(_){}
+    };
+
+    setTimeout(()=>{ensureRegistration();consumePendingRoute()},1200);
+    window.addEventListener("focus",()=>setTimeout(ensureRegistration,150));
+    window.addEventListener("familybook:family-data-ready",()=>{ensureRegistration();consumePendingRoute()});
+    native.App?.addListener?.("appStateChange",({isActive})=>{
+      if(isActive)setTimeout(()=>{ensureRegistration();consumePendingRoute()},180);
+    }).catch?.(()=>{});
+
+    window.FB_NATIVE.push={
+      ensureRegistration,
+      refresh:ensureRegistration
+    };
+  }
+
+  function start(){bindBackButton();bindSwipe();watchFamilyCamera();watchCalendarCards();bindIncomingGalleryShare();bindPushNotifications()}
   if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',start,{once:true});
   else start();
 })();
