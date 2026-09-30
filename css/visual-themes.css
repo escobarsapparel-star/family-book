@@ -1432,3 +1432,109 @@ html[data-fb-visual-theme="midnight-aurora"] #desktopBirthdayRows .desktop-widge
     }
   }
 }
+
+
+/* ============================================================
+   MIDNIGHT AURORA V2 — SCENIC EXPOSURE TUNING
+   Let the photographic artwork actually read through the glass.
+   ============================================================ */
+
+/* Clock: make the aurora and forest clearly visible without hurting the time. */
+html[data-fb-visual-theme="midnight-aurora"] .desktop-date-time-card{
+  background:
+    linear-gradient(90deg,rgba(3,10,28,.90) 0%,rgba(4,12,30,.64) 42%,rgba(3,12,28,.16) 76%,rgba(3,12,28,.06) 100%),
+    url("../assets/midnight-aurora-scene.webp") 78% 69%/cover no-repeat!important;
+}
+html[data-fb-visual-theme="midnight-aurora"] .desktop-date-time-card:before{
+  background:
+    radial-gradient(92% 120% at 78% 14%,rgba(45,212,191,.16),transparent 58%)!important;
+}
+
+/* Prayer: open the card up so the mountain and aurora remain part of the scene. */
+html[data-fb-visual-theme="midnight-aurora"] .family-prayer-widget{
+  background:
+    linear-gradient(145deg,rgba(4,11,30,.62) 0%,rgba(4,13,30,.27) 48%,rgba(2,11,25,.08) 100%),
+    url("../assets/midnight-aurora-scene.webp") 74% 58%/cover no-repeat!important;
+}
+html[data-fb-visual-theme="midnight-aurora"] .family-prayer-widget:before{
+  background:
+    linear-gradient(90deg,rgba(3,10,27,.28) 0%,rgba(3,10,27,.05) 55%,transparent 100%),
+    linear-gradient(180deg,rgba(3,10,27,.02) 0%,transparent 48%,rgba(2,8,20,.14) 100%)!important;
+}
+html[data-fb-visual-theme="midnight-aurora"] .family-prayer-widget:after{
+  background:
+    radial-gradient(75% 80% at 92% 4%,rgba(34,211,238,.17),transparent 54%),
+    radial-gradient(65% 85% at 0% 6%,rgba(168,85,247,.13),transparent 58%)!important;
+}
+html[data-fb-visual-theme="midnight-aurora"] .family-prayer-slide,
+html[data-fb-visual-theme="midnight-aurora"] .family-prayer-slide.prayer,
+html[data-fb-visual-theme="midnight-aurora"] .family-prayer-slide.encouragement{
+  background:
+    linear-gradient(145deg,rgba(3,16,31,.44),rgba(3,12,27,.30))!important;
+  border-color:rgba(83,245,231,.60)!important;
+  box-shadow:
+    0 0 18px rgba(34,211,238,.11),
+    inset 0 1px 0 rgba(255,255,255,.10),
+    inset 0 0 28px rgba(20,184,166,.035)!important;
+}
+
+/* Countdown: reveal the scenic layer across the whole widget. */
+html[data-fb-visual-theme="midnight-aurora"] .family-countdown-widget{
+  background:
+    linear-gradient(145deg,rgba(4,12,30,.66) 0%,rgba(4,13,31,.30) 58%,rgba(3,11,26,.10) 100%),
+    url("../assets/midnight-aurora-scene.webp") 72% 67%/cover no-repeat!important;
+}
+html[data-fb-visual-theme="midnight-aurora"] .family-countdown-widget:before{
+  background:
+    radial-gradient(78% 90% at 95% 2%,rgba(34,211,238,.15),transparent 56%),
+    radial-gradient(72% 100% at 2% 98%,rgba(139,92,246,.13),transparent 62%)!important;
+}
+html[data-fb-visual-theme="midnight-aurora"] .family-countdown-hero{
+  background:
+    linear-gradient(145deg,rgba(5,26,44,.45),rgba(14,20,59,.38))!important;
+  border-color:rgba(67,235,255,.50)!important;
+}
+html[data-fb-visual-theme="midnight-aurora"] .family-countdown-clock{
+  background:rgba(3,13,30,.48)!important;
+  border-color:rgba(85,238,255,.34)!important;
+}
+
+/* Birthdays: image remains quieter than Prayer, but should still be unmistakably scenic. */
+html[data-fb-visual-theme="midnight-aurora"] .desktop-widget:has(#desktopBirthdayRows){
+  background:
+    linear-gradient(145deg,rgba(5,13,33,.72) 0%,rgba(5,14,34,.38) 60%,rgba(3,11,27,.16) 100%),
+    url("../assets/midnight-aurora-scene.webp") 80% 72%/cover no-repeat!important;
+}
+html[data-fb-visual-theme="midnight-aurora"] .desktop-widget:has(#desktopBirthdayRows):before{
+  background:
+    radial-gradient(70% 90% at 2% 0%,rgba(139,92,246,.14),transparent 60%),
+    radial-gradient(72% 82% at 96% 8%,rgba(34,211,238,.10),transparent 64%)!important;
+}
+html[data-fb-visual-theme="midnight-aurora"] #desktopBirthdayRows .desktop-widget-row{
+  background:rgba(3,14,31,.46)!important;
+  border-color:rgba(103,232,249,.13)!important;
+}
+html[data-fb-visual-theme="midnight-aurora"] #desktopBirthdayRows .desktop-widget-row:hover{
+  background:rgba(8,27,51,.56)!important;
+}
+
+/* Slightly stronger photo colour only inside the scenic widgets. */
+html[data-fb-visual-theme="midnight-aurora"] .desktop-date-time-card,
+html[data-fb-visual-theme="midnight-aurora"] .family-prayer-widget,
+html[data-fb-visual-theme="midnight-aurora"] .family-countdown-widget,
+html[data-fb-visual-theme="midnight-aurora"] .desktop-widget:has(#desktopBirthdayRows){
+  background-blend-mode:normal!important;
+}
+
+/* Mobile/compact: keep enough contrast for small text while preserving scenery. */
+@media(max-width:1179px){
+  html[data-fb-visual-theme="midnight-aurora"] .family-prayer-slide{
+    background:rgba(3,15,30,.52)!important;
+  }
+  html[data-fb-visual-theme="midnight-aurora"] .family-countdown-hero{
+    background:rgba(6,24,45,.48)!important;
+  }
+  html[data-fb-visual-theme="midnight-aurora"] #desktopBirthdayRows .desktop-widget-row{
+    background:rgba(4,15,31,.52)!important;
+  }
+}
