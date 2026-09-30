@@ -39,7 +39,7 @@
     const caption=String(memory?.caption||memory?.story||"Family memory").trim()||"Family memory";
     const author=memory?.authorName||"Family member";
     return `<button class="home-memory-strip-card" type="button" data-home-memory-id="${esc(memory.id)}" aria-label="Open ${esc(caption)}">
-      <span class="home-memory-strip-media">${media.src?`<img src="${esc(media.src)}" alt="${esc(caption)}">`:`<span class="home-memory-strip-placeholder"><i data-lucide="image"></i></span>`}${media.video?`<span class="home-memory-strip-video"><i data-lucide="play"></i></span>`:""}</span>
+      <span class="home-memory-strip-media">${media.src?`<img src="${esc(media.src)}" loading="lazy" decoding="async" alt="${esc(caption)}">`:`<span class="home-memory-strip-placeholder"><i data-lucide="image"></i></span>`}${media.video?`<span class="home-memory-strip-video"><i data-lucide="play"></i></span>`:""}</span>
       <span class="home-memory-strip-author" title="${esc(author)}">${authorAvatar(memory)}</span>
       <span class="home-memory-strip-shade"></span>
       <span class="home-memory-strip-caption">${esc(caption)}</span>
