@@ -29,6 +29,7 @@ window.addEventListener("familybook:family-data-updated",()=>{
  }
 });
 function auth(){
+latestReleaseAlertShownThisSession=false;
 A.innerHTML=`<main class="login-page">
 <section class="login-photo"><img class="login-logo auth-logo original-login-logo" src="assets/logo/family-book-logo.png?v=login-default-logo-1" alt="Family Book"><div class="login-message"><h2 class="script">Family is everything.</h2><p>Our family. Our memories. Our story.</p></div></section>
 <section class="login-side"><div class="auth-card"><img class="mobile-logo auth-logo original-login-logo" src="assets/logo/family-book-logo.png?v=auth-default-logo-2" alt="Family Book">
@@ -48,14 +49,9 @@ A.innerHTML=`<main class="login-page">
 </a>
 </form>
 
-<a class="apk-download-cta" data-apk-download href="downloads/FamilyBook-Updater-1.1-debug.apk" download hidden>
+<a class="apk-download-cta" data-apk-download href="${FB_ANDROID_APK_URL}" download hidden>
   <span class="apk-download-icon"><i data-lucide="smartphone"></i></span>
-  <span><strong>Download Family Book for Android</strong><small>Version 1.1 · live updates enabled</small></span>
-  <i data-lucide="download"></i>
-</a>
-<a class="apk-download-cta" href="${FB_ANDROID_CACHE_TEST_URL}" download>
-  <span class="apk-download-icon"><i data-lucide="hard-drive-download"></i></span>
-  <span><strong>Download Family Book v1.4.2 Cache Test</strong><small>Installs beside your current app · native offline image cache</small></span>
+  <span><strong>Download Family Book v1.4.2</strong><small>Latest Android build · Share to FamilyBook · offline image cache</small></span>
   <i data-lucide="download"></i>
 </a>
         <button class="android-install-link" type="button" data-android-install-help>Install guide</button>
@@ -175,9 +171,9 @@ function setFamilyFormSaving(form,saving,label="Saving…"){
  }
 }
 
-const FB_ANDROID_APK_URL="downloads/FamilyBook-Updater-1.1-debug.apk";
-const FB_ANDROID_CACHE_TEST_URL="downloads/FamilyBook-v1.4.2-cache-test.apk";
-const FB_ANDROID_RELEASE_KEY="familybook_android_release_modal_2";
+const FB_ANDROID_LATEST_VERSION="1.4.2";
+const FB_ANDROID_APK_URL="downloads/FamilyBook-v1.4.2-cache-test.apk";
+const FB_ANDROID_RELEASE_KEY="familybook_android_release_modal_142";
 let fbAndroidApkAvailable=null;
 
 function runningInsideNativeApp(){
@@ -252,17 +248,16 @@ function showAndroidInstallSplash(force=false){
      <button class="android-install-close" type="button" aria-label="Close"><i data-lucide="x"></i></button>
      <div class="android-install-hero">
        <img class="android-install-logo" src="assets/logo/family-book-logo-dark-header.png" alt="Family Book">
-       <p>ANDROID UPDATE · VERSION 1.1</p>
-       <h2 id="androidInstallTitle">Family Book live updates are here</h2>
-       <span>Install this updater-enabled build once, then compatible Family Book interface updates can arrive automatically.</span>
+       <p>ANDROID APP · VERSION 1.4.2</p>
+       <h2 id="androidInstallTitle">Get the latest Family Book app</h2>
+       <span>Version 1.4.2 includes Share to FamilyBook, native offline image caching and the latest Google sign-in fixes.</span>
      </div>
      <details class="android-release-guide"><summary>How to install</summary>${androidInstallStepsHtml()}</details>
      <div class="android-install-actions">
-       <a class="primary" href="${FB_ANDROID_APK_URL}" download><i data-lucide="download"></i>Download Family Book</a>
-       <a class="secondary" href="${FB_ANDROID_CACHE_TEST_URL}" download><i data-lucide="hard-drive-download"></i>Download v1.4.2 Cache Test</a>
+       <a class="primary" href="${FB_ANDROID_APK_URL}" download><i data-lucide="download"></i>Download Family Book v1.4.2</a>
        <button class="secondary" type="button" data-android-not-now>Not now</button>
      </div>
-     <small class="android-install-note">Install this over your current Family Book app. Do not uninstall the existing app first. Android may ask you to allow this source once.</small>
+     <small class="android-install-note">If you already use an older Cache Test build, install v1.4.2 over it. Your normal Family Book app remains separate.</small>
    </section>`;
  document.body.appendChild(d);
  document.body.classList.add("android-release-open");
@@ -300,7 +295,73 @@ async function initAndroidDownloadUi(){
    btn.hidden=false;
    btn.onclick=showAndroidInstallHelp;
  });
- setTimeout(()=>showAndroidInstallSplash(false),450);
+ }
+
+
+let latestReleaseAlertShownThisSession=false;
+
+function numericVersionParts(v){
+ return String(v||"0").match(/\d+/g)?.slice(0,3).map(Number)||[0];
+}
+function isVersionOlder(current,latest){
+ const a=numericVersionParts(current),b=numericVersionParts(latest);
+ for(let i=0;i<3;i++){
+   const av=a[i]||0,bv=b[i]||0;
+   if(av!==bv)return av<bv;
+ }
+ return false;
+}
+async function nativeAppInfo(){
+ if(!runningInsideNativeApp())return null;
+ try{return await window.FB_NATIVE?.App?.getInfo?.()||null}catch(_){return null}
+}
+function latestApkAbsoluteUrl(){
+ try{return new URL(FB_ANDROID_APK_URL,window.FB_SUPABASE_CONFIG?.productionUrl||location.href).href}
+ catch(_){return FB_ANDROID_APK_URL}
+}
+async function showLatestReleaseAlert(){
+ if(window.FB_DEMO_MODE||latestReleaseAlertShownThisSession||document.querySelector("#latestReleaseAlert"))return;
+ const nativeInfo=await nativeAppInfo();
+ const isNative=!!nativeInfo||runningInsideNativeApp();
+ if(isNative&&!isVersionOlder(nativeInfo?.version||"",FB_ANDROID_LATEST_VERSION))return;
+
+ latestReleaseAlertShownThisSession=true;
+ const d=document.createElement("dialog");
+ d.id="latestReleaseAlert";
+ d.className="android-install-backdrop android-release-modal";
+ d.setAttribute("aria-labelledby","latestReleaseTitle");
+ const current=nativeInfo?.version?String(nativeInfo.version).replace(/-cache$/i,""):"";
+ d.innerHTML=`
+   <section class="android-install-splash">
+     <button class="android-install-close" type="button" aria-label="Close"><i data-lucide="x"></i></button>
+     <div class="android-install-hero">
+       <img class="android-install-logo" src="assets/logo/family-book-logo-dark-header.png" alt="Family Book">
+       <p>${isNative?"APP UPDATE AVAILABLE":"LATEST ANDROID APP"} · VERSION ${FB_ANDROID_LATEST_VERSION}</p>
+       <h2 id="latestReleaseTitle">${isNative?"A newer Family Book app is available":"Family Book v"+FB_ANDROID_LATEST_VERSION+" is available"}</h2>
+       <span>${isNative?(current?"You are using v"+current+". ":"")+"Update to the latest build for Google sign-in fixes, Share to FamilyBook and offline image caching.":"Download the latest Android app with Share to FamilyBook, offline image caching and the newest sign-in fixes."}</span>
+     </div>
+     <div class="android-install-actions">
+       <button class="primary" type="button" data-latest-apk><i data-lucide="download"></i>${isNative?"Update to v":"Download v"}${FB_ANDROID_LATEST_VERSION}</button>
+       <button class="secondary" type="button" data-latest-later>Not now</button>
+     </div>
+     <small class="android-install-note">${isNative?"Install the new APK over your older Cache Test build.":"Android download only. You can dismiss this alert and continue using the website."}</small>
+   </section>`;
+ document.body.appendChild(d);
+ document.body.classList.add("android-release-open");
+ d.showModal();
+ const close=()=>{d.close();d.remove();document.body.classList.remove("android-release-open")};
+ d.addEventListener("cancel",e=>{e.preventDefault();close()});
+ d.querySelector(".android-install-close")?.addEventListener("click",close);
+ d.querySelector("[data-latest-later]")?.addEventListener("click",close);
+ d.querySelector("[data-latest-apk]")?.addEventListener("click",async()=>{
+   const url=latestApkAbsoluteUrl();
+   if(isNative&&window.FB_NATIVE?.Browser?.open){
+     try{await window.FB_NATIVE.Browser.open({url})}catch(_){location.href=url}
+   }else{
+     const a=document.createElement("a");a.href=url;a.download="FamilyBook-v1.4.2-cache-test.apk";document.body.appendChild(a);a.click();a.remove();
+   }
+ });
+ window.icons?.();
 }
 
 function shell(){window.FB_INVITES?.ensureCurrentAccount?.();let fam=esc(familyLabel()),initials=userInitials();A.innerHTML=`<div class="app"><header class="topbar"><button class="brand-home" data-r="home" aria-label="Go to Family Book Home"><span class="brand-logo-wrap"><img class="theme-logo theme-logo-light" src="assets/logo/family-book-logo-header.png" alt="Family Book"><img class="theme-logo theme-logo-dark" src="assets/logo/family-book-logo-dark-header.png" alt="Family Book"></span><span class="brand-tagline">OUR FAMILY <b>•</b> OUR MEMORIES <b>•</b> OUR STORY</span></button><div class="actions profile-actions"><button class="notify circle" id="topNotificationButton" aria-label="Notification settings"><i data-lucide="bell"></i></button><button class="circle avatar" id="topProfileButton" data-current-user-avatar aria-label="Open profile menu" aria-haspopup="menu" aria-expanded="false">${userAvatarHtml()}</button>${window.FB_SETTINGS?.menuShell?.()||""}</div></header><main id="screen" class="screen"></main><nav class="bottom" aria-label="Main navigation"><button class="nav active" data-r="home"><i data-lucide="house"></i><small>Home</small></button><button class="nav" data-r="memories"><i data-lucide="images"></i><small>Memories</small></button><button class="nav" data-r="tree"><i data-lucide="git-fork"></i><small>Tree</small></button><button class="nav" data-r="calendar"><i data-lucide="calendar-days"></i><small>Calendar</small></button><button class="nav family-fun-nav" data-r="family-fun"><i data-lucide="sparkles"></i><small>Family Fun</small></button><button class="nav members-nav" data-r="members"><i data-lucide="users-round"></i><small>Members</small></button><button class="nav" data-r="profile"><i data-lucide="user-round"></i><small>Profile</small></button></nav></div>`;document.querySelectorAll("[data-r]").forEach(b=>b.onclick=()=>go(b.dataset.r));icons();window.FB_SETTINGS?.bindMenu?.();document.querySelector("#topNotificationButton")?.addEventListener("click",()=>go("notifications"));window.FB_NOTIFICATIONS?.refreshBadge?.();go("home",{skipFamilyRefresh:true});initAndroidDownloadUi()}
@@ -1526,6 +1587,7 @@ async function routeAfterBackendAuth(){
 
  cleanupLegacyBrowserData();
  shell();
+ setTimeout(()=>showLatestReleaseAlert().catch(err=>console.warn("Latest app alert:",err)),300);
 
  const withTimeout=(promise,ms,label)=>Promise.race([
    Promise.resolve(promise),
