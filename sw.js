@@ -98,7 +98,7 @@ self.addEventListener('message',event=>{
 });
 
 
-const FB_APP_CACHE = 'family-book-app-v1';
+const FB_APP_CACHE = 'family-book-app-v2';
 
 async function cacheShellResponse(request,response){
   if(!response||(response.status!==200&&response.type!=='opaque'))return;
