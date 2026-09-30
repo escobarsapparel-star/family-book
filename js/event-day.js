@@ -20,16 +20,46 @@
   function isBirthday(row){
     return row?.kind==="birthday"||String(row?.id||"").startsWith("birthday:");
   }
-  function isTravel(row){
+  function isAnniversary(row){
     if(isBirthday(row))return false;
+    return row?.derivedMarriage===true||
+      String(row?.type||"").toLowerCase()==="anniversary"||
+      String(row?.id||"").startsWith("marriage_anniversary_");
+  }
+  function isTravel(row){
+    if(isBirthday(row)||isAnniversary(row))return false;
     const hay=`${row?.title||""} ${row?.location||""} ${row?.type||""}`.toLowerCase();
     return String(row?.type||"").toLowerCase()==="holiday"||
       /\b(trip|travel|vacation|holiday|holidaying|flight|airport|resort|cruise|getaway|road\s*trip|weekend\s*away)\b/.test(hay);
   }
   function eventTheme(row){
     if(isBirthday(row))return "birthday";
+    if(isAnniversary(row))return "anniversary";
     if(isTravel(row))return "travel";
     return "family";
+  }
+  function anniversaryPeople(row){
+    const ids=Array.isArray(row?.memberIds)?row.memberIds.map(String):[];
+    if(!ids.length)return [];
+    try{
+      const list=window.ensureOwner?.()||[];
+      return ids.map(id=>list.find(p=>String(p.id)===id)).filter(Boolean).slice(0,2);
+    }catch(_){return []}
+  }
+  function anniversaryNames(row){
+    const names=anniversaryPeople(row).map(p=>String(p.name||"").trim()).filter(Boolean);
+    return names.length?names.join(" & "):String(row?.title||"Wedding Anniversary").replace(/\s*[—-]\s*Wedding Anniversary\s*$/i,"").trim();
+  }
+  function anniversaryYears(row){
+    const source=String(row?.marriageDate||row?.sourceDate||"");
+    const match=source.match(/^(\d{4})-/);if(!match)return 0;
+    const current=String(row?.date||ymd()).match(/^(\d{4})-/);
+    const years=(current?Number(current[1]):new Date().getFullYear())-Number(match[1]);
+    return years>0?years:0;
+  }
+  function ordinal(n){
+    const v=n%100;if(v>=11&&v<=13)return `${n}th`;
+    return `${n}${n%10===1?"st":n%10===2?"nd":n%10===3?"rd":"th"}`;
   }
   function memberForBirthday(row){
     const id=String(row?.memberId||String(row?.id||"").split(":")[1]||"");
@@ -92,42 +122,57 @@
 
   function welcomeMarkup(row){
     const theme=eventTheme(row);
-    const travel=theme==="travel",birthday=theme==="birthday";
+    const travel=theme==="travel",birthday=theme==="birthday",anniversary=theme==="anniversary";
     const person=birthday?memberForBirthday(row):null;
     const birthdayGender=birthday?birthdayGenderTheme(person):"neutral";
     const destination=row.location||"Today's adventure";
     const birthdayName=person?.name||String(row.title||"Birthday").replace(/['’]s birthday$/i,"");
+    const couple=anniversary?anniversaryPeople(row):[];
+    const coupleNames=anniversary?anniversaryNames(row):"";
+    const years=anniversary?anniversaryYears(row):0;
+    const confetti=Array.from({length:12},(_,i)=>`<span class="fb-confetti k${i+1}"></span>`).join("");
+    const loveHearts=Array.from({length:10},(_,i)=>`<span class="fb-love-heart h${i+1}">♥</span>`).join("");
     const motion=birthday
-      ? `<div class="fb-event-party-layer birthday-${birthdayGender}" aria-hidden="true"><span class="fb-balloon b1">●</span><span class="fb-balloon b2">●</span><span class="fb-balloon b3">●</span><span class="fb-confetti k1"></span><span class="fb-confetti k2"></span><span class="fb-confetti k3"></span><span class="fb-confetti k4"></span><span class="fb-confetti k5"></span><span class="fb-confetti k6"></span></div>`
-      : travel
-        ? `<div class="fb-event-flight-layer" aria-hidden="true"><span class="fb-event-flight-trail"></span><span class="fb-event-plane">✈</span><span class="fb-event-cloud c1"></span><span class="fb-event-cloud c2"></span><span class="fb-event-cloud c3"></span></div>`
-        : "";
+      ? `<div class="fb-event-party-layer birthday-${birthdayGender}" aria-hidden="true"><span class="fb-balloon b1">●</span><span class="fb-balloon b2">●</span><span class="fb-balloon b3">●</span>${confetti}</div>`
+      : anniversary
+        ? `<div class="fb-anniversary-celebration-layer" aria-hidden="true">${loveHearts}<span class="fb-screen-ring-pair r1"></span><span class="fb-screen-ring-pair r2"></span><span class="fb-screen-ring-pair r3"></span></div>`
+        : travel
+          ? `<div class="fb-event-flight-layer" aria-hidden="true"><span class="fb-event-flight-trail"></span><span class="fb-event-plane">✈</span><span class="fb-event-cloud c1"></span><span class="fb-event-cloud c2"></span><span class="fb-event-cloud c3"></span></div>`
+          : "";
+    const couplePhotos=anniversary&&couple.length
+      ? `<span class="fb-anniversary-couple">${couple.map((p,i)=>p.photo?`<span class="fb-anniversary-person p${i+1}"><img src="${esc(p.photo)}" alt=""></span>`:"").join("")}<span class="fb-anniversary-mini-heart">♥</span></span>`
+      : "";
     const art=birthday
       ? `<div class="fb-event-day-art fb-birthday-art birthday-${birthdayGender}"><span class="fb-birthday-glow"></span><span class="fb-birthday-cake">🎂</span>${person?.photo?`<span class="fb-birthday-person"><img src="${esc(person.photo)}" alt=""></span>`:""}<span class="fb-birthday-stars">✦ ✧ ✦</span></div>`
-      : travel
-        ? `<div class="fb-event-day-art fb-travel-art"><span class="fb-event-sun"></span><span class="fb-event-island island-a"></span><span class="fb-event-island island-b"></span><span class="fb-event-water"></span><span class="fb-event-palm palm-a">🌴</span><span class="fb-event-palm palm-b">🌴</span><span class="fb-event-suitcase">🧳</span><span class="fb-event-pin"><i data-lucide="map-pin"></i>${esc(destination)}</span></div>`
-        : `<div class="fb-event-day-art fb-family-art"><span class="fb-family-event-orbit"></span><span class="fb-family-event-icon"><i data-lucide="heart-handshake"></i></span><span class="fb-family-event-spark s1">✦</span><span class="fb-family-event-spark s2">✧</span><span class="fb-family-event-spark s3">✦</span></div>`;
-    const kicker=birthday?"TODAY WE CELEBRATE":"TODAY'S FAMILY EVENT";
-    const title=birthday?`${birthdayName}'s Birthday`:(row.title||"Family event");
-    const ribbon=birthday?"Happy Birthday!":travel?"Bon Voyage!":"Make today a memory!";
+      : anniversary
+        ? `<div class="fb-event-day-art fb-anniversary-art"><span class="fb-anniversary-glow"></span><span class="fb-anniversary-petal p1">♥</span><span class="fb-anniversary-petal p2">♥</span><span class="fb-anniversary-petal p3">♥</span><span class="fb-anniversary-rings"><span></span><span></span></span>${couplePhotos}<span class="fb-anniversary-script">Together in every chapter</span></div>`
+        : travel
+          ? `<div class="fb-event-day-art fb-travel-art"><span class="fb-event-sun"></span><span class="fb-event-island island-a"></span><span class="fb-event-island island-b"></span><span class="fb-event-water"></span><span class="fb-event-palm palm-a">🌴</span><span class="fb-event-palm palm-b">🌴</span><span class="fb-event-suitcase">🧳</span><span class="fb-event-pin"><i data-lucide="map-pin"></i>${esc(destination)}</span></div>`
+          : `<div class="fb-event-day-art fb-family-art"><span class="fb-family-event-orbit"></span><span class="fb-family-event-icon"><i data-lucide="heart-handshake"></i></span><span class="fb-family-event-spark s1">✦</span><span class="fb-family-event-spark s2">✧</span><span class="fb-family-event-spark s3">✦</span></div>`;
+    const kicker=birthday?"TODAY WE CELEBRATE":anniversary?"CELEBRATING LOVE":"TODAY'S FAMILY EVENT";
+    const title=birthday?`${birthdayName}'s Birthday`:anniversary?(coupleNames||"Wedding Anniversary"):(row.title||"Family event");
+    const ribbon=birthday?"Happy Birthday!":anniversary?(years?`Happy ${ordinal(years)} Anniversary!`:"Happy Anniversary!"):travel?"Bon Voyage!":"Make today a memory!";
     const message=birthday
       ? `Make ${birthdayName}'s special day part of the family story.`
-      : travel?"Wishing them a safe and beautiful journey.":"A special family moment is happening today.";
-    const viewLabel=birthday?"View birthday":"View event";
-    const captureLabel=birthday?"Capture Birthday":"Capture the Day";
-    return `<div class="fb-event-day-overlay" role="dialog" aria-modal="true" aria-label="${birthday?"Today's birthday":"Today's family event"}">
+      : anniversary
+        ? "Celebrating another beautiful year of love, memories and life together."
+        : travel?"Wishing them a safe and beautiful journey.":"A special family moment is happening today.";
+    const viewLabel=birthday?"View birthday":anniversary?"View anniversary":"View event";
+    const captureLabel=birthday?"Capture Birthday":anniversary?"Capture the Love":"Capture the Day";
+    const icon=birthday?"cake-slice":anniversary?"heart":travel?"plane":"sparkles";
+    return `<div class="fb-event-day-overlay" role="dialog" aria-modal="true" aria-label="${birthday?"Today's birthday":anniversary?"Today's anniversary":"Today's family event"}">
       ${motion}
       <section class="fb-event-day-card is-${theme} ${birthday?`birthday-${birthdayGender}`:""}">
         <button type="button" class="fb-event-day-close" aria-label="Close"><i data-lucide="x"></i></button>
         ${art}
         <div class="fb-event-day-copy">
-          <p class="fb-event-kicker"><i data-lucide="${birthday?"cake-slice":travel?"plane":"sparkles"}"></i> ${kicker}</p>
+          <p class="fb-event-kicker"><i data-lucide="${icon}"></i> ${kicker}</p>
           <h2>${esc(title)}</h2>
-          <p class="fb-event-meta">${birthday?"Today":esc(eventSubtitle(row))}</p>
+          <p class="fb-event-meta">${birthday?"Today":anniversary?(years?`${ordinal(years)} year together · Today`:"Today"):esc(eventSubtitle(row))}</p>
           <strong class="fb-event-bonvoyage">${ribbon}</strong>
           <p>${esc(message)}</p>
           <div class="fb-event-day-actions">
-            <button type="button" class="primary fb-event-view"><i data-lucide="${birthday?"cake-slice":"calendar-heart"}"></i><span>${viewLabel}</span></button>
+            <button type="button" class="primary fb-event-view"><i data-lucide="${birthday?"cake-slice":anniversary?"heart":"calendar-heart"}"></i><span>${viewLabel}</span></button>
             <button type="button" class="secondary fb-event-capture"><i data-lucide="camera"></i><span>${captureLabel}</span></button>
           </div>
         </div>
@@ -189,7 +234,7 @@
 
   function detailThemeMarkup(row){
     const theme=eventTheme(row);
-    const birthday=theme==="birthday",travel=theme==="travel";
+    const birthday=theme==="birthday",anniversary=theme==="anniversary",travel=theme==="travel";
     const person=birthday?memberForBirthday(row):null;
     const birthdayGender=birthday?birthdayGenderTheme(person):"neutral";
     const destination=row.location||"Family adventure";
@@ -200,6 +245,18 @@
         ${person?.photo?`<span class="fb-detail-person"><img src="${esc(person.photo)}" alt=""></span>`:""}
         <span class="fb-detail-cake">🎂</span>
         <span class="fb-detail-hero-label"><i data-lucide="cake-slice"></i> Birthday celebration</span>
+      </div>`;
+    }
+    if(anniversary){
+      const couple=anniversaryPeople(row);
+      const names=anniversaryNames(row);
+      const photos=couple.map((p,i)=>p.photo?`<span class="fb-detail-anniversary-person p${i+1}"><img src="${esc(p.photo)}" alt=""></span>`:"").join("");
+      return `<div class="fb-event-detail-hero is-anniversary">
+        <span class="fb-detail-anniversary-glow"></span>
+        <span class="fb-detail-heart a1">♥</span><span class="fb-detail-heart a2">♥</span><span class="fb-detail-heart a3">♥</span><span class="fb-detail-heart a4">♥</span>
+        <span class="fb-detail-rings"><span></span><span></span></span>
+        ${photos?`<span class="fb-detail-anniversary-couple">${photos}<b>♥</b></span>`:""}
+        <span class="fb-detail-hero-label"><i data-lucide="heart"></i>${esc(names||"Wedding Anniversary")}</span>
       </div>`;
     }
     if(travel){
