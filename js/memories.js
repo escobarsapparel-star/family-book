@@ -580,6 +580,15 @@
 
   async function mountDetail(id){
     cleanupUrls();const mount=document.querySelector("#memoryDetailMount");if(!mount)return;
+    const hasGps=meta=>Number.isFinite(Number(meta?.gpsLat))&&Number.isFinite(Number(meta?.gpsLng));
+    const gpsLabel=meta=>{
+      if(!hasGps(meta))return "";
+      const lat=Number(meta.gpsLat),lng=Number(meta.gpsLng);
+      const coord=`${Math.abs(lat).toFixed(5)}° ${lat<0?"S":"N"}, ${Math.abs(lng).toFixed(5)}° ${lng<0?"W":"E"}`;
+      const altitude=Number.isFinite(Number(meta.gpsAltitude))?` · ${Math.round(Number(meta.gpsAltitude))} m`:"";
+      return coord+altitude;
+    };
+    const gpsMapUrl=meta=>hasGps(meta)?`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(`${Number(meta.gpsLat)},${Number(meta.gpsLng)}`)}`:"";
     try{
       const m=await getOne(id);if(!m){mount.innerHTML=`<div class="memory-error"><h3>Memory not found</h3><button class="primary" data-r="memories">Back to memories</button></div>`;rebindRoutes();return}
       const members=window.ensureOwner?.()||[],byId=Object.fromEntries(members.map(x=>[x.id,x]));
