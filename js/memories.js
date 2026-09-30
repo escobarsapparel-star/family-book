@@ -617,20 +617,55 @@
           : `<img id="memoryDetailMainPhoto" src="${src}" alt="${label}">`;
       };
       mount.className="memory-detail-card";
-      mount.innerHTML=`<div class="memory-detail-gallery"><div class="memory-detail-photo" id="memoryDetailStage">${mediaStage(0)}${photos.length>1?`<span class="memory-detail-counter">1 / ${photos.length}</span>`:""}</div>${photos.length>1?`<div class="memory-detail-thumbs">${photos.map((p,i)=>`<button type="button" class="${i===0?"active":""}" data-photo-index="${i}" aria-label="View media ${i+1}"><img src="${thumbUrls[i]}" alt="Media ${i+1}">${p.kind==="video"?`<span class="memory-thumb-play"><i data-lucide="play"></i></span>`:""}</button>`).join("")}</div>`:""}</div><div class="memory-detail-copy"><div class="memory-detail-head"><div><p class="eyebrow">FAMILY MEMORY</p><h1>${e(m.caption||"A family moment")}</h1><p class="memory-detail-date"><i data-lucide="calendar-days"></i>${e(formatDateTime(m.date,m.time))}</p></div><button class="secondary icon-button" data-r="edit-memory:${e(m.id)}" aria-label="Edit memory"><i data-lucide="pencil"></i></button></div>${tags.length?`<div class="memory-detail-tags"><span>In this memory</span><div>${tags.map(x=>`<button class="${x.profileType==="history"?"memory-history-person":""}" data-r="view-member:${e(x.id)}">${x.photo?`<img src="${x.photo}" alt="">`:`<b>${initials(x.name)}</b>`}<strong>${e(x.name)}</strong>${x.profileType==="history"?`<small><i data-lucide="leaf"></i>Family history</small>`:""}</button>`).join("")}</div></div>`:""}<div class="memory-detail-meta"><div><i data-lucide="files"></i><span>Media</span><strong>${photos.length}</strong></div><div><i data-lucide="clock-3"></i><span>Date & time</span><strong>${e(formatDateTime(m.date,m.time))}</strong></div><div><i data-lucide="scan-line"></i><span>Date source</span><strong>${e(sourceLabel(m.dateSource))}</strong></div></div><div id="memoryExifDetails" class="memory-exif-details"></div>${window.FB_REACTIONS?.controlsHtml?.(`memory:${m.id}`)||""}${window.FB_COMMENTS?.threadHtml?.(`memory:${m.id}`,{open:true})||""}<div class="memory-detail-actions"><button class="secondary" data-r="edit-memory:${e(m.id)}"><i data-lucide="pencil"></i>Edit memory</button><button class="memory-delete" id="deleteMemory"><i data-lucide="trash-2"></i>Delete</button></div></div>`;
+      mount.innerHTML=`<div class="memory-detail-gallery"><div class="memory-detail-photo" id="memoryDetailStage">${mediaStage(0)}${photos.length>1?`<span class="memory-detail-counter">1 / ${photos.length}</span>`:""}</div>${photos.length>1?`<div class="memory-detail-thumbs">${photos.map((p,i)=>`<button type="button" class="${i===0?"active":""}" data-photo-index="${i}" aria-label="View media ${i+1}"><img src="${thumbUrls[i]}" alt="Media ${i+1}">${p.kind==="video"?`<span class="memory-thumb-play"><i data-lucide="play"></i></span>`:""}</button>`).join("")}</div>`:""}</div><div class="memory-detail-copy"><div class="memory-detail-head"><div><p class="eyebrow">FAMILY MEMORY</p><h1>${e(m.caption||"A family moment")}</h1><p class="memory-detail-date"><i data-lucide="calendar-days"></i>${e(formatDateTime(m.date,m.time))}</p></div><button class="secondary icon-button" data-r="edit-memory:${e(m.id)}" aria-label="Edit memory"><i data-lucide="pencil"></i></button></div>${tags.length?`<div class="memory-detail-tags"><span>In this memory</span><div>${tags.map(x=>`<button class="${x.profileType==="history"?"memory-history-person":""}" data-r="view-member:${e(x.id)}">${x.photo?`<img src="${x.photo}" alt="">`:`<b>${initials(x.name)}</b>`}<strong>${e(x.name)}</strong>${x.profileType==="history"?`<small><i data-lucide="leaf"></i>Family history</small>`:""}</button>`).join("")}</div></div>`:""}<div class="memory-detail-meta"><div><i data-lucide="files"></i><span>Media</span><strong>${photos.length}</strong></div><div><i data-lucide="clock-3"></i><span>Date & time</span><strong>${e(formatDateTime(m.date,m.time))}</strong></div><div><i data-lucide="scan-line"></i><span>Date source</span><strong>${e(sourceLabel(m.dateSource))}</strong></div></div><div id="memoryExifDetails" class="memory-exif-details"></div>${window.FB_REACTIONS?.controlsHtml?.(`memory:${m.id}`)||""}${window.FB_COMMENTS?.threadHtml?.(`memory:${m.id}`,{open:true})||""}<div class="memory-detail-actions"><button class="secondary" data-r="edit-memory:${e(m.id)}"><i data-lucide="pencil"></i>Edit memory</button><button class="secondary" id="downloadMemoryMedia"><i data-lucide="download"></i><span>Download image</span></button><button class="memory-delete" id="deleteMemory"><i data-lucide="trash-2"></i>Delete</button></div></div>`;
       rebindRoutes();window.FB_REACTIONS?.bind?.(mount);window.FB_COMMENTS?.bind?.(mount);window.icons?.();
-      const stage=mount.querySelector("#memoryDetailStage"),counter=mount.querySelector(".memory-detail-counter"),exifDetails=mount.querySelector("#memoryExifDetails");
+      const stage=mount.querySelector("#memoryDetailStage"),counter=mount.querySelector(".memory-detail-counter"),exifDetails=mount.querySelector("#memoryExifDetails"),downloadBtn=mount.querySelector("#downloadMemoryMedia");
+      let activeMediaIndex=0;
+      const cleanDownloadName=value=>String(value||"Memory").trim().replace(/[^a-z0-9]+/gi,"-").replace(/^-+|-+$/g,"").slice(0,60)||"Memory";
+      const downloadExt=(blob,p)=>{
+        const type=String(blob?.type||p?.meta?.type||"").toLowerCase();
+        if(type.includes("png"))return"png";
+        if(type.includes("webp"))return"webp";
+        if(type.includes("gif"))return"gif";
+        if(type.includes("quicktime"))return"mov";
+        if(type.includes("webm"))return"webm";
+        if(type.includes("mp4"))return"mp4";
+        return p?.kind==="video"?"mp4":"jpg";
+      };
+      const updateDownloadButton=index=>{
+        activeMediaIndex=index;
+        const p=photos[index]||photos[0];
+        const label=p?.kind==="video"?"Download video":"Download image";
+        const span=downloadBtn?.querySelector("span");if(span)span.textContent=label;
+        if(downloadBtn)downloadBtn.setAttribute("aria-label",label);
+      };
+      const downloadCurrentMedia=async()=>{
+        const index=activeMediaIndex,p=photos[index]||photos[0];if(!p)return;
+        const oldHtml=downloadBtn?.innerHTML;
+        if(downloadBtn){downloadBtn.disabled=true;downloadBtn.innerHTML='<i data-lucide="loader-circle"></i><span>Preparing…</span>';window.icons?.()}
+        try{
+          const path=p.meta?.storagePath||"";
+          let blob=null;
+          if(path&&window.FB_MEDIA?.download)blob=await window.FB_MEDIA.download(path);
+          if(!blob){const response=await fetch(fullUrls[index]);if(!response.ok)throw new Error("Could not download this media.");blob=await response.blob()}
+          const ext=downloadExt(blob,p),datePart=m.date?String(m.date)+"-":"";
+          const filename=`FamilyBook-${datePart}${cleanDownloadName(m.caption||"Memory")}${photos.length>1?`-${index+1}`:""}.${ext}`;
+          const url=URL.createObjectURL(blob),a=document.createElement("a");
+          a.href=url;a.download=filename;document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(url),1500);
+        }catch(err){alert(err?.message||"Could not download this media.")}
+        finally{if(downloadBtn){downloadBtn.disabled=false;downloadBtn.innerHTML=oldHtml||'<i data-lucide="download"></i><span>Download image</span>';updateDownloadButton(activeMediaIndex);window.icons?.()}}
+      };
+      downloadBtn?.addEventListener("click",downloadCurrentMedia);
       const renderSavedMediaDetails=index=>{
         const p=photos[index]||photos[0],meta=p?.meta||{};
         const rows=[];
         if(meta.detectedDate)rows.push(`<div><i data-lucide="clock-3"></i><span><small>Date taken</small><strong>${e(formatDateTime(meta.detectedDate,meta.detectedTime||""))}</strong></span></div>`);
         if(hasGps(meta))rows.push(`<div><i data-lucide="map-pin"></i><span><small>Photo location</small><strong>${e(gpsLabel(meta))}</strong><a href="${gpsMapUrl(meta)}" target="_blank" rel="noopener">Open in Google Maps</a></span></div>`);
-        if(meta.name)rows.push(`<div><i data-lucide="file-image"></i><span><small>Original file</small><strong>${e(meta.name)}</strong></span></div>`);
         exifDetails.innerHTML=rows.length?`<div class="memory-exif-title"><i data-lucide="scan-line"></i><strong>${photos.length>1?`Media ${index+1} details`:"Photo details"}</strong></div><div class="memory-exif-grid">${rows.join("")}</div>`:"";
         exifDetails.classList.toggle("hidden",!rows.length);
         window.icons?.();
       };
-      renderSavedMediaDetails(0);
+      renderSavedMediaDetails(0);updateDownloadButton(0);
       mount.querySelectorAll("[data-photo-index]").forEach(btn=>btn.onclick=()=>{
         const index=Number(btn.dataset.photoIndex)||0;
         stage.querySelector("video")?.pause();
@@ -638,7 +673,7 @@
         stage.insertAdjacentHTML("afterbegin",mediaStage(index));
         mount.querySelectorAll("[data-photo-index]").forEach(x=>x.classList.toggle("active",x===btn));
         if(counter)counter.textContent=`${index+1} / ${photos.length}`;
-        renderSavedMediaDetails(index);
+        renderSavedMediaDetails(index);updateDownloadButton(index);
         window.icons?.();
       });
       mount.querySelector("#deleteMemory").onclick=async()=>{if(!confirm("Delete this memory from Family Book?"))return;await remove(m.id);window.go?.("memories")};
