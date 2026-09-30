@@ -2,16 +2,10 @@ name: Capture FamilyBook marketing media
 
 on:
   workflow_dispatch:
-  push:
-    branches: [main]
-    paths:
-      - ".github/workflows/marketing-capture.yml"
-      - "scripts/marketing/**"
-      - "demo/**"
-      - "assets/**"
-      - "css/**"
-      - "js/**"
-      - "index.html"
+
+concurrency:
+  group: familybook-marketing-capture
+  cancel-in-progress: true
 
 permissions:
   contents: write
