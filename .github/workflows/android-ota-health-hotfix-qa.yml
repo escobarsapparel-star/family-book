@@ -1,0 +1,37 @@
+name: Android OTA Health Hotfix QA
+
+on:
+  push:
+    branches: [fix/android-ota-health]
+
+permissions:
+  contents: read
+
+jobs:
+  ota-health-qa:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+          cache: npm
+          cache-dependency-path: android-app/package-lock.json
+      - name: Install Android web dependencies
+        run: npm ci
+        working-directory: android-app
+      - name: Run updater tests
+        run: npm test
+        working-directory: android-app
+      - name: Prepare Android bundle
+        run: npm run prepare:web
+        working-directory: android-app
+      - name: Verify hotfix contents
+        shell: bash
+        run: |
+          grep -q "window.go=go" android-app/www/js/app.js
+          grep -q "FB_AUTH?.init" android-app/update-client.mjs
+          ! grep -q "typeof window.go === 'function'" android-app/update-client.mjs
+          grep -q "register_push_device" android-app/www/js/apk-native-enhancements.js
+          cat android-app/bundle-info.json
