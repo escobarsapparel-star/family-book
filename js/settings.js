@@ -184,7 +184,7 @@
         <i data-lucide="circle-check"></i><span>Ready to check for updates.</span>
       </div>
       <button type="button" class="secondary fb-native-update-button" id="checkFamilyBookUpdate"><i data-lucide="refresh-cw"></i><span>Check for updates</span></button>
-      <a class="secondary fb-native-update-button" id="installFamilyBook143" href="/downloads/FamilyBook-v1.4.3-cache-test.apk" download>
+      <a class="secondary fb-native-update-button" id="installFamilyBook143" href="https://familybook.co.za/downloads/FamilyBook-v1.4.3-cache-test.apk" download>
         <i data-lucide="smartphone-download"></i><span>Install Android 1.4.3 test</span>
       </a>
       <p class="settings-note"><i data-lucide="info"></i>This 1.4.3 test installer contains the fullscreen fix and installs as a separate test app. A production in-place APK requires the existing Family Book signing key.</p>
@@ -194,7 +194,7 @@
   function androidInstallerShell(){
     return `<section class="settings-card fb-native-update-card" id="settingsAndroidInstaller">
       <div class="settings-card-head"><span class="settings-card-icon"><i data-lucide="smartphone"></i></span><div><p>ANDROID APP</p><h2>Install Family Book 1.4.3</h2><span>Get the Android 1.4.3 test installer with the fullscreen fix for tall phone displays such as the OPPO Reno 7 5G.</span></div></div>
-      <a class="secondary fb-native-update-button" id="installFamilyBook143" href="/downloads/FamilyBook-v1.4.3-cache-test.apk" download>
+      <a class="secondary fb-native-update-button" id="installFamilyBook143" href="https://familybook.co.za/downloads/FamilyBook-v1.4.3-cache-test.apk" download>
         <i data-lucide="smartphone-download"></i><span>Install Android 1.4.3 test</span>
       </a>
       <p class="settings-note"><i data-lucide="info"></i>This test build installs as a separate Family Book app. A production in-place APK must be signed with the same production key as your current Family Book installation.</p>
