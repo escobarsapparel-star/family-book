@@ -1,4 +1,5 @@
 name: Build Android updater APK
+# Rebuild marker: cache-test OAuth package callback
 on:
   workflow_dispatch:
   push:
