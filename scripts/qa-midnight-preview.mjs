@@ -37,12 +37,19 @@ try{
   await page.waitForSelector("#profilePopover:not([hidden])");
   await responsive("profile-popover");
 
-  await page.locator('#profilePopover [data-profile-route="settings"]').click();
-  await page.waitForSelector(".settings-page");
-  await responsive("settings-loaded");
+  // Guest Demo intentionally does not validate Settings/auth/backend flows.
+  // Continue visual QA on routes that are representative of the preview.
+  await page.locator('.desktop-top-nav [data-desktop-route="memories"]').click();
+  await page.waitForTimeout(250);
+  await responsive("memories");
 
-  await page.waitForSelector("#settingsVisualThemes");
-  await responsive("settings-theme-card");
+  await page.locator('.desktop-top-nav [data-desktop-route="calendar"]').click();
+  await page.waitForTimeout(250);
+  await responsive("calendar");
+
+  await page.locator('.desktop-top-nav [data-desktop-route="members"]').click();
+  await page.waitForTimeout(250);
+  await responsive("members");
 
   await page.screenshot({path:"midnight-preview-qa.png",fullPage:true});
   console.log("QA_PASS");
