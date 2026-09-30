@@ -32,7 +32,7 @@ function auth(){
 latestReleaseAlertShownThisSession=false;
 A.innerHTML=`<main class="login-page">
 <section class="login-photo"><img class="login-logo auth-logo original-login-logo" src="assets/logo/family-book-logo.png?v=login-default-logo-1" alt="Family Book"><div class="login-message"><h2 class="script">Family is everything.</h2><p>Our family. Our memories. Our story.</p></div></section>
-<section class="login-side"><div class="auth-card"><img class="mobile-logo auth-logo original-login-logo" src="assets/logo/family-book-logo.png?v=auth-default-logo-2" alt="Family Book">
+<section class="login-side"><div class="auth-card"><img class="mobile-logo auth-logo original-login-logo" src="assets/logo/family-book-logo-dark.png?v=desktop-auth-original-1" alt="Family Book">
 <div class="tabs"><button class="tab active" data-tab="in">Sign in</button><button class="tab" data-tab="up">Create account</button></div>
 
 <form id="signin" class="form">
