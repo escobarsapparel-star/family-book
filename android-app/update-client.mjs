@@ -109,8 +109,9 @@ export function startUpdates({ Capacitor, updater, App, http, runtime, bundledVe
   });
   const started = Date.now();
   const timer = setInterval(async () => {
-    const ready = document.querySelector('#app')?.children.length && window.FB_AUTH &&
-      window.FB_FAMILY_DATA && typeof window.go === 'function';
+    const ready = document.querySelector('#app')?.children.length &&
+      typeof window.FB_AUTH?.init === 'function' &&
+      typeof window.FB_FAMILY_DATA?.init === 'function';
     if (Date.now() - started > 50000 || fatal) { clearInterval(timer); return; }
     if (!ready || Date.now() - started < 1500) return;
     clearInterval(timer);
