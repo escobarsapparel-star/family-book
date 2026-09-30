@@ -197,6 +197,7 @@
   }
 
   async function loadShared(){
+    if(window.FB_DEMO_MODE){shared=null;renderSlide(false);return}
     if(loading||!sb())return;
     loading=true;
     try{
@@ -258,6 +259,10 @@
 
   async function saveShared(e){
     e.preventDefault();
+    if(window.FB_DEMO_MODE){
+      modalMessage("Guest Demo keeps Prayer & Scripture read-only.","success");
+      return;
+    }
     const form=e.currentTarget,btn=form.querySelector('button[type="submit"]');
     const kind=document.querySelector('#familyPrayerKind')?.value||'encouragement';
     const body=document.querySelector('#familyPrayerText')?.value?.trim()||'';
@@ -273,6 +278,7 @@
   }
 
   async function clearShared(){
+    if(window.FB_DEMO_MODE){closeModal();return}
     const btn=document.querySelector('[data-family-prayer-clear]');if(btn){btn.disabled=true;btn.textContent='Clearing…'}
     modalMessage('');
     try{
