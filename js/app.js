@@ -53,6 +53,11 @@ A.innerHTML=`<main class="login-page">
   <span><strong>Download Family Book for Android</strong><small>Version 1.1 · live updates enabled</small></span>
   <i data-lucide="download"></i>
 </a>
+<a class="apk-download-cta" href="${FB_ANDROID_CACHE_TEST_URL}" download>
+  <span class="apk-download-icon"><i data-lucide="hard-drive-download"></i></span>
+  <span><strong>Download Family Book v1.4 Cache Test</strong><small>Native offline image cache · test build</small></span>
+  <i data-lucide="download"></i>
+</a>
         <button class="android-install-link" type="button" data-android-install-help>Install guide</button>
 
 <form id="signup" class="form hidden">
@@ -171,6 +176,7 @@ function setFamilyFormSaving(form,saving,label="Saving…"){
 }
 
 const FB_ANDROID_APK_URL="downloads/FamilyBook-Updater-1.1-debug.apk";
+const FB_ANDROID_CACHE_TEST_URL="downloads/FamilyBook-v1.4.0-cache-test.apk";
 const FB_ANDROID_RELEASE_KEY="familybook_android_release_modal_2";
 let fbAndroidApkAvailable=null;
 
@@ -253,6 +259,7 @@ function showAndroidInstallSplash(force=false){
      <details class="android-release-guide"><summary>How to install</summary>${androidInstallStepsHtml()}</details>
      <div class="android-install-actions">
        <a class="primary" href="${FB_ANDROID_APK_URL}" download><i data-lucide="download"></i>Download Family Book</a>
+       <a class="secondary" href="${FB_ANDROID_CACHE_TEST_URL}" download><i data-lucide="hard-drive-download"></i>Download v1.4 Cache Test</a>
        <button class="secondary" type="button" data-android-not-now>Not now</button>
      </div>
      <small class="android-install-note">Install this over your current Family Book app. Do not uninstall the existing app first. Android may ask you to allow this source once.</small>
