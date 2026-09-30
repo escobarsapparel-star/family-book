@@ -1589,8 +1589,15 @@ document.addEventListener("visibilitychange",()=>{
  refreshCloudCaches().catch(err=>console.warn("Background cloud refresh:",err));
 });
 
+let backendAuthRouteInFlight=null;
 window.FB_APP_AUTH_CHANGED=event=>{
  if(event==="SIGNED_OUT"){auth();return}
+ if(event==="SIGNED_IN"){
+   if(!backendAuthRouteInFlight){
+     backendAuthRouteInFlight=Promise.resolve().then(()=>routeAfterBackendAuth()).catch(err=>window.FB_APP_AUTH_ERROR?.(err)).finally(()=>{backendAuthRouteInFlight=null});
+   }
+   return;
+ }
  // Returning to a browser tab refreshes cloud caches without changing route.
 };
 window.FB_APP_AUTH_ERROR=err=>{console.error(err);alert(err.message||"Family Book authentication could not be loaded.")};
