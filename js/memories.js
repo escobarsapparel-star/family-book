@@ -372,7 +372,7 @@
           el.className="memory-gallery";
           el.innerHTML=filtered.map(m=>{
             const photos=memoryPhotos(m),cover=photos[0],url=cover?blobUrl(cover.thumb||cover.image):"",tags=(m.tags||[]).map(id=>byId[id]?.name).filter(Boolean);
-            return `<button class="memory-card" data-r="view-memory:${e(m.id)}"><span class="memory-card-photo">${url?`<img src="${url}" alt="${e(m.caption||"Family memory")}">`:`<span class="memory-card-missing"><i data-lucide="image-off"></i></span>`}${cover?.kind==="video"?`<span class="memory-card-play"><i data-lucide="play"></i></span>`:""}${photos.length>1?`<span class="memory-photo-count"><i data-lucide="files"></i>${photos.length}</span>`:""}</span><span class="memory-card-copy"><small>${e(formatDateTime(m.date,m.time))}</small><strong>${e(m.caption||"Family memory")}</strong>${tags.length?`<span class="memory-card-tags"><i data-lucide="users-round"></i>${e(tags.slice(0,3).join(", "))}${tags.length>3?` +${tags.length-3}`:""}</span>`:""}</span></button>`;
+            return `<button class="memory-card" data-r="view-memory:${e(m.id)}"><span class="memory-card-photo">${url?`<img src="${url}" loading="lazy" decoding="async" alt="${e(m.caption||"Family memory")}">`:`<span class="memory-card-missing"><i data-lucide="image-off"></i></span>`}${cover?.kind==="video"?`<span class="memory-card-play"><i data-lucide="play"></i></span>`:""}${photos.length>1?`<span class="memory-photo-count"><i data-lucide="files"></i>${photos.length}</span>`:""}</span><span class="memory-card-copy"><small>${e(formatDateTime(m.date,m.time))}</small><strong>${e(m.caption||"Family memory")}</strong>${tags.length?`<span class="memory-card-tags"><i data-lucide="users-round"></i>${e(tags.slice(0,3).join(", "))}${tags.length>3?` +${tags.length-3}`:""}</span>`:""}</span></button>`;
           }).join("");
         }
         rebindRoutes();window.icons?.();
@@ -533,7 +533,22 @@
       const members=window.ensureOwner?.()||[],byId=Object.fromEntries(members.map(x=>[x.id,x]));
       const tags=(m.tags||[]).map(id=>byId[id]).filter(Boolean),photos=memoryPhotos(m);
       if(!photos.length){throw new Error("This memory no longer has a readable photo.")}
-      const fullUrls=photos.map(p=>blobUrl(p.image||p.thumb)),thumbUrls=photos.map(p=>blobUrl(p.thumb||p.image));
+      let displayUrls=new Map();
+      try{
+        const paths=[];
+        photos.forEach(p=>{
+          if(p.meta?.storagePath)paths.push(p.meta.storagePath);
+          if(p.meta?.thumbnailPath)paths.push(p.meta.thumbnailPath);
+        });
+        if(paths.length&&window.FB_MEDIA?.cacheForDisplay)displayUrls=await window.FB_MEDIA.cacheForDisplay(paths,60*60*2);
+      }catch(err){console.warn("Memory display cache:",err)}
+      const fullUrls=photos.map(p=>{
+        const path=p.meta?.storagePath||p.meta?.thumbnailPath||"";
+        return blobUrl((path&&displayUrls.get(path))||p.image||p.thumb);
+      }),thumbUrls=photos.map(p=>{
+        const path=p.meta?.thumbnailPath||p.meta?.storagePath||"";
+        return blobUrl((path&&displayUrls.get(path))||p.thumb||p.image);
+      });
       const mediaStage=(i)=>{
         const p=photos[i],src=fullUrls[i],poster=thumbUrls[i],label=e(m.caption||"Family memory");
         return p.kind==="video"
