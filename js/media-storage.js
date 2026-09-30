@@ -37,6 +37,17 @@
   async function download(path){if(!path)throw new Error("A storage path is required.");return requireProvider().download(String(path))}
   async function signedUrlMap(paths,expiresIn=7200){const list=uniquePaths(paths);if(!list.length)return new Map();return requireProvider().signedUrlMap(list,expiresIn)}
   async function getSignedUrl(path,expiresIn=7200){if(!path)return"";const map=await signedUrlMap([path],expiresIn);return map.get(String(path))||""}
+  async function cacheForDisplay(paths,expiresIn=7200){
+    const list=uniquePaths(paths);if(!list.length)return new Map();
+    const map=await signedUrlMap(list,expiresIn);
+    if(!nativeMediaCache()||navigator.onLine===false)return map;
+    const remote={};
+    map.forEach((url,path)=>{if(/^https?:/i.test(String(url)))remote[path]=String(url)});
+    if(!Object.keys(remote).length)return map;
+    const local=await nativePersistMap(remote);
+    local.forEach((url,path)=>map.set(path,url));
+    return map;
+  }
   async function recoverProfilePhoto(personId){
     const p=requireProvider();
     if(typeof p.recoverProfilePhoto!=="function")return null;
@@ -55,11 +66,7 @@
         try{const urls=await signB2Missing(this,uncached,expiresIn);Object.entries(urls).forEach(([p,u])=>{if(u)map.set(p,String(u))})}
         catch(err){let recovered=0;uncached.forEach(path=>{const old=stale.get(path);if(old){map.set(path,old);recovered++}});if(!recovered)throw err;console.info("Using cached Family Book media while offline.")}
       }
-      if(nativeMediaCache()&&navigator.onLine!==false){
-        const remote={};map.forEach((url,path)=>{if(/^https?:/i.test(String(url)))remote[path]=String(url)});
-        const local=await nativePersistMap(remote);local.forEach((url,path)=>map.set(path,url));
-      }
       return map
     },async download(path){const map=await this.signedUrlMap([path],7200),url=map.get(path);if(!url)throw new Error("This family media file could not be found.");const response=await fetch(url);if(!response.ok)throw new Error(`Could not download family media (${response.status}).`);return response.blob()},async remove(paths){const list=uniquePaths(paths);if(!list.length)return{provider:"backblaze-b2",removed:[]};const result=await this.invoke("delete",{paths:list});list.forEach(path=>b2UrlCache.delete(path));saveB2UrlCache();try{await nativeMediaCache()?.remove?.({paths:list})}catch(_){}return{provider:"backblaze-b2",removed:Array.isArray(result?.deleted)?result.deleted:list}}};
-  const api={registerProvider,configure,useProvider,providerName,providerInfo,upload,remove,download,signedUrlMap,getSignedUrl,recoverProfilePhoto,healthCheck};registerProvider("supabase",supabaseProvider);registerProvider("backblaze-b2",b2Provider);api.rollbackToSupabase=()=>useProvider("supabase");api.useBackblaze=()=>useProvider("backblaze-b2");api.clearSignedUrlCache=()=>{b2UrlCache.clear();try{localStorage.removeItem(B2_URL_CACHE_KEY)}catch(_){}};window.FB_MEDIA=api;useProvider("backblaze-b2");
+  const api={registerProvider,configure,useProvider,providerName,providerInfo,upload,remove,download,signedUrlMap,getSignedUrl,cacheForDisplay,recoverProfilePhoto,healthCheck};registerProvider("supabase",supabaseProvider);registerProvider("backblaze-b2",b2Provider);api.rollbackToSupabase=()=>useProvider("supabase");api.useBackblaze=()=>useProvider("backblaze-b2");api.clearSignedUrlCache=()=>{b2UrlCache.clear();try{localStorage.removeItem(B2_URL_CACHE_KEY)}catch(_){}};window.FB_MEDIA=api;useProvider("backblaze-b2");
 })();
