@@ -338,15 +338,6 @@
   }
 
   document.addEventListener("click",event=>{
-    const profileButton=event.target.closest("#topProfileButton");
-    if(profileButton){
-      event.preventDefault();
-      event.stopPropagation();
-      event.stopImmediatePropagation();
-      resetDemoTransientUi();
-      window.go?.("view-member:owner");
-      return;
-    }
     const cameraButton=event.target.closest('[data-family-fun-feature="camera"]');
     if(cameraButton){
       event.preventDefault();
