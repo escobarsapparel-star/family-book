@@ -459,6 +459,7 @@
     });
 
     syncConditional();
+    window.FB_VISUAL_THEME?.install?.();
     bindNativeUpdates();
 
     const focus=consumeFocus();
