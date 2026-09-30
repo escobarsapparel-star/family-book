@@ -57,6 +57,7 @@
     const bottomActions=copy.querySelector(".memory-detail-actions");
     const bottomEdit=bottomActions?.querySelector('[data-r^="edit-memory:"]');
     const deleteBtn=bottomActions?.querySelector("#deleteMemory");
+    const downloadBtn=bottomActions?.querySelector("#downloadMemoryMedia");
     const editBtn=bottomEdit||originalTopEdit;
     if(originalTopEdit&&originalTopEdit!==editBtn)originalTopEdit.remove();
 
@@ -78,6 +79,10 @@
     moreBtn.innerHTML='<i data-lucide="ellipsis"></i>';
     const menu=document.createElement("div");
     menu.className="memory-detail-more-menu hidden";
+    if(downloadBtn){
+      downloadBtn.className="memory-detail-menu-download";
+      menu.appendChild(downloadBtn);
+    }
     if(deleteBtn){
       deleteBtn.className="memory-detail-menu-delete";
       deleteBtn.innerHTML='<i data-lucide="trash-2"></i><span>Delete memory</span>';
