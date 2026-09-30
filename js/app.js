@@ -323,6 +323,9 @@ async function showLatestReleaseAlert(){
  if(window.FB_DEMO_MODE||latestReleaseAlertShownThisSession||document.querySelector("#latestReleaseAlert"))return;
  const nativeInfo=await nativeAppInfo();
  const isNative=!!nativeInfo||runningInsideNativeApp();
+ // APK notices are useful on Android mobile web and for outdated native installs,
+ // but should never interrupt the desktop website.
+ if(!isNative&&!isAndroidBrowser())return;
  if(isNative&&!isVersionOlder(nativeInfo?.version||"",FB_ANDROID_LATEST_VERSION))return;
 
  latestReleaseAlertShownThisSession=true;
