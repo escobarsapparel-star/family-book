@@ -191,6 +191,16 @@
     </section>`;
   }
 
+  function androidInstallerShell(){
+    return `<section class="settings-card fb-native-update-card" id="settingsAndroidInstaller">
+      <div class="settings-card-head"><span class="settings-card-icon"><i data-lucide="smartphone"></i></span><div><p>ANDROID APP</p><h2>Install Family Book 1.4.3</h2><span>Get the Android 1.4.3 test installer with the fullscreen fix for tall phone displays such as the OPPO Reno 7 5G.</span></div></div>
+      <a class="secondary fb-native-update-button" id="installFamilyBook143" href="/downloads/FamilyBook-v1.4.3-cache-test.apk" download>
+        <i data-lucide="smartphone-download"></i><span>Install Android 1.4.3 test</span>
+      </a>
+      <p class="settings-note"><i data-lucide="info"></i>This test build installs as a separate Family Book app. A production in-place APK must be signed with the same production key as your current Family Book installation.</p>
+    </section>`;
+  }
+
   function notificationPermissionText(){
     if(!("Notification" in window))return {state:"unsupported",title:"Browser notifications unavailable",text:"This browser does not support notification permission."};
     if(Notification.permission==="granted")return {state:"granted",title:"Notification permission granted",text:"Family Book is allowed to show notifications on this device."};
@@ -263,6 +273,7 @@
         <button type="button" class="settings-nav-row" data-r="tree"><span><i data-lucide="git-fork"></i><strong>Family tree</strong></span><i data-lucide="chevron-right"></i></button>
       </section>
 
+      ${androidInstallerShell()}
       ${nativeUpdateShell()}
 
       <section class="settings-card settings-about-card">
