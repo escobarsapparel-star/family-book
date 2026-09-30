@@ -5021,27 +5021,46 @@ html[data-theme="dark"] .apk-download-cta{
 
 /* Family Book — definitive desktop authentication logo treatment */
 @media(min-width:901px){
-  /* Cover the older baked-in hero logo with the current green/gold FamilyBook mark. */
+  /* The desktop hero artwork has an older white logo plaque baked into the JPG.
+     Fade that area back into the surrounding sky so the current transparent logo
+     can sit directly on the image without a white card. */
+  .login-photo::before{
+    content:""!important;
+    position:absolute!important;
+    z-index:1!important;
+    inset:0!important;
+    pointer-events:none!important;
+    background:
+      radial-gradient(ellipse 52% 23% at 22% 8%,
+        rgba(235,228,218,.98) 0%,
+        rgba(235,228,218,.94) 34%,
+        rgba(235,228,218,.78) 48%,
+        rgba(235,228,218,.35) 62%,
+        rgba(235,228,218,0) 78%)!important;
+  }
+  .login-photo:after{z-index:2!important}
+
+  /* Correct green/gold transparent FamilyBook logo directly on the hero. */
   .login-photo .original-login-logo{
     display:block!important;
     position:absolute!important;
     z-index:4!important;
-    top:3.2%!important;
-    left:4.2%!important;
+    top:4.2%!important;
+    left:5.5%!important;
     transform:none!important;
-    width:min(470px,86%)!important;
-    max-width:86%!important;
+    width:min(455px,84%)!important;
+    max-width:84%!important;
     height:auto!important;
     margin:0!important;
-    padding:14px 20px!important;
+    padding:0!important;
     object-fit:contain!important;
-    object-position:center!important;
-    border-radius:20px!important;
-    background:rgba(255,250,242,.97)!important;
-    box-shadow:0 10px 30px rgba(37,27,18,.10)!important;
+    object-position:left center!important;
+    border-radius:0!important;
+    background:transparent!important;
+    box-shadow:none!important;
   }
 
-  /* Use the exact same live green/gold logo above the desktop sign-in form. */
+  /* Same transparent logo above the desktop sign-in form. */
   .auth-card .mobile-logo.original-login-logo{
     display:block!important;
     width:min(78%,330px)!important;
