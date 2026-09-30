@@ -456,6 +456,8 @@ function go(r,opts={}){if(window.FB_DEMO_MODE)window.FB_DEMO_RESET_UI?.();if(r==
  if(!opts.preserveScroll)scrollTo(0,0);
  if(!opts.skipFamilyRefresh)scheduleFamilyRouteRefresh(r);
 }
+// Shared route entry point used by desktop modules, Android push taps and OTA health checks.
+window.go=go;
 function home(){
 let u=FB_AUTH.get()||{name:"Family"},n=esc(u.name.split(" ")[0]);
 let demo=(u.email||"").toLowerCase()==="demo@familybook.local";
