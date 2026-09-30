@@ -13,20 +13,20 @@
     const p=String(v||"").trim().split(/\s+/).filter(Boolean);
     return {first:p.shift()||"",last:p.join(" ")};
   }
-  function authRedirectUrl(){
-    if(location.protocol==="file:")return null;
-    let nativeRuntime=false;
+  function isNativeRuntime(){
     try{
-      nativeRuntime=!!window.FB_NATIVE?.Capacitor?.isNativePlatform?.()||
+      return !!window.FB_NATIVE?.Capacitor?.isNativePlatform?.()||
         document.documentElement.classList.contains("native-app")||
         location.protocol==="capacitor:";
-    }catch(_){}
-    if(nativeRuntime){
-      const u=new URL(location.href);u.search="";u.hash="";return u.toString();
-    }
-    // Browser sign-in must always return to the web site, never fall back to
-    // the installed Android app/custom scheme. This also normalises people who
-    // opened the GitHub Pages origin instead of the custom domain.
+    }catch(_){return false}
+  }
+  function nativeAuthRedirectUrl(){
+    return "com.familybook.app://login-callback";
+  }
+  function authRedirectUrl(){
+    if(location.protocol==="file:")return null;
+    if(isNativeRuntime())return nativeAuthRedirectUrl();
+    // Browser sign-in always returns to the FamilyBook website.
     const base=window.FB_SUPABASE_CONFIG?.productionUrl||"https://familybook.co.za/";
     const u=new URL(base);
     const invite=sessionStorage.getItem(PENDING_INVITE)||new URLSearchParams(location.search).get("familybookInvite")||"";
@@ -34,6 +34,59 @@
     u.searchParams.set("fbWebAuth","1");
     u.hash="";
     return u.toString();
+  }
+
+  let nativeAuthCallbackBound=false;
+  async function handleNativeAuthCallback(rawUrl){
+    if(!isNativeRuntime()||!rawUrl||!String(rawUrl).startsWith(nativeAuthRedirectUrl()))return false;
+    try{await window.FB_NATIVE?.Browser?.close?.()}catch(_){}
+    const url=new URL(String(rawUrl));
+    const query=url.searchParams;
+    const hash=new URLSearchParams((url.hash||"").replace(/^#/,""));
+    const authError=query.get("error_description")||query.get("error")||hash.get("error_description")||hash.get("error");
+    if(authError)throw new Error(authError);
+
+    const code=query.get("code");
+    if(code){
+      const {data,error}=await client().auth.exchangeCodeForSession(code);
+      if(error)throw error;
+      session=data?.session||null;
+      await loadContext();
+      window.FB_APP_AUTH_CHANGED?.("SIGNED_IN");
+      return true;
+    }
+
+    const accessToken=hash.get("access_token")||query.get("access_token");
+    const refreshToken=hash.get("refresh_token")||query.get("refresh_token");
+    if(accessToken&&refreshToken){
+      const {data,error}=await client().auth.setSession({
+        access_token:accessToken,
+        refresh_token:refreshToken
+      });
+      if(error)throw error;
+      session=data?.session||null;
+      await loadContext();
+      window.FB_APP_AUTH_CHANGED?.("SIGNED_IN");
+      return true;
+    }
+    return false;
+  }
+  function bindNativeAuthCallback(){
+    if(nativeAuthCallbackBound||!isNativeRuntime())return;
+    nativeAuthCallbackBound=true;
+    const App=window.FB_NATIVE?.App;
+    App?.addListener?.("appUrlOpen",({url})=>{
+      handleNativeAuthCallback(url).catch(err=>{
+        console.error("Family Book native auth callback:",err);
+        window.FB_APP_AUTH_ERROR?.(err);
+      });
+    }).catch?.(()=>{});
+    App?.getLaunchUrl?.().then(result=>{
+      if(result?.url)handleNativeAuthCallback(result.url).catch(err=>{
+        console.error("Family Book native launch auth:",err);
+        window.FB_APP_AUTH_ERROR?.(err);
+      });
+    }).catch?.(()=>{});
   }
   function setPendingInvite(code){
     const clean=String(code||"").trim();
@@ -86,6 +139,7 @@
 
   async function init(){
     if(ready)return current;
+    bindNativeAuthCallback();
     const invite=new URLSearchParams(location.search).get("familybookInvite");
     if(invite)setPendingInvite(invite);
     await refresh();
@@ -139,6 +193,25 @@
     if(!redirect)throw new Error("Google sign-in cannot run from a file:// address. Open Family Book with VS Code Live Server first.");
     const invite=pendingInvite();
     if(invite)setPendingInvite(invite);
+
+    if(isNativeRuntime()){
+      bindNativeAuthCallback();
+      const {data,error}=await client().auth.signInWithOAuth({
+        provider:"google",
+        options:{
+          redirectTo:redirect,
+          skipBrowserRedirect:true,
+          queryParams:{prompt:"select_account"}
+        }
+      });
+      if(error)throw error;
+      if(!data?.url)throw new Error("Google sign-in did not return an authorization URL.");
+      const Browser=window.FB_NATIVE?.Browser;
+      if(!Browser?.open)throw new Error("Family Book could not open Google sign-in.");
+      await Browser.open({url:data.url});
+      return;
+    }
+
     const {error}=await client().auth.signInWithOAuth({
       provider:"google",
       options:{redirectTo:redirect,queryParams:{prompt:"select_account"}}
