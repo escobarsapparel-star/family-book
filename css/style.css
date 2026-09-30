@@ -5042,3 +5042,26 @@ html[data-theme="dark"] .apk-download-cta{
     display:none!important;
   }
 }
+
+
+/* Family Book — corrected desktop login logo source/placement */
+@media(min-width:901px){
+  /* Keep the left photo untouched; it already contains its own artwork. */
+  .login-photo .original-login-logo{
+    display:none!important;
+  }
+
+  /* Match the live logo used by the mobile FamilyBook interface. */
+  .auth-card .mobile-logo.original-login-logo{
+    display:block!important;
+    width:min(78%,330px)!important;
+    max-width:330px!important;
+    height:auto!important;
+    margin:0 auto 18px!important;
+    padding:0!important;
+    border-radius:0!important;
+    background:transparent!important;
+    box-shadow:none!important;
+    object-fit:contain!important;
+  }
+}
