@@ -20,15 +20,22 @@
         location.protocol==="capacitor:";
     }catch(_){return false}
   }
-  function nativeAuthRedirectUrl(){
-    // Supabase only honors redirectTo values on its allow-list. The Android
-    // custom scheme is not currently in that list, so use the existing allowed
-    // FamilyBook web origin as a bridge, then bounce straight back into the app.
-    return "https://escobarsapparel-star.github.io/family-book/?fbNativeOAuth=1";
+  async function nativeAppId(){
+    try{
+      const info=await window.FB_NATIVE?.App?.getInfo?.();
+      return String(info?.id||"com.familybook.app");
+    }catch(_){return "com.familybook.app"}
+  }
+  async function nativeAuthRedirectUrl(){
+    // Use the already-allowed FamilyBook web origin as a short OAuth bridge.
+    // The bridge then returns to the exact Android package that started login.
+    const appId=await nativeAppId();
+    const u=new URL("https://escobarsapparel-star.github.io/family-book/");
+    u.searchParams.set("fbNativeOAuth",appId==="com.familybook.app.cachetest"?"cachetest":"main");
+    return u.toString();
   }
   function authRedirectUrl(){
     if(location.protocol==="file:")return null;
-    if(isNativeRuntime())return nativeAuthRedirectUrl();
     // Browser sign-in always returns to the FamilyBook website.
     const base=window.FB_SUPABASE_CONFIG?.productionUrl||"https://familybook.co.za/";
     const u=new URL(base);
@@ -41,9 +48,10 @@
 
   let nativeAuthCallbackBound=false;
   async function handleNativeAuthCallback(rawUrl){
-    if(!isNativeRuntime()||!rawUrl||!String(rawUrl).startsWith(nativeAuthRedirectUrl()))return false;
+    const raw=String(rawUrl||"");
+    if(!isNativeRuntime()||!/^(?:com\.familybook\.app|com\.familybook\.app\.cachetest):\/\/login-callback(?:[?#]|$)/i.test(raw))return false;
     try{await window.FB_NATIVE?.Browser?.close?.()}catch(_){}
-    const url=new URL(String(rawUrl));
+    const url=new URL(raw);
     const query=url.searchParams;
     const hash=new URLSearchParams((url.hash||"").replace(/^#/,""));
     const authError=query.get("error_description")||query.get("error")||hash.get("error_description")||hash.get("error");
@@ -192,7 +200,7 @@
   }
 
   async function signInWithGoogle(){
-    const redirect=authRedirectUrl();
+    const redirect=isNativeRuntime()?await nativeAuthRedirectUrl():authRedirectUrl();
     if(!redirect)throw new Error("Google sign-in cannot run from a file:// address. Open Family Book with VS Code Live Server first.");
     const invite=pendingInvite();
     if(invite)setPendingInvite(invite);
