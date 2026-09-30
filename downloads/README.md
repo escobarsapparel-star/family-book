@@ -1,21 +1,15 @@
 # Family Book Android download
 
-Upload the signed updater APK to this folder using the exact filename:
+Current public Android build:
 
-`FamilyBook-Updater-1.1-debug.apk`
+`FamilyBook-v1.4.2-cache-test.apk`
 
-Public download path on the Family Book site:
+Public download path:
 
-`/family-book/downloads/FamilyBook-Updater-1.1-debug.apk`
+`/family-book/downloads/FamilyBook-v1.4.2-cache-test.apk`
 
-The website checks that this file exists and is a binary file larger than 1 MB before showing its Android download controls.
+Version 1.4.2 is the only versioned APK linked from the Family Book website. It includes the current native cache/share build and receives compatible Family Book interface updates through the live-update system.
 
-## Version 1.1 updater build
+Older versioned APKs and the former v1.1 updater download have been removed from the public downloads folder.
 
-This is the one-time updater-enabled Android build. Install it over the existing Family Book app; do not uninstall the current app first.
-
-After this updater-enabled APK is installed, compatible HTML/CSS/JavaScript interface releases can be staged through the Family Book live-update system. Native Android changes still require a new APK.
-
-## Updating the installer
-
-Replace this file only with an APK signed by the same Android signing key used by the currently installed Family Book app.
+Native Android changes still require a new APK. HTML/CSS/JavaScript fixes can continue to ship through the compatible interface-update feeds.
