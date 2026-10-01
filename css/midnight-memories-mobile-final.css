@@ -217,3 +217,55 @@
     color:#dcecff!important;
   }
 }
+
+
+/* ============================================================
+   MIDNIGHT AURORA — MEMORIES FULL PAGE BACKGROUND
+   Same portrait aurora scene used on Home.
+   ============================================================ */
+@media (max-width:759px){
+  html[data-fb-visual-theme="midnight-aurora"] #screen:has(.memories-page){
+    position:relative!important;
+    isolation:isolate!important;
+    background:
+      linear-gradient(180deg,
+        rgba(2,7,20,.28) 0%,
+        rgba(2,8,22,.48) 28%,
+        rgba(2,8,21,.70) 62%,
+        rgba(2,7,19,.88) 100%),
+      url("../assets/midnight-aurora-widget-flow.webp") center top/100% auto repeat-y!important;
+    background-color:#020814!important;
+  }
+
+  html[data-fb-visual-theme="midnight-aurora"] #screen:has(.memories-page)::before{
+    content:"";
+    position:absolute;
+    inset:0;
+    pointer-events:none;
+    z-index:0;
+    background:
+      radial-gradient(52% 30% at 86% 8%,rgba(34,211,238,.10),transparent 72%),
+      radial-gradient(44% 28% at 5% 15%,rgba(168,85,247,.10),transparent 74%);
+  }
+
+  html[data-fb-visual-theme="midnight-aurora"] #screen:has(.memories-page)>.memories-page{
+    position:relative!important;
+    z-index:1!important;
+    background:transparent!important;
+  }
+
+  /* Let the background connect visually through the larger Memories panels. */
+  html[data-fb-visual-theme="midnight-aurora"] .memories-page .memories-head,
+  html[data-fb-visual-theme="midnight-aurora"] .memories-page .memory-filter-panel,
+  html[data-fb-visual-theme="midnight-aurora"] .memories-page #memoryLibrary.memory-gallery{
+    background-color:rgba(3,12,29,.56)!important;
+    backdrop-filter:blur(8px) saturate(112%)!important;
+    -webkit-backdrop-filter:blur(8px) saturate(112%)!important;
+  }
+
+  /* Individual memories remain clean and photo-focused. */
+  html[data-fb-visual-theme="midnight-aurora"] .memories-page .memory-card{
+    background:rgba(4,14,31,.94)!important;
+    background-image:none!important;
+  }
+}
