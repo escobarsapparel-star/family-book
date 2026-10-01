@@ -105,10 +105,16 @@
     populate(strip);
   }
 
-  function preserveHomeShortcuts(screen){
+  function removeLegacyHomeSections(screen){
+    // The original home renderer still emits the pre-redesign activity heading
+    // and two-column Recent memories / Upcoming block. Remove them as part of
+    // the same synchronous reshape that installs the desktop memory strip so
+    // they cannot remain behind the redesigned Family Wall.
+    screen.querySelector("#homeActivityTitle")?.closest(".section-head")?.remove();
+    screen.querySelectorAll(":scope > .columns").forEach(columns=>columns.remove());
+
     const quick=screen.querySelector(".quick");
-    if(!quick)return;
-    const heading=quick.previousElementSibling;
+    const heading=quick?.previousElementSibling;
     if(heading?.classList?.contains("section-head"))heading.remove();
   }
 
@@ -125,7 +131,7 @@
   }
 
   function reshapeHome(screen,strip){
-    preserveHomeShortcuts(screen);
+    removeLegacyHomeSections(screen);
     moveComposerAboveMemories(screen,strip);
   }
 
