@@ -51,7 +51,7 @@ A.innerHTML=`<main class="login-page">
 
 <a class="apk-download-cta" data-apk-download href="${FB_ANDROID_APK_URL}" download hidden>
   <span class="apk-download-icon"><i data-lucide="smartphone"></i></span>
-  <span><strong>Download Family Book v1.4.3</strong><small>Latest Android build · Share to FamilyBook · offline image cache</small></span>
+  <span><strong>Download Family Book v1.4.2</strong><small>Latest Android build · Share to FamilyBook · offline image cache</small></span>
   <i data-lucide="download"></i>
 </a>
         <button class="android-install-link" type="button" data-android-install-help>Install guide</button>
@@ -171,9 +171,9 @@ function setFamilyFormSaving(form,saving,label="Saving…"){
  }
 }
 
-const FB_ANDROID_LATEST_VERSION="1.4.3";
-const FB_ANDROID_APK_URL="downloads/FamilyBook-v1.4.3-cache-test.apk";
-const FB_ANDROID_RELEASE_KEY="familybook_android_release_modal_143";
+const FB_ANDROID_LATEST_VERSION="1.4.2";
+const FB_ANDROID_APK_URL="downloads/FamilyBook-v1.4.2-cache-test.apk";
+const FB_ANDROID_RELEASE_KEY="familybook_android_release_modal_142";
 let fbAndroidApkAvailable=null;
 
 function runningInsideNativeApp(){
@@ -248,16 +248,16 @@ function showAndroidInstallSplash(force=false){
      <button class="android-install-close" type="button" aria-label="Close"><i data-lucide="x"></i></button>
      <div class="android-install-hero">
        <img class="android-install-logo" src="assets/logo/family-book-logo-dark-header.png" alt="Family Book">
-       <p>ANDROID APP · VERSION 1.4.3</p>
+       <p>ANDROID APP · VERSION 1.4.2</p>
        <h2 id="androidInstallTitle">Get the latest Family Book app</h2>
        <span>Version 1.4.2 includes Share to FamilyBook, native offline image caching and the latest Google sign-in fixes.</span>
      </div>
      <details class="android-release-guide"><summary>How to install</summary>${androidInstallStepsHtml()}</details>
      <div class="android-install-actions">
-       <a class="primary" href="${FB_ANDROID_APK_URL}" download><i data-lucide="download"></i>Download Family Book v1.4.3</a>
+       <a class="primary" href="${FB_ANDROID_APK_URL}" download><i data-lucide="download"></i>Download Family Book v1.4.2</a>
        <button class="secondary" type="button" data-android-not-now>Not now</button>
      </div>
-     <small class="android-install-note">If you already use an older Cache Test build, install v1.4.3 over it. Your normal Family Book app remains separate.</small>
+     <small class="android-install-note">If you already use an older Cache Test build, install v1.4.2 over it. Your normal Family Book app remains separate.</small>
    </section>`;
  document.body.appendChild(d);
  document.body.classList.add("android-release-open");
@@ -361,7 +361,7 @@ async function showLatestReleaseAlert(){
    if(isNative&&window.FB_NATIVE?.Browser?.open){
      try{await window.FB_NATIVE.Browser.open({url})}catch(_){location.href=url}
    }else{
-     const a=document.createElement("a");a.href=url;a.download="FamilyBook-v1.4.3-cache-test.apk";document.body.appendChild(a);a.click();a.remove();
+     const a=document.createElement("a");a.href=url;a.download="FamilyBook-v1.4.2-cache-test.apk";document.body.appendChild(a);a.click();a.remove();
    }
  });
  window.icons?.();
