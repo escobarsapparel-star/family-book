@@ -1,0 +1,86 @@
+/* Family Book — final Midnight mobile surface overrides */
+@media (max-width:759px){
+
+  /* Search / composer bar directly below the mobile navigation */
+  html[data-fb-visual-theme="midnight-aurora"] .home-status-composer-shell{
+    margin:0 0 12px!important;
+  }
+
+  html[data-fb-visual-theme="midnight-aurora"] .home-social-compact{
+    position:relative!important;
+    overflow:hidden!important;
+    isolation:isolate!important;
+    min-height:54px!important;
+    padding:7px 8px!important;
+    border-radius:16px!important;
+    background:
+      linear-gradient(90deg,
+        rgba(4,13,31,.76) 0%,
+        rgba(5,17,37,.54) 45%,
+        rgba(4,13,31,.66) 100%),
+      url("../assets/midnight-aurora-alpine.webp") 50% 13%/185% auto no-repeat!important;
+    border:1px solid rgba(88,229,255,.34)!important;
+    box-shadow:
+      0 10px 24px rgba(0,0,0,.24),
+      0 0 16px rgba(34,211,238,.08),
+      inset 0 1px 0 rgba(255,255,255,.045)!important;
+    backdrop-filter:blur(9px) saturate(112%)!important;
+    -webkit-backdrop-filter:blur(9px) saturate(112%)!important;
+  }
+
+  html[data-fb-visual-theme="midnight-aurora"] .home-social-compact::before{
+    content:"";
+    position:absolute;
+    inset:0;
+    pointer-events:none;
+    z-index:0;
+    background:
+      radial-gradient(45% 110% at 13% 20%,rgba(34,211,238,.13),transparent 68%),
+      radial-gradient(38% 105% at 86% 18%,rgba(168,85,247,.14),transparent 70%);
+  }
+
+  html[data-fb-visual-theme="midnight-aurora"] .home-social-compact>*{
+    position:relative!important;
+    z-index:1!important;
+  }
+
+  html[data-fb-visual-theme="midnight-aurora"] .home-social-compact-avatar{
+    border:1px solid rgba(103,232,249,.32)!important;
+    box-shadow:
+      0 0 0 2px rgba(6,182,212,.05),
+      0 0 12px rgba(34,211,238,.10)!important;
+  }
+
+  html[data-fb-visual-theme="midnight-aurora"] .home-social-compact-prompt{
+    height:38px!important;
+    border-radius:999px!important;
+    background:
+      linear-gradient(90deg,rgba(5,15,34,.68),rgba(8,20,43,.54))!important;
+    border:1px solid rgba(101,226,255,.12)!important;
+    color:#b8c7db!important;
+    box-shadow:
+      inset 0 1px 0 rgba(255,255,255,.035),
+      0 0 12px rgba(34,211,238,.04)!important;
+  }
+
+  html[data-fb-visual-theme="midnight-aurora"] .home-social-compact-action{
+    width:31px!important;
+    height:31px!important;
+    border-radius:10px!important;
+    background:
+      linear-gradient(145deg,rgba(7,20,42,.88),rgba(17,26,58,.72))!important;
+    border:1px solid rgba(95,225,255,.20)!important;
+    color:#8ff5ff!important;
+    box-shadow:
+      0 0 11px rgba(34,211,238,.08),
+      inset 0 1px 0 rgba(255,255,255,.04)!important;
+  }
+
+  html[data-fb-visual-theme="midnight-aurora"] .home-social-compact-action svg{
+    color:#8ff5ff!important;
+    stroke:currentColor!important;
+    filter:
+      drop-shadow(0 0 5px rgba(34,211,238,.30))
+      drop-shadow(0 0 8px rgba(139,92,246,.10))!important;
+  }
+}
