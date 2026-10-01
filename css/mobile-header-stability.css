@@ -59,3 +59,125 @@
     margin:0!important;
   }
 }
+
+
+/* ============================================================
+   MIDNIGHT AURORA — FINAL MOBILE NAV
+   Final-loaded mobile header layer: visible aurora strip + icon glow.
+   ============================================================ */
+@media (max-width:759px){
+
+  html[data-fb-visual-theme="midnight-aurora"] #app>.app>.bottom{
+    background:
+      linear-gradient(90deg,
+        rgba(2,9,24,.72) 0%,
+        rgba(3,10,28,.50) 38%,
+        rgba(3,10,28,.34) 68%,
+        rgba(2,9,24,.68) 100%),
+      url("../assets/midnight-aurora-alpine.webp") 54% 8%/155% auto no-repeat!important;
+    border-bottom:1px solid rgba(92,230,255,.34)!important;
+    box-shadow:
+      0 10px 26px rgba(0,0,0,.28),
+      inset 0 1px 0 rgba(255,255,255,.03),
+      inset 0 -1px 0 rgba(139,92,246,.10)!important;
+    backdrop-filter:blur(12px) saturate(118%)!important;
+    -webkit-backdrop-filter:blur(12px) saturate(118%)!important;
+    overflow:hidden!important;
+  }
+
+  html[data-fb-visual-theme="midnight-aurora"] #app>.app>.bottom::before{
+    content:"";
+    position:absolute;
+    inset:0;
+    pointer-events:none;
+    background:
+      radial-gradient(42% 120% at 28% 0%,rgba(34,211,238,.16),transparent 72%),
+      radial-gradient(34% 110% at 74% 0%,rgba(168,85,247,.15),transparent 72%);
+    z-index:0;
+  }
+
+  html[data-fb-visual-theme="midnight-aurora"] #app>.app>.bottom .nav{
+    position:relative!important;
+    z-index:1!important;
+    background:transparent!important;
+    color:#9fb2c9!important;
+    transition:color .18s ease,filter .18s ease!important;
+  }
+
+  html[data-fb-visual-theme="midnight-aurora"] #app>.app>.bottom .nav>svg{
+    width:23px!important;
+    height:23px!important;
+    stroke-width:2.15!important;
+    color:#aebed2!important;
+    filter:
+      drop-shadow(0 0 5px rgba(34,211,238,.14))
+      drop-shadow(0 0 8px rgba(139,92,246,.06))!important;
+  }
+
+  html[data-fb-visual-theme="midnight-aurora"] #app>.app>.bottom .nav::before{
+    content:"";
+    position:absolute;
+    left:50%;
+    top:50%;
+    width:36px;
+    height:32px;
+    transform:translate(-50%,-50%);
+    border-radius:11px;
+    background:
+      radial-gradient(circle at 30% 25%,rgba(34,211,238,.10),transparent 58%),
+      radial-gradient(circle at 72% 30%,rgba(168,85,247,.08),transparent 60%);
+    border:1px solid rgba(103,232,249,.06);
+    opacity:.58;
+    z-index:-1;
+  }
+
+  html[data-fb-visual-theme="midnight-aurora"] #app>.app>.bottom .nav.active{
+    color:#67e8f9!important;
+  }
+
+  html[data-fb-visual-theme="midnight-aurora"] #app>.app>.bottom .nav.active::before{
+    background:
+      linear-gradient(145deg,rgba(8,31,58,.90),rgba(31,26,70,.78)),
+      radial-gradient(circle at 24% 20%,rgba(34,211,238,.30),transparent 58%),
+      radial-gradient(circle at 78% 20%,rgba(168,85,247,.26),transparent 58%);
+    border:1px solid rgba(103,232,249,.36);
+    box-shadow:
+      0 0 13px rgba(34,211,238,.18),
+      0 0 18px rgba(139,92,246,.13),
+      inset 0 1px 0 rgba(255,255,255,.05);
+    opacity:1;
+  }
+
+  html[data-fb-visual-theme="midnight-aurora"] #app>.app>.bottom .nav.active>svg{
+    color:#7cf3ff!important;
+    filter:
+      drop-shadow(0 0 6px rgba(34,211,238,.55))
+      drop-shadow(0 0 12px rgba(139,92,246,.24))!important;
+  }
+
+  html[data-fb-visual-theme="midnight-aurora"] #app>.app>.bottom .nav.active::after{
+    width:34px!important;
+    height:3px!important;
+    bottom:0!important;
+    background:linear-gradient(90deg,#22d3ee,#8b5cf6)!important;
+    box-shadow:
+      0 0 9px rgba(34,211,238,.72),
+      0 0 14px rgba(139,92,246,.35)!important;
+  }
+
+  /* Make header action icons belong to the same Midnight family. */
+  html[data-fb-visual-theme="midnight-aurora"] #app>.app>.topbar .circle{
+    background:
+      linear-gradient(145deg,rgba(6,19,40,.84),rgba(13,25,52,.66))!important;
+    border-color:rgba(93,226,255,.24)!important;
+    color:#9ff3ff!important;
+    box-shadow:
+      0 0 14px rgba(34,211,238,.10),
+      inset 0 1px 0 rgba(255,255,255,.04)!important;
+  }
+  html[data-fb-visual-theme="midnight-aurora"] #app>.app>.topbar .circle svg{
+    filter:
+      drop-shadow(0 0 6px rgba(34,211,238,.24))
+      drop-shadow(0 0 9px rgba(139,92,246,.10));
+  }
+}
