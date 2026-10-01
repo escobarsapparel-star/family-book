@@ -84,12 +84,11 @@
 
   function cacheRoute(route=currentRoute(),screen=document.querySelector('#screen')){
     if(!tabs.includes(route)||!screen)return;
-    try{
-      const clone=sanitizePreview(screen.cloneNode(true));
-      previewCache.set(route,clone.innerHTML);
-    }catch(err){
-      console.warn('Family Book swipe cache:',err);
-    }
+    // Android stability: do not clone and retain the complete rendered page.
+    // Rich Midnight Aurora pages can contain many images/cards; duplicating that
+    // DOM for every tab substantially increases WebView renderer memory.
+    // Swipe navigation still works and uses the lightweight route placeholder.
+    previewCache.delete(route);
   }
 
   function scheduleCache(){
