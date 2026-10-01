@@ -1,0 +1,219 @@
+/* ============================================================
+   MIDNIGHT AURORA — MEMORIES MOBILE
+   Mirrors the Home-page Midnight treatment using final-loaded
+   Memories-specific overrides.
+   ============================================================ */
+@media (max-width:759px){
+
+  html[data-fb-visual-theme="midnight-aurora"] .memories-page{
+    width:100%!important;
+    max-width:none!important;
+    margin:0!important;
+    padding:0 0 18px!important;
+  }
+
+  /* Scenic Memories heading panel */
+  html[data-fb-visual-theme="midnight-aurora"] .memories-page .memories-head{
+    position:relative!important;
+    overflow:hidden!important;
+    isolation:isolate!important;
+    margin:0 0 12px!important;
+    padding:15px 14px!important;
+    border-radius:18px!important;
+    background:
+      linear-gradient(145deg,rgba(3,11,28,.36),rgba(4,13,31,.52),rgba(3,10,26,.72)),
+      url("../assets/midnight-aurora-alpine.webp") 76% 24%/155% auto no-repeat!important;
+    border:1px solid rgba(79,230,255,.34)!important;
+    border-left:2px solid rgba(168,85,247,.78)!important;
+    box-shadow:
+      -4px 0 16px rgba(139,92,246,.20),
+      0 14px 30px rgba(0,0,0,.26),
+      0 0 18px rgba(34,211,238,.08),
+      inset 0 1px 0 rgba(255,255,255,.045)!important;
+  }
+
+  html[data-fb-visual-theme="midnight-aurora"] .memories-page .memories-head::before{
+    content:"";
+    position:absolute;
+    inset:0;
+    pointer-events:none;
+    z-index:0;
+    background:
+      radial-gradient(48% 100% at 86% 0%,rgba(34,211,238,.12),transparent 68%),
+      radial-gradient(42% 90% at 4% 8%,rgba(168,85,247,.10),transparent 72%);
+  }
+
+  html[data-fb-visual-theme="midnight-aurora"] .memories-page .memories-head>*{
+    position:relative!important;
+    z-index:1!important;
+  }
+
+  html[data-fb-visual-theme="midnight-aurora"] .memories-page .memories-head .eyebrow{
+    color:#7dd3fc!important;
+  }
+  html[data-fb-visual-theme="midnight-aurora"] .memories-page .memories-head h1{
+    color:#f2f7ff!important;
+    text-shadow:0 0 14px rgba(34,211,238,.08);
+  }
+  html[data-fb-visual-theme="midnight-aurora"] .memories-page .memories-head p{
+    color:#b7c5da!important;
+  }
+
+  html[data-fb-visual-theme="midnight-aurora"] .memories-page .memory-head-actions button{
+    background:linear-gradient(145deg,rgba(6,19,40,.86),rgba(17,25,55,.68))!important;
+    border:1px solid rgba(92,224,255,.20)!important;
+    color:#dffbff!important;
+    box-shadow:
+      0 0 12px rgba(34,211,238,.07),
+      inset 0 1px 0 rgba(255,255,255,.04)!important;
+  }
+
+  html[data-fb-visual-theme="midnight-aurora"] .memories-page .memory-head-actions button svg{
+    color:#8ff5ff!important;
+    filter:drop-shadow(0 0 5px rgba(34,211,238,.25));
+  }
+
+  /* Search/filter container */
+  html[data-fb-visual-theme="midnight-aurora"] .memories-page .memory-filter-panel{
+    position:relative!important;
+    overflow:hidden!important;
+    margin:0 0 13px!important;
+    padding:10px!important;
+    border-radius:17px!important;
+    background:
+      linear-gradient(90deg,rgba(4,14,33,.74),rgba(6,18,39,.54),rgba(5,14,34,.68)),
+      url("../assets/midnight-aurora-alpine.webp") 46% 10%/185% auto no-repeat!important;
+    border:1px solid rgba(80,227,255,.30)!important;
+    box-shadow:
+      0 11px 26px rgba(0,0,0,.24),
+      0 0 16px rgba(34,211,238,.07),
+      inset 0 1px 0 rgba(255,255,255,.035)!important;
+  }
+
+  html[data-fb-visual-theme="midnight-aurora"] .memories-page .memory-search-box{
+    min-height:44px!important;
+    border-radius:13px!important;
+    background:rgba(4,14,32,.72)!important;
+    border:1px solid rgba(98,224,255,.17)!important;
+    color:#9defff!important;
+  }
+
+  html[data-fb-visual-theme="midnight-aurora"] .memories-page .memory-search-box svg{
+    color:#8ff5ff!important;
+    filter:drop-shadow(0 0 5px rgba(34,211,238,.24));
+  }
+
+  html[data-fb-visual-theme="midnight-aurora"] .memories-page .memory-search-box input{
+    color:#e8f5ff!important;
+    background:transparent!important;
+  }
+
+  html[data-fb-visual-theme="midnight-aurora"] .memories-page .memory-search-box input::placeholder{
+    color:#8fa3bc!important;
+  }
+
+  html[data-fb-visual-theme="midnight-aurora"] .memories-page .memory-filter-toggle{
+    min-width:46px!important;
+    border-radius:12px!important;
+    background:linear-gradient(145deg,rgba(8,23,47,.90),rgba(25,25,66,.72))!important;
+    border:1px solid rgba(106,228,255,.22)!important;
+    color:#8ff5ff!important;
+    box-shadow:
+      0 0 13px rgba(34,211,238,.08),
+      inset 0 1px 0 rgba(255,255,255,.04)!important;
+  }
+
+  html[data-fb-visual-theme="midnight-aurora"] .memories-page .memory-filter-toggle svg{
+    filter:
+      drop-shadow(0 0 5px rgba(34,211,238,.28))
+      drop-shadow(0 0 8px rgba(139,92,246,.10));
+  }
+
+  /* Outer Memories library container — scenic, cards remain photo-focused. */
+  html[data-fb-visual-theme="midnight-aurora"] .memories-page #memoryLibrary.memory-gallery{
+    position:relative!important;
+    overflow:hidden!important;
+    isolation:isolate!important;
+    margin:0!important;
+    padding:12px!important;
+    border-radius:18px!important;
+    background:
+      linear-gradient(180deg,rgba(3,12,29,.34) 0%,rgba(3,12,29,.56) 28%,rgba(3,10,26,.82) 100%),
+      url("../assets/midnight-aurora-alpine.webp") 80% 58%/155% auto no-repeat!important;
+    border:1px solid rgba(77,228,255,.30)!important;
+    box-shadow:
+      0 16px 34px rgba(0,0,0,.28),
+      0 0 18px rgba(34,211,238,.08),
+      inset 0 1px 0 rgba(255,255,255,.04)!important;
+  }
+
+  html[data-fb-visual-theme="midnight-aurora"] .memories-page #memoryLibrary.memory-gallery::before{
+    content:"";
+    position:absolute;
+    left:0;
+    right:0;
+    top:0;
+    height:220px;
+    pointer-events:none;
+    z-index:0;
+    background:
+      linear-gradient(180deg,rgba(3,10,25,.02),rgba(3,11,27,.18) 46%,rgba(3,11,27,.72) 100%),
+      url("../assets/midnight-aurora-alpine.webp") 84% 64%/cover no-repeat;
+  }
+
+  html[data-fb-visual-theme="midnight-aurora"] .memories-page #memoryLibrary.memory-gallery>*{
+    position:relative!important;
+    z-index:1!important;
+  }
+
+  /* Memory cards themselves stay clean/dark, not scenic. */
+  html[data-fb-visual-theme="midnight-aurora"] .memories-page .memory-card{
+    background:rgba(4,14,31,.94)!important;
+    background-image:none!important;
+    border:1px solid rgba(91,218,255,.15)!important;
+    box-shadow:
+      0 10px 24px rgba(0,0,0,.22),
+      inset 0 1px 0 rgba(255,255,255,.02)!important;
+  }
+
+  html[data-fb-visual-theme="midnight-aurora"] .memories-page .memory-card-copy strong{
+    color:#eff7ff!important;
+  }
+  html[data-fb-visual-theme="midnight-aurora"] .memories-page .memory-card-copy small,
+  html[data-fb-visual-theme="midnight-aurora"] .memories-page .memory-card-tags{
+    color:#a9b9cd!important;
+  }
+
+  /* Empty / loading states also sit in Midnight glass. */
+  html[data-fb-visual-theme="midnight-aurora"] .memories-page #memoryLibrary.memory-library-loading,
+  html[data-fb-visual-theme="midnight-aurora"] .memories-page #memoryLibrary.memory-empty-state,
+  html[data-fb-visual-theme="midnight-aurora"] .memories-page #memoryLibrary.memory-filter-empty,
+  html[data-fb-visual-theme="midnight-aurora"] .memories-page #memoryLibrary.memory-error{
+    border-radius:18px!important;
+    background:
+      linear-gradient(180deg,rgba(4,14,33,.72),rgba(3,11,28,.86)),
+      url("../assets/midnight-aurora-alpine.webp") 80% 54%/160% auto no-repeat!important;
+    border:1px solid rgba(78,226,255,.26)!important;
+    color:#dcecff!important;
+  }
+
+  /* Bottom-sheet filters inherit Midnight styling too. */
+  html[data-fb-visual-theme="midnight-aurora"] .memory-filter-sheet-card{
+    background:
+      linear-gradient(180deg,rgba(5,15,34,.97),rgba(3,11,27,.98))!important;
+    border:1px solid rgba(86,225,255,.20)!important;
+    box-shadow:0 -18px 45px rgba(0,0,0,.42)!important;
+  }
+
+  html[data-fb-visual-theme="midnight-aurora"] .memory-filter-sheet-head h2{
+    color:#eef7ff!important;
+  }
+
+  html[data-fb-visual-theme="midnight-aurora"] .memory-filter-close,
+  html[data-fb-visual-theme="midnight-aurora"] .memory-filter-sheet select,
+  html[data-fb-visual-theme="midnight-aurora"] .memory-clear-filters{
+    background:#071429!important;
+    border-color:rgba(90,219,255,.18)!important;
+    color:#dcecff!important;
+  }
+}
