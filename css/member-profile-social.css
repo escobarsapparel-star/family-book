@@ -107,3 +107,63 @@
   .member-cover-position-grid{grid-template-columns:1fr;gap:12px}
   .member-cover-editor-actions{display:grid;grid-template-columns:1fr}
 }
+
+
+/* Midnight Aurora — member/user profiles mobile */
+@media(max-width:759px){
+  html[data-fb-visual-theme="midnight-aurora"] #screen:has(.member-profile-view:not(.history-profile-view):not(.account-profile-view)){
+    background:linear-gradient(180deg,rgba(2,7,20,.26),rgba(2,8,22,.58) 42%,rgba(2,7,19,.92)),url("../assets/midnight-aurora-widget-flow.webp") center top/100% auto repeat-y!important;
+    background-color:#020814!important;
+  }
+  html[data-fb-visual-theme="midnight-aurora"] .member-profile-view:not(.history-profile-view):not(.account-profile-view)>.fb-member-profile-header{
+    background:linear-gradient(135deg,rgba(3,12,29,.96),rgba(9,17,40,.93))!important;
+    border-bottom-color:rgba(103,232,249,.20)!important;
+    color:#f4f8ff!important;
+    box-shadow:0 7px 22px rgba(0,0,0,.22)!important;
+  }
+  html[data-fb-visual-theme="midnight-aurora"] .member-profile-view>.fb-member-profile-header svg{color:#67e8f9!important}
+  html[data-fb-visual-theme="midnight-aurora"] .fb-basic-cover{
+    border-color:rgba(90,219,255,.22)!important;
+    background:linear-gradient(145deg,rgba(3,14,32,.84),rgba(12,21,52,.82)),url("../assets/midnight-aurora-alpine.webp") center 48%/cover no-repeat!important;
+  }
+  html[data-fb-visual-theme="midnight-aurora"] .fb-basic-cover-empty{color:#a9b9cd!important}
+  html[data-fb-visual-theme="midnight-aurora"] .fb-cover-edit{
+    background:rgba(3,17,38,.90)!important;border-color:rgba(103,232,249,.50)!important;color:#dff8ff!important;
+  }
+  html[data-fb-visual-theme="midnight-aurora"] .fb-member-profile .profile-view-avatar{
+    border-color:#06152d!important;background:#071429!important;
+    box-shadow:0 0 0 1px rgba(103,232,249,.28),0 8px 22px rgba(0,0,0,.35),0 0 20px rgba(139,92,246,.14)!important;
+  }
+  html[data-fb-visual-theme="midnight-aurora"] .fb-profile-photo-edit{
+    background:linear-gradient(135deg,#16bfe2,#7c3aed)!important;border-color:#06152d!important;
+  }
+  html[data-fb-visual-theme="midnight-aurora"] .fb-member-profile .fb-basic-name>h1{color:#f4f8ff!important;text-shadow:0 0 14px rgba(34,211,238,.08)}
+  html[data-fb-visual-theme="midnight-aurora"] .fb-profile-edit-button{
+    background:#071429!important;border:1px solid rgba(90,219,255,.22)!important;color:#8ff5ff!important;
+  }
+  html[data-fb-visual-theme="midnight-aurora"] .fb-profile-actions .member-contact-actions a{
+    background:linear-gradient(145deg,rgba(4,16,35,.92),rgba(7,27,54,.86))!important;
+    border-color:rgba(90,219,255,.20)!important;color:#eef7ff!important;
+  }
+  html[data-fb-visual-theme="midnight-aurora"] .fb-profile-actions .member-contact-actions a svg{color:#67e8f9!important}
+  html[data-fb-visual-theme="midnight-aurora"] .fb-profile-section{
+    position:relative!important;overflow:hidden!important;
+    background:linear-gradient(145deg,rgba(4,14,31,.91),rgba(8,18,42,.87)),url("../assets/midnight-aurora-alpine.webp") 72% 56%/cover no-repeat!important;
+    border:1px solid rgba(90,219,255,.18)!important;border-left:2px solid rgba(168,85,247,.52)!important;
+    color:#eef7ff!important;box-shadow:-3px 0 12px rgba(139,92,246,.10),0 11px 25px rgba(0,0,0,.23)!important;
+    backdrop-filter:blur(7px) saturate(110%)!important;-webkit-backdrop-filter:blur(7px) saturate(110%)!important;
+  }
+  html[data-fb-visual-theme="midnight-aurora"] .fb-profile-section-head span{color:#7dd3fc!important}
+  html[data-fb-visual-theme="midnight-aurora"] .fb-profile-section-head h2{color:#f4f8ff!important}
+  html[data-fb-visual-theme="midnight-aurora"] .fb-profile-about .profile-detail{
+    background:rgba(3,16,35,.72)!important;border-color:rgba(103,232,249,.16)!important;color:#eef7ff!important;
+  }
+  html[data-fb-visual-theme="midnight-aurora"] .fb-profile-about .profile-detail svg{color:#67e8f9!important}
+  html[data-fb-visual-theme="midnight-aurora"] .fb-profile-about .profile-detail span{color:#a9b9cd!important}
+  html[data-fb-visual-theme="midnight-aurora"] .fb-profile-about .profile-detail strong{color:#f4f8ff!important}
+  html[data-fb-visual-theme="midnight-aurora"] .fb-profile-activity .member-activity-card{color:#eef7ff!important}
+  html[data-fb-visual-theme="midnight-aurora"] .fb-profile-activity .member-activity-head h2{color:#f4f8ff!important}
+  html[data-fb-visual-theme="midnight-aurora"] .fb-profile-activity .member-activity-empty{
+    background:rgba(3,16,35,.66)!important;border-color:rgba(103,232,249,.16)!important;color:#a9b9cd!important;
+  }
+}
