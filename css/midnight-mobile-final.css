@@ -369,3 +369,49 @@
     display:none!important;
   }
 }
+
+
+/* ============================================================
+   MIDNIGHT AURORA — SHARED MOBILE PAGE BACKGROUND
+   Portrait aurora scene behind Home + Memories only.
+   ============================================================ */
+@media (max-width:759px){
+
+  /* Home page full scenic background */
+  html[data-fb-visual-theme="midnight-aurora"] #screen:has(.home-status-composer-shell){
+    position:relative!important;
+    isolation:isolate!important;
+    background:
+      linear-gradient(180deg,
+        rgba(2,7,20,.34) 0%,
+        rgba(2,8,22,.54) 28%,
+        rgba(2,8,21,.74) 62%,
+        rgba(2,7,19,.90) 100%),
+      url("../assets/midnight-aurora-widget-flow.webp") center top/100% auto repeat-y!important;
+    background-color:#020814!important;
+  }
+
+  html[data-fb-visual-theme="midnight-aurora"] #screen:has(.home-status-composer-shell)::before{
+    content:"";
+    position:absolute;
+    inset:0;
+    pointer-events:none;
+    z-index:0;
+    background:
+      radial-gradient(48% 28% at 88% 8%,rgba(34,211,238,.10),transparent 72%),
+      radial-gradient(42% 26% at 6% 14%,rgba(168,85,247,.10),transparent 74%);
+  }
+
+  html[data-fb-visual-theme="midnight-aurora"] #screen:has(.home-status-composer-shell)>*{
+    position:relative!important;
+    z-index:1!important;
+  }
+
+  /* Keep Home outer surfaces glassy so the scenic background reads through. */
+  html[data-fb-visual-theme="midnight-aurora"] #screen:has(.home-status-composer-shell) .home-memory-strip-shell,
+  html[data-fb-visual-theme="midnight-aurora"] #screen:has(.home-status-composer-shell) .family-wall-panel{
+    background-color:rgba(3,12,28,.58)!important;
+    backdrop-filter:blur(8px) saturate(112%)!important;
+    -webkit-backdrop-filter:blur(8px) saturate(112%)!important;
+  }
+}
