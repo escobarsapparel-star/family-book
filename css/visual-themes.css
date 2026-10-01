@@ -875,3 +875,62 @@ html[data-fb-visual-theme="midnight-aurora"] #screen :is(
   .member-form-card,.settings-card,.profile-view-card,
   .memory-detail-card,.event-detail-card,.album-editor-card
 ) :is(p,small){border-color:rgba(91,226,255,.14)}
+
+/* Midnight Aurora — overlays, nested menus and sheets */
+html[data-fb-visual-theme="midnight-aurora"] :is(
+  #profilePopover .profile-popover-menu,
+  #profilePopover .fb-theme-panel,
+  .memory-filter-sheet-card,
+  .memory-detail-more-menu
+){
+  border:1px solid rgba(83,229,255,.46)!important;
+  background:linear-gradient(145deg,rgba(2,13,32,.96),rgba(7,22,48,.95))!important;
+  color:#eef7ff!important;
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.04),0 0 9px rgba(103,232,249,.20),0 18px 44px rgba(0,0,0,.42)!important;
+}
+html[data-fb-visual-theme="midnight-aurora"] :is(
+  #profilePopover .fb-account-card,
+  #profilePopover .fb-theme-choice,
+  .mobile-profile-menu-profile,
+  .mobile-profile-menu-card,
+  .mobile-profile-menu-admin
+){
+  border-color:rgba(88,229,255,.30)!important;
+  background:rgba(3,19,42,.72)!important;
+  color:#eef7ff!important;
+}
+html[data-fb-visual-theme="midnight-aurora"] :is(
+  #profilePopover .fb-desktop-menu-row>span:first-child,
+  .mobile-profile-menu-card-icon,
+  .mobile-profile-menu-admin span:first-child
+){
+  border:1px solid rgba(91,238,255,.58)!important;
+  background:linear-gradient(145deg,rgba(4,38,67,.94),rgba(25,28,78,.90))!important;
+  color:#8ff8ff!important;
+  box-shadow:inset 0 0 12px rgba(34,211,238,.12),0 0 7px rgba(103,232,249,.28)!important;
+}
+html[data-fb-visual-theme="midnight-aurora"] .memory-filter-sheet-head h2{color:#f4f8ff!important}
+html[data-fb-visual-theme="midnight-aurora"] .memory-filter-sheet-head small{color:#8ff8ff!important}
+
+/* Memory detail is a major nested route: replace its remaining paper panel. */
+html[data-fb-visual-theme="midnight-aurora"] .memory-detail-polished .memory-detail-copy{
+  background:linear-gradient(145deg,rgba(2,14,34,.94),rgba(5,22,48,.90))!important;
+  border-color:rgba(83,229,255,.42)!important;
+  color:#eef7ff!important;
+  box-shadow:0 0 8px rgba(103,232,249,.12)!important;
+}
+html[data-fb-visual-theme="midnight-aurora"] .memory-detail-polished .memory-detail-head h1{color:#f4f8ff!important}
+html[data-fb-visual-theme="midnight-aurora"] .memory-detail-polished .memory-detail-date,
+html[data-fb-visual-theme="midnight-aurora"] .memory-detail-polished .memory-detail-author small{color:#9eb0c8!important}
+html[data-fb-visual-theme="midnight-aurora"] .memory-detail-polished .memory-detail-author strong{color:#eef7ff!important}
+html[data-fb-visual-theme="midnight-aurora"] .memory-detail-polished :is(.memory-detail-story,.memory-detail-add-caption){
+  border-color:rgba(91,229,255,.30)!important;
+  background:rgba(3,20,43,.62)!important;
+  color:#eef7ff!important;
+}
+html[data-fb-visual-theme="midnight-aurora"] .memory-detail-polished .memory-detail-story p{color:#e9f3ff!important}
+html[data-fb-visual-theme="midnight-aurora"] .memory-detail-polished .memory-detail-tags button{
+  border-color:rgba(91,229,255,.28)!important;
+  background:rgba(3,20,43,.68)!important;
+  color:#eef7ff!important;
+}
