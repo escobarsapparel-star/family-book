@@ -234,3 +234,61 @@
     color:#eaf7ff!important;
   }
 }
+
+
+/* Midnight profile v2 — visible page artwork + actual Recent Activity children */
+@media(max-width:759px){
+  html[data-fb-visual-theme="midnight-aurora"] body:has(.member-profile-view:not(.history-profile-view):not(.account-profile-view)),
+  html[data-fb-visual-theme="midnight-aurora"] #app:has(.member-profile-view:not(.history-profile-view):not(.account-profile-view)),
+  html[data-fb-visual-theme="midnight-aurora"] #screen:has(.member-profile-view:not(.history-profile-view):not(.account-profile-view)){
+    background-image:
+      linear-gradient(180deg,rgba(1,5,15,.14),rgba(1,8,23,.46) 52%,rgba(1,5,16,.72)),
+      url("../assets/midnight-aurora-alpine.webp")!important;
+    background-size:cover!important;
+    background-position:center top!important;
+    background-repeat:no-repeat!important;
+    background-color:#020814!important;
+  }
+  html[data-fb-visual-theme="midnight-aurora"] .member-profile-view:not(.history-profile-view):not(.account-profile-view){
+    background:transparent!important;
+  }
+  html[data-fb-visual-theme="midnight-aurora"] .fb-member-profile{
+    background:transparent!important;
+  }
+  html[data-fb-visual-theme="midnight-aurora"] .fb-profile-content{
+    background:transparent!important;
+  }
+  html[data-fb-visual-theme="midnight-aurora"] .fb-profile-activity{
+    background:linear-gradient(150deg,rgba(3,13,31,.76),rgba(5,20,44,.66))!important;
+    border-color:rgba(91,222,255,.25)!important;
+  }
+
+  /* Profile activity cards are renderer-owned direct blocks. Theme every
+     top-level activity after the header, without depending on legacy names. */
+  html[data-fb-visual-theme="midnight-aurora"] .fb-profile-activity .member-activity-card > :not(.member-activity-head):not(.member-activity-empty){
+    border-radius:18px!important;
+  }
+  html[data-fb-visual-theme="midnight-aurora"] .fb-profile-activity .member-activity-card > div:not(.member-activity-head):not(.member-activity-empty),
+  html[data-fb-visual-theme="midnight-aurora"] .fb-profile-activity .member-activity-card > article{
+    position:relative!important;
+    overflow:hidden!important;
+    margin:12px 0!important;
+    padding:14px!important;
+    border:1px solid rgba(103,232,249,.20)!important;
+    border-left:2px solid rgba(168,85,247,.55)!important;
+    background:
+      linear-gradient(145deg,rgba(2,14,31,.88),rgba(5,24,49,.82)),
+      url("../assets/midnight-aurora-widget-flow.webp") 76% 35%/cover no-repeat!important;
+    box-shadow:0 12px 28px rgba(0,0,0,.27),0 0 18px rgba(34,211,238,.05)!important;
+    color:#eef7ff!important;
+  }
+  html[data-fb-visual-theme="midnight-aurora"] .fb-profile-activity .member-activity-card > :is(div,article):not(.member-activity-head):not(.member-activity-empty) img{
+    max-width:100%;
+    border-radius:14px!important;
+  }
+  html[data-fb-visual-theme="midnight-aurora"] .fb-profile-activity .member-activity-card > :is(div,article):not(.member-activity-head):not(.member-activity-empty) :is(button,[role="button"]){
+    background:rgba(3,15,32,.58)!important;
+    border-color:rgba(103,232,249,.18)!important;
+    color:#e9f8ff!important;
+  }
+}
