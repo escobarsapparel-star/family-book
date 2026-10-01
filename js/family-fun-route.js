@@ -219,7 +219,7 @@
 
   function loadStudio(onLoad){
     const script=document.createElement("script");
-    script.src="js/family-fun-studio.js?v=mobile-web-camera-fix-1";
+    script.src="js/family-fun-studio.js?v=mobile-web-camera-race-fix-2";
     script.dataset.familyFunRuntime="1";
     script.onload=()=>{
       window.icons?.();
@@ -235,6 +235,8 @@
 
     const cameraCard=document.querySelector('[data-family-fun-feature="camera"]');
     const cameraPanel=document.querySelector("#funCameraPanel");
+    let studioReady=false;
+    let pendingCameraOpen=false;
 
     if(cameraCard&&cameraPanel){
       cameraCard.onclick=()=>{
@@ -246,6 +248,7 @@
         document.body.classList.add("fun-camera-open");
         cameraCard.classList.add("active");
         cameraCard.setAttribute("aria-expanded","true");
+        if(!studioReady)pendingCameraOpen=true;
         window.icons?.();
       };
       cameraCard.setAttribute("aria-expanded","false");
@@ -253,12 +256,23 @@
     }
 
     loadStudio(()=>{
+      studioReady=true;
       let openCamera=false;
       try{
         openCamera=sessionStorage.getItem("fb_family_fun_open_camera")==="1";
         if(openCamera)sessionStorage.removeItem("fb_family_fun_open_camera");
       }catch(_){}
-      if(openCamera)cameraCard?.click();
+
+      if(openCamera){
+        cameraCard?.click();
+        pendingCameraOpen=false;
+        return;
+      }
+
+      if(pendingCameraOpen){
+        pendingCameraOpen=false;
+        document.querySelector("#funStartCameraBtn")?.click();
+      }
     });
   }
 
