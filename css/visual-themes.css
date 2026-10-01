@@ -1960,3 +1960,69 @@ html[data-fb-visual-theme="midnight-aurora"] .family-countdown-clock{
     0 0 16px rgba(34,211,238,.12),
     inset 0 1px 0 rgba(255,255,255,.06)!important;
 }
+
+
+/* ============================================================
+   MIDNIGHT AURORA V2 — EXACT IMAGE ZOOM
+   Use the approved mountain/aurora artwork directly inside
+   Prayer and Countdown with different zoomed crops.
+   ============================================================ */
+
+html[data-fb-visual-theme="midnight-aurora"] .family-prayer-widget{
+  background:
+    linear-gradient(145deg,rgba(3,11,28,.14) 0%,rgba(3,12,29,.06) 54%,rgba(3,10,24,.18) 100%),
+    url("../assets/midnight-aurora-scene.webp") 78% 55% / 175% auto no-repeat!important;
+  border-color:rgba(76,236,255,.80)!important;
+  border-left:2px solid #c084fc!important;
+  box-shadow:
+    -8px 0 22px rgba(168,85,247,.46),
+    -2px 0 9px rgba(216,180,254,.40),
+    0 0 24px rgba(34,211,238,.18),
+    0 18px 38px rgba(0,0,0,.31),
+    inset 2px 0 0 rgba(216,180,254,.72),
+    inset 0 1px 0 rgba(255,255,255,.10)!important;
+}
+
+html[data-fb-visual-theme="midnight-aurora"] .family-prayer-slide,
+html[data-fb-visual-theme="midnight-aurora"] .family-prayer-slide.prayer,
+html[data-fb-visual-theme="midnight-aurora"] .family-prayer-slide.encouragement{
+  background:linear-gradient(145deg,rgba(3,15,31,.28),rgba(3,12,28,.20))!important;
+  border-color:rgba(83,245,231,.68)!important;
+  box-shadow:
+    inset 0 1px 0 rgba(255,255,255,.08),
+    0 0 18px rgba(34,211,238,.10)!important;
+}
+
+html[data-fb-visual-theme="midnight-aurora"] .family-countdown-widget{
+  background:
+    linear-gradient(145deg,rgba(4,13,32,.30) 0%,rgba(5,14,34,.24) 56%,rgba(4,12,29,.42) 100%),
+    url("../assets/midnight-aurora-scene.webp") 63% 60% / 205% auto no-repeat!important;
+  border-color:rgba(70,232,255,.72)!important;
+  border-left:2px solid #a855f7!important;
+  box-shadow:
+    -7px 0 20px rgba(168,85,247,.34),
+    0 0 22px rgba(34,211,238,.16),
+    0 17px 36px rgba(0,0,0,.30),
+    inset 2px 0 0 rgba(192,132,252,.56),
+    inset 0 1px 0 rgba(255,255,255,.09)!important;
+}
+
+html[data-fb-visual-theme="midnight-aurora"] .family-countdown-hero{
+  background:linear-gradient(145deg,rgba(5,26,45,.40),rgba(23,24,67,.34))!important;
+  border-color:rgba(78,236,255,.56)!important;
+}
+
+html[data-fb-visual-theme="midnight-aurora"] .family-countdown-clock{
+  background:rgba(3,14,31,.54)!important;
+  border-color:rgba(82,235,255,.46)!important;
+}
+
+/* Keep the decorative layers from obscuring the actual photo. */
+html[data-fb-visual-theme="midnight-aurora"] .family-prayer-widget:before,
+html[data-fb-visual-theme="midnight-aurora"] .family-countdown-widget:before{
+  opacity:.55!important;
+}
+html[data-fb-visual-theme="midnight-aurora"] .family-prayer-widget:after,
+html[data-fb-visual-theme="midnight-aurora"] .family-countdown-widget:after{
+  opacity:.45!important;
+}
