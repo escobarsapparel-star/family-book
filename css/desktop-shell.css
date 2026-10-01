@@ -370,3 +370,102 @@ html[data-theme="dark"]{
     overflow:hidden!important;
   }
 }
+
+
+/* Midnight Aurora desktop navigation bar — mobile theme parity */
+@media(min-width:1180px){
+  html[data-fb-visual-theme="midnight-aurora"] #app>.app>.topbar{
+    min-height:68px!important;
+    background:
+      linear-gradient(90deg,rgba(2,9,25,.94),rgba(3,13,34,.82) 48%,rgba(3,9,27,.94)),
+      url("../assets/midnight-aurora-widget-flow.webp") center 34%/cover no-repeat!important;
+    border-bottom:1px solid rgba(103,232,249,.30)!important;
+    box-shadow:0 5px 22px rgba(0,0,0,.30),0 1px 0 rgba(34,211,238,.08)!important;
+    backdrop-filter:blur(18px) saturate(125%)!important;
+    -webkit-backdrop-filter:blur(18px) saturate(125%)!important;
+  }
+  html[data-fb-visual-theme="midnight-aurora"] #app>.app>.topbar:after{
+    content:"";
+    position:absolute;
+    left:0;right:0;bottom:-1px;height:1px;
+    background:linear-gradient(90deg,transparent,rgba(34,211,238,.38) 30%,rgba(139,92,246,.38) 72%,transparent);
+    pointer-events:none;
+  }
+  html[data-fb-visual-theme="midnight-aurora"] #app>.app>.topbar .brand-home{
+    position:relative;z-index:2;
+  }
+  html[data-fb-visual-theme="midnight-aurora"] #app>.app>.topbar .brand-logo-wrap{
+    filter:drop-shadow(0 3px 10px rgba(0,0,0,.28));
+  }
+
+  html[data-fb-visual-theme="midnight-aurora"] .desktop-top-nav{
+    z-index:3!important;
+    gap:7px!important;
+  }
+  html[data-fb-visual-theme="midnight-aurora"] .desktop-top-nav button{
+    position:relative!important;
+    width:64px!important;
+    height:52px!important;
+    border:1px solid transparent!important;
+    border-radius:13px!important;
+    color:#b4c5dc!important;
+    background:rgba(3,13,31,.24)!important;
+    transition:background .18s ease,border-color .18s ease,color .18s ease,box-shadow .18s ease,transform .18s ease!important;
+  }
+  html[data-fb-visual-theme="midnight-aurora"] .desktop-top-nav button:hover{
+    color:#8ff5ff!important;
+    background:linear-gradient(145deg,rgba(7,35,62,.78),rgba(29,25,72,.70))!important;
+    border-color:rgba(103,232,249,.22)!important;
+    box-shadow:0 0 17px rgba(34,211,238,.08)!important;
+    transform:translateY(-1px)!important;
+  }
+  html[data-fb-visual-theme="midnight-aurora"] .desktop-top-nav button.active{
+    color:#dffcff!important;
+    background:
+      linear-gradient(145deg,rgba(7,48,78,.92),rgba(43,29,99,.88))!important;
+    border-color:rgba(103,232,249,.34)!important;
+    box-shadow:0 0 20px rgba(34,211,238,.15),0 0 18px rgba(139,92,246,.10),inset 0 1px 0 rgba(255,255,255,.08)!important;
+  }
+  html[data-fb-visual-theme="midnight-aurora"] .desktop-top-nav button.active:after{
+    content:"";
+    position:absolute;
+    left:15px;right:15px;bottom:-8px;
+    height:3px;border-radius:999px;
+    background:linear-gradient(90deg,#22d3ee,#67e8f9 48%,#8b5cf6);
+    box-shadow:0 0 10px rgba(34,211,238,.50);
+  }
+  html[data-fb-visual-theme="midnight-aurora"] .desktop-top-nav svg{
+    width:23px!important;height:23px!important;
+    filter:drop-shadow(0 0 6px rgba(103,232,249,.10));
+  }
+
+  html[data-fb-visual-theme="midnight-aurora"] #app>.app>.topbar .actions{
+    gap:9px!important;
+  }
+  html[data-fb-visual-theme="midnight-aurora"] #app>.app>.topbar .circle{
+    border:1px solid rgba(103,232,249,.20)!important;
+    background:rgba(3,15,34,.66)!important;
+    color:#78ecff!important;
+    box-shadow:0 6px 18px rgba(0,0,0,.20)!important;
+  }
+  html[data-fb-visual-theme="midnight-aurora"] #app>.app>.topbar .circle:hover{
+    background:linear-gradient(145deg,rgba(7,38,65,.90),rgba(37,27,83,.84))!important;
+    border-color:rgba(103,232,249,.38)!important;
+    color:#dffcff!important;
+  }
+  html[data-fb-visual-theme="midnight-aurora"] #app>.app>.topbar .avatar{
+    border-color:rgba(103,232,249,.34)!important;
+    box-shadow:0 0 0 2px rgba(3,12,29,.82),0 0 15px rgba(34,211,238,.13)!important;
+  }
+
+  /* Search belongs to the same Midnight glass system */
+  html[data-fb-visual-theme="midnight-aurora"] #app>.app>.topbar :is(.desktop-header-search,.desktop-search,.header-search){
+    background:rgba(3,15,34,.66)!important;
+    border-color:rgba(103,232,249,.20)!important;
+    color:#eef7ff!important;
+    box-shadow:inset 0 1px 0 rgba(255,255,255,.025)!important;
+  }
+  html[data-fb-visual-theme="midnight-aurora"] #app>.app>.topbar :is(.desktop-header-search,.desktop-search,.header-search) :is(input,button,svg){
+    color:#b8cbe2!important;
+  }
+}
