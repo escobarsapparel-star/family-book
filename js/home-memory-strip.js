@@ -49,7 +49,7 @@
   function shell(){
     return `<section class="home-memory-strip-shell" aria-label="Recent family memories">
       <div class="home-memory-strip-head">
-        <div><h2>Family Memories</h2><p>Recent moments shared by your family.</p></div>
+        <div class="home-memory-strip-title"><span class="home-memory-strip-title-icon" aria-hidden="true"><i data-lucide="images"></i></span><span><h2>Family Memories</h2><p>Recent moments shared by your family.</p></span></div>
         <button type="button" class="home-memory-strip-viewall" data-home-memory-route="memories">View all</button>
       </div>
       <div class="home-memory-strip-track" id="homeMemoryStripTrack">
