@@ -574,3 +574,34 @@ html[data-theme="dark"]{
     box-shadow:0 0 0 2px rgba(3,13,31,.72),0 0 14px rgba(34,211,238,.18)!important;
   }
 }
+
+
+/* Desktop nav v4 — panoramic Aurora fills the ENTIRE navigation bar */
+@media(min-width:1180px){
+  html[data-fb-visual-theme="midnight-aurora"] #app>.app>.topbar{
+    background-image:url("../assets/midnight-aurora-alpine.webp")!important;
+    background-size:100% 100%!important;
+    background-position:center center!important;
+    background-repeat:no-repeat!important;
+    background-color:#020814!important;
+  }
+  /* Remove full-bar tint: controls supply their own readability glass. */
+  html[data-fb-visual-theme="midnight-aurora"] #app>.app>.topbar:before{
+    content:none!important;
+    display:none!important;
+  }
+  html[data-fb-visual-theme="midnight-aurora"] #app>.app>.topbar .brand-home{
+    background:transparent!important;
+  }
+  html[data-fb-visual-theme="midnight-aurora"] #app>.app>.topbar :is(.desktop-header-search,.desktop-search,.header-search,.search){
+    background:rgba(2,13,35,.54)!important;
+    backdrop-filter:blur(5px)!important;
+    -webkit-backdrop-filter:blur(5px)!important;
+  }
+  html[data-fb-visual-theme="midnight-aurora"] .desktop-top-nav{
+    background:transparent!important;
+  }
+  html[data-fb-visual-theme="midnight-aurora"] #app>.app>.topbar .actions{
+    background:transparent!important;
+  }
+}
