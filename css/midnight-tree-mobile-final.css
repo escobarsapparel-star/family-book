@@ -138,10 +138,7 @@
     inset:0;
     pointer-events:none;
     z-index:0;
-    background:
-      linear-gradient(180deg,rgba(2,8,21,.04) 0%,rgba(2,8,21,.10) 40%,rgba(2,8,21,.42) 100%),
-      radial-gradient(46% 30% at 88% 6%,rgba(34,211,238,.10),transparent 72%),
-      radial-gradient(42% 28% at 4% 12%,rgba(168,85,247,.10),transparent 74%);
+    background:rgba(2,8,21,.10)!important;
   }
 
   html[data-fb-visual-theme="midnight-aurora"] .tree-page.coordinate-tree-page .ct-board .ct-canvas{
