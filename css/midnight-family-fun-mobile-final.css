@@ -282,3 +282,88 @@
     color:#dcecff!important;
   }
 }
+
+
+/* ============================================================
+   MIDNIGHT FAMILY CAMERA — FULLSCREEN OVERRIDE
+   Must come last so the scenic inline-panel styling never traps
+   the live camera inside the Family Fun page flow.
+   ============================================================ */
+@media (max-width:759px){
+
+  html[data-fb-visual-theme="midnight-aurora"] .family-fun-app-page .fun-camera-inline-panel.fun-camera-fullscreen{
+    position:fixed!important;
+    inset:0!important;
+    z-index:100000!important;
+    width:100vw!important;
+    height:100dvh!important;
+    max-width:none!important;
+    max-height:none!important;
+    margin:0!important;
+    padding:max(4px,env(safe-area-inset-top)) 0 max(4px,env(safe-area-inset-bottom))!important;
+    border:0!important;
+    border-left:0!important;
+    border-radius:0!important;
+    overflow-y:auto!important;
+    overscroll-behavior:contain!important;
+    isolation:isolate!important;
+    background:#060a12!important;
+    background-image:none!important;
+    box-shadow:none!important;
+    backdrop-filter:none!important;
+    -webkit-backdrop-filter:none!important;
+  }
+
+  html[data-fb-visual-theme="midnight-aurora"] .family-fun-app-page .fun-camera-fullscreen .fun-main-tabs{
+    width:min(330px,calc(100% - 28px))!important;
+    margin:0 auto 6px!important;
+    position:relative!important;
+    z-index:20!important;
+    background:rgba(5,14,31,.88)!important;
+    border:1px solid rgba(103,232,249,.18)!important;
+    box-shadow:none!important;
+  }
+
+  html[data-fb-visual-theme="midnight-aurora"] .family-fun-app-page .fun-camera-fullscreen #funCreatePanel{
+    width:100%!important;
+    max-width:none!important;
+    height:calc(100dvh - 56px - env(safe-area-inset-top) - env(safe-area-inset-bottom))!important;
+    margin:0!important;
+  }
+
+  html[data-fb-visual-theme="midnight-aurora"] .family-fun-app-page .fun-camera-fullscreen .fun-camera-studio{
+    width:100%!important;
+    height:100%!important;
+    margin:0!important;
+    padding:0!important;
+    border:0!important;
+    border-radius:0!important;
+    background:transparent!important;
+    box-shadow:none!important;
+  }
+
+  html[data-fb-visual-theme="midnight-aurora"] .family-fun-app-page .fun-camera-fullscreen .fun-camera-wrap{
+    width:100%!important;
+    height:100%!important;
+    min-height:calc(100dvh - 68px - env(safe-area-inset-top) - env(safe-area-inset-bottom))!important;
+    max-height:none!important;
+    margin:0!important;
+    border-radius:0!important;
+    background:#060a12!important;
+    box-shadow:none!important;
+  }
+
+  html[data-fb-visual-theme="midnight-aurora"] .family-fun-app-page .fun-camera-fullscreen .fun-camera-wrap video{
+    width:100%!important;
+    height:100%!important;
+    min-height:100%!important;
+    object-fit:contain!important;
+    background:#060a12!important;
+  }
+
+  html[data-fb-visual-theme="midnight-aurora"] .family-fun-app-page .fun-camera-fullscreen #funCreatePanel>.fun-section-label,
+  html[data-fb-visual-theme="midnight-aurora"] .family-fun-app-page .fun-camera-fullscreen #funCreatePanel>.fun-mode-grid,
+  html[data-fb-visual-theme="midnight-aurora"] .family-fun-app-page .fun-camera-fullscreen .fun-camera-mode-copy{
+    display:none!important;
+  }
+}
