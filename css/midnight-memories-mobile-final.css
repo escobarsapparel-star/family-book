@@ -462,3 +462,56 @@
     color:#eef7ff!important;
   }
 }
+
+
+/* Midnight Add Memory — actual Tag people fieldset/classes */
+@media(max-width:759px){
+  html[data-fb-visual-theme="midnight-aurora"] .memory-editor-page .memory-tags{
+    margin-top:14px!important;
+    padding:14px 12px 12px!important;
+    border:1px solid rgba(103,232,249,.25)!important;
+    border-left:2px solid rgba(168,85,247,.62)!important;
+    border-radius:17px!important;
+    background:linear-gradient(145deg,rgba(3,14,32,.90),rgba(8,21,45,.88))!important;
+    box-shadow:0 10px 24px rgba(0,0,0,.21)!important;
+  }
+  html[data-fb-visual-theme="midnight-aurora"] .memory-editor-page .memory-tags legend{
+    padding:0 6px!important;color:#f4f8ff!important;font-weight:850!important;
+  }
+  html[data-fb-visual-theme="midnight-aurora"] .memory-editor-page .memory-tags>p{color:#a9b9cd!important}
+  html[data-fb-visual-theme="midnight-aurora"] .memory-editor-page .memory-tag-group>strong{color:#7dd3fc!important}
+  html[data-fb-visual-theme="midnight-aurora"] .memory-editor-page .memory-tag-grid{
+    display:grid!important;grid-template-columns:1fr!important;gap:8px!important;
+  }
+  html[data-fb-visual-theme="midnight-aurora"] .memory-editor-page .memory-tag-choice{
+    min-height:54px!important;
+    padding:7px 10px!important;
+    display:grid!important;
+    grid-template-columns:40px minmax(0,1fr) 22px!important;
+    align-items:center!important;gap:10px!important;
+    border-radius:14px!important;
+    background:linear-gradient(145deg,rgba(4,16,35,.94),rgba(7,27,54,.88))!important;
+    border:1px solid rgba(90,219,255,.21)!important;
+    border-left:2px solid rgba(168,85,247,.50)!important;
+    color:#f4f8ff!important;
+    box-shadow:0 6px 16px rgba(0,0,0,.15)!important;
+  }
+  html[data-fb-visual-theme="midnight-aurora"] .memory-editor-page .memory-tag-choice:has(input:checked){
+    background:linear-gradient(145deg,rgba(7,31,57,.96),rgba(37,27,82,.90))!important;
+    border-color:rgba(103,232,249,.48)!important;
+    box-shadow:0 0 0 1px rgba(139,92,246,.16),0 7px 18px rgba(0,0,0,.18)!important;
+  }
+  html[data-fb-visual-theme="midnight-aurora"] .memory-editor-page .memory-tag-avatar{
+    width:40px!important;height:40px!important;border-radius:50%!important;
+    display:grid!important;place-items:center!important;overflow:hidden!important;
+    background:linear-gradient(135deg,rgba(34,211,238,.16),rgba(139,92,246,.22))!important;
+    border:1px solid rgba(103,232,249,.30)!important;color:#eaf8ff!important;
+  }
+  html[data-fb-visual-theme="midnight-aurora"] .memory-editor-page .memory-tag-avatar img{
+    width:100%!important;height:100%!important;object-fit:cover!important;
+  }
+  html[data-fb-visual-theme="midnight-aurora"] .memory-editor-page .memory-tag-choice>span:nth-of-type(2){
+    color:#f4f8ff!important;font-weight:800!important;
+  }
+  html[data-fb-visual-theme="midnight-aurora"] .memory-editor-page .memory-tag-choice>i{color:#67e8f9!important}
+}
