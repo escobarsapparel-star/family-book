@@ -35,3 +35,98 @@
   .family-account-row{grid-template-columns:42px minmax(0,1fr)!important;gap:8px!important;align-items:center!important}
   .family-account-row>.account-role-badge,.family-account-row>.family-account-controls{grid-column:2!important;justify-self:start!important}
 }
+
+
+/* Midnight Aurora — Invite & family access mobile */
+@media(max-width:759px){
+  html[data-fb-visual-theme="midnight-aurora"] #screen:has(.family-access-page){
+    position:relative!important;
+    isolation:isolate!important;
+    background:
+      linear-gradient(180deg,rgba(2,7,20,.30),rgba(2,8,22,.58) 42%,rgba(2,7,19,.90)),
+      url("../assets/midnight-aurora-widget-flow.webp") center top/100% auto repeat-y!important;
+    background-color:#020814!important;
+  }
+  html[data-fb-visual-theme="midnight-aurora"] #screen:has(.family-access-page)::before{
+    content:"";
+    position:absolute;
+    inset:0;
+    z-index:0;
+    pointer-events:none;
+    background:radial-gradient(52% 28% at 88% 7%,rgba(34,211,238,.10),transparent 72%),radial-gradient(44% 28% at 4% 16%,rgba(168,85,247,.10),transparent 74%);
+  }
+  html[data-fb-visual-theme="midnight-aurora"] .family-access-page{
+    position:relative!important;
+    z-index:1!important;
+    color:#eef7ff!important;
+  }
+  html[data-fb-visual-theme="midnight-aurora"] .family-access-head{
+    padding:14px 13px!important;
+    border:1px solid rgba(79,230,255,.30)!important;
+    border-left:2px solid rgba(168,85,247,.76)!important;
+    border-radius:18px!important;
+    background:linear-gradient(135deg,rgba(3,11,28,.46),rgba(4,14,34,.58)),url("../assets/midnight-aurora-alpine.webp") 76% 28%/155% auto no-repeat!important;
+    box-shadow:-4px 0 15px rgba(139,92,246,.16),0 13px 28px rgba(0,0,0,.25)!important;
+  }
+  html[data-fb-visual-theme="midnight-aurora"] .family-access-head .back-link,
+  html[data-fb-visual-theme="midnight-aurora"] .family-access-head .eyebrow{color:#7dd3fc!important}
+  html[data-fb-visual-theme="midnight-aurora"] .family-access-head h1{color:#f4f8ff!important}
+  html[data-fb-visual-theme="midnight-aurora"] .family-access-head>p:last-child{color:#b8c6da!important}
+
+  html[data-fb-visual-theme="midnight-aurora"] .family-access-card{
+    background:linear-gradient(145deg,rgba(4,14,31,.92),rgba(8,18,42,.88))!important;
+    border:1px solid rgba(90,219,255,.18)!important;
+    border-left:2px solid rgba(168,85,247,.48)!important;
+    color:#eef7ff!important;
+    box-shadow:-3px 0 12px rgba(139,92,246,.10),0 11px 25px rgba(0,0,0,.23)!important;
+    backdrop-filter:blur(7px) saturate(110%)!important;
+    -webkit-backdrop-filter:blur(7px) saturate(110%)!important;
+  }
+  html[data-fb-visual-theme="midnight-aurora"] .family-access-card-head>span{
+    background:linear-gradient(145deg,rgba(7,25,45,.94),rgba(26,26,68,.82))!important;
+    border:1px solid rgba(98,226,255,.18)!important;
+    color:#83eee7!important;
+  }
+  html[data-fb-visual-theme="midnight-aurora"] .family-access-card-head h2{color:#f4f8ff!important}
+  html[data-fb-visual-theme="midnight-aurora"] .family-access-card-head p{color:#a9b9cd!important}
+
+  html[data-fb-visual-theme="midnight-aurora"] #createBackendInvite{
+    background:linear-gradient(105deg,#16bfe2 0%,#3b82f6 52%,#7c3aed 100%)!important;
+    color:#fff!important;
+    border:1px solid rgba(125,211,252,.28)!important;
+    box-shadow:0 10px 24px rgba(37,99,235,.20),0 0 18px rgba(139,92,246,.13)!important;
+  }
+  html[data-fb-visual-theme="midnight-aurora"] .family-account-row,
+  html[data-fb-visual-theme="midnight-aurora"] .family-invite-history-row{
+    border-color:rgba(103,232,249,.13)!important;
+    color:#eef7ff!important;
+  }
+  html[data-fb-visual-theme="midnight-aurora"] .family-account-row strong,
+  html[data-fb-visual-theme="midnight-aurora"] .family-invite-history-row strong{color:#f4f8ff!important}
+  html[data-fb-visual-theme="midnight-aurora"] .family-account-row small,
+  html[data-fb-visual-theme="midnight-aurora"] .family-invite-history-row small{color:#a9b9cd!important}
+  html[data-fb-visual-theme="midnight-aurora"] .family-account-avatar{
+    border:1px solid rgba(103,232,249,.26)!important;
+    box-shadow:0 0 12px rgba(34,211,238,.08)!important;
+  }
+  html[data-fb-visual-theme="midnight-aurora"] .family-account-controls select{
+    background:#071429!important;
+    color:#eaf8ff!important;
+    border:1px solid rgba(56,189,248,.26)!important;
+  }
+  html[data-fb-visual-theme="midnight-aurora"] .account-role-badge{
+    background:rgba(13,46,47,.78)!important;
+    color:#8ff5df!important;
+    border-color:rgba(45,212,191,.20)!important;
+  }
+  html[data-fb-visual-theme="midnight-aurora"] .account-remove-access{
+    background:rgba(54,18,32,.72)!important;
+    color:#fda4af!important;
+    border-color:rgba(251,113,133,.28)!important;
+  }
+  html[data-fb-visual-theme="midnight-aurora"] .backend-created-invite{
+    background:rgba(4,14,31,.76)!important;
+    border-color:rgba(103,232,249,.17)!important;
+    color:#eef7ff!important;
+  }
+}
