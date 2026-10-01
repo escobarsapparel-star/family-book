@@ -1,0 +1,102 @@
+/* ============================================================
+   MIDNIGHT AURORA — FAMILY TREE MOBILE HEADING
+   Final-loaded Tree-specific visual layer.
+   ============================================================ */
+@media (max-width:759px){
+
+  html[data-fb-visual-theme="midnight-aurora"] .tree-page.coordinate-tree-page .tree-head{
+    position:relative!important;
+    overflow:hidden!important;
+    isolation:isolate!important;
+    display:flex!important;
+    align-items:flex-start!important;
+    justify-content:space-between!important;
+    gap:12px!important;
+    margin:4px 0 16px!important;
+    padding:15px 13px!important;
+    border-radius:18px!important;
+    background:
+      linear-gradient(135deg,
+        rgba(3,11,28,.36) 0%,
+        rgba(4,14,34,.50) 44%,
+        rgba(3,10,27,.68) 100%),
+      url("../assets/midnight-aurora-alpine.webp") 76% 28%/155% auto no-repeat!important;
+    border:1px solid rgba(79,230,255,.34)!important;
+    border-left:2px solid rgba(168,85,247,.82)!important;
+    box-shadow:
+      -4px 0 16px rgba(139,92,246,.20),
+      0 14px 30px rgba(0,0,0,.26),
+      0 0 18px rgba(34,211,238,.08),
+      inset 0 1px 0 rgba(255,255,255,.045)!important;
+  }
+
+  html[data-fb-visual-theme="midnight-aurora"] .tree-page.coordinate-tree-page .tree-head::before{
+    content:"";
+    position:absolute;
+    inset:0;
+    pointer-events:none;
+    z-index:0;
+    background:
+      radial-gradient(48% 105% at 88% 0%,rgba(34,211,238,.12),transparent 70%),
+      radial-gradient(42% 95% at 4% 8%,rgba(168,85,247,.11),transparent 72%);
+  }
+
+  html[data-fb-visual-theme="midnight-aurora"] .tree-page.coordinate-tree-page .tree-head>*{
+    position:relative!important;
+    z-index:1!important;
+  }
+
+  html[data-fb-visual-theme="midnight-aurora"] .tree-page.coordinate-tree-page .tree-head>div:first-child{
+    min-width:0!important;
+    flex:1 1 auto!important;
+  }
+
+  html[data-fb-visual-theme="midnight-aurora"] .tree-page.coordinate-tree-page .tree-head .eyebrow{
+    margin:0 0 5px!important;
+    color:#7dd3fc!important;
+    font-weight:850!important;
+    letter-spacing:.10em!important;
+  }
+
+  html[data-fb-visual-theme="midnight-aurora"] .tree-page.coordinate-tree-page .tree-head h1{
+    margin:0 0 5px!important;
+    color:#f4f8ff!important;
+    text-shadow:0 0 14px rgba(34,211,238,.08)!important;
+  }
+
+  html[data-fb-visual-theme="midnight-aurora"] .tree-page.coordinate-tree-page .tree-head p{
+    margin:0!important;
+    color:#b8c6da!important;
+    line-height:1.38!important;
+  }
+
+  html[data-fb-visual-theme="midnight-aurora"] .tree-page.coordinate-tree-page .tree-head-actions{
+    flex:0 0 auto!important;
+    gap:8px!important;
+  }
+
+  html[data-fb-visual-theme="midnight-aurora"] .tree-page.coordinate-tree-page .tree-head-actions button{
+    background:
+      linear-gradient(145deg,rgba(7,20,42,.90),rgba(25,25,66,.74))!important;
+    border:1px solid rgba(98,226,255,.22)!important;
+    color:#9af3ff!important;
+    box-shadow:
+      0 0 13px rgba(34,211,238,.08),
+      inset 0 1px 0 rgba(255,255,255,.04)!important;
+  }
+
+  html[data-fb-visual-theme="midnight-aurora"] .tree-page.coordinate-tree-page .tree-head-actions .tree-history-add{
+    border-color:rgba(172,92,246,.46)!important;
+    box-shadow:
+      0 0 14px rgba(139,92,246,.16),
+      0 0 12px rgba(34,211,238,.08),
+      inset 0 1px 0 rgba(255,255,255,.04)!important;
+  }
+
+  html[data-fb-visual-theme="midnight-aurora"] .tree-page.coordinate-tree-page .tree-head-actions button svg{
+    color:#8ff5ff!important;
+    filter:
+      drop-shadow(0 0 5px rgba(34,211,238,.28))
+      drop-shadow(0 0 8px rgba(139,92,246,.10))!important;
+  }
+}

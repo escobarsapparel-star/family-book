@@ -415,3 +415,27 @@
     -webkit-backdrop-filter:blur(8px) saturate(112%)!important;
   }
 }
+
+
+/* ============================================================
+   MIDNIGHT AURORA — HOME TEXT COLOR CORRECTION
+   Remove leftover green Classic typography from the Midnight Home.
+   ============================================================ */
+@media (max-width:759px){
+  html[data-fb-visual-theme="midnight-aurora"] #screen:has(.home-status-composer-shell) .home-memory-strip-head h2,
+  html[data-fb-visual-theme="midnight-aurora"] #screen:has(.home-status-composer-shell) .family-wall-panel .wall-head h2,
+  html[data-fb-visual-theme="midnight-aurora"] #screen:has(.home-status-composer-shell) .family-wall-panel .wall-head h3{
+    color:#f4f8ff!important;
+    text-shadow:0 0 12px rgba(34,211,238,.06)!important;
+  }
+
+  html[data-fb-visual-theme="midnight-aurora"] #screen:has(.home-status-composer-shell) .family-wall-panel .wall-head p,
+  html[data-fb-visual-theme="midnight-aurora"] #screen:has(.home-status-composer-shell) .home-memory-strip-head p{
+    color:#b9c7da!important;
+  }
+
+  html[data-fb-visual-theme="midnight-aurora"] #screen:has(.home-status-composer-shell) .home-memory-strip-head .link,
+  html[data-fb-visual-theme="midnight-aurora"] #screen:has(.home-status-composer-shell) .family-wall-panel .link{
+    color:#75f3ff!important;
+  }
+}
