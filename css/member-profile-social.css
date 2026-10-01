@@ -292,3 +292,48 @@
     color:#e9f8ff!important;
   }
 }
+
+
+/* Midnight profile v3 — one Recent Activity capsule, Aurora memory cards */
+@media(max-width:759px){
+  html[data-fb-visual-theme="midnight-aurora"] .fb-profile-activity{
+    padding:14px!important;
+    border-radius:22px!important;
+    background:
+      linear-gradient(155deg,rgba(3,12,29,.84),rgba(5,19,42,.78)),
+      url("../assets/midnight-aurora-widget-flow.webp") 68% 12%/cover no-repeat!important;
+    border:1px solid rgba(90,219,255,.22)!important;
+    border-left:2px solid rgba(168,85,247,.55)!important;
+    box-shadow:0 14px 32px rgba(0,0,0,.26)!important;
+  }
+  html[data-fb-visual-theme="midnight-aurora"] .fb-profile-activity .member-activity-card{
+    padding:0!important;
+    background:transparent!important;
+    border:0!important;
+    box-shadow:none!important;
+  }
+  html[data-fb-visual-theme="midnight-aurora"] .fb-profile-activity .member-activity-card > div:not(.member-activity-head):not(.member-activity-empty),
+  html[data-fb-visual-theme="midnight-aurora"] .fb-profile-activity .member-activity-card > article{
+    margin:11px 0!important;
+    padding:13px!important;
+    border-radius:17px!important;
+    border:1px solid rgba(103,232,249,.22)!important;
+    border-left:1px solid rgba(103,232,249,.22)!important;
+    background:
+      linear-gradient(145deg,rgba(2,13,29,.80),rgba(5,20,44,.72)),
+      url("../assets/midnight-aurora-alpine.webp") 72% 46%/cover no-repeat!important;
+    box-shadow:0 8px 20px rgba(0,0,0,.22)!important;
+  }
+  html[data-fb-visual-theme="midnight-aurora"] .fb-profile-activity .member-activity-card > div:not(.member-activity-head):not(.member-activity-empty) + div,
+  html[data-fb-visual-theme="midnight-aurora"] .fb-profile-activity .member-activity-card > article + article{
+    margin-top:12px!important;
+  }
+  html[data-fb-visual-theme="midnight-aurora"] .fb-profile-activity .member-activity-head{
+    margin:0 0 8px!important;
+    padding:2px 2px 11px!important;
+    background:transparent!important;
+    border:0!important;
+    border-bottom:1px solid rgba(103,232,249,.14)!important;
+    box-shadow:none!important;
+  }
+}
