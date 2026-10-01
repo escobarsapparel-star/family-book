@@ -742,6 +742,84 @@ html[data-theme="dark"]{
 }
 
 /* ============================================================
+   MIDNIGHT AURORA — DESKTOP LEFT RAIL REFERENCE MATCH
+   Scenic capsule, glass navigation and active cyan row.
+   ============================================================ */
+@media(min-width:1180px){
+  html[data-fb-visual-theme="midnight-aurora"] .desktop-left-rail{
+    position:sticky!important;
+    isolation:isolate!important;
+    overflow-y:auto!important;
+    overflow-x:hidden!important;
+    padding:14px 12px 24px!important;
+    border:1px solid rgba(71,220,255,.58)!important;
+    border-radius:18px!important;
+    background:
+      linear-gradient(180deg,rgba(2,10,28,.30),rgba(2,12,30,.18) 48%,rgba(2,9,24,.42)),
+      url("../assets/midnight-aurora-alpine.webp") center top/auto 100% no-repeat!important;
+    box-shadow:inset 0 1px 0 rgba(255,255,255,.04),0 0 18px rgba(34,211,238,.08),0 12px 30px rgba(0,0,0,.25)!important;
+    backdrop-filter:none!important;
+    -webkit-backdrop-filter:none!important;
+  }
+  html[data-fb-visual-theme="midnight-aurora"] .desktop-profile-card{
+    padding:9px 8px 13px!important;
+    border-radius:14px!important;
+    background:rgba(2,13,32,.20)!important;
+  }
+  html[data-fb-visual-theme="midnight-aurora"] .desktop-profile-avatar{
+    border:1px solid rgba(93,235,255,.26)!important;
+    box-shadow:0 0 15px rgba(34,211,238,.10)!important;
+  }
+  html[data-fb-visual-theme="midnight-aurora"] .desktop-profile-card strong,
+  html[data-fb-visual-theme="midnight-aurora"] .desktop-side-link{color:#f1f6ff!important}
+  html[data-fb-visual-theme="midnight-aurora"] .desktop-profile-card small{color:#b2bfd2!important}
+
+  html[data-fb-visual-theme="midnight-aurora"] .desktop-side-nav{gap:5px!important;margin-top:8px!important}
+  html[data-fb-visual-theme="midnight-aurora"] .desktop-side-link{
+    min-height:49px!important;
+    padding:7px 9px!important;
+    border:1px solid transparent!important;
+    border-radius:13px!important;
+    background:rgba(2,15,37,.20)!important;
+    font-weight:800!important;
+  }
+  html[data-fb-visual-theme="midnight-aurora"] .desktop-side-link:hover{
+    background:rgba(6,31,58,.70)!important;
+    border-color:rgba(84,226,255,.24)!important;
+  }
+  html[data-fb-visual-theme="midnight-aurora"] .desktop-side-link.active{
+    background:linear-gradient(90deg,rgba(8,59,91,.92),rgba(4,171,173,.88))!important;
+    border-color:rgba(86,240,255,.78)!important;
+    box-shadow:inset 0 0 16px rgba(49,230,255,.14),0 0 16px rgba(34,211,238,.22)!important;
+    color:#fff!important;
+  }
+  html[data-fb-visual-theme="midnight-aurora"] .desktop-side-link span:first-child{
+    width:38px!important;height:38px!important;flex-basis:38px!important;
+    border-radius:10px!important;
+    background:rgba(5,31,57,.82)!important;
+    border:1px solid rgba(90,229,255,.38)!important;
+    color:#78efff!important;
+    box-shadow:inset 0 0 12px rgba(56,189,248,.05)!important;
+  }
+  html[data-fb-visual-theme="midnight-aurora"] .desktop-side-link.active span:first-child{
+    background:rgba(5,45,71,.72)!important;
+    border-color:rgba(124,244,255,.78)!important;
+    color:#d9fdff!important;
+  }
+  html[data-fb-visual-theme="midnight-aurora"] .desktop-side-link svg{width:20px!important;height:20px!important}
+  html[data-fb-visual-theme="midnight-aurora"] .desktop-side-divider{
+    height:1px!important;margin:14px 4px 11px!important;
+    background:rgba(100,226,255,.22)!important;
+  }
+  html[data-fb-visual-theme="midnight-aurora"] .desktop-side-caption{
+    padding:1px 7px 7px!important;
+    color:#8fa4c3!important;
+    font-size:.72rem!important;
+    letter-spacing:.09em!important;
+  }
+}
+
+/* ============================================================
    MIDNIGHT AURORA — DESKTOP FAMILY WALL CAPSULE
    Same proven image-layer pattern as the right-hand widgets.
    ============================================================ */
