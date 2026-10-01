@@ -323,3 +323,49 @@
     color:#9af3ff!important;
   }
 }
+
+
+/* ============================================================
+   MIDNIGHT AURORA — FULL FAMILY TREE PAGE BACKGROUND
+   Shared portrait scene behind the entire mobile Tree page.
+   ============================================================ */
+@media (max-width:759px){
+
+  html[data-fb-visual-theme="midnight-aurora"] #screen:has(.tree-page.coordinate-tree-page){
+    position:relative!important;
+    isolation:isolate!important;
+    background:
+      linear-gradient(180deg,
+        rgba(2,7,20,.30) 0%,
+        rgba(2,8,22,.50) 28%,
+        rgba(2,8,21,.72) 62%,
+        rgba(2,7,19,.90) 100%),
+      url("../assets/midnight-aurora-widget-flow.webp") center top/100% auto repeat-y!important;
+    background-color:#020814!important;
+  }
+
+  html[data-fb-visual-theme="midnight-aurora"] #screen:has(.tree-page.coordinate-tree-page)::before{
+    content:"";
+    position:absolute;
+    inset:0;
+    pointer-events:none;
+    z-index:0;
+    background:
+      radial-gradient(52% 30% at 88% 7%,rgba(34,211,238,.10),transparent 72%),
+      radial-gradient(44% 28% at 5% 16%,rgba(168,85,247,.10),transparent 74%);
+  }
+
+  html[data-fb-visual-theme="midnight-aurora"] #screen:has(.tree-page.coordinate-tree-page)>.tree-page.coordinate-tree-page{
+    position:relative!important;
+    z-index:1!important;
+    background:transparent!important;
+  }
+
+  /* Keep the three main Tree sections glassy so the page scene reads through. */
+  html[data-fb-visual-theme="midnight-aurora"] .tree-page.coordinate-tree-page .tree-head,
+  html[data-fb-visual-theme="midnight-aurora"] .tree-page.coordinate-tree-page .ct-board,
+  html[data-fb-visual-theme="midnight-aurora"] .tree-page.coordinate-tree-page .tree-history-directory{
+    backdrop-filter:blur(8px) saturate(112%)!important;
+    -webkit-backdrop-filter:blur(8px) saturate(112%)!important;
+  }
+}
