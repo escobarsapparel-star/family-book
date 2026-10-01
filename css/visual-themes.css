@@ -536,3 +536,35 @@ html[data-fb-visual-theme="midnight-aurora"] #fbMaintenanceGate{
     border-color:rgba(103,232,249,.40)!important;
   }
 }
+
+
+/* Midnight Aurora — Help & About destination */
+@media(max-width:759px){
+  html[data-fb-visual-theme="midnight-aurora"] .settings-page .settings-about-card{
+    background:
+      linear-gradient(145deg,rgba(3,13,31,.78),rgba(13,18,48,.84)),
+      url("../assets/midnight-aurora-alpine.webp") 68% 45%/145% auto no-repeat!important;
+    border:1px solid rgba(103,232,249,.28)!important;
+    border-left:2px solid rgba(168,85,247,.74)!important;
+    box-shadow:-4px 0 15px rgba(139,92,246,.15),0 13px 30px rgba(0,0,0,.28),0 0 18px rgba(34,211,238,.07)!important;
+  }
+  html[data-fb-visual-theme="midnight-aurora"] .settings-page .settings-about-card .settings-card-icon{
+    background:linear-gradient(135deg,rgba(34,211,238,.19),rgba(139,92,246,.24))!important;
+    color:#8ff5ff!important;
+    border-color:rgba(103,232,249,.25)!important;
+  }
+  html[data-fb-visual-theme="midnight-aurora"] .settings-page .settings-about-card .settings-version-row{
+    background:rgba(3,12,29,.62)!important;
+    border:1px solid rgba(103,232,249,.12)!important;
+    color:#b8c6da!important;
+  }
+  html[data-fb-visual-theme="midnight-aurora"] .settings-page .settings-about-card .settings-version-row strong{
+    color:#eaf8ff!important;
+  }
+  html[data-fb-visual-theme="midnight-aurora"] .settings-page .settings-signout{
+    background:rgba(33,10,30,.76)!important;
+    border:1px solid rgba(244,114,182,.24)!important;
+    color:#fda4af!important;
+    box-shadow:0 9px 22px rgba(0,0,0,.20)!important;
+  }
+}
