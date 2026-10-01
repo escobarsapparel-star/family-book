@@ -306,3 +306,116 @@ html[data-fb-visual-theme="midnight-aurora"] .login-page,
 html[data-fb-visual-theme="midnight-aurora"] #fbMaintenanceGate{
   color-scheme:light;
 }
+
+
+/* Theme collection — balanced card proportions */
+.fb-visual-theme-card .fb-visual-theme-grid{
+  display:grid;
+  gap:10px;
+  margin-top:16px;
+}
+.fb-visual-theme-card .fb-visual-theme-choice{
+  position:relative;
+  width:100%;
+  min-height:76px;
+  display:grid;
+  grid-template-columns:48px minmax(0,1fr) 26px;
+  align-items:center;
+  gap:12px;
+  padding:12px 14px;
+  text-align:left;
+  border-radius:14px;
+  box-sizing:border-box;
+}
+.fb-visual-theme-card .fb-theme-preview{
+  width:48px;
+  height:48px;
+  min-width:48px;
+  display:grid;
+  place-items:center;
+  border-radius:13px;
+  box-sizing:border-box;
+}
+.fb-visual-theme-card .fb-theme-preview svg{
+  width:23px!important;
+  height:23px!important;
+  display:block;
+}
+.fb-visual-theme-card .fb-theme-copy{
+  min-width:0;
+  display:flex;
+  flex-direction:column;
+  justify-content:center;
+  gap:4px;
+  line-height:1.2;
+}
+.fb-visual-theme-card .fb-theme-copy strong{
+  display:block;
+  margin:0;
+  font-size:15px;
+  line-height:1.2;
+  font-weight:800;
+  white-space:normal;
+}
+.fb-visual-theme-card .fb-theme-copy small{
+  display:block;
+  margin:0;
+  font-size:12px;
+  line-height:1.35;
+  font-weight:500;
+  opacity:.78;
+  white-space:normal;
+}
+.fb-visual-theme-card .fb-theme-check{
+  width:22px!important;
+  height:22px!important;
+  justify-self:end;
+  flex:none;
+}
+@media(max-width:560px){
+  .fb-visual-theme-card .settings-card-head{
+    align-items:flex-start;
+  }
+  .fb-visual-theme-card .settings-card-head .settings-card-icon{
+    flex:0 0 42px;
+    width:42px;
+    height:42px;
+  }
+  .fb-visual-theme-card .settings-card-head .settings-card-icon svg{
+    width:21px!important;
+    height:21px!important;
+  }
+  .fb-visual-theme-card .settings-card-head h2{
+    font-size:20px!important;
+    line-height:1.15!important;
+  }
+  .fb-visual-theme-card .settings-card-head>div>span{
+    font-size:12px!important;
+    line-height:1.35!important;
+  }
+  .fb-visual-theme-card .fb-visual-theme-choice{
+    min-height:72px;
+    grid-template-columns:44px minmax(0,1fr) 24px;
+    gap:10px;
+    padding:11px 12px;
+  }
+  .fb-visual-theme-card .fb-theme-preview{
+    width:44px;
+    height:44px;
+    min-width:44px;
+  }
+  .fb-visual-theme-card .fb-theme-preview svg{
+    width:21px!important;
+    height:21px!important;
+  }
+  .fb-visual-theme-card .fb-theme-copy strong{
+    font-size:14px;
+  }
+  .fb-visual-theme-card .fb-theme-copy small{
+    font-size:11px;
+  }
+  .fb-visual-theme-card .fb-theme-check{
+    width:20px!important;
+    height:20px!important;
+  }
+}
