@@ -194,3 +194,132 @@
     filter:drop-shadow(0 0 6px rgba(236,72,153,.22));
   }
 }
+
+
+/* ============================================================
+   MIDNIGHT AURORA — FAMILY HISTORY CAPSULE
+   Scenic outer biography section with clean dark biography rows.
+   ============================================================ */
+@media (max-width:759px){
+
+  html[data-fb-visual-theme="midnight-aurora"] .tree-page.coordinate-tree-page .tree-history-directory{
+    position:relative!important;
+    overflow:hidden!important;
+    isolation:isolate!important;
+    margin:16px 0 18px!important;
+    padding:14px 12px 13px!important;
+    border-radius:18px!important;
+    background:
+      linear-gradient(180deg,
+        rgba(3,11,28,.34) 0%,
+        rgba(3,12,30,.48) 34%,
+        rgba(2,9,23,.74) 100%),
+      url("../assets/midnight-aurora-alpine.webp") 74% 68%/cover no-repeat!important;
+    border:1px solid rgba(78,228,255,.30)!important;
+    border-left:2px solid rgba(168,85,247,.76)!important;
+    box-shadow:
+      -4px 0 16px rgba(139,92,246,.18),
+      0 14px 30px rgba(0,0,0,.26),
+      0 0 18px rgba(34,211,238,.08),
+      inset 0 1px 0 rgba(255,255,255,.04)!important;
+  }
+
+  html[data-fb-visual-theme="midnight-aurora"] .tree-page.coordinate-tree-page .tree-history-directory::before{
+    content:"";
+    position:absolute;
+    inset:0;
+    pointer-events:none;
+    z-index:0;
+    background:
+      radial-gradient(50% 90% at 88% 0%,rgba(34,211,238,.10),transparent 70%),
+      radial-gradient(40% 80% at 4% 10%,rgba(168,85,247,.10),transparent 72%);
+  }
+
+  html[data-fb-visual-theme="midnight-aurora"] .tree-page.coordinate-tree-page .tree-history-directory>*{
+    position:relative!important;
+    z-index:1!important;
+  }
+
+  html[data-fb-visual-theme="midnight-aurora"] .tree-page.coordinate-tree-page .tree-history-directory-head{
+    margin:0 0 11px!important;
+    padding:0 2px!important;
+    gap:10px!important;
+  }
+
+  html[data-fb-visual-theme="midnight-aurora"] .tree-page.coordinate-tree-page .tree-history-directory-head .eyebrow{
+    color:#7dd3fc!important;
+  }
+
+  html[data-fb-visual-theme="midnight-aurora"] .tree-page.coordinate-tree-page .tree-history-directory-head h2{
+    color:#f4f8ff!important;
+    text-shadow:0 0 12px rgba(34,211,238,.07)!important;
+  }
+
+  html[data-fb-visual-theme="midnight-aurora"] .tree-page.coordinate-tree-page .tree-history-directory-head p{
+    color:#b8c6da!important;
+  }
+
+  html[data-fb-visual-theme="midnight-aurora"] .tree-page.coordinate-tree-page .tree-history-count{
+    background:
+      linear-gradient(145deg,rgba(7,20,42,.90),rgba(25,25,66,.76))!important;
+    border:1px solid rgba(96,226,255,.22)!important;
+    color:#9af3ff!important;
+    box-shadow:
+      0 0 12px rgba(34,211,238,.08),
+      0 0 16px rgba(139,92,246,.08),
+      inset 0 1px 0 rgba(255,255,255,.04)!important;
+  }
+
+  /* Biography rows stay clean and non-scenic for readability. */
+  html[data-fb-visual-theme="midnight-aurora"] .tree-page.coordinate-tree-page .tree-history-card{
+    background:
+      linear-gradient(145deg,rgba(4,14,31,.95),rgba(8,18,42,.92))!important;
+    background-image:none!important;
+    border:1px solid rgba(90,219,255,.15)!important;
+    border-radius:14px!important;
+    color:#eef7ff!important;
+    box-shadow:
+      0 9px 22px rgba(0,0,0,.22),
+      inset 0 1px 0 rgba(255,255,255,.02)!important;
+  }
+
+  html[data-fb-visual-theme="midnight-aurora"] .tree-page.coordinate-tree-page .tree-history-card + .tree-history-card{
+    margin-top:8px!important;
+  }
+
+  html[data-fb-visual-theme="midnight-aurora"] .tree-page.coordinate-tree-page .tree-history-card-copy strong{
+    color:#f4f8ff!important;
+  }
+
+  html[data-fb-visual-theme="midnight-aurora"] .tree-page.coordinate-tree-page .tree-history-card-copy b{
+    color:#d5e6f6!important;
+  }
+
+  html[data-fb-visual-theme="midnight-aurora"] .tree-page.coordinate-tree-page .tree-history-card-copy em{
+    color:#9fb0c4!important;
+  }
+
+  html[data-fb-visual-theme="midnight-aurora"] .tree-page.coordinate-tree-page .tree-history-card-top small{
+    background:rgba(92,45,82,.54)!important;
+    border:1px solid rgba(244,114,182,.18)!important;
+    color:#ffd2ea!important;
+  }
+
+  html[data-fb-visual-theme="midnight-aurora"] .tree-page.coordinate-tree-page .tree-history-open{
+    color:#86efff!important;
+  }
+
+  html[data-fb-visual-theme="midnight-aurora"] .tree-page.coordinate-tree-page .tree-history-open svg{
+    filter:
+      drop-shadow(0 0 5px rgba(34,211,238,.24))
+      drop-shadow(0 0 8px rgba(139,92,246,.08))!important;
+  }
+
+  /* Empty Family History state follows the same capsule treatment. */
+  html[data-fb-visual-theme="midnight-aurora"] .tree-page.coordinate-tree-page .tree-history-directory.empty .secondary{
+    background:
+      linear-gradient(145deg,rgba(7,20,42,.90),rgba(25,25,66,.74))!important;
+    border:1px solid rgba(98,226,255,.22)!important;
+    color:#9af3ff!important;
+  }
+}
