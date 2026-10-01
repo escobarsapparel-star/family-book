@@ -1074,6 +1074,34 @@ html[data-theme="dark"]{
   }
 }
 
+/* Family Wall inner posts — neon edge glow */
+@media(min-width:1180px){
+  html[data-fb-visual-theme="midnight-aurora"] #screen .family-wall-panel .wall-post{
+    border:1px solid rgba(91,235,255,.62)!important;
+    border-left-color:rgba(139,92,246,.48)!important;
+    box-shadow:
+      inset 0 0 0 1px rgba(186,250,255,.035),
+      inset 0 0 16px rgba(34,211,238,.045),
+      0 0 5px rgba(103,232,249,.26),
+      0 0 13px rgba(34,211,238,.14),
+      0 8px 20px rgba(0,0,0,.18)!important;
+  }
+  html[data-fb-visual-theme="midnight-aurora"] #screen .family-wall-panel .wall-post:hover{
+    border-color:rgba(108,245,255,.88)!important;
+    border-left-color:rgba(176,118,255,.68)!important;
+    box-shadow:
+      inset 0 0 0 1px rgba(206,253,255,.06),
+      inset 0 0 20px rgba(34,211,238,.075),
+      0 0 7px rgba(103,232,249,.44),
+      0 0 17px rgba(34,211,238,.24),
+      0 9px 22px rgba(0,0,0,.20)!important;
+  }
+  html[data-fb-visual-theme="midnight-aurora"] #screen .family-wall-panel .wall-memory-photo{
+    border-color:rgba(105,237,255,.38)!important;
+    box-shadow:0 0 6px rgba(34,211,238,.10)!important;
+  }
+}
+
 /* ============================================================
    MIDNIGHT AURORA — DESKTOP RIGHT WIDGET CAPSULES
    Reference: transparent rail + individually scenic glass cards.
