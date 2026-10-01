@@ -847,3 +847,23 @@ html[data-theme="dark"]{
    -webkit-backdrop-filter:blur(2px) saturate(110%)!important;
  }
 }
+
+
+/* Final Family Wall fix: beat global dark-theme opaque card background */
+@media(min-width:1180px){
+ html[data-theme="dark"][data-fb-visual-theme="midnight-aurora"] body #app #screen .family-wall-panel{
+   background-color:transparent!important;
+   background-image:
+     linear-gradient(180deg,rgba(0,8,24,.05),rgba(0,9,26,.16)),
+     url("../assets/midnight-aurora-alpine.webp")!important;
+   background-size:cover,cover!important;
+   background-position:center,center center!important;
+   background-repeat:no-repeat,no-repeat!important;
+   border-color:rgba(77,229,255,.70)!important;
+ }
+ html[data-theme="dark"][data-fb-visual-theme="midnight-aurora"] body #app #screen .family-wall-panel .wall-post{
+   background-color:rgba(2,13,31,.38)!important;
+   background-image:none!important;
+   border-color:rgba(117,236,255,.30)!important;
+ }
+}
