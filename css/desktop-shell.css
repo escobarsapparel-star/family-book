@@ -784,6 +784,13 @@ html[data-theme="dark"]{
   html[data-fb-visual-theme="midnight-aurora"] #screen .family-wall-panel .wall-head p{color:#b8c8da!important}
   html[data-fb-visual-theme="midnight-aurora"] #screen .family-wall-panel .family-wall-feed{gap:14px!important}
 
+  html[data-fb-visual-theme="midnight-aurora"] #screen .family-wall-panel .wall-loading,
+  html[data-fb-visual-theme="midnight-aurora"] #screen .family-wall-panel .wall-empty{
+    background:rgba(2,13,31,.34)!important;
+    border-color:rgba(117,236,255,.24)!important;
+    color:#b8c8da!important;
+  }
+
   html[data-fb-visual-theme="midnight-aurora"] #screen .family-wall-panel .wall-post{
     position:relative!important;
     background:rgba(2,13,31,.42)!important;
