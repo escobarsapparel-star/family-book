@@ -133,18 +133,18 @@
   }
 
   html[data-fb-visual-theme="midnight-aurora"] .tree-page.coordinate-tree-page .ct-board::before{
-    content:"";
-    position:absolute;
-    inset:0;
-    pointer-events:none;
-    z-index:0;
-    background:rgba(2,8,21,.10)!important;
+    content:none!important;
+    display:none!important;
+    background:none!important;
   }
 
+  html[data-fb-visual-theme="midnight-aurora"] .tree-page.coordinate-tree-page .tree-touch-stage,
   html[data-fb-visual-theme="midnight-aurora"] .tree-page.coordinate-tree-page .ct-board .ct-canvas{
     position:relative!important;
     z-index:1!important;
     background:transparent!important;
+    background-image:none!important;
+    box-shadow:none!important;
   }
 
   /* Family connectors become subtle cyan instead of dull grey/green. */
