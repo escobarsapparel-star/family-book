@@ -269,3 +269,99 @@
     background-image:none!important;
   }
 }
+
+
+/* Midnight Aurora — Memories sub-pages: detail, albums and editor */
+@media(max-width:759px){
+  html[data-fb-visual-theme="midnight-aurora"] #screen:has(.memory-detail-page),
+  html[data-fb-visual-theme="midnight-aurora"] #screen:has(.memory-editor-page),
+  html[data-fb-visual-theme="midnight-aurora"] #screen:has(.albums-page),
+  html[data-fb-visual-theme="midnight-aurora"] #screen:has(.album-editor-page),
+  html[data-fb-visual-theme="midnight-aurora"] #screen:has(.album-detail-page){
+    background:linear-gradient(180deg,rgba(2,7,20,.30),rgba(2,8,22,.58) 42%,rgba(2,7,19,.90)),url("../assets/midnight-aurora-widget-flow.webp") center top/100% auto repeat-y!important;
+    background-color:#020814!important;
+    color:#eef7ff!important;
+  }
+  html[data-fb-visual-theme="midnight-aurora"] .memory-detail-page,
+  html[data-fb-visual-theme="midnight-aurora"] .memory-editor-page,
+  html[data-fb-visual-theme="midnight-aurora"] .albums-page,
+  html[data-fb-visual-theme="midnight-aurora"] .album-editor-page,
+  html[data-fb-visual-theme="midnight-aurora"] .album-detail-page{color:#eef7ff!important}
+  html[data-fb-visual-theme="midnight-aurora"] :is(.memory-detail-page,.memory-editor-page,.album-editor-page,.album-detail-page)>.back-link{
+    color:#7dd3fc!important;
+  }
+
+  /* Memory detail */
+  html[data-fb-visual-theme="midnight-aurora"] .memory-detail-polished .memory-detail-copy{
+    background:linear-gradient(145deg,rgba(4,14,31,.94),rgba(8,18,42,.91))!important;
+    border-color:rgba(90,219,255,.18)!important;
+    color:#eef7ff!important;
+  }
+  html[data-fb-visual-theme="midnight-aurora"] .memory-detail-polished .memory-detail-head h1{color:#f4f8ff!important}
+  html[data-fb-visual-theme="midnight-aurora"] .memory-detail-polished .memory-detail-date,
+  html[data-fb-visual-theme="midnight-aurora"] .memory-detail-author small{color:#a9b9cd!important}
+  html[data-fb-visual-theme="midnight-aurora"] .memory-detail-author strong{color:#f4f8ff!important}
+  html[data-fb-visual-theme="midnight-aurora"] .memory-detail-edit-action,
+  html[data-fb-visual-theme="midnight-aurora"] .memory-detail-more-button{
+    background:#071429!important;border-color:rgba(90,219,255,.20)!important;color:#8ff5ff!important;
+  }
+  html[data-fb-visual-theme="midnight-aurora"] .memory-detail-intro,
+  html[data-fb-visual-theme="midnight-aurora"] .memory-detail-polished>.memory-detail-gallery+.memory-detail-copy>.reaction-bar{border-color:rgba(103,232,249,.12)!important}
+  html[data-fb-visual-theme="midnight-aurora"] .memory-detail-add-caption,
+  html[data-fb-visual-theme="midnight-aurora"] .memory-detail-story{
+    background:rgba(5,18,36,.76)!important;border-color:rgba(103,232,249,.18)!important;color:#dff8ff!important;
+  }
+  html[data-fb-visual-theme="midnight-aurora"] .memory-detail-add-caption small,
+  html[data-fb-visual-theme="midnight-aurora"] .memory-detail-story p{color:#a9b9cd!important}
+
+  /* Albums */
+  html[data-fb-visual-theme="midnight-aurora"] .albums-head{
+    position:relative!important;overflow:hidden!important;border-radius:18px!important;padding:15px 14px!important;
+    background:linear-gradient(145deg,rgba(3,11,28,.42),rgba(4,13,31,.60)),url("../assets/midnight-aurora-alpine.webp") 76% 24%/155% auto no-repeat!important;
+    border:1px solid rgba(79,230,255,.32)!important;border-left:2px solid rgba(168,85,247,.74)!important;
+    box-shadow:-4px 0 15px rgba(139,92,246,.16),0 13px 28px rgba(0,0,0,.25)!important;
+  }
+  html[data-fb-visual-theme="midnight-aurora"] .albums-head .eyebrow{color:#7dd3fc!important}
+  html[data-fb-visual-theme="midnight-aurora"] .albums-head h1{color:#f4f8ff!important}
+  html[data-fb-visual-theme="midnight-aurora"] .albums-head p{color:#b8c6da!important}
+  html[data-fb-visual-theme="midnight-aurora"] .album-empty-state,
+  html[data-fb-visual-theme="midnight-aurora"] .album-card{
+    background:linear-gradient(145deg,rgba(4,14,31,.92),rgba(8,18,42,.88))!important;
+    border-color:rgba(90,219,255,.18)!important;color:#eef7ff!important;
+    box-shadow:0 11px 25px rgba(0,0,0,.23)!important;
+  }
+  html[data-fb-visual-theme="midnight-aurora"] .album-empty-state h2,
+  html[data-fb-visual-theme="midnight-aurora"] .album-card strong{color:#f4f8ff!important}
+  html[data-fb-visual-theme="midnight-aurora"] .album-empty-state p,
+  html[data-fb-visual-theme="midnight-aurora"] .album-card small{color:#a9b9cd!important}
+  html[data-fb-visual-theme="midnight-aurora"] .albums-page .primary,
+  html[data-fb-visual-theme="midnight-aurora"] .album-editor-page .primary{
+    background:linear-gradient(105deg,#16bfe2 0%,#3b82f6 52%,#7c3aed 100%)!important;color:#fff!important;
+  }
+
+  /* Add/edit memory and album editor cards */
+  html[data-fb-visual-theme="midnight-aurora"] .memory-editor-card,
+  html[data-fb-visual-theme="midnight-aurora"] .album-editor-card{
+    background:linear-gradient(145deg,rgba(4,14,31,.94),rgba(8,18,42,.90))!important;
+    border-color:rgba(90,219,255,.18)!important;color:#eef7ff!important;
+    box-shadow:0 12px 28px rgba(0,0,0,.25)!important;
+  }
+  html[data-fb-visual-theme="midnight-aurora"] .memory-editor-title .eyebrow,
+  html[data-fb-visual-theme="midnight-aurora"] .album-editor-heading .eyebrow{color:#7dd3fc!important}
+  html[data-fb-visual-theme="midnight-aurora"] .memory-editor-title h1,
+  html[data-fb-visual-theme="midnight-aurora"] .album-editor-heading h1{color:#f4f8ff!important}
+  html[data-fb-visual-theme="midnight-aurora"] .memory-editor-title p,
+  html[data-fb-visual-theme="midnight-aurora"] .album-editor-heading p{color:#b8c6da!important}
+  html[data-fb-visual-theme="midnight-aurora"] .memory-photo-preview,
+  html[data-fb-visual-theme="midnight-aurora"] .album-upload-panel{
+    background:rgba(4,14,31,.72)!important;border-color:rgba(103,232,249,.20)!important;color:#dff8ff!important;
+  }
+  html[data-fb-visual-theme="midnight-aurora"] :is(.memory-editor-page,.album-editor-page) input,
+  html[data-fb-visual-theme="midnight-aurora"] :is(.memory-editor-page,.album-editor-page) textarea,
+  html[data-fb-visual-theme="midnight-aurora"] :is(.memory-editor-page,.album-editor-page) select{
+    background:#071429!important;border-color:rgba(90,219,255,.20)!important;color:#eaf8ff!important;
+  }
+  html[data-fb-visual-theme="midnight-aurora"] :is(.memory-editor-page,.album-editor-page) .secondary{
+    background:#071429!important;border-color:rgba(90,219,255,.20)!important;color:#dff8ff!important;
+  }
+}
