@@ -1880,3 +1880,46 @@ html[data-fb-visual-theme="midnight-aurora"] .family-wall-panel,
 html[data-fb-visual-theme="midnight-aurora"] .home-status-composer-shell .wall-composer{
   background-clip:padding-box!important;
 }
+
+
+/* ============================================================
+   MIDNIGHT AURORA — TOP BAR VISUAL BOOST
+   Stronger aurora presence while keeping controls readable.
+   ============================================================ */
+html[data-fb-visual-theme="midnight-aurora"] #app>.app>.topbar{
+  background:
+    linear-gradient(90deg,
+      rgba(3,9,25,.80) 0%,
+      rgba(3,10,27,.50) 38%,
+      rgba(3,10,27,.28) 68%,
+      rgba(3,9,24,.36) 100%),
+    url("../assets/midnight-aurora-alpine.webp") 68% 18%/125% auto no-repeat!important;
+  border-bottom-color:rgba(88,234,255,.38)!important;
+  box-shadow:
+    0 10px 30px rgba(0,0,0,.30),
+    0 1px 0 rgba(101,235,255,.16),
+    inset 0 -1px 0 rgba(168,85,247,.10)!important;
+}
+
+/* Keep the aurora clearly visible on phones, where the header is shorter. */
+@media(max-width:759px){
+  html[data-fb-visual-theme="midnight-aurora"] #app>.app>.topbar{
+    background:
+      linear-gradient(90deg,
+        rgba(3,9,25,.70) 0%,
+        rgba(3,10,27,.40) 36%,
+        rgba(3,10,27,.18) 70%,
+        rgba(3,9,24,.28) 100%),
+      url("../assets/midnight-aurora-alpine.webp") 72% 16%/auto 190% no-repeat!important;
+    border-bottom-color:rgba(88,234,255,.42)!important;
+  }
+}
+
+/* Search keeps its glass treatment over the stronger image. */
+html[data-fb-visual-theme="midnight-aurora"] .desktop-family-search-box{
+  background:rgba(5,15,34,.62)!important;
+  border-color:rgba(91,214,255,.42)!important;
+  box-shadow:
+    0 0 0 1px rgba(168,85,247,.08),
+    0 0 22px rgba(34,211,238,.10)!important;
+}
