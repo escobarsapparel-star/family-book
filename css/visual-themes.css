@@ -1842,3 +1842,41 @@ html[data-fb-visual-theme="midnight-aurora"] .desktop-right-rail>.desktop-widget
   background-image:none!important;
   background-color:rgba(5,14,34,.82)!important;
 }
+
+
+/* ============================================================
+   MIDNIGHT AURORA V2 — PRAYER SCENE RESTORE
+   Give Prayer the strongest dedicated mountain/aurora focal scene.
+   ============================================================ */
+html[data-fb-visual-theme="midnight-aurora"] .family-prayer-widget{
+  background:
+    linear-gradient(145deg,rgba(3,12,30,.30) 0%,rgba(3,13,29,.12) 52%,rgba(3,10,24,.20) 100%),
+    url("../assets/midnight-aurora-scene.webp") 74% 58%/cover no-repeat!important;
+  border-color:rgba(74,235,255,.74)!important;
+  border-left:2px solid #c084fc!important;
+  box-shadow:
+    -7px 0 20px rgba(168,85,247,.40),
+    -2px 0 8px rgba(216,180,254,.36),
+    0 0 22px rgba(34,211,238,.16),
+    0 16px 36px rgba(0,0,0,.30),
+    inset 2px 0 0 rgba(216,180,254,.68),
+    inset 0 1px 0 rgba(255,255,255,.10)!important;
+}
+html[data-fb-visual-theme="midnight-aurora"] .family-prayer-widget:before{
+  background:
+    linear-gradient(90deg,rgba(3,10,27,.18) 0%,rgba(3,10,27,.03) 52%,transparent 100%),
+    linear-gradient(180deg,rgba(3,10,27,.02) 0%,transparent 58%,rgba(2,8,20,.14) 100%)!important;
+  opacity:1!important;
+}
+html[data-fb-visual-theme="midnight-aurora"] .family-prayer-widget:after{
+  background:
+    radial-gradient(72% 76% at 96% 5%,rgba(34,211,238,.12),transparent 56%),
+    radial-gradient(62% 86% at 0% 8%,rgba(168,85,247,.14),transparent 60%)!important;
+  opacity:1!important;
+}
+html[data-fb-visual-theme="midnight-aurora"] .family-prayer-slide,
+html[data-fb-visual-theme="midnight-aurora"] .family-prayer-slide.prayer,
+html[data-fb-visual-theme="midnight-aurora"] .family-prayer-slide.encouragement{
+  background:linear-gradient(145deg,rgba(3,15,31,.40),rgba(3,12,28,.26))!important;
+  border-color:rgba(83,245,231,.60)!important;
+}
