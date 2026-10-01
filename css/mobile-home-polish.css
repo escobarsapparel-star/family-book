@@ -222,3 +222,112 @@
   .home-social-compact-action[data-home-activity-composer]{display:none!important}
   .home-memory-strip-card,.home-memory-add-card{flex-basis:90px!important;width:90px!important;height:130px!important}
 }
+
+/* ============================================================
+   MIDNIGHT AURORA — MOBILE SURFACE CROPS
+   Loaded after visual-themes.css so these rules intentionally
+   win over the generic mobile !important surfaces.
+   ============================================================ */
+@media (max-width:759px){
+
+  /* Header: wide aurora crop behind logo / bell / profile. */
+  html[data-fb-visual-theme="midnight-aurora"] #app>.app>.topbar{
+    background:
+      linear-gradient(90deg,
+        rgba(3,9,24,.74) 0%,
+        rgba(3,10,27,.46) 42%,
+        rgba(3,10,27,.20) 74%,
+        rgba(3,9,24,.34) 100%),
+      url("../assets/midnight-aurora-alpine.webp") 64% 15%/145% auto no-repeat!important;
+    border-bottom:1px solid rgba(87,233,255,.38)!important;
+    box-shadow:
+      0 8px 24px rgba(0,0,0,.28),
+      inset 0 -1px 0 rgba(168,85,247,.12)!important;
+  }
+
+  /* Navigation strip: use a different darker aurora crop rather than empty navy. */
+  html[data-fb-visual-theme="midnight-aurora"] #app>.app>.bottom{
+    background:
+      linear-gradient(90deg,
+        rgba(3,10,25,.86),
+        rgba(3,11,28,.70) 48%,
+        rgba(3,10,25,.82)),
+      url("../assets/midnight-aurora-alpine.webp") 38% 5%/175% auto no-repeat!important;
+    border-top:0!important;
+    border-bottom:1px solid rgba(87,233,255,.24)!important;
+    box-shadow:
+      0 8px 24px rgba(0,0,0,.28),
+      inset 0 1px 0 rgba(255,255,255,.025)!important;
+  }
+  html[data-fb-visual-theme="midnight-aurora"] #app>.app>.bottom .nav{
+    background:transparent!important;
+    color:#9cafc5!important;
+  }
+  html[data-fb-visual-theme="midnight-aurora"] #app>.app>.bottom .nav.active{
+    color:#67e8f9!important;
+    text-shadow:0 0 12px rgba(103,232,249,.26);
+  }
+
+  /* Composer: soft glass over a restrained cyan/violet crop. */
+  html[data-fb-visual-theme="midnight-aurora"] .home-social-compact{
+    background:
+      linear-gradient(90deg,rgba(5,15,34,.70),rgba(6,19,38,.48),rgba(5,15,34,.66)),
+      url("../assets/midnight-aurora-alpine.webp") 50% 8%/185% auto no-repeat!important;
+    border:1px solid rgba(86,225,255,.28)!important;
+    box-shadow:0 10px 24px rgba(0,0,0,.24)!important;
+  }
+  html[data-fb-visual-theme="midnight-aurora"] .home-social-compact-prompt{
+    background:rgba(5,16,34,.60)!important;
+    border:1px solid rgba(103,232,249,.08)!important;
+    color:#b9c7dd!important;
+  }
+
+  /* Memories: visible star/aurora backdrop around the story cards. */
+  html[data-fb-visual-theme="midnight-aurora"] .home-memory-strip-shell{
+    padding:8px 0 10px!important;
+    border-radius:14px!important;
+    overflow:hidden!important;
+    background:
+      linear-gradient(180deg,rgba(4,13,32,.48),rgba(4,13,32,.66)),
+      url("../assets/midnight-aurora-alpine.webp") 42% 9%/150% auto no-repeat!important;
+    border:1px solid rgba(74,215,255,.18)!important;
+    box-shadow:0 12px 28px rgba(0,0,0,.22)!important;
+  }
+  html[data-fb-visual-theme="midnight-aurora"] .home-memory-strip-head{
+    padding:0 9px!important;
+  }
+  html[data-fb-visual-theme="midnight-aurora"] .home-memory-strip-track{
+    margin:0!important;
+    padding:2px 9px 3px!important;
+  }
+
+  /* Family Wall: carry the scenic theme into the section without hurting posts. */
+  html[data-fb-visual-theme="midnight-aurora"] #screen .family-wall-panel{
+    margin:9px -11px 0!important;
+    padding:14px 11px 16px!important;
+    overflow:hidden!important;
+    background:
+      linear-gradient(180deg,
+        rgba(4,13,32,.54) 0%,
+        rgba(4,13,32,.72) 34%,
+        rgba(3,11,27,.90) 100%),
+      url("../assets/midnight-aurora-alpine.webp") 76% 52%/160% auto no-repeat!important;
+    border-top:1px solid rgba(77,229,255,.24)!important;
+    border-bottom:1px solid rgba(139,92,246,.20)!important;
+    border-left:0!important;
+    border-right:0!important;
+    border-radius:0!important;
+    box-shadow:inset 0 1px 0 rgba(255,255,255,.025)!important;
+  }
+  html[data-fb-visual-theme="midnight-aurora"] #screen .family-wall-panel .wall-head h2{
+    color:#9ae6c4!important;
+  }
+  html[data-fb-visual-theme="midnight-aurora"] #screen .family-wall-panel .wall-head p{
+    color:#a9b9cd!important;
+  }
+  html[data-fb-visual-theme="midnight-aurora"] #screen .family-wall-panel .wall-post{
+    background:rgba(5,14,31,.84)!important;
+    border-color:rgba(90,217,255,.16)!important;
+    box-shadow:0 10px 26px rgba(0,0,0,.22)!important;
+  }
+}
