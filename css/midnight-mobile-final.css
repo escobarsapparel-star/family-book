@@ -285,3 +285,74 @@
     background-image:none!important;
   }
 }
+
+
+/* ============================================================
+   MIDNIGHT AURORA — WALL SCENIC HEADER STRIP
+   Visible mountain/forest band at the top of the outer Wall.
+   Individual posts remain plain dark.
+   ============================================================ */
+@media (max-width:759px){
+  html[data-fb-visual-theme="midnight-aurora"] #screen .family-wall-panel{
+    position:relative!important;
+    overflow:hidden!important;
+    isolation:isolate!important;
+    background:
+      linear-gradient(180deg,rgba(3,11,28,.24) 0%,rgba(3,11,28,.54) 22%,rgba(3,11,28,.86) 42%,rgba(3,11,28,.96) 100%)!important;
+  }
+
+  html[data-fb-visual-theme="midnight-aurora"] #screen .family-wall-panel::before{
+    content:""!important;
+    position:absolute!important;
+    left:0!important;
+    right:0!important;
+    top:0!important;
+    height:285px!important;
+    pointer-events:none!important;
+    z-index:0!important;
+    background:
+      linear-gradient(180deg,
+        rgba(3,10,25,.02) 0%,
+        rgba(3,10,25,.08) 45%,
+        rgba(3,11,28,.54) 76%,
+        rgba(3,11,28,.96) 100%),
+      url("../assets/midnight-aurora-alpine.webp") 82% 64%/cover no-repeat!important;
+    opacity:1!important;
+  }
+
+  html[data-fb-visual-theme="midnight-aurora"] #screen .family-wall-panel::after{
+    content:""!important;
+    position:absolute!important;
+    inset:0!important;
+    pointer-events:none!important;
+    z-index:0!important;
+    background:
+      radial-gradient(44% 34% at 92% 3%,rgba(34,211,238,.10),transparent 72%),
+      radial-gradient(38% 32% at 6% 6%,rgba(168,85,247,.10),transparent 74%)!important;
+  }
+
+  html[data-fb-visual-theme="midnight-aurora"] #screen .family-wall-panel>*{
+    position:relative!important;
+    z-index:1!important;
+  }
+
+  /* Keep the title readable over the scenic strip. */
+  html[data-fb-visual-theme="midnight-aurora"] #screen .family-wall-panel>.section-head.wall-head{
+    padding:2px 4px 8px!important;
+    border-radius:12px!important;
+    background:linear-gradient(90deg,rgba(3,12,29,.34),rgba(3,12,29,.06))!important;
+  }
+
+  /* Posts are intentionally non-scenic. */
+  html[data-fb-visual-theme="midnight-aurora"] #screen .family-wall-panel .wall-post{
+    background:rgba(4,14,31,.95)!important;
+    background-image:none!important;
+    backdrop-filter:none!important;
+    -webkit-backdrop-filter:none!important;
+  }
+  html[data-fb-visual-theme="midnight-aurora"] #screen .family-wall-panel .wall-post::before,
+  html[data-fb-visual-theme="midnight-aurora"] #screen .family-wall-panel .wall-post::after{
+    content:none!important;
+    display:none!important;
+  }
+}
