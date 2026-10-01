@@ -800,3 +800,22 @@ html[data-theme="dark"]{
    border-color:rgba(117,236,255,.40)!important;
  }
 }
+
+
+/* Family Wall artwork visibility correction */
+@media(min-width:1180px){
+ html[data-fb-visual-theme="midnight-aurora"] #screen .family-wall-panel{
+   background-image:
+     linear-gradient(180deg,rgba(0,8,24,.08),rgba(0,10,27,.14)),
+     url("../assets/midnight-aurora-alpine.webp")!important;
+   background-size:cover,cover!important;
+   background-position:center,center 42%!important;
+   background-repeat:no-repeat,no-repeat!important;
+   background-attachment:scroll,scroll!important;
+ }
+ html[data-fb-visual-theme="midnight-aurora"] #screen .wall-post{
+   background:rgba(2,13,31,.46)!important;
+   backdrop-filter:blur(3px) saturate(110%)!important;
+   -webkit-backdrop-filter:blur(3px) saturate(110%)!important;
+ }
+}
