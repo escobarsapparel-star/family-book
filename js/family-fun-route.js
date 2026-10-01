@@ -219,7 +219,7 @@
 
   function loadStudio(onLoad){
     const script=document.createElement("script");
-    script.src="js/family-fun-studio.js?v=recording-preview-1";
+    script.src="js/family-fun-studio.js?v=mobile-web-camera-fix-1";
     script.dataset.familyFunRuntime="1";
     script.onload=()=>{
       window.icons?.();
