@@ -72,7 +72,15 @@
         ev.preventDefault();
         ev.stopPropagation();
         ev.stopImmediatePropagation();
-        openMobileMenu();
+        // Avatar is a true toggle on mobile. If the full-screen menu is
+        // already open, hand dismissal to the history-aware navigation layer
+        // so its synthetic menu state is removed as well.
+        if(document.querySelector('.mobile-profile-menu')){
+          if(window.FB_MOBILE_PROFILE_MENU?.close)window.FB_MOBILE_PROFILE_MENU.close();
+          else closeMenu();
+        }else{
+          openMobileMenu();
+        }
       }
       // Desktop deliberately falls through to the existing profile-popover menu.
       return;
