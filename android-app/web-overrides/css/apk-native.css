@@ -26,9 +26,18 @@ html.native-app .app{
 }
 
 html.native-app #screen{
-  will-change:transform,opacity;
+  /* Do not permanently promote the entire app to a GPU layer. Midnight Aurora
+     contains richer backgrounds, and keeping the full scrolling document
+     composited can push Android WebView's renderer over its memory budget.
+     Swipe mode enables compositing only for the duration of the gesture. */
+  will-change:auto;
+  backface-visibility:visible;
+  transform:none;
+}
+
+html.native-app.fb-apk-swiping #screen{
+  will-change:transform;
   backface-visibility:hidden;
-  transform:translateZ(0);
 }
 
 /* The APK swipe layer keeps #screen transformed for GPU acceleration. A fixed
