@@ -819,3 +819,31 @@ html[data-theme="dark"]{
    -webkit-backdrop-filter:blur(3px) saturate(110%)!important;
  }
 }
+
+
+/* Put Aurora INSIDE the visible Family Wall capsule */
+@media(min-width:1180px){
+ html[data-fb-visual-theme="midnight-aurora"] #screen .family-wall-panel{
+   isolation:isolate!important;
+   background-color:#03132d!important;
+   background-image:url("../assets/midnight-aurora-alpine.webp")!important;
+   background-size:cover!important;
+   background-position:center top!important;
+   background-repeat:no-repeat!important;
+ }
+ html[data-fb-visual-theme="midnight-aurora"] #screen .family-wall-panel:before{
+   content:""!important;
+   position:absolute!important;inset:0!important;z-index:0!important;pointer-events:none!important;
+   background:linear-gradient(180deg,rgba(0,7,22,.12),rgba(0,10,27,.22))!important;
+ }
+ html[data-fb-visual-theme="midnight-aurora"] #screen .family-wall-panel>.wall-head,
+ html[data-fb-visual-theme="midnight-aurora"] #screen .family-wall-panel>.family-wall-feed{
+   position:relative!important;z-index:1!important;
+ }
+ html[data-fb-visual-theme="midnight-aurora"] #screen .family-wall-panel .wall-post{
+   background:rgba(2,13,31,.42)!important;
+   border:1px solid rgba(116,232,255,.32)!important;
+   backdrop-filter:blur(2px) saturate(110%)!important;
+   -webkit-backdrop-filter:blur(2px) saturate(110%)!important;
+ }
+}
