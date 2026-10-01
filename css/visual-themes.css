@@ -1350,8 +1350,7 @@ html[data-fb-visual-theme="midnight-aurora"] .desktop-date-time-card:after{
 /* Prayer: show the mountain/forest scene clearly through the glass. */
 html[data-fb-visual-theme="midnight-aurora"] .family-prayer-widget{
   background:
-    linear-gradient(150deg,rgba(5,12,34,.75) 0%,rgba(5,14,34,.46) 45%,rgba(3,13,29,.16) 100%),
-    url("../assets/midnight-aurora-scene.webp") 70% 56%/cover no-repeat!important;
+    linear-gradient(150deg,rgba(5,12,34,.75) 0%,rgba(5,14,34,.46) 45%,rgba(3,13,29,.16) 100%)!important;
 }
 html[data-fb-visual-theme="midnight-aurora"] .family-prayer-widget:before{
   content:""!important;
@@ -1385,8 +1384,7 @@ html[data-fb-visual-theme="midnight-aurora"] .family-prayer-slide{
 /* Countdown: same scene, but crop lower so the mountains sit behind the hero. */
 html[data-fb-visual-theme="midnight-aurora"] .family-countdown-widget{
   background:
-    linear-gradient(150deg,rgba(4,13,33,.82) 0%,rgba(5,15,36,.55) 55%,rgba(4,14,31,.25) 100%),
-    url("../assets/midnight-aurora-scene.webp") 68% 67%/cover no-repeat!important;
+    linear-gradient(150deg,rgba(4,13,33,.82) 0%,rgba(5,15,36,.55) 55%,rgba(4,14,31,.25) 100%)!important;
 }
 html[data-fb-visual-theme="midnight-aurora"] .family-countdown-widget:before{
   background:
@@ -1401,8 +1399,7 @@ html[data-fb-visual-theme="midnight-aurora"] .family-countdown-hero{
 /* Birthdays: quieter crop so the list remains the focus, but retains the scene. */
 html[data-fb-visual-theme="midnight-aurora"] .desktop-widget:has(#desktopBirthdayRows){
   background:
-    linear-gradient(150deg,rgba(6,15,38,.88) 0%,rgba(7,17,39,.66) 58%,rgba(5,14,31,.42) 100%),
-    url("../assets/midnight-aurora-scene.webp") 76% 73%/cover no-repeat!important;
+    linear-gradient(150deg,rgba(6,15,38,.88) 0%,rgba(7,17,39,.66) 58%,rgba(5,14,31,.42) 100%)!important;
 }
 html[data-fb-visual-theme="midnight-aurora"] .desktop-widget:has(#desktopBirthdayRows):before{
   background:
@@ -1453,8 +1450,7 @@ html[data-fb-visual-theme="midnight-aurora"] .desktop-date-time-card:before{
 /* Prayer: open the card up so the mountain and aurora remain part of the scene. */
 html[data-fb-visual-theme="midnight-aurora"] .family-prayer-widget{
   background:
-    linear-gradient(145deg,rgba(4,11,30,.62) 0%,rgba(4,13,30,.27) 48%,rgba(2,11,25,.08) 100%),
-    url("../assets/midnight-aurora-scene.webp") 74% 58%/cover no-repeat!important;
+    linear-gradient(145deg,rgba(4,11,30,.62) 0%,rgba(4,13,30,.27) 48%,rgba(2,11,25,.08) 100%)!important;
 }
 html[data-fb-visual-theme="midnight-aurora"] .family-prayer-widget:before{
   background:
@@ -1481,8 +1477,7 @@ html[data-fb-visual-theme="midnight-aurora"] .family-prayer-slide.encouragement{
 /* Countdown: reveal the scenic layer across the whole widget. */
 html[data-fb-visual-theme="midnight-aurora"] .family-countdown-widget{
   background:
-    linear-gradient(145deg,rgba(4,12,30,.66) 0%,rgba(4,13,31,.30) 58%,rgba(3,11,26,.10) 100%),
-    url("../assets/midnight-aurora-scene.webp") 72% 67%/cover no-repeat!important;
+    linear-gradient(145deg,rgba(4,12,30,.66) 0%,rgba(4,13,31,.30) 58%,rgba(3,11,26,.10) 100%)!important;
 }
 html[data-fb-visual-theme="midnight-aurora"] .family-countdown-widget:before{
   background:
@@ -1502,8 +1497,7 @@ html[data-fb-visual-theme="midnight-aurora"] .family-countdown-clock{
 /* Birthdays: image remains quieter than Prayer, but should still be unmistakably scenic. */
 html[data-fb-visual-theme="midnight-aurora"] .desktop-widget:has(#desktopBirthdayRows){
   background:
-    linear-gradient(145deg,rgba(5,13,33,.72) 0%,rgba(5,14,34,.38) 60%,rgba(3,11,27,.16) 100%),
-    url("../assets/midnight-aurora-scene.webp") 80% 72%/cover no-repeat!important;
+    linear-gradient(145deg,rgba(5,13,33,.72) 0%,rgba(5,14,34,.38) 60%,rgba(3,11,27,.16) 100%)!important;
 }
 html[data-fb-visual-theme="midnight-aurora"] .desktop-widget:has(#desktopBirthdayRows):before{
   background:
@@ -1708,4 +1702,32 @@ html[data-fb-visual-theme="midnight-aurora"] .compact-widgets-rail>.desktop-widg
       backdrop-filter:blur(6px) saturate(116%)!important;
     }
   }
+}
+
+
+/* ============================================================
+   MIDNIGHT AURORA V2 — REMOVE REPEATED CARD ART
+   Scenic bitmap belongs to the rail only, never individual cards.
+   ============================================================ */
+html[data-fb-visual-theme="midnight-aurora"] .family-prayer-widget,
+html[data-fb-visual-theme="midnight-aurora"] .family-countdown-widget,
+html[data-fb-visual-theme="midnight-aurora"] .desktop-widget:has(#desktopBirthdayRows){
+  background-image:none!important;
+}
+html[data-fb-visual-theme="midnight-aurora"] .family-prayer-widget:before,
+html[data-fb-visual-theme="midnight-aurora"] .family-prayer-widget:after,
+html[data-fb-visual-theme="midnight-aurora"] .family-countdown-widget:before,
+html[data-fb-visual-theme="midnight-aurora"] .family-countdown-widget:after,
+html[data-fb-visual-theme="midnight-aurora"] .desktop-widget:has(#desktopBirthdayRows):before,
+html[data-fb-visual-theme="midnight-aurora"] .desktop-widget:has(#desktopBirthdayRows):after{
+  background-image:none!important;
+}
+html[data-fb-visual-theme="midnight-aurora"] .family-prayer-widget{
+  background-color:rgba(4,14,32,.30)!important;
+}
+html[data-fb-visual-theme="midnight-aurora"] .family-countdown-widget{
+  background-color:rgba(4,14,32,.48)!important;
+}
+html[data-fb-visual-theme="midnight-aurora"] .desktop-widget:has(#desktopBirthdayRows){
+  background-color:rgba(4,13,31,.62)!important;
 }
