@@ -605,3 +605,14 @@ html[data-theme="dark"]{
     background:transparent!important;
   }
 }
+
+
+/* Desktop nav v5 — exact user-supplied 1672x131 panorama */
+@media(min-width:1180px){
+  html[data-fb-visual-theme="midnight-aurora"] #app>.app>.topbar{
+    background-image:url("../assets/desktop-nav-aurora.webp")!important;
+    background-size:100% 100%!important;
+    background-position:0 0!important;
+    background-repeat:no-repeat!important;
+  }
+}
