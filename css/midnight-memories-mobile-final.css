@@ -365,3 +365,100 @@
     background:#071429!important;border-color:rgba(90,219,255,.20)!important;color:#dff8ff!important;
   }
 }
+
+
+/* Midnight Memory detail — sectional layout matching final concept */
+@media(max-width:759px){
+  html[data-fb-visual-theme="midnight-aurora"] .memory-detail-polished .memory-detail-head,
+  html[data-fb-visual-theme="midnight-aurora"] .memory-detail-polished .memory-detail-intro{
+    background:linear-gradient(145deg,rgba(4,14,31,.76),rgba(7,22,48,.76)),url("../assets/midnight-aurora-alpine.webp") 72% 48%/cover no-repeat!important;
+    border:1px solid rgba(90,219,255,.22)!important;
+    border-left:2px solid rgba(168,85,247,.60)!important;
+    border-radius:16px!important;
+    padding:13px!important;
+    box-shadow:0 9px 22px rgba(0,0,0,.20)!important;
+  }
+  html[data-fb-visual-theme="midnight-aurora"] .memory-detail-polished .memory-detail-intro{
+    margin-top:-7px!important;
+    align-items:center!important;
+    flex-direction:row!important;
+  }
+  html[data-fb-visual-theme="midnight-aurora"] .memory-detail-author>img{
+    width:48px!important;height:48px!important;
+    border:2px solid rgba(103,232,249,.45)!important;
+    box-shadow:0 0 14px rgba(34,211,238,.14)!important;
+  }
+  html[data-fb-visual-theme="midnight-aurora"] .memory-detail-author>span{
+    width:48px!important;height:48px!important;
+  }
+
+  html[data-fb-visual-theme="midnight-aurora"] .memory-detail-add-caption{
+    min-height:76px!important;
+    padding:14px!important;
+    border:1px dashed rgba(56,189,248,.46)!important;
+    border-left:2px solid rgba(168,85,247,.62)!important;
+    background:linear-gradient(135deg,rgba(3,17,38,.90),rgba(8,28,58,.78))!important;
+    box-shadow:0 8px 20px rgba(0,0,0,.18)!important;
+  }
+  html[data-fb-visual-theme="midnight-aurora"] .memory-detail-add-caption>svg{
+    width:27px!important;height:27px!important;color:#67e8f9!important;
+  }
+
+  html[data-fb-visual-theme="midnight-aurora"] .memory-detail-polished .memory-detail-tags>div{
+    display:grid!important;
+    grid-template-columns:1fr!important;
+    gap:8px!important;
+  }
+  html[data-fb-visual-theme="midnight-aurora"] .memory-detail-polished .memory-detail-tags button{
+    width:100%!important;
+    min-height:54px!important;
+    padding:7px 12px 7px 7px!important;
+    display:grid!important;
+    grid-template-columns:40px minmax(0,1fr) 18px!important;
+    align-items:center!important;
+    gap:10px!important;
+    text-align:left!important;
+    border-radius:15px!important;
+    background:linear-gradient(145deg,rgba(4,16,35,.92),rgba(7,27,54,.86))!important;
+    border:1px solid rgba(90,219,255,.22)!important;
+    border-left:2px solid rgba(168,85,247,.56)!important;
+    color:#f4f8ff!important;
+    box-shadow:0 7px 18px rgba(0,0,0,.17)!important;
+  }
+  html[data-fb-visual-theme="midnight-aurora"] .memory-detail-polished .memory-detail-tags img,
+  html[data-fb-visual-theme="midnight-aurora"] .memory-detail-polished .memory-detail-tags b{
+    width:40px!important;height:40px!important;border-radius:50%!important;
+    object-fit:cover!important;border:1px solid rgba(103,232,249,.32)!important;
+  }
+  html[data-fb-visual-theme="midnight-aurora"] .memory-detail-polished .memory-detail-tags strong{
+    font-size:.78rem!important;color:#f4f8ff!important;
+  }
+
+  html[data-fb-visual-theme="midnight-aurora"] .memory-exif-details{
+    position:relative!important;overflow:hidden!important;
+    margin-top:15px!important;padding:16px!important;
+    border:1px solid rgba(103,232,249,.34)!important;
+    border-left:2px solid rgba(168,85,247,.74)!important;
+    border-radius:18px!important;
+    background:
+      linear-gradient(90deg,rgba(2,12,29,.90),rgba(3,17,38,.70)),
+      url("../assets/midnight-aurora-alpine.webp") 70% 58%/cover no-repeat!important;
+    box-shadow:0 12px 27px rgba(0,0,0,.26),0 0 18px rgba(34,211,238,.07)!important;
+  }
+  html[data-fb-visual-theme="midnight-aurora"] .memory-exif-title,
+  html[data-fb-visual-theme="midnight-aurora"] .memory-exif-title strong,
+  html[data-fb-visual-theme="midnight-aurora"] .memory-exif-grid strong{color:#f4f8ff!important}
+  html[data-fb-visual-theme="midnight-aurora"] .memory-exif-title svg,
+  html[data-fb-visual-theme="midnight-aurora"] .memory-exif-grid>div>svg,
+  html[data-fb-visual-theme="midnight-aurora"] .memory-exif-grid a{color:#67e8f9!important}
+  html[data-fb-visual-theme="midnight-aurora"] .memory-exif-grid small{color:#a9b9cd!important}
+
+  /* People selector in Add/Edit Memory: same individual glass-row treatment. */
+  html[data-fb-visual-theme="midnight-aurora"] .memory-editor-page .memory-people-list label,
+  html[data-fb-visual-theme="midnight-aurora"] .memory-editor-page .people-picker label,
+  html[data-fb-visual-theme="midnight-aurora"] .memory-editor-page .memory-person-option{
+    background:linear-gradient(145deg,rgba(4,16,35,.92),rgba(7,27,54,.86))!important;
+    border-color:rgba(90,219,255,.20)!important;
+    color:#eef7ff!important;
+  }
+}
