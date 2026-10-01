@@ -331,3 +331,112 @@
     box-shadow:0 10px 26px rgba(0,0,0,.22)!important;
   }
 }
+
+
+/* ============================================================
+   MIDNIGHT AURORA — MOBILE ICON POLISH
+   Subtle northern-lights treatment for mobile navigation and actions.
+   ============================================================ */
+@media (max-width:759px){
+  html[data-fb-visual-theme="midnight-aurora"] #app>.app>.bottom .nav{
+    position:relative!important;
+    color:#9fb2c9!important;
+    overflow:visible!important;
+    z-index:1;
+  }
+  html[data-fb-visual-theme="midnight-aurora"] #app>.app>.bottom .nav::before{
+    content:"";
+    position:absolute;
+    left:50%;
+    top:50%;
+    width:42px;
+    height:42px;
+    transform:translate(-50%,-50%);
+    border-radius:14px;
+    background:
+      linear-gradient(145deg,rgba(6,18,40,.84),rgba(8,18,42,.58)),
+      radial-gradient(circle at 28% 24%,rgba(34,211,238,.18),transparent 58%),
+      radial-gradient(circle at 76% 20%,rgba(168,85,247,.14),transparent 56%);
+    border:1px solid rgba(92,214,255,.16);
+    box-shadow:0 8px 22px rgba(0,0,0,.22),inset 0 1px 0 rgba(255,255,255,.04);
+    z-index:-1;
+    opacity:.82;
+  }
+  html[data-fb-visual-theme="midnight-aurora"] #app>.app>.bottom .nav svg,
+  html[data-fb-visual-theme="midnight-aurora"] #app>.app>.bottom .nav i{
+    filter:drop-shadow(0 0 8px rgba(34,211,238,.08));
+  }
+  html[data-fb-visual-theme="midnight-aurora"] #app>.app>.bottom .nav.active{
+    color:#67e8f9!important;
+  }
+  html[data-fb-visual-theme="midnight-aurora"] #app>.app>.bottom .nav.active::before{
+    background:
+      linear-gradient(145deg,rgba(10,28,56,.96),rgba(22,23,63,.82)),
+      radial-gradient(circle at 28% 24%,rgba(34,211,238,.30),transparent 58%),
+      radial-gradient(circle at 76% 20%,rgba(168,85,247,.24),transparent 56%);
+    border:1px solid rgba(103,232,249,.38);
+    box-shadow:
+      0 0 18px rgba(34,211,238,.14),
+      0 0 24px rgba(139,92,246,.10),
+      inset 0 1px 0 rgba(255,255,255,.06);
+  }
+  html[data-fb-visual-theme="midnight-aurora"] #app>.app>.bottom .nav.active svg,
+  html[data-fb-visual-theme="midnight-aurora"] #app>.app>.bottom .nav.active i{
+    filter:
+      drop-shadow(0 0 8px rgba(34,211,238,.25))
+      drop-shadow(0 0 12px rgba(139,92,246,.12));
+  }
+
+  html[data-fb-visual-theme="midnight-aurora"] #app>.app>.topbar .actions > *,
+  html[data-fb-visual-theme="midnight-aurora"] #app>.app>.topbar .avatar{
+    background:
+      linear-gradient(145deg,rgba(7,18,38,.80),rgba(9,18,40,.56))!important;
+    border:1px solid rgba(96,222,255,.18)!important;
+    box-shadow:
+      0 8px 18px rgba(0,0,0,.20),
+      inset 0 1px 0 rgba(255,255,255,.04)!important;
+  }
+
+  html[data-fb-visual-theme="midnight-aurora"] .home-social-compact-action{
+    background:
+      linear-gradient(145deg,rgba(7,18,38,.84),rgba(10,20,42,.64))!important;
+    border:1px solid rgba(88,214,255,.18)!important;
+    box-shadow:
+      0 8px 18px rgba(0,0,0,.18),
+      inset 0 1px 0 rgba(255,255,255,.04)!important;
+    color:#aeefff!important;
+  }
+  html[data-fb-visual-theme="midnight-aurora"] .home-social-compact-action svg{
+    filter:drop-shadow(0 0 8px rgba(34,211,238,.14));
+  }
+
+  html[data-fb-visual-theme="midnight-aurora"] #screen .wall-post button,
+  html[data-fb-visual-theme="midnight-aurora"] #screen .wall-post .secondary,
+  html[data-fb-visual-theme="midnight-aurora"] #screen .wall-post [role="button"]{
+    background:
+      linear-gradient(145deg,rgba(9,20,42,.88),rgba(14,28,52,.62))!important;
+    border:1px solid rgba(96,220,255,.14)!important;
+    color:#eaf6ff!important;
+    box-shadow:
+      0 8px 18px rgba(0,0,0,.18),
+      inset 0 1px 0 rgba(255,255,255,.04)!important;
+  }
+  html[data-fb-visual-theme="midnight-aurora"] #screen .wall-post button svg,
+  html[data-fb-visual-theme="midnight-aurora"] #screen .wall-post .secondary svg,
+  html[data-fb-visual-theme="midnight-aurora"] #screen .wall-post [role="button"] svg{
+    color:#c9f7ff!important;
+    filter:
+      drop-shadow(0 0 8px rgba(34,211,238,.14))
+      drop-shadow(0 0 10px rgba(139,92,246,.08));
+  }
+
+  html[data-fb-visual-theme="midnight-aurora"] #screen .wall-post .comment-toggle,
+  html[data-fb-visual-theme="midnight-aurora"] #screen .wall-post summary{
+    color:#d8e8f8!important;
+  }
+  html[data-fb-visual-theme="midnight-aurora"] #screen .wall-post .comment-toggle svg,
+  html[data-fb-visual-theme="midnight-aurora"] #screen .wall-post summary svg{
+    color:#aeefff!important;
+    filter:drop-shadow(0 0 8px rgba(34,211,238,.16));
+  }
+}
