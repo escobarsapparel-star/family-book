@@ -4,6 +4,14 @@
   if(!native?.Capacitor?.isNativePlatform?.())return;
   window.__fbApkNativeEnhancementsReady=true;
 
+  // Recovery baseline: Midnight Aurora is web/desktop only. The Android app
+  // always starts on the standard visual theme so rich scenic backgrounds and
+  // persisted Midnight preferences cannot be applied while Home is rendering.
+  try{
+    localStorage.removeItem('fb_visual_theme');
+    document.documentElement.removeAttribute('data-fb-visual-theme');
+  }catch(_){};
+
   const tabs=['home','memories','tree','calendar','family-fun','members','profile'];
   // Allow page-wide swipe gestures to start on cards, links and buttons. Inputs,
   // editors and true horizontal/interactive surfaces still keep their own gesture.
