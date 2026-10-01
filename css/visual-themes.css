@@ -306,3 +306,1577 @@ html[data-fb-visual-theme="midnight-aurora"] .login-page,
 html[data-fb-visual-theme="midnight-aurora"] #fbMaintenanceGate{
   color-scheme:light;
 }
+
+
+/* ============================================================
+   MIDNIGHT AURORA V2 — FOUNDATION
+   Shared visual language only. No feature/layout logic lives here.
+   ============================================================ */
+html[data-fb-visual-theme="midnight-aurora"]{
+  --aurora-bg-deep:#030713;
+  --aurora-bg:#071021;
+  --aurora-surface:rgba(9,19,42,.78);
+  --aurora-surface-strong:rgba(11,22,48,.9);
+  --aurora-surface-soft:rgba(18,30,62,.64);
+  --aurora-line:rgba(117,218,255,.2);
+  --aurora-line-strong:rgba(117,218,255,.36);
+  --aurora-highlight:rgba(255,255,255,.06);
+  --aurora-cyan:#67e8f9;
+  --aurora-teal:#5eead4;
+  --aurora-violet:#a78bfa;
+  --aurora-pink:#f0abfc;
+  --aurora-text:#f5f9ff;
+  --aurora-muted:#9fb0cf;
+  --aurora-shadow:0 18px 48px rgba(0,0,0,.38);
+  --aurora-shadow-soft:0 10px 28px rgba(0,0,0,.28);
+  --aurora-glow-cyan:0 0 28px rgba(34,211,238,.12);
+  --aurora-glow-violet:0 0 34px rgba(139,92,246,.11);
+
+  --fb-shell-bg:var(--aurora-bg-deep);
+  --fb-shell-panel:var(--aurora-surface);
+  --fb-shell-panel-2:var(--aurora-surface-soft);
+  --fb-shell-border:var(--aurora-line);
+  --fb-shell-text:var(--aurora-text);
+  --fb-shell-muted:var(--aurora-muted);
+  --fb-shell-accent:var(--aurora-cyan);
+  --fb-shell-accent-soft:rgba(103,232,249,.11);
+  --fb-shell-shadow:var(--aurora-shadow-soft);
+}
+
+html[data-fb-visual-theme="midnight-aurora"],
+html[data-fb-visual-theme="midnight-aurora"] body{
+  background-color:var(--aurora-bg-deep)!important;
+}
+
+html[data-fb-visual-theme="midnight-aurora"] body{
+  position:relative;
+  background:
+    radial-gradient(1050px 680px at -5% -10%,rgba(34,211,238,.16),transparent 58%),
+    radial-gradient(900px 620px at 100% 6%,rgba(124,58,237,.18),transparent 58%),
+    radial-gradient(760px 520px at 54% 108%,rgba(16,185,129,.09),transparent 62%),
+    linear-gradient(180deg,#030713 0%,#050a18 44%,#07101e 100%)!important;
+}
+
+html[data-fb-visual-theme="midnight-aurora"] body:before{
+  z-index:0;
+  background:
+    linear-gradient(112deg,transparent 18%,rgba(103,232,249,.035) 36%,transparent 52%),
+    linear-gradient(248deg,transparent 33%,rgba(167,139,250,.045) 51%,transparent 69%),
+    radial-gradient(circle at 50% 0%,rgba(255,255,255,.025),transparent 36%);
+  opacity:1;
+}
+
+html[data-fb-visual-theme="midnight-aurora"] #app{
+  position:relative;
+  z-index:1;
+}
+
+html[data-fb-visual-theme="midnight-aurora"] #app>.app>.topbar{
+  background:linear-gradient(180deg,rgba(4,9,23,.91),rgba(5,11,27,.82))!important;
+  border-bottom:1px solid rgba(117,218,255,.2)!important;
+  box-shadow:
+    0 10px 38px rgba(0,0,0,.28),
+    inset 0 -1px 0 rgba(103,232,249,.035)!important;
+}
+
+html[data-fb-visual-theme="midnight-aurora"] .desktop-left-rail{
+  background:
+    radial-gradient(420px 340px at -15% 100%,rgba(34,211,238,.055),transparent 66%),
+    linear-gradient(180deg,rgba(4,10,24,.76),rgba(4,9,20,.52))!important;
+  border-right-color:rgba(117,218,255,.12)!important;
+}
+
+html[data-fb-visual-theme="midnight-aurora"] .desktop-right-rail{
+  background:
+    radial-gradient(420px 360px at 115% 8%,rgba(139,92,246,.06),transparent 68%),
+    linear-gradient(180deg,rgba(4,10,24,.4),rgba(4,9,20,.2))!important;
+  border-left-color:rgba(117,218,255,.09)!important;
+}
+
+html[data-fb-visual-theme="midnight-aurora"] .desktop-widget,
+html[data-fb-visual-theme="midnight-aurora"] .home-memory-strip-card,
+html[data-fb-visual-theme="midnight-aurora"] .home-memory-add-card,
+html[data-fb-visual-theme="midnight-aurora"] .home-status-composer-shell .wall-composer,
+html[data-fb-visual-theme="midnight-aurora"] .family-wall-panel,
+html[data-fb-visual-theme="midnight-aurora"] .settings-card,
+html[data-fb-visual-theme="midnight-aurora"] .settings-account-summary{
+  background:
+    linear-gradient(145deg,rgba(15,28,57,.78),rgba(7,16,35,.72))!important;
+  border:1px solid var(--aurora-line)!important;
+  box-shadow:
+    var(--aurora-shadow-soft),
+    inset 0 1px 0 var(--aurora-highlight),
+    inset 0 -1px 0 rgba(103,232,249,.025)!important;
+}
+
+@supports ((backdrop-filter:blur(1px)) or (-webkit-backdrop-filter:blur(1px))){
+  @media (min-width:1180px){
+    html[data-fb-visual-theme="midnight-aurora"] #app>.app>.topbar,
+    html[data-fb-visual-theme="midnight-aurora"] .desktop-widget,
+    html[data-fb-visual-theme="midnight-aurora"] .home-memory-strip-card,
+    html[data-fb-visual-theme="midnight-aurora"] .home-memory-add-card,
+    html[data-fb-visual-theme="midnight-aurora"] .home-status-composer-shell .wall-composer,
+    html[data-fb-visual-theme="midnight-aurora"] .family-wall-panel{
+      -webkit-backdrop-filter:blur(14px) saturate(122%);
+      backdrop-filter:blur(14px) saturate(122%);
+    }
+  }
+}
+
+html[data-fb-visual-theme="midnight-aurora"] .desktop-widget:hover,
+html[data-fb-visual-theme="midnight-aurora"] .home-memory-strip-card:hover,
+html[data-fb-visual-theme="midnight-aurora"] .home-memory-add-card:hover{
+  border-color:var(--aurora-line-strong)!important;
+  box-shadow:
+    0 18px 42px rgba(0,0,0,.34),
+    var(--aurora-glow-cyan),
+    inset 0 1px 0 rgba(255,255,255,.075)!important;
+}
+
+html[data-fb-visual-theme="midnight-aurora"] .desktop-top-nav button,
+html[data-fb-visual-theme="midnight-aurora"] .desktop-side-link{
+  border:1px solid transparent;
+  transition:
+    background-color .18s ease,
+    border-color .18s ease,
+    color .18s ease,
+    box-shadow .18s ease,
+    transform .18s ease;
+}
+
+html[data-fb-visual-theme="midnight-aurora"] .desktop-top-nav button:hover,
+html[data-fb-visual-theme="midnight-aurora"] .desktop-side-link:hover{
+  border-color:rgba(103,232,249,.12);
+}
+
+html[data-fb-visual-theme="midnight-aurora"] .desktop-top-nav button.active{
+  border-color:rgba(117,218,255,.2)!important;
+  box-shadow:
+    0 10px 24px rgba(0,0,0,.22),
+    0 0 24px rgba(34,211,238,.11),
+    inset 0 1px 0 rgba(255,255,255,.08)!important;
+}
+
+html[data-fb-visual-theme="midnight-aurora"] .desktop-side-link:hover{
+  transform:translateX(2px);
+  background:
+    linear-gradient(90deg,rgba(34,211,238,.08),rgba(139,92,246,.06),transparent)!important;
+}
+
+html[data-fb-visual-theme="midnight-aurora"] .desktop-family-search-box{
+  background:
+    linear-gradient(180deg,rgba(8,17,37,.78),rgba(6,14,31,.7))!important;
+  border-color:rgba(117,218,255,.24)!important;
+  box-shadow:
+    inset 0 1px 0 rgba(255,255,255,.035),
+    0 8px 24px rgba(0,0,0,.2)!important;
+}
+
+html[data-fb-visual-theme="midnight-aurora"] .primary{
+  border:1px solid rgba(255,255,255,.08)!important;
+  box-shadow:
+    0 10px 26px rgba(34,211,238,.16),
+    0 0 22px rgba(124,58,237,.13),
+    inset 0 1px 0 rgba(255,255,255,.18)!important;
+}
+
+html[data-fb-visual-theme="midnight-aurora"] .primary:hover{
+  box-shadow:
+    0 12px 30px rgba(34,211,238,.2),
+    0 0 28px rgba(124,58,237,.16),
+    inset 0 1px 0 rgba(255,255,255,.22)!important;
+}
+
+html[data-fb-visual-theme="midnight-aurora"] .secondary,
+html[data-fb-visual-theme="midnight-aurora"] .circle{
+  box-shadow:
+    inset 0 1px 0 rgba(255,255,255,.045),
+    0 8px 20px rgba(0,0,0,.18)!important;
+}
+
+html[data-fb-visual-theme="midnight-aurora"] .family-countdown-hero{
+  background:
+    radial-gradient(500px 180px at 90% 0%,rgba(139,92,246,.16),transparent 55%),
+    linear-gradient(135deg,rgba(14,54,75,.36),rgba(52,29,91,.38))!important;
+  box-shadow:
+    inset 0 1px 0 rgba(255,255,255,.06),
+    0 10px 28px rgba(0,0,0,.2),
+    0 0 24px rgba(34,211,238,.07)!important;
+}
+
+@media (prefers-reduced-motion:reduce){
+  html[data-fb-visual-theme="midnight-aurora"] *,
+  html[data-fb-visual-theme="midnight-aurora"] *:before,
+  html[data-fb-visual-theme="midnight-aurora"] *:after{
+    scroll-behavior:auto!important;
+  }
+  html[data-fb-visual-theme="midnight-aurora"] .desktop-side-link:hover{
+    transform:none;
+  }
+}
+
+
+/* ============================================================
+   MIDNIGHT AURORA V2 — PHASE 2
+   Wall, Prayer, right rail and navigation identity.
+   ============================================================ */
+
+/* Family Wall — make the feed feel native to Midnight rather than
+   Classic cards placed on top of a dark canvas. */
+html[data-fb-visual-theme="midnight-aurora"] .family-wall-panel{
+  background:
+    radial-gradient(720px 260px at 8% 0%,rgba(34,211,238,.055),transparent 62%),
+    linear-gradient(145deg,rgba(10,21,47,.82),rgba(6,14,31,.78))!important;
+  border-color:rgba(103,232,249,.17)!important;
+  box-shadow:
+    0 20px 48px rgba(0,0,0,.3),
+    inset 0 1px 0 rgba(255,255,255,.055)!important;
+}
+html[data-fb-visual-theme="midnight-aurora"] .wall-head h2{
+  color:var(--aurora-text)!important;
+}
+html[data-fb-visual-theme="midnight-aurora"] .wall-head p{
+  color:var(--aurora-muted)!important;
+}
+html[data-fb-visual-theme="midnight-aurora"] .wall-composer{
+  background:
+    linear-gradient(145deg,rgba(10,23,49,.9),rgba(13,24,52,.72))!important;
+  border-color:rgba(103,232,249,.18)!important;
+  box-shadow:
+    inset 0 1px 0 rgba(255,255,255,.045),
+    0 10px 28px rgba(0,0,0,.22)!important;
+}
+html[data-fb-visual-theme="midnight-aurora"] .wall-composer:focus-within{
+  border-color:rgba(103,232,249,.34)!important;
+  box-shadow:
+    0 0 0 3px rgba(34,211,238,.07),
+    0 12px 30px rgba(0,0,0,.28),
+    inset 0 1px 0 rgba(255,255,255,.06)!important;
+}
+html[data-fb-visual-theme="midnight-aurora"] .wall-avatar{
+  background:
+    linear-gradient(145deg,rgba(34,211,238,.15),rgba(139,92,246,.2))!important;
+  color:var(--aurora-cyan)!important;
+  border:1px solid rgba(103,232,249,.16);
+  box-shadow:0 0 18px rgba(34,211,238,.08);
+}
+html[data-fb-visual-theme="midnight-aurora"] .wall-compose-main textarea{
+  color:var(--aurora-text)!important;
+}
+html[data-fb-visual-theme="midnight-aurora"] .wall-compose-main textarea::placeholder{
+  color:#7184a7!important;
+}
+html[data-fb-visual-theme="midnight-aurora"] .wall-compose-actions small{
+  color:var(--aurora-muted)!important;
+}
+
+html[data-fb-visual-theme="midnight-aurora"] .wall-activity-pill,
+html[data-fb-visual-theme="midnight-aurora"] .wall-attach-button,
+html[data-fb-visual-theme="midnight-aurora"] .wall-gps-button{
+  background:rgba(11,24,50,.76)!important;
+  color:#b9cae6!important;
+  border-color:rgba(103,232,249,.14)!important;
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.03);
+}
+html[data-fb-visual-theme="midnight-aurora"] .wall-activity-pill:hover,
+html[data-fb-visual-theme="midnight-aurora"] .wall-attach-button:hover,
+html[data-fb-visual-theme="midnight-aurora"] .wall-gps-button:hover{
+  color:var(--aurora-cyan)!important;
+  border-color:rgba(103,232,249,.3)!important;
+  background:rgba(20,42,76,.7)!important;
+}
+html[data-fb-visual-theme="midnight-aurora"] .wall-activity-pill.active,
+html[data-fb-visual-theme="midnight-aurora"] .wall-activity-pill[aria-pressed="true"]{
+  color:#f3fbff!important;
+  border-color:rgba(103,232,249,.42)!important;
+  background:
+    linear-gradient(135deg,rgba(34,211,238,.16),rgba(139,92,246,.2))!important;
+  box-shadow:0 0 20px rgba(34,211,238,.08);
+}
+
+html[data-fb-visual-theme="midnight-aurora"] .wall-post{
+  position:relative;
+  background:
+    linear-gradient(145deg,rgba(13,25,52,.88),rgba(7,16,35,.82))!important;
+  border-color:rgba(103,232,249,.14)!important;
+  box-shadow:
+    0 12px 32px rgba(0,0,0,.23),
+    inset 0 1px 0 rgba(255,255,255,.04)!important;
+}
+html[data-fb-visual-theme="midnight-aurora"] .wall-post:before{
+  content:"";
+  position:absolute;
+  inset:0 auto 0 0;
+  width:2px;
+  background:linear-gradient(180deg,rgba(103,232,249,.7),rgba(167,139,250,.34),transparent 78%);
+  opacity:.65;
+  pointer-events:none;
+}
+html[data-fb-visual-theme="midnight-aurora"] .wall-post:hover{
+  border-color:rgba(103,232,249,.24)!important;
+  box-shadow:
+    0 16px 38px rgba(0,0,0,.29),
+    0 0 20px rgba(34,211,238,.05),
+    inset 0 1px 0 rgba(255,255,255,.055)!important;
+}
+html[data-fb-visual-theme="midnight-aurora"] .wall-post-head strong{
+  color:#f1f7ff!important;
+}
+html[data-fb-visual-theme="midnight-aurora"] .wall-post-head span{
+  color:#8295b8!important;
+}
+html[data-fb-visual-theme="midnight-aurora"] .wall-post-body p{
+  color:#d8e3f3!important;
+}
+html[data-fb-visual-theme="midnight-aurora"] .wall-delete{
+  color:#7486a7!important;
+}
+html[data-fb-visual-theme="midnight-aurora"] .wall-delete:hover{
+  color:#fda4af!important;
+  background:rgba(244,63,94,.1)!important;
+}
+html[data-fb-visual-theme="midnight-aurora"] .wall-memory-photo,
+html[data-fb-visual-theme="midnight-aurora"] .wall-post-attachment,
+html[data-fb-visual-theme="midnight-aurora"] .wall-attachment-preview{
+  background:#07101f!important;
+  border-color:rgba(103,232,249,.12)!important;
+}
+html[data-fb-visual-theme="midnight-aurora"] .wall-empty,
+html[data-fb-visual-theme="midnight-aurora"] .wall-loading{
+  background:
+    linear-gradient(145deg,rgba(10,21,45,.62),rgba(8,16,34,.52))!important;
+  border-color:rgba(103,232,249,.16)!important;
+  color:var(--aurora-muted)!important;
+}
+html[data-fb-visual-theme="midnight-aurora"] .wall-empty svg,
+html[data-fb-visual-theme="midnight-aurora"] .wall-empty strong{
+  color:var(--aurora-cyan)!important;
+}
+html[data-fb-visual-theme="midnight-aurora"] .wall-checkin-fields,
+html[data-fb-visual-theme="midnight-aurora"] .wall-checkin-row,
+html[data-fb-visual-theme="midnight-aurora"] .wall-location-disabled{
+  color:#b8c7df!important;
+}
+html[data-fb-visual-theme="midnight-aurora"] .wall-map-link{
+  color:var(--aurora-cyan)!important;
+}
+
+/* Family Prayer — dedicated Midnight treatment instead of inheriting
+   the Classic cream/green component palette. */
+html[data-fb-visual-theme="midnight-aurora"] .family-prayer-widget{
+  background:
+    radial-gradient(360px 240px at 92% 4%,rgba(167,139,250,.14),transparent 64%),
+    radial-gradient(300px 220px at 0% 100%,rgba(34,211,238,.085),transparent 68%),
+    linear-gradient(145deg,rgba(12,24,51,.9),rgba(7,15,33,.83))!important;
+  border-color:rgba(137,215,255,.19)!important;
+  box-shadow:
+    0 16px 38px rgba(0,0,0,.28),
+    inset 0 1px 0 rgba(255,255,255,.055)!important;
+}
+html[data-fb-visual-theme="midnight-aurora"] .family-prayer-widget:after{
+  border-color:rgba(103,232,249,.08)!important;
+  box-shadow:
+    0 0 0 26px rgba(103,232,249,.025),
+    0 0 0 52px rgba(167,139,250,.02)!important;
+}
+html[data-fb-visual-theme="midnight-aurora"] .family-prayer-head h3{
+  color:#f2f8ff!important;
+}
+html[data-fb-visual-theme="midnight-aurora"] .family-prayer-slide{
+  background:
+    linear-gradient(145deg,rgba(16,31,62,.72),rgba(10,20,43,.7))!important;
+  border-color:rgba(103,232,249,.14)!important;
+  box-shadow:
+    0 8px 24px rgba(0,0,0,.18),
+    inset 0 1px 0 rgba(255,255,255,.035)!important;
+}
+html[data-fb-visual-theme="midnight-aurora"] .family-prayer-slide.prayer{
+  background:
+    linear-gradient(145deg,rgba(88,28,62,.24),rgba(18,25,52,.72))!important;
+  border-color:rgba(240,171,252,.17)!important;
+}
+html[data-fb-visual-theme="midnight-aurora"] .family-prayer-slide.encouragement{
+  background:
+    linear-gradient(145deg,rgba(59,45,104,.25),rgba(14,25,51,.72))!important;
+  border-color:rgba(167,139,250,.2)!important;
+}
+html[data-fb-visual-theme="midnight-aurora"] .family-prayer-label{
+  color:#c4b5fd!important;
+}
+html[data-fb-visual-theme="midnight-aurora"] .family-prayer-label span{
+  background:
+    linear-gradient(145deg,rgba(34,211,238,.12),rgba(139,92,246,.16))!important;
+  color:var(--aurora-cyan)!important;
+  border:1px solid rgba(103,232,249,.12);
+}
+html[data-fb-visual-theme="midnight-aurora"] .family-prayer-slide p{
+  color:#e6eef9!important;
+}
+html[data-fb-visual-theme="midnight-aurora"] .family-prayer-slide small{
+  color:#91a2c0!important;
+}
+html[data-fb-visual-theme="midnight-aurora"] .family-prayer-dots i{
+  background:#33435f!important;
+}
+html[data-fb-visual-theme="midnight-aurora"] .family-prayer-dots i.active{
+  background:linear-gradient(90deg,var(--aurora-cyan),var(--aurora-violet))!important;
+  box-shadow:0 0 12px rgba(103,232,249,.18);
+}
+html[data-fb-visual-theme="midnight-aurora"] .family-prayer-next{
+  color:var(--aurora-cyan)!important;
+}
+html[data-fb-visual-theme="midnight-aurora"] .family-prayer-settings,
+html[data-fb-visual-theme="midnight-aurora"] .family-prayer-clear{
+  color:#91a4c4!important;
+}
+html[data-fb-visual-theme="midnight-aurora"] .family-prayer-settings:hover,
+html[data-fb-visual-theme="midnight-aurora"] .family-prayer-clear:hover{
+  color:var(--aurora-cyan)!important;
+}
+
+/* Prayer modal remains usable if encountered outside Guest Demo Settings. */
+html[data-fb-visual-theme="midnight-aurora"] .family-prayer-modal-backdrop{
+  background:rgba(2,6,16,.7)!important;
+}
+html[data-fb-visual-theme="midnight-aurora"] .family-prayer-modal{
+  background:
+    linear-gradient(145deg,rgba(13,25,52,.98),rgba(7,15,33,.98))!important;
+  border-color:rgba(103,232,249,.2)!important;
+  box-shadow:0 30px 90px rgba(0,0,0,.58)!important;
+  color:var(--aurora-text)!important;
+}
+html[data-fb-visual-theme="midnight-aurora"] .family-prayer-modal h2,
+html[data-fb-visual-theme="midnight-aurora"] .family-prayer-modal label{
+  color:#f0f7ff!important;
+}
+html[data-fb-visual-theme="midnight-aurora"] .family-prayer-modal-intro{
+  color:var(--aurora-muted)!important;
+}
+html[data-fb-visual-theme="midnight-aurora"] .family-prayer-modal-icon{
+  background:linear-gradient(145deg,rgba(34,211,238,.12),rgba(139,92,246,.18))!important;
+}
+html[data-fb-visual-theme="midnight-aurora"] .family-prayer-modal-close{
+  background:rgba(12,24,49,.88)!important;
+  border-color:rgba(103,232,249,.16)!important;
+  color:#c8d5e9!important;
+}
+
+/* Right rail — stronger hierarchy between widget heading, body and stats. */
+html[data-fb-visual-theme="midnight-aurora"] .desktop-widget{
+  position:relative;
+  overflow:hidden;
+}
+html[data-fb-visual-theme="midnight-aurora"] .desktop-widget:before{
+  content:"";
+  position:absolute;
+  inset:0;
+  background:
+    linear-gradient(125deg,rgba(103,232,249,.025),transparent 32%,rgba(167,139,250,.025) 72%,transparent);
+  pointer-events:none;
+}
+html[data-fb-visual-theme="midnight-aurora"] .desktop-widget-head,
+html[data-fb-visual-theme="midnight-aurora"] .desktop-widget-row{
+  position:relative;
+  z-index:1;
+}
+html[data-fb-visual-theme="midnight-aurora"] .desktop-widget h3,
+html[data-fb-visual-theme="midnight-aurora"] .desktop-widget strong{
+  color:#f1f7ff;
+}
+html[data-fb-visual-theme="midnight-aurora"] .desktop-widget small,
+html[data-fb-visual-theme="midnight-aurora"] .desktop-widget p{
+  color:#94a6c4;
+}
+html[data-fb-visual-theme="midnight-aurora"] .desktop-widget-row{
+  border-color:rgba(103,232,249,.09)!important;
+}
+html[data-fb-visual-theme="midnight-aurora"] .desktop-widget-row:hover{
+  background:rgba(31,65,108,.12)!important;
+}
+html[data-fb-visual-theme="midnight-aurora"] .desktop-stat{
+  box-shadow:
+    inset 0 1px 0 rgba(255,255,255,.035),
+    0 6px 18px rgba(0,0,0,.13)!important;
+}
+
+/* Desktop navigation — active state should read as selected, not simply tinted. */
+html[data-fb-visual-theme="midnight-aurora"] .desktop-top-nav button{
+  position:relative;
+}
+html[data-fb-visual-theme="midnight-aurora"] .desktop-top-nav button.active:after{
+  content:"";
+  position:absolute;
+  left:24%;
+  right:24%;
+  bottom:-1px;
+  height:2px;
+  border-radius:999px;
+  background:linear-gradient(90deg,var(--aurora-cyan),var(--aurora-violet));
+  box-shadow:0 0 14px rgba(103,232,249,.3);
+}
+html[data-fb-visual-theme="midnight-aurora"] .desktop-side-link.active,
+html[data-fb-visual-theme="midnight-aurora"] .desktop-side-link[aria-current="page"]{
+  background:
+    linear-gradient(90deg,rgba(34,211,238,.105),rgba(139,92,246,.075),transparent)!important;
+  border-color:rgba(103,232,249,.15)!important;
+  color:#f3f9ff!important;
+  box-shadow:inset 2px 0 0 rgba(103,232,249,.58);
+}
+html[data-fb-visual-theme="midnight-aurora"] .desktop-profile-card{
+  border:1px solid transparent;
+}
+html[data-fb-visual-theme="midnight-aurora"] .desktop-profile-card:hover{
+  border-color:rgba(103,232,249,.11);
+}
+
+/* Keep mobile effects intentionally lighter in this phase. */
+@media(max-width:1179px){
+  html[data-fb-visual-theme="midnight-aurora"] .family-wall-panel,
+  html[data-fb-visual-theme="midnight-aurora"] .wall-post,
+  html[data-fb-visual-theme="midnight-aurora"] .family-prayer-widget{
+    -webkit-backdrop-filter:none!important;
+    backdrop-filter:none!important;
+  }
+  html[data-fb-visual-theme="midnight-aurora"] .wall-post{
+    box-shadow:
+      0 8px 20px rgba(0,0,0,.2),
+      inset 0 1px 0 rgba(255,255,255,.035)!important;
+  }
+}
+
+
+/* ============================================================
+   MIDNIGHT AURORA V2 — PRAYER SCENE
+   Scenic glass treatment based on the approved visual reference.
+   ============================================================ */
+html[data-fb-visual-theme="midnight-aurora"] .family-prayer-widget{
+  isolation:isolate;
+  min-height:248px;
+  border:1px solid rgba(83,225,255,.62)!important;
+  border-radius:19px!important;
+  background:
+    radial-gradient(150% 105% at 84% -4%,rgba(34,211,238,.24),transparent 40%),
+    radial-gradient(105% 90% at 4% 8%,rgba(168,85,247,.22),transparent 44%),
+    linear-gradient(160deg,#08112d 0%,#07142a 46%,#071424 100%)!important;
+  box-shadow:
+    0 0 0 1px rgba(111,232,255,.05),
+    0 0 22px rgba(34,211,238,.18),
+    -8px 0 26px rgba(168,85,247,.10),
+    0 18px 42px rgba(0,0,0,.36),
+    inset 0 1px 0 rgba(255,255,255,.10)!important;
+}
+
+/* Aurora atmosphere */
+html[data-fb-visual-theme="midnight-aurora"] .family-prayer-widget:after{
+  content:"";
+  position:absolute;
+  inset:-14% -18% -8% 24%;
+  width:auto;
+  height:auto;
+  border:0!important;
+  border-radius:45% 58% 42% 62%!important;
+  background:
+    radial-gradient(70% 78% at 58% 48%,rgba(45,212,191,.30),transparent 52%),
+    radial-gradient(58% 72% at 42% 40%,rgba(34,211,238,.22),transparent 56%),
+    radial-gradient(68% 78% at 72% 40%,rgba(16,185,129,.20),transparent 58%),
+    linear-gradient(118deg,transparent 17%,rgba(45,212,191,.16) 37%,rgba(34,211,238,.11) 50%,transparent 68%)!important;
+  box-shadow:none!important;
+  filter:blur(7px) saturate(122%);
+  transform:rotate(-8deg);
+  opacity:.96;
+  z-index:0;
+  pointer-events:none;
+}
+
+/* Mountain horizon. Kept inline so the preview has no external asset dependency. */
+html[data-fb-visual-theme="midnight-aurora"] .family-prayer-widget:before{
+  content:"";
+  position:absolute;
+  left:-4%;
+  right:-4%;
+  bottom:-1px;
+  height:58%;
+  z-index:1;
+  pointer-events:none;
+  opacity:.92;
+  background:
+    linear-gradient(180deg,transparent 0 7%,rgba(3,10,24,.10) 24%,rgba(2,8,20,.72) 100%),
+    url("data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%20640%20300'%20preserveAspectRatio='xMidYMax%20slice'%3E%3Cdefs%3E%3ClinearGradient%20id='a'%20x1='0'%20y1='0'%20x2='0'%20y2='1'%3E%3Cstop%20offset='0'%20stop-color='%23193155'/%3E%3Cstop%20offset='1'%20stop-color='%23050c1d'/%3E%3C/linearGradient%3E%3ClinearGradient%20id='b'%20x1='0'%20y1='0'%20x2='1'%20y2='1'%3E%3Cstop%20offset='0'%20stop-color='%23144d67'/%3E%3Cstop%20offset='.42'%20stop-color='%231a3354'/%3E%3Cstop%20offset='1'%20stop-color='%23050d20'/%3E%3C/linearGradient%3E%3C/defs%3E%3Cpath%20d='M0%20236L72%20172l54%2036%2084-126%2056%2079%2042-42%2085%20103%2060-84%2093%2098%2096-35v97H0z'%20fill='url(%23a)'/%3E%3Cpath%20d='M250%20222l91-112%2043%2054%2061-91%2095%20149%20100-36v114H250z'%20fill='url(%23b)'%20opacity='.92'/%3E%3Cpath%20d='M337%20114l18%2033%2013-12%2021%2030%2018-25%2038%2059'%20fill='none'%20stroke='%235eead4'%20stroke-opacity='.11'%20stroke-width='3'/%3E%3C/svg%3E") center bottom/cover no-repeat!important;
+  filter:drop-shadow(0 -8px 22px rgba(12,40,71,.20));
+}
+
+/* Keep all real content above the scenic layers. */
+html[data-fb-visual-theme="midnight-aurora"] .family-prayer-head,
+html[data-fb-visual-theme="midnight-aurora"] .family-prayer-stage,
+html[data-fb-visual-theme="midnight-aurora"] .family-prayer-footer{
+  position:relative;
+  z-index:3;
+}
+
+html[data-fb-visual-theme="midnight-aurora"] .family-prayer-head{
+  margin-bottom:10px!important;
+}
+html[data-fb-visual-theme="midnight-aurora"] .family-prayer-head h3{
+  color:#f7fbff!important;
+  text-shadow:0 1px 16px rgba(103,232,249,.12);
+}
+html[data-fb-visual-theme="midnight-aurora"] .family-prayer-emoji{
+  filter:
+    drop-shadow(0 0 5px rgba(240,171,252,.82))
+    drop-shadow(0 0 9px rgba(139,92,246,.52));
+}
+html[data-fb-visual-theme="midnight-aurora"] [data-family-prayer-share]{
+  color:#67f4ff!important;
+  font-weight:850!important;
+  text-shadow:0 0 12px rgba(34,211,238,.34);
+}
+html[data-fb-visual-theme="midnight-aurora"] [data-family-prayer-share]:hover{
+  color:#c9fbff!important;
+  text-shadow:0 0 16px rgba(34,211,238,.52);
+}
+
+html[data-fb-visual-theme="midnight-aurora"] .family-prayer-stage{
+  min-height:145px;
+}
+html[data-fb-visual-theme="midnight-aurora"] .family-prayer-slide,
+html[data-fb-visual-theme="midnight-aurora"] .family-prayer-slide.prayer,
+html[data-fb-visual-theme="midnight-aurora"] .family-prayer-slide.encouragement{
+  position:relative;
+  overflow:hidden;
+  border:1px solid rgba(75,238,227,.46)!important;
+  border-radius:15px!important;
+  background:
+    linear-gradient(145deg,rgba(8,24,38,.68),rgba(7,18,36,.52))!important;
+  box-shadow:
+    0 0 0 1px rgba(34,211,238,.035),
+    0 0 20px rgba(34,211,238,.08),
+    inset 0 1px 0 rgba(255,255,255,.075),
+    inset 0 0 26px rgba(14,116,144,.055)!important;
+}
+html[data-fb-visual-theme="midnight-aurora"] .family-prayer-slide:after{
+  content:"";
+  position:absolute;
+  inset:0;
+  background:
+    radial-gradient(100% 90% at 98% 10%,rgba(45,212,191,.09),transparent 48%),
+    linear-gradient(120deg,rgba(255,255,255,.025),transparent 32%);
+  pointer-events:none;
+}
+@supports ((backdrop-filter:blur(1px)) or (-webkit-backdrop-filter:blur(1px))){
+  @media(min-width:1180px){
+    html[data-fb-visual-theme="midnight-aurora"] .family-prayer-slide{
+      -webkit-backdrop-filter:blur(9px) saturate(118%);
+      backdrop-filter:blur(9px) saturate(118%);
+    }
+  }
+}
+
+html[data-fb-visual-theme="midnight-aurora"] .family-prayer-label{
+  color:#f2b66d!important;
+  text-shadow:0 0 10px rgba(244,184,96,.09);
+}
+html[data-fb-visual-theme="midnight-aurora"] .family-prayer-label span{
+  background:rgba(16,61,62,.56)!important;
+  color:#8bf5d7!important;
+  border-color:rgba(94,234,212,.24)!important;
+  box-shadow:
+    0 0 14px rgba(45,212,191,.10),
+    inset 0 1px 0 rgba(255,255,255,.06);
+}
+html[data-fb-visual-theme="midnight-aurora"] .family-prayer-slide p{
+  position:relative;
+  z-index:1;
+  color:#f4f7fb!important;
+  font-weight:760!important;
+  line-height:1.48!important;
+  text-shadow:0 1px 8px rgba(0,0,0,.34);
+}
+html[data-fb-visual-theme="midnight-aurora"] .family-prayer-slide.scripture p{
+  font-size:.99rem!important;
+}
+html[data-fb-visual-theme="midnight-aurora"] .family-prayer-slide small{
+  position:relative;
+  z-index:1;
+  color:#aab9cf!important;
+}
+
+html[data-fb-visual-theme="midnight-aurora"] .family-prayer-footer{
+  margin-top:11px!important;
+}
+html[data-fb-visual-theme="midnight-aurora"] .family-prayer-dots i{
+  width:6px;
+  height:6px;
+  background:rgba(163,185,215,.44)!important;
+  box-shadow:none!important;
+}
+html[data-fb-visual-theme="midnight-aurora"] .family-prayer-dots i.active{
+  width:17px;
+  background:linear-gradient(90deg,#c4f5ff,#67e8f9)!important;
+  box-shadow:
+    0 0 8px rgba(103,232,249,.50),
+    0 0 16px rgba(34,211,238,.18)!important;
+}
+html[data-fb-visual-theme="midnight-aurora"] .family-prayer-next{
+  color:#88f5ef!important;
+  text-shadow:0 0 12px rgba(45,212,191,.20);
+}
+html[data-fb-visual-theme="midnight-aurora"] .family-prayer-next:hover{
+  color:#d3fffb!important;
+}
+
+/* Compact/mobile crop: preserve the aurora but keep text readable. */
+@media(max-width:1179px){
+  html[data-fb-visual-theme="midnight-aurora"] .family-prayer-widget{
+    min-height:238px;
+    box-shadow:
+      0 0 18px rgba(34,211,238,.12),
+      0 12px 30px rgba(0,0,0,.30),
+      inset 0 1px 0 rgba(255,255,255,.075)!important;
+  }
+  html[data-fb-visual-theme="midnight-aurora"] .family-prayer-widget:before{
+    left:-12%;
+    right:-18%;
+    height:55%;
+    opacity:.82;
+  }
+  html[data-fb-visual-theme="midnight-aurora"] .family-prayer-widget:after{
+    inset:-10% -30% 4% 12%;
+    filter:blur(6px) saturate(112%);
+  }
+  html[data-fb-visual-theme="midnight-aurora"] .family-prayer-slide{
+    -webkit-backdrop-filter:none!important;
+    backdrop-filter:none!important;
+    background:rgba(6,20,35,.72)!important;
+  }
+}
+
+
+/* ============================================================
+   MIDNIGHT AURORA V2 — RIGHT RAIL SCENE SYSTEM
+   Shared scenic/glass identity for Clock, Prayer, Countdown and Birthdays.
+   ============================================================ */
+
+/* ---------- Clock: forest aurora card ---------- */
+html[data-fb-visual-theme="midnight-aurora"] .desktop-date-time-card{
+  isolation:isolate;
+  position:relative;
+  overflow:hidden;
+  min-height:74px;
+  border:1px solid rgba(83,225,255,.48)!important;
+  background:
+    radial-gradient(110% 120% at 88% 0%,rgba(34,211,238,.18),transparent 42%),
+    radial-gradient(80% 120% at 8% 0%,rgba(139,92,246,.14),transparent 52%),
+    linear-gradient(155deg,rgba(8,20,48,.94),rgba(5,15,36,.90))!important;
+  box-shadow:
+    0 0 19px rgba(34,211,238,.13),
+    0 14px 34px rgba(0,0,0,.28),
+    inset 0 1px 0 rgba(255,255,255,.08)!important;
+}
+html[data-fb-visual-theme="midnight-aurora"] .desktop-date-time-card:before{
+  content:"";
+  position:absolute;
+  inset:0 0 0 42%;
+  z-index:0;
+  opacity:.9;
+  background:
+    radial-gradient(90% 80% at 55% 18%,rgba(45,212,191,.24),transparent 56%),
+    linear-gradient(114deg,transparent 6%,rgba(45,212,191,.13) 34%,rgba(34,211,238,.09) 50%,transparent 69%),
+    url("data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%20380%20140'%20preserveAspectRatio='xMidYMax%20slice'%3E%3Cg%20fill='%23030b18'%20opacity='.92'%3E%3Cpath%20d='M270%20140V58l-14%2022h9l-17%2025h13l-20%2035z'/%3E%3Cpath%20d='M310%20140V40l-18%2028h11l-22%2031h16l-25%2041z'/%3E%3Cpath%20d='M346%20140V69l-12%2019h8l-16%2023h11l-18%2029z'/%3E%3Cpath%20d='M230%20140V78l-11%2017h7l-14%2020h10l-16%2025z'/%3E%3C/g%3E%3C/svg%3E") right bottom/cover no-repeat;
+  pointer-events:none;
+}
+html[data-fb-visual-theme="midnight-aurora"] .desktop-date-time-card:after{
+  content:"";
+  position:absolute;
+  inset:0;
+  z-index:0;
+  background:linear-gradient(90deg,rgba(5,14,34,.94) 0%,rgba(5,14,34,.72) 45%,rgba(5,14,34,.14) 100%);
+  pointer-events:none;
+}
+html[data-fb-visual-theme="midnight-aurora"] .desktop-date-time-icon,
+html[data-fb-visual-theme="midnight-aurora"] .desktop-date-time-copy{
+  position:relative;
+  z-index:2;
+}
+html[data-fb-visual-theme="midnight-aurora"] .desktop-date-time-icon{
+  background:linear-gradient(145deg,rgba(16,50,68,.78),rgba(11,31,58,.80))!important;
+  color:#8cf6e5!important;
+  border:1px solid rgba(103,232,249,.18)!important;
+  box-shadow:
+    0 0 17px rgba(34,211,238,.08),
+    inset 0 1px 0 rgba(255,255,255,.05)!important;
+}
+html[data-fb-visual-theme="midnight-aurora"] .desktop-date-time-copy strong{
+  color:#f6fbff!important;
+  text-shadow:0 1px 14px rgba(103,232,249,.10);
+}
+html[data-fb-visual-theme="midnight-aurora"] .desktop-date-time-copy span{
+  color:#a6b8d8!important;
+}
+
+/* ---------- Prayer: stronger scene visibility across the full card ---------- */
+html[data-fb-visual-theme="midnight-aurora"] .family-prayer-widget{
+  border-color:rgba(72,230,255,.72)!important;
+  box-shadow:
+    0 0 0 1px rgba(103,232,249,.04),
+    0 0 24px rgba(34,211,238,.22),
+    -9px 0 24px rgba(168,85,247,.12),
+    0 18px 42px rgba(0,0,0,.36),
+    inset 0 1px 0 rgba(255,255,255,.11)!important;
+}
+html[data-fb-visual-theme="midnight-aurora"] .family-prayer-widget:before{
+  height:67%!important;
+  opacity:1!important;
+  filter:drop-shadow(0 -10px 20px rgba(12,57,84,.24)) saturate(112%)!important;
+}
+html[data-fb-visual-theme="midnight-aurora"] .family-prayer-widget:after{
+  opacity:1!important;
+  filter:blur(5px) saturate(140%)!important;
+}
+html[data-fb-visual-theme="midnight-aurora"] .family-prayer-slide{
+  background:
+    linear-gradient(145deg,rgba(6,23,39,.57),rgba(5,17,34,.42))!important;
+  border-color:rgba(72,236,225,.55)!important;
+  box-shadow:
+    0 0 18px rgba(34,211,238,.10),
+    inset 0 1px 0 rgba(255,255,255,.09),
+    inset 0 0 30px rgba(20,184,166,.045)!important;
+}
+
+/* ---------- Countdown: same aurora glass family ---------- */
+html[data-fb-visual-theme="midnight-aurora"] .family-countdown-widget{
+  isolation:isolate;
+  position:relative;
+  overflow:hidden;
+  border:1px solid rgba(60,226,255,.56)!important;
+  background:
+    radial-gradient(110% 95% at 95% 6%,rgba(34,211,238,.18),transparent 44%),
+    radial-gradient(100% 110% at 7% 96%,rgba(139,92,246,.18),transparent 54%),
+    linear-gradient(150deg,rgba(8,20,45,.94),rgba(5,16,36,.92))!important;
+  box-shadow:
+    0 0 22px rgba(34,211,238,.15),
+    -6px 0 20px rgba(139,92,246,.07),
+    0 16px 36px rgba(0,0,0,.31),
+    inset 0 1px 0 rgba(255,255,255,.08)!important;
+}
+html[data-fb-visual-theme="midnight-aurora"] .family-countdown-widget:before{
+  content:"";
+  position:absolute;
+  inset:0;
+  z-index:0;
+  background:
+    linear-gradient(118deg,transparent 12%,rgba(45,212,191,.08) 31%,transparent 49%),
+    radial-gradient(60% 48% at 82% 36%,rgba(45,212,191,.12),transparent 70%);
+  pointer-events:none;
+}
+html[data-fb-visual-theme="midnight-aurora"] .family-countdown-widget>*{
+  position:relative;
+  z-index:2;
+}
+html[data-fb-visual-theme="midnight-aurora"] .family-countdown-head h3 svg{
+  color:#7cf7ff!important;
+  filter:drop-shadow(0 0 7px rgba(34,211,238,.38));
+}
+html[data-fb-visual-theme="midnight-aurora"] .family-countdown-head button{
+  color:#67f4ff!important;
+  text-shadow:0 0 12px rgba(34,211,238,.20);
+}
+html[data-fb-visual-theme="midnight-aurora"] .family-countdown-hero{
+  border:1px solid rgba(62,232,255,.42)!important;
+  background:
+    radial-gradient(100% 120% at 90% 0%,rgba(139,92,246,.20),transparent 48%),
+    linear-gradient(145deg,rgba(7,31,49,.72),rgba(15,25,64,.68))!important;
+  box-shadow:
+    0 0 17px rgba(34,211,238,.08),
+    inset 0 1px 0 rgba(255,255,255,.07),
+    inset 0 0 28px rgba(139,92,246,.045)!important;
+}
+html[data-fb-visual-theme="midnight-aurora"] .family-countdown-icon{
+  background:rgba(4,20,38,.82)!important;
+  color:#74f7ff!important;
+  border-color:rgba(72,229,255,.30)!important;
+  box-shadow:
+    0 0 16px rgba(34,211,238,.11),
+    inset 0 1px 0 rgba(255,255,255,.05)!important;
+}
+html[data-fb-visual-theme="midnight-aurora"] .family-countdown-clock{
+  background:rgba(4,17,35,.68)!important;
+  border-color:rgba(77,231,255,.28)!important;
+  box-shadow:
+    0 0 14px rgba(34,211,238,.08),
+    inset 0 1px 0 rgba(255,255,255,.05)!important;
+}
+html[data-fb-visual-theme="midnight-aurora"] .family-countdown-unit strong{
+  color:#72efff!important;
+  text-shadow:0 0 12px rgba(34,211,238,.25);
+}
+html[data-fb-visual-theme="midnight-aurora"] .family-countdown-unit small,
+html[data-fb-visual-theme="midnight-aurora"] .family-countdown-sep{
+  color:#9fb2cf!important;
+}
+html[data-fb-visual-theme="midnight-aurora"] .family-countdown-next-wrap{
+  border-color:rgba(103,232,249,.12)!important;
+}
+html[data-fb-visual-theme="midnight-aurora"] .family-countdown-next-label{
+  color:#a1b5d4!important;
+}
+html[data-fb-visual-theme="midnight-aurora"] .family-countdown-row:hover{
+  background:rgba(22,52,82,.22)!important;
+}
+html[data-fb-visual-theme="midnight-aurora"] .family-countdown-row-icon{
+  background:linear-gradient(145deg,rgba(20,111,103,.34),rgba(14,58,79,.46))!important;
+  color:#77f5d6!important;
+  box-shadow:0 0 13px rgba(45,212,191,.08);
+}
+
+/* ---------- Birthdays: purple/cyan glass identity ---------- */
+html[data-fb-visual-theme="midnight-aurora"] .desktop-widget:has(#desktopBirthdayRows){
+  isolation:isolate;
+  position:relative;
+  overflow:hidden;
+  border:1px solid rgba(84,222,255,.45)!important;
+  background:
+    radial-gradient(105% 105% at 0% 0%,rgba(139,92,246,.16),transparent 48%),
+    radial-gradient(90% 80% at 100% 100%,rgba(34,211,238,.10),transparent 54%),
+    linear-gradient(150deg,rgba(8,20,45,.94),rgba(5,15,34,.92))!important;
+  box-shadow:
+    0 0 18px rgba(34,211,238,.11),
+    -5px 0 18px rgba(168,85,247,.08),
+    0 14px 34px rgba(0,0,0,.28),
+    inset 0 1px 0 rgba(255,255,255,.07)!important;
+}
+html[data-fb-visual-theme="midnight-aurora"] .desktop-widget:has(#desktopBirthdayRows):before{
+  content:"";
+  position:absolute;
+  inset:0;
+  z-index:0;
+  background:linear-gradient(122deg,rgba(139,92,246,.035),transparent 35%,rgba(34,211,238,.025) 76%,transparent);
+  pointer-events:none;
+}
+html[data-fb-visual-theme="midnight-aurora"] .desktop-widget:has(#desktopBirthdayRows)>*{
+  position:relative;
+  z-index:2;
+}
+html[data-fb-visual-theme="midnight-aurora"] .desktop-widget:has(#desktopBirthdayRows) .desktop-widget-head h3{
+  display:flex;
+  align-items:center;
+  gap:8px;
+}
+html[data-fb-visual-theme="midnight-aurora"] .desktop-widget:has(#desktopBirthdayRows) .desktop-widget-head h3:before{
+  content:"🎁";
+  display:inline-grid;
+  place-items:center;
+  width:28px;
+  height:28px;
+  font-size:1rem;
+  border-radius:9px;
+  background:linear-gradient(145deg,rgba(139,92,246,.24),rgba(217,70,239,.16));
+  border:1px solid rgba(196,181,253,.16);
+  box-shadow:
+    0 0 16px rgba(168,85,247,.22),
+    inset 0 1px 0 rgba(255,255,255,.07);
+  filter:drop-shadow(0 0 5px rgba(217,70,239,.36));
+}
+html[data-fb-visual-theme="midnight-aurora"] .desktop-widget:has(#desktopBirthdayRows) .desktop-widget-head button{
+  color:#6ef2ff!important;
+  text-shadow:0 0 12px rgba(34,211,238,.18);
+}
+html[data-fb-visual-theme="midnight-aurora"] #desktopBirthdayRows .desktop-widget-list{
+  gap:5px!important;
+}
+html[data-fb-visual-theme="midnight-aurora"] #desktopBirthdayRows .desktop-widget-row{
+  padding:7px 7px;
+  border:1px solid rgba(103,232,249,.10)!important;
+  border-radius:11px;
+  background:linear-gradient(145deg,rgba(12,31,59,.52),rgba(7,20,42,.42));
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.025);
+}
+html[data-fb-visual-theme="midnight-aurora"] #desktopBirthdayRows .desktop-widget-row:hover{
+  border-color:rgba(103,232,249,.20)!important;
+  background:linear-gradient(145deg,rgba(17,41,72,.62),rgba(10,25,51,.52))!important;
+}
+html[data-fb-visual-theme="midnight-aurora"] #desktopBirthdayRows .desktop-widget-icon{
+  background:linear-gradient(145deg,rgba(34,211,238,.17),rgba(139,92,246,.24))!important;
+  color:#7cf4ff!important;
+  border-color:rgba(103,232,249,.20)!important;
+  box-shadow:
+    0 0 14px rgba(34,211,238,.09),
+    inset 0 1px 0 rgba(255,255,255,.05)!important;
+}
+html[data-fb-visual-theme="midnight-aurora"] #desktopBirthdayRows .desktop-widget-row strong{
+  color:#f3f8ff!important;
+}
+html[data-fb-visual-theme="midnight-aurora"] #desktopBirthdayRows .desktop-widget-row small{
+  color:#9eb0cc!important;
+}
+
+/* Right rail spacing: allow each scenic card to breathe like the reference. */
+html[data-fb-visual-theme="midnight-aurora"] .desktop-right-rail>.desktop-widget{
+  margin-bottom:13px;
+}
+
+/* Keep the scenic effects cheap on narrower/mobile layouts. */
+@media(max-width:1179px){
+  html[data-fb-visual-theme="midnight-aurora"] .desktop-date-time-card,
+  html[data-fb-visual-theme="midnight-aurora"] .family-countdown-widget,
+  html[data-fb-visual-theme="midnight-aurora"] .desktop-widget:has(#desktopBirthdayRows){
+    box-shadow:
+      0 0 14px rgba(34,211,238,.09),
+      0 10px 26px rgba(0,0,0,.26),
+      inset 0 1px 0 rgba(255,255,255,.06)!important;
+  }
+}
+
+
+/* ============================================================
+   MIDNIGHT AURORA V2 — REAL SCENIC ASSET
+   Uses the approved photorealistic aurora/mountain artwork.
+   ============================================================ */
+
+/* Clock: crop toward the aurora + treeline, keeping the time side dark. */
+html[data-fb-visual-theme="midnight-aurora"] .desktop-date-time-card{
+  background:
+    linear-gradient(90deg,rgba(3,11,30,.96) 0%,rgba(4,13,31,.84) 42%,rgba(4,14,31,.34) 76%,rgba(4,14,31,.18) 100%),
+    url("../assets/midnight-aurora-scene.webp") 74% 70%/cover no-repeat!important;
+}
+html[data-fb-visual-theme="midnight-aurora"] .desktop-date-time-card:before{
+  background:
+    radial-gradient(90% 120% at 78% 20%,rgba(45,212,191,.10),transparent 58%)!important;
+  opacity:1!important;
+}
+html[data-fb-visual-theme="midnight-aurora"] .desktop-date-time-card:after{
+  background:linear-gradient(90deg,rgba(2,9,24,.36),transparent 58%)!important;
+}
+
+/* Prayer: show the mountain/forest scene clearly through the glass. */
+html[data-fb-visual-theme="midnight-aurora"] .family-prayer-widget{
+  background:
+    linear-gradient(150deg,rgba(5,12,34,.75) 0%,rgba(5,14,34,.46) 45%,rgba(3,13,29,.16) 100%)!important;
+}
+html[data-fb-visual-theme="midnight-aurora"] .family-prayer-widget:before{
+  content:""!important;
+  position:absolute!important;
+  inset:0!important;
+  width:auto!important;
+  height:auto!important;
+  opacity:1!important;
+  background:
+    linear-gradient(90deg,rgba(4,12,31,.46) 0%,rgba(3,11,27,.16) 55%,transparent 100%),
+    linear-gradient(180deg,rgba(4,11,28,.08) 0%,transparent 56%,rgba(3,9,22,.28) 100%)!important;
+  filter:none!important;
+  z-index:1!important;
+}
+html[data-fb-visual-theme="midnight-aurora"] .family-prayer-widget:after{
+  inset:0!important;
+  border-radius:inherit!important;
+  transform:none!important;
+  filter:none!important;
+  opacity:1!important;
+  background:
+    radial-gradient(75% 75% at 90% 8%,rgba(34,211,238,.12),transparent 55%),
+    radial-gradient(70% 85% at 2% 6%,rgba(168,85,247,.11),transparent 58%)!important;
+}
+html[data-fb-visual-theme="midnight-aurora"] .family-prayer-slide{
+  background:
+    linear-gradient(145deg,rgba(5,19,36,.57),rgba(4,14,29,.45))!important;
+  border-color:rgba(75,238,227,.55)!important;
+}
+
+/* Countdown: same scene, but crop lower so the mountains sit behind the hero. */
+html[data-fb-visual-theme="midnight-aurora"] .family-countdown-widget{
+  background:
+    linear-gradient(150deg,rgba(4,13,33,.82) 0%,rgba(5,15,36,.55) 55%,rgba(4,14,31,.25) 100%)!important;
+}
+html[data-fb-visual-theme="midnight-aurora"] .family-countdown-widget:before{
+  background:
+    radial-gradient(80% 90% at 94% 2%,rgba(34,211,238,.10),transparent 58%),
+    radial-gradient(70% 100% at 4% 96%,rgba(139,92,246,.10),transparent 64%)!important;
+}
+html[data-fb-visual-theme="midnight-aurora"] .family-countdown-hero{
+  background:
+    linear-gradient(145deg,rgba(7,29,48,.62),rgba(16,24,63,.53))!important;
+}
+
+/* Birthdays: quieter crop so the list remains the focus, but retains the scene. */
+html[data-fb-visual-theme="midnight-aurora"] .desktop-widget:has(#desktopBirthdayRows){
+  background:
+    linear-gradient(150deg,rgba(6,15,38,.88) 0%,rgba(7,17,39,.66) 58%,rgba(5,14,31,.42) 100%)!important;
+}
+html[data-fb-visual-theme="midnight-aurora"] .desktop-widget:has(#desktopBirthdayRows):before{
+  background:
+    radial-gradient(72% 90% at 0% 0%,rgba(139,92,246,.10),transparent 64%),
+    linear-gradient(125deg,transparent 38%,rgba(34,211,238,.035) 72%,transparent)!important;
+}
+
+/* Use stronger local glass on top of the photo so copy remains readable. */
+html[data-fb-visual-theme="midnight-aurora"] .family-countdown-clock,
+html[data-fb-visual-theme="midnight-aurora"] #desktopBirthdayRows .desktop-widget-row{
+  background:rgba(4,16,34,.62)!important;
+}
+@supports ((backdrop-filter:blur(1px)) or (-webkit-backdrop-filter:blur(1px))){
+  @media(min-width:1180px){
+    html[data-fb-visual-theme="midnight-aurora"] .desktop-date-time-card,
+    html[data-fb-visual-theme="midnight-aurora"] .family-prayer-widget,
+    html[data-fb-visual-theme="midnight-aurora"] .family-countdown-widget,
+    html[data-fb-visual-theme="midnight-aurora"] .desktop-widget:has(#desktopBirthdayRows){
+      -webkit-backdrop-filter:none!important;
+      backdrop-filter:none!important;
+    }
+    html[data-fb-visual-theme="midnight-aurora"] .family-prayer-slide,
+    html[data-fb-visual-theme="midnight-aurora"] .family-countdown-clock,
+    html[data-fb-visual-theme="midnight-aurora"] #desktopBirthdayRows .desktop-widget-row{
+      -webkit-backdrop-filter:blur(7px) saturate(118%);
+      backdrop-filter:blur(7px) saturate(118%);
+    }
+  }
+}
+
+
+/* ============================================================
+   MIDNIGHT AURORA V2 — SCENIC EXPOSURE TUNING
+   Let the photographic artwork actually read through the glass.
+   ============================================================ */
+
+/* Clock: make the aurora and forest clearly visible without hurting the time. */
+html[data-fb-visual-theme="midnight-aurora"] .desktop-date-time-card{
+  background:
+    linear-gradient(90deg,rgba(3,10,28,.90) 0%,rgba(4,12,30,.64) 42%,rgba(3,12,28,.16) 76%,rgba(3,12,28,.06) 100%),
+    url("../assets/midnight-aurora-scene.webp") 78% 69%/cover no-repeat!important;
+}
+html[data-fb-visual-theme="midnight-aurora"] .desktop-date-time-card:before{
+  background:
+    radial-gradient(92% 120% at 78% 14%,rgba(45,212,191,.16),transparent 58%)!important;
+}
+
+/* Prayer: open the card up so the mountain and aurora remain part of the scene. */
+html[data-fb-visual-theme="midnight-aurora"] .family-prayer-widget{
+  background:
+    linear-gradient(145deg,rgba(4,11,30,.62) 0%,rgba(4,13,30,.27) 48%,rgba(2,11,25,.08) 100%)!important;
+}
+html[data-fb-visual-theme="midnight-aurora"] .family-prayer-widget:before{
+  background:
+    linear-gradient(90deg,rgba(3,10,27,.28) 0%,rgba(3,10,27,.05) 55%,transparent 100%),
+    linear-gradient(180deg,rgba(3,10,27,.02) 0%,transparent 48%,rgba(2,8,20,.14) 100%)!important;
+}
+html[data-fb-visual-theme="midnight-aurora"] .family-prayer-widget:after{
+  background:
+    radial-gradient(75% 80% at 92% 4%,rgba(34,211,238,.17),transparent 54%),
+    radial-gradient(65% 85% at 0% 6%,rgba(168,85,247,.13),transparent 58%)!important;
+}
+html[data-fb-visual-theme="midnight-aurora"] .family-prayer-slide,
+html[data-fb-visual-theme="midnight-aurora"] .family-prayer-slide.prayer,
+html[data-fb-visual-theme="midnight-aurora"] .family-prayer-slide.encouragement{
+  background:
+    linear-gradient(145deg,rgba(3,16,31,.44),rgba(3,12,27,.30))!important;
+  border-color:rgba(83,245,231,.60)!important;
+  box-shadow:
+    0 0 18px rgba(34,211,238,.11),
+    inset 0 1px 0 rgba(255,255,255,.10),
+    inset 0 0 28px rgba(20,184,166,.035)!important;
+}
+
+/* Countdown: reveal the scenic layer across the whole widget. */
+html[data-fb-visual-theme="midnight-aurora"] .family-countdown-widget{
+  background:
+    linear-gradient(145deg,rgba(4,12,30,.66) 0%,rgba(4,13,31,.30) 58%,rgba(3,11,26,.10) 100%)!important;
+}
+html[data-fb-visual-theme="midnight-aurora"] .family-countdown-widget:before{
+  background:
+    radial-gradient(78% 90% at 95% 2%,rgba(34,211,238,.15),transparent 56%),
+    radial-gradient(72% 100% at 2% 98%,rgba(139,92,246,.13),transparent 62%)!important;
+}
+html[data-fb-visual-theme="midnight-aurora"] .family-countdown-hero{
+  background:
+    linear-gradient(145deg,rgba(5,26,44,.45),rgba(14,20,59,.38))!important;
+  border-color:rgba(67,235,255,.50)!important;
+}
+html[data-fb-visual-theme="midnight-aurora"] .family-countdown-clock{
+  background:rgba(3,13,30,.48)!important;
+  border-color:rgba(85,238,255,.34)!important;
+}
+
+/* Birthdays: image remains quieter than Prayer, but should still be unmistakably scenic. */
+html[data-fb-visual-theme="midnight-aurora"] .desktop-widget:has(#desktopBirthdayRows){
+  background:
+    linear-gradient(145deg,rgba(5,13,33,.72) 0%,rgba(5,14,34,.38) 60%,rgba(3,11,27,.16) 100%)!important;
+}
+html[data-fb-visual-theme="midnight-aurora"] .desktop-widget:has(#desktopBirthdayRows):before{
+  background:
+    radial-gradient(70% 90% at 2% 0%,rgba(139,92,246,.14),transparent 60%),
+    radial-gradient(72% 82% at 96% 8%,rgba(34,211,238,.10),transparent 64%)!important;
+}
+html[data-fb-visual-theme="midnight-aurora"] #desktopBirthdayRows .desktop-widget-row{
+  background:rgba(3,14,31,.46)!important;
+  border-color:rgba(103,232,249,.13)!important;
+}
+html[data-fb-visual-theme="midnight-aurora"] #desktopBirthdayRows .desktop-widget-row:hover{
+  background:rgba(8,27,51,.56)!important;
+}
+
+/* Slightly stronger photo colour only inside the scenic widgets. */
+html[data-fb-visual-theme="midnight-aurora"] .desktop-date-time-card,
+html[data-fb-visual-theme="midnight-aurora"] .family-prayer-widget,
+html[data-fb-visual-theme="midnight-aurora"] .family-countdown-widget,
+html[data-fb-visual-theme="midnight-aurora"] .desktop-widget:has(#desktopBirthdayRows){
+  background-blend-mode:normal!important;
+}
+
+/* Mobile/compact: keep enough contrast for small text while preserving scenery. */
+@media(max-width:1179px){
+  html[data-fb-visual-theme="midnight-aurora"] .family-prayer-slide{
+    background:rgba(3,15,30,.52)!important;
+  }
+  html[data-fb-visual-theme="midnight-aurora"] .family-countdown-hero{
+    background:rgba(6,24,45,.48)!important;
+  }
+  html[data-fb-visual-theme="midnight-aurora"] #desktopBirthdayRows .desktop-widget-row{
+    background:rgba(4,15,31,.52)!important;
+  }
+}
+
+
+/* ============================================================
+   MIDNIGHT AURORA V2 — CONTINUOUS WIDGET FLOW
+   One tall scenic artwork behind the whole widget stack.
+   ============================================================ */
+
+/* One continuous scene for desktop and the compact Family Widgets drawer. */
+html[data-fb-visual-theme="midnight-aurora"] .desktop-right-rail{
+  background-color:#030b1d!important;
+  background-image:
+    linear-gradient(180deg,rgba(3,10,26,.10) 0%,rgba(3,10,26,.05) 45%,rgba(3,10,26,.24) 78%,#030b1d 100%),
+    url("../assets/midnight-aurora-widget-flow.webp")!important;
+  background-position:center top!important;
+  background-size:100% auto!important;
+  background-repeat:no-repeat!important;
+  background-attachment:local!important;
+  border-left-color:rgba(103,232,249,.14)!important;
+}
+
+@media(min-width:760px) and (max-width:1179px){
+  html[data-fb-visual-theme="midnight-aurora"] .compact-widgets-panel{
+    background:#030b1d!important;
+    border-left-color:rgba(103,232,249,.20)!important;
+  }
+  html[data-fb-visual-theme="midnight-aurora"] .compact-widgets-head{
+    background:linear-gradient(180deg,rgba(4,12,30,.96),rgba(5,13,31,.92))!important;
+    border-bottom-color:rgba(103,232,249,.16)!important;
+  }
+  html[data-fb-visual-theme="midnight-aurora"] .compact-widgets-body{
+    background:#030b1d!important;
+  }
+}
+
+/* Keep the clock treatment intact as its own top card. */
+html[data-fb-visual-theme="midnight-aurora"] .desktop-date-time-card{
+  position:relative;
+  z-index:2;
+}
+
+/* All cards below the clock become glass instead of repeating a photo. */
+html[data-fb-visual-theme="midnight-aurora"] .desktop-right-rail>.desktop-widget:not(.desktop-date-time-card),
+html[data-fb-visual-theme="midnight-aurora"] .compact-widgets-rail>.desktop-widget:not(.desktop-date-time-card){
+  background:
+    linear-gradient(145deg,rgba(4,15,34,.56),rgba(4,14,32,.38))!important;
+  border:1px solid rgba(73,229,255,.48)!important;
+  box-shadow:
+    0 14px 32px rgba(0,0,0,.27),
+    inset 0 1px 0 rgba(255,255,255,.075)!important;
+}
+
+/* Prayer: clearest window into the mountain section of the shared artwork. */
+html[data-fb-visual-theme="midnight-aurora"] .family-prayer-widget{
+  background:
+    linear-gradient(145deg,rgba(3,13,31,.34),rgba(3,13,29,.18))!important;
+  border-color:rgba(74,235,255,.68)!important;
+  border-left-color:rgba(196,132,252,.94)!important;
+  box-shadow:
+    -5px 0 18px rgba(168,85,247,.34),
+    0 0 22px rgba(34,211,238,.17),
+    0 17px 36px rgba(0,0,0,.30),
+    inset 2px 0 0 rgba(192,132,252,.64),
+    inset 0 1px 0 rgba(255,255,255,.10)!important;
+}
+html[data-fb-visual-theme="midnight-aurora"] .family-prayer-widget:before{
+  content:""!important;
+  position:absolute!important;
+  inset:0!important;
+  width:auto!important;
+  height:auto!important;
+  background:
+    linear-gradient(90deg,rgba(5,10,31,.20),transparent 46%),
+    linear-gradient(180deg,rgba(3,10,25,.05),transparent 58%,rgba(3,9,23,.12))!important;
+  opacity:1!important;
+  filter:none!important;
+  z-index:1!important;
+  pointer-events:none!important;
+}
+html[data-fb-visual-theme="midnight-aurora"] .family-prayer-widget:after{
+  inset:0!important;
+  border:0!important;
+  border-radius:inherit!important;
+  transform:none!important;
+  filter:none!important;
+  box-shadow:none!important;
+  background:
+    radial-gradient(74% 64% at 0% 7%,rgba(168,85,247,.13),transparent 60%),
+    radial-gradient(78% 72% at 100% 5%,rgba(34,211,238,.10),transparent 62%)!important;
+  opacity:1!important;
+  z-index:1!important;
+}
+html[data-fb-visual-theme="midnight-aurora"] .family-prayer-slide,
+html[data-fb-visual-theme="midnight-aurora"] .family-prayer-slide.prayer,
+html[data-fb-visual-theme="midnight-aurora"] .family-prayer-slide.encouragement{
+  background:linear-gradient(145deg,rgba(3,15,31,.46),rgba(3,12,28,.32))!important;
+  border-color:rgba(73,239,227,.55)!important;
+}
+
+/* Countdown: the scene is beginning to fade; retain aurora colour, less detail. */
+html[data-fb-visual-theme="midnight-aurora"] .family-countdown-widget{
+  background:
+    linear-gradient(145deg,rgba(4,16,35,.48),rgba(5,14,35,.34))!important;
+  border-color:rgba(70,231,255,.60)!important;
+  border-left-color:rgba(178,119,250,.90)!important;
+  box-shadow:
+    -4px 0 16px rgba(168,85,247,.24),
+    0 0 18px rgba(34,211,238,.13),
+    0 15px 34px rgba(0,0,0,.28),
+    inset 2px 0 0 rgba(168,85,247,.48),
+    inset 0 1px 0 rgba(255,255,255,.08)!important;
+}
+html[data-fb-visual-theme="midnight-aurora"] .family-countdown-widget:before{
+  background:
+    radial-gradient(78% 78% at 100% 2%,rgba(34,211,238,.09),transparent 62%),
+    radial-gradient(72% 92% at 0% 98%,rgba(139,92,246,.10),transparent 65%)!important;
+}
+html[data-fb-visual-theme="midnight-aurora"] .family-countdown-hero{
+  background:linear-gradient(145deg,rgba(5,24,43,.42),rgba(13,20,57,.34))!important;
+  border-color:rgba(72,232,255,.42)!important;
+}
+html[data-fb-visual-theme="midnight-aurora"] .family-countdown-clock{
+  background:rgba(3,13,30,.45)!important;
+}
+
+/* Birthdays: mostly atmospheric colour wash; shared artwork is now very subtle. */
+html[data-fb-visual-theme="midnight-aurora"] .desktop-widget:has(#desktopBirthdayRows){
+  background:
+    linear-gradient(145deg,rgba(5,14,34,.58),rgba(5,14,34,.44))!important;
+  border-color:rgba(69,222,255,.48)!important;
+  border-left-color:rgba(168,105,244,.84)!important;
+  box-shadow:
+    -4px 0 15px rgba(168,85,247,.20),
+    0 0 15px rgba(34,211,238,.10),
+    0 14px 32px rgba(0,0,0,.27),
+    inset 2px 0 0 rgba(168,85,247,.40),
+    inset 0 1px 0 rgba(255,255,255,.07)!important;
+}
+html[data-fb-visual-theme="midnight-aurora"] .desktop-widget:has(#desktopBirthdayRows):before{
+  background:
+    radial-gradient(72% 88% at 0% 0%,rgba(139,92,246,.10),transparent 62%),
+    radial-gradient(70% 82% at 100% 10%,rgba(34,211,238,.055),transparent 64%)!important;
+}
+html[data-fb-visual-theme="midnight-aurora"] #desktopBirthdayRows .desktop-widget-row{
+  background:rgba(3,14,31,.43)!important;
+  border-color:rgba(103,232,249,.12)!important;
+}
+
+/* Lower widgets live in the dark tail of the artwork. */
+html[data-fb-visual-theme="midnight-aurora"] .desktop-right-rail>.desktop-widget:not(.desktop-date-time-card):not(.family-prayer-widget):not(.family-countdown-widget):not(:has(#desktopBirthdayRows)),
+html[data-fb-visual-theme="midnight-aurora"] .compact-widgets-rail>.desktop-widget:not(.desktop-date-time-card):not(.family-prayer-widget):not(.family-countdown-widget):not(:has(#desktopBirthdayRows)){
+  background:linear-gradient(145deg,rgba(5,14,34,.78),rgba(6,15,35,.68))!important;
+  border-color:rgba(78,181,231,.28)!important;
+}
+
+/* Glass blur only on the card surfaces, never on the shared artwork itself. */
+@supports ((backdrop-filter:blur(1px)) or (-webkit-backdrop-filter:blur(1px))){
+  @media(min-width:760px){
+    html[data-fb-visual-theme="midnight-aurora"] .family-prayer-widget,
+    html[data-fb-visual-theme="midnight-aurora"] .family-countdown-widget,
+    html[data-fb-visual-theme="midnight-aurora"] .desktop-widget:has(#desktopBirthdayRows){
+      -webkit-backdrop-filter:blur(2px) saturate(112%)!important;
+      backdrop-filter:blur(2px) saturate(112%)!important;
+    }
+    html[data-fb-visual-theme="midnight-aurora"] .family-prayer-slide,
+    html[data-fb-visual-theme="midnight-aurora"] .family-countdown-clock,
+    html[data-fb-visual-theme="midnight-aurora"] #desktopBirthdayRows .desktop-widget-row{
+      -webkit-backdrop-filter:blur(6px) saturate(116%)!important;
+      backdrop-filter:blur(6px) saturate(116%)!important;
+    }
+  }
+}
+
+
+/* ============================================================
+   MIDNIGHT AURORA V2 — REMOVE REPEATED CARD ART
+   Scenic bitmap belongs to the rail only, never individual cards.
+   ============================================================ */
+html[data-fb-visual-theme="midnight-aurora"] .family-prayer-widget,
+html[data-fb-visual-theme="midnight-aurora"] .family-countdown-widget,
+html[data-fb-visual-theme="midnight-aurora"] .desktop-widget:has(#desktopBirthdayRows){
+  background-image:none!important;
+}
+html[data-fb-visual-theme="midnight-aurora"] .family-prayer-widget:before,
+html[data-fb-visual-theme="midnight-aurora"] .family-prayer-widget:after,
+html[data-fb-visual-theme="midnight-aurora"] .family-countdown-widget:before,
+html[data-fb-visual-theme="midnight-aurora"] .family-countdown-widget:after,
+html[data-fb-visual-theme="midnight-aurora"] .desktop-widget:has(#desktopBirthdayRows):before,
+html[data-fb-visual-theme="midnight-aurora"] .desktop-widget:has(#desktopBirthdayRows):after{
+  background-image:none!important;
+}
+html[data-fb-visual-theme="midnight-aurora"] .family-prayer-widget{
+  background-color:rgba(4,14,32,.30)!important;
+}
+html[data-fb-visual-theme="midnight-aurora"] .family-countdown-widget{
+  background-color:rgba(4,14,32,.48)!important;
+}
+html[data-fb-visual-theme="midnight-aurora"] .desktop-widget:has(#desktopBirthdayRows){
+  background-color:rgba(4,13,31,.62)!important;
+}
+
+
+/* ============================================================
+   MIDNIGHT AURORA — ALPINE PAGE CROPS
+   One approved artwork, art-directed per page block.
+   ============================================================ */
+
+html[data-fb-visual-theme="midnight-aurora"] #app>.app>.topbar{
+  background:
+    linear-gradient(90deg,rgba(3,10,27,.92) 0%,rgba(3,10,27,.62) 46%,rgba(3,10,27,.38) 100%),
+    url("../assets/midnight-aurora-alpine.webp") center 18%/cover no-repeat!important;
+  border-bottom-color:rgba(82,230,255,.28)!important;
+  box-shadow:0 8px 34px rgba(0,0,0,.30),0 1px 0 rgba(101,235,255,.10)!important;
+}
+
+/* Left rail: darker forest/mountain crop. */
+html[data-fb-visual-theme="midnight-aurora"] .desktop-left-rail{
+  position:relative;
+  overflow:hidden;
+  border-radius:0 0 18px 18px;
+  background:
+    linear-gradient(180deg,rgba(3,10,28,.82) 0%,rgba(3,11,29,.58) 48%,rgba(2,8,22,.78) 100%),
+    url("../assets/midnight-aurora-alpine.webp") 88% 67%/190% auto no-repeat!important;
+  border-right:1px solid rgba(84,224,255,.18);
+}
+html[data-fb-visual-theme="midnight-aurora"] .desktop-profile-card,
+html[data-fb-visual-theme="midnight-aurora"] .desktop-side-link{
+  background-color:rgba(4,13,31,.26);
+  backdrop-filter:blur(3px);
+  -webkit-backdrop-filter:blur(3px);
+}
+
+/* Composer: soft aurora crop, no mountain focal point. */
+html[data-fb-visual-theme="midnight-aurora"] .home-status-composer-shell .wall-composer{
+  overflow:hidden;
+  background:
+    linear-gradient(90deg,rgba(4,14,34,.76),rgba(5,16,36,.42),rgba(4,14,34,.68)),
+    url("../assets/midnight-aurora-alpine.webp") 52% 10%/150% auto no-repeat!important;
+  border-color:rgba(77,229,255,.35)!important;
+  box-shadow:0 12px 30px rgba(0,0,0,.30),0 0 20px rgba(34,211,238,.08)!important;
+}
+
+/* Memories: star/aurora crop kept subtle so photos remain dominant. */
+html[data-fb-visual-theme="midnight-aurora"] .home-memory-strip-shell{
+  border-radius:18px;
+  background:
+    linear-gradient(180deg,rgba(4,13,32,.74),rgba(4,13,32,.56)),
+    url("../assets/midnight-aurora-alpine.webp") 45% 5%/145% auto no-repeat!important;
+}
+
+/* Family Wall: broad mountain/aurora section behind the feed. */
+html[data-fb-visual-theme="midnight-aurora"] .family-wall-panel{
+  position:relative;
+  overflow:hidden;
+  background:
+    linear-gradient(180deg,rgba(4,13,32,.44) 0%,rgba(4,13,32,.62) 32%,rgba(4,12,30,.86) 100%),
+    url("../assets/midnight-aurora-alpine.webp") 70% 54%/125% auto no-repeat!important;
+  border:1px solid rgba(76,229,255,.38)!important;
+  box-shadow:0 18px 44px rgba(0,0,0,.32),0 0 24px rgba(34,211,238,.08)!important;
+}
+html[data-fb-visual-theme="midnight-aurora"] .family-wall-panel .wall-post,
+html[data-fb-visual-theme="midnight-aurora"] .family-wall-panel .wall-card{
+  background:rgba(4,14,32,.78)!important;
+  backdrop-filter:blur(5px);
+  -webkit-backdrop-filter:blur(5px);
+}
+
+/* Clock: compact mountain + tree crop. */
+html[data-fb-visual-theme="midnight-aurora"] .desktop-date-time-card{
+  overflow:hidden!important;
+  background:
+    linear-gradient(90deg,rgba(3,10,28,.88) 0%,rgba(3,11,28,.44) 52%,rgba(3,10,26,.10) 100%),
+    url("../assets/midnight-aurora-alpine.webp") 88% 64%/190% auto no-repeat!important;
+}
+
+/* Prayer: strongest mountain/aurora crop and violet left edge. */
+html[data-fb-visual-theme="midnight-aurora"] .family-prayer-widget{
+  overflow:hidden!important;
+  background:
+    linear-gradient(145deg,rgba(3,11,28,.16) 0%,rgba(3,12,29,.05) 56%,rgba(3,10,24,.16) 100%),
+    url("../assets/midnight-aurora-alpine.webp") 82% 55%/165% auto no-repeat!important;
+  border-color:rgba(74,235,255,.78)!important;
+  border-left:2px solid #c084fc!important;
+  box-shadow:
+    -8px 0 22px rgba(168,85,247,.46),
+    0 0 24px rgba(34,211,238,.18),
+    0 18px 38px rgba(0,0,0,.31),
+    inset 2px 0 0 rgba(216,180,254,.70),
+    inset 0 1px 0 rgba(255,255,255,.10)!important;
+}
+html[data-fb-visual-theme="midnight-aurora"] .family-prayer-slide,
+html[data-fb-visual-theme="midnight-aurora"] .family-prayer-slide.prayer,
+html[data-fb-visual-theme="midnight-aurora"] .family-prayer-slide.encouragement{
+  background:linear-gradient(145deg,rgba(3,15,31,.30),rgba(3,12,28,.20))!important;
+  border-color:rgba(83,245,231,.66)!important;
+}
+
+/* Countdown: different aurora crop, less mountain detail. */
+html[data-fb-visual-theme="midnight-aurora"] .family-countdown-widget{
+  overflow:hidden!important;
+  background:
+    linear-gradient(145deg,rgba(4,13,32,.28),rgba(5,14,34,.22),rgba(4,12,29,.40)),
+    url("../assets/midnight-aurora-alpine.webp") 48% 18%/185% auto no-repeat!important;
+  border-color:rgba(70,232,255,.72)!important;
+  border-left:2px solid #a855f7!important;
+  box-shadow:
+    -7px 0 20px rgba(168,85,247,.34),
+    0 0 22px rgba(34,211,238,.16),
+    0 17px 36px rgba(0,0,0,.30),
+    inset 2px 0 0 rgba(192,132,252,.56),
+    inset 0 1px 0 rgba(255,255,255,.09)!important;
+}
+html[data-fb-visual-theme="midnight-aurora"] .family-countdown-hero{
+  background:linear-gradient(145deg,rgba(5,26,45,.42),rgba(23,24,67,.34))!important;
+  border-color:rgba(78,236,255,.55)!important;
+}
+html[data-fb-visual-theme="midnight-aurora"] .family-countdown-clock{
+  background:rgba(3,14,31,.56)!important;
+}
+
+/* Birthdays: darker lower-right forest crop with violet edge. */
+html[data-fb-visual-theme="midnight-aurora"] .desktop-widget:has(#desktopBirthdayRows){
+  overflow:hidden!important;
+  background:
+    linear-gradient(180deg,rgba(5,14,34,.56),rgba(4,12,29,.74)),
+    url("../assets/midnight-aurora-alpine.webp") 92% 72%/175% auto no-repeat!important;
+  border-left:2px solid #8b5cf6!important;
+  box-shadow:
+    -5px 0 17px rgba(139,92,246,.28),
+    0 0 15px rgba(34,211,238,.10),
+    0 14px 32px rgba(0,0,0,.27),
+    inset 2px 0 0 rgba(168,85,247,.46),
+    inset 0 1px 0 rgba(255,255,255,.07)!important;
+}
+html[data-fb-visual-theme="midnight-aurora"] #desktopBirthdayRows .desktop-widget-row{
+  background:rgba(3,14,31,.62)!important;
+  backdrop-filter:blur(5px);
+  -webkit-backdrop-filter:blur(5px);
+}
+
+/* Keep all scenic crops cleanly inside their blocks. */
+html[data-fb-visual-theme="midnight-aurora"] .family-prayer-widget,
+html[data-fb-visual-theme="midnight-aurora"] .family-countdown-widget,
+html[data-fb-visual-theme="midnight-aurora"] .desktop-widget:has(#desktopBirthdayRows),
+html[data-fb-visual-theme="midnight-aurora"] .desktop-date-time-card,
+html[data-fb-visual-theme="midnight-aurora"] .family-wall-panel,
+html[data-fb-visual-theme="midnight-aurora"] .home-status-composer-shell .wall-composer{
+  background-clip:padding-box!important;
+}
