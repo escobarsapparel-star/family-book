@@ -95,3 +95,28 @@ html[data-theme="dark"] .family-prayer-modal-icon{background:#2e3a31}
   .family-prayer-modal-actions>div{width:100%;display:grid;grid-template-columns:1fr 1fr}
   .family-prayer-clear{align-self:flex-start}
 }
+
+/* Midnight Aurora — Prayer inner content capsule */
+@media(min-width:1180px){
+  html[data-fb-visual-theme="midnight-aurora"] .desktop-right-rail .family-prayer-slide{
+    position:relative!important;
+    overflow:hidden!important;
+    background:
+      linear-gradient(135deg,rgba(3,25,51,.48),rgba(5,35,61,.24) 55%,rgba(8,17,43,.46)),
+      url("../assets/midnight-aurora-alpine.webp") center 44%/145% auto no-repeat!important;
+    border:1px solid rgba(83,238,255,.70)!important;
+    border-left-color:rgba(168,85,247,.56)!important;
+    box-shadow:inset 0 0 18px rgba(34,211,238,.07),0 0 7px rgba(103,232,249,.32),0 0 16px rgba(34,211,238,.14)!important;
+    backdrop-filter:blur(3px) saturate(112%)!important;
+    -webkit-backdrop-filter:blur(3px) saturate(112%)!important;
+  }
+  html[data-fb-visual-theme="midnight-aurora"] .desktop-right-rail .family-prayer-label span{
+    background:linear-gradient(145deg,rgba(5,48,70,.92),rgba(35,34,78,.88))!important;
+    border:1px solid rgba(100,239,255,.46)!important;
+    color:#9af8ff!important;
+    box-shadow:0 0 10px rgba(34,211,238,.18)!important;
+  }
+  html[data-fb-visual-theme="midnight-aurora"] .desktop-right-rail .family-prayer-label{color:#ffd27d!important}
+  html[data-fb-visual-theme="midnight-aurora"] .desktop-right-rail .family-prayer-slide p{color:#f4f8ff!important;text-shadow:0 1px 2px rgba(0,0,0,.30)!important}
+  html[data-fb-visual-theme="midnight-aurora"] .desktop-right-rail .family-prayer-slide small{color:#c2d0e2!important}
+}
