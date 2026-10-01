@@ -82,3 +82,31 @@
     border-color:rgba(100,226,255,.16)!important;
   }
 }
+
+/* Midnight Aurora — Spotlight inner memory capsule */
+@media(min-width:1180px){
+  html[data-fb-visual-theme="midnight-aurora"] .desktop-left-rail .family-spotlight-photo{
+    border:1px solid rgba(88,239,255,.72)!important;
+    box-shadow:inset 0 0 14px rgba(34,211,238,.08),0 0 7px rgba(103,232,249,.34),0 0 15px rgba(34,211,238,.16)!important;
+  }
+  html[data-fb-visual-theme="midnight-aurora"] .desktop-left-rail .family-spotlight-copy,
+  html[data-fb-visual-theme="midnight-aurora"] .desktop-left-rail .family-spotlight-actions{
+    position:relative!important;
+    z-index:1!important;
+  }
+  html[data-fb-visual-theme="midnight-aurora"] .desktop-left-rail .family-spotlight-copy{
+    margin-top:7px!important;
+    padding:9px 10px 7px!important;
+    border-left:1px solid rgba(103,232,249,.34)!important;
+    border-right:1px solid rgba(168,85,247,.22)!important;
+    background:linear-gradient(90deg,rgba(3,27,51,.48),rgba(9,20,47,.30))!important;
+  }
+  html[data-fb-visual-theme="midnight-aurora"] .desktop-left-rail .family-spotlight-actions{
+    padding:0 8px 9px!important;
+    border:1px solid rgba(103,232,249,.34)!important;
+    border-top:0!important;
+    border-radius:0 0 13px 13px!important;
+    background:linear-gradient(90deg,rgba(3,27,51,.48),rgba(9,20,47,.30))!important;
+    box-shadow:0 0 13px rgba(34,211,238,.10)!important;
+  }
+}
