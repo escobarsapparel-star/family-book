@@ -100,3 +100,100 @@
       drop-shadow(0 0 8px rgba(139,92,246,.10))!important;
   }
 }
+
+
+/* ============================================================
+   MIDNIGHT AURORA — FAMILY TREE CAPSULE
+   Scenic outer tree viewport; member cards stay readable.
+   ============================================================ */
+@media (max-width:759px){
+
+  html[data-fb-visual-theme="midnight-aurora"] .tree-page.coordinate-tree-page .ct-board{
+    position:relative!important;
+    overflow:auto!important;
+    isolation:isolate!important;
+    min-height:560px!important;
+    border-radius:20px!important;
+    background:
+      linear-gradient(180deg,
+        rgba(2,9,24,.32) 0%,
+        rgba(2,10,26,.48) 34%,
+        rgba(2,9,23,.68) 68%,
+        rgba(2,8,20,.86) 100%),
+      url("../assets/midnight-aurora-alpine.webp") 78% 62%/cover no-repeat!important;
+    border:1px solid rgba(79,229,255,.34)!important;
+    border-left:2px solid rgba(168,85,247,.72)!important;
+    box-shadow:
+      -4px 0 18px rgba(139,92,246,.18),
+      0 18px 36px rgba(0,0,0,.30),
+      0 0 22px rgba(34,211,238,.09),
+      inset 0 1px 0 rgba(255,255,255,.04)!important;
+    backdrop-filter:blur(4px) saturate(112%)!important;
+    -webkit-backdrop-filter:blur(4px) saturate(112%)!important;
+  }
+
+  html[data-fb-visual-theme="midnight-aurora"] .tree-page.coordinate-tree-page .ct-board::before{
+    content:"";
+    position:absolute;
+    inset:0;
+    pointer-events:none;
+    z-index:0;
+    background:
+      linear-gradient(180deg,rgba(2,8,21,.04) 0%,rgba(2,8,21,.10) 40%,rgba(2,8,21,.42) 100%),
+      radial-gradient(46% 30% at 88% 6%,rgba(34,211,238,.10),transparent 72%),
+      radial-gradient(42% 28% at 4% 12%,rgba(168,85,247,.10),transparent 74%);
+  }
+
+  html[data-fb-visual-theme="midnight-aurora"] .tree-page.coordinate-tree-page .ct-board .ct-canvas{
+    position:relative!important;
+    z-index:1!important;
+    background:transparent!important;
+  }
+
+  /* Family connectors become subtle cyan instead of dull grey/green. */
+  html[data-fb-visual-theme="midnight-aurora"] .tree-page.coordinate-tree-page .ct-lines path,
+  html[data-fb-visual-theme="midnight-aurora"] .tree-page.coordinate-tree-page .ct-lines line{
+    stroke:rgba(103,232,249,.46)!important;
+    filter:drop-shadow(0 0 4px rgba(34,211,238,.14));
+  }
+
+  /* Person cards: dark glass with a restrained cyan edge. */
+  html[data-fb-visual-theme="midnight-aurora"] .tree-page.coordinate-tree-page .ct-person,
+  html[data-fb-visual-theme="midnight-aurora"] .tree-page.coordinate-tree-page .ct-couple{
+    background:
+      linear-gradient(145deg,rgba(4,14,31,.93),rgba(8,18,42,.88))!important;
+    border:1px solid rgba(92,220,255,.20)!important;
+    color:#eef7ff!important;
+    box-shadow:
+      0 10px 24px rgba(0,0,0,.24),
+      inset 0 1px 0 rgba(255,255,255,.03)!important;
+  }
+
+  html[data-fb-visual-theme="midnight-aurora"] .tree-page.coordinate-tree-page .ct-person strong,
+  html[data-fb-visual-theme="midnight-aurora"] .tree-page.coordinate-tree-page .ct-couple strong{
+    color:#f5f9ff!important;
+  }
+
+  /* Main/current family unit gets the stronger Midnight glow. */
+  html[data-fb-visual-theme="midnight-aurora"] .tree-page.coordinate-tree-page .ct-node:first-of-type .ct-person,
+  html[data-fb-visual-theme="midnight-aurora"] .tree-page.coordinate-tree-page .ct-node:first-of-type .ct-couple{
+    border-color:rgba(103,232,249,.42)!important;
+    box-shadow:
+      0 0 16px rgba(34,211,238,.12),
+      0 0 20px rgba(139,92,246,.10),
+      0 12px 28px rgba(0,0,0,.26),
+      inset 0 1px 0 rgba(255,255,255,.04)!important;
+  }
+
+  html[data-fb-visual-theme="midnight-aurora"] .tree-page.coordinate-tree-page .ct-heart{
+    background:rgba(48,20,50,.72)!important;
+    border-color:rgba(244,114,182,.26)!important;
+    color:#ff8bc9!important;
+    box-shadow:0 0 12px rgba(236,72,153,.12)!important;
+  }
+
+  html[data-fb-visual-theme="midnight-aurora"] .tree-page.coordinate-tree-page .ct-heart svg{
+    color:#ff9bd0!important;
+    filter:drop-shadow(0 0 6px rgba(236,72,153,.22));
+  }
+}
