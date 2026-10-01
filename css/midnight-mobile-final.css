@@ -356,3 +356,16 @@
     display:none!important;
   }
 }
+
+
+/* ============================================================
+   REMOVE LEGACY MOBILE HOME BLOCK
+   The modern mobile Home already has Memories + Family Wall.
+   Hide the old Your Family Book / Recent memories / Upcoming block.
+   ============================================================ */
+@media (max-width:759px){
+  #screen > .section-head:has(#homeActivityTitle),
+  #screen > .section-head:has(#homeActivityTitle) + .columns{
+    display:none!important;
+  }
+}
