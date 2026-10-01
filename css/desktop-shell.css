@@ -893,6 +893,116 @@ html[data-theme="dark"]{
   }
 }
 
+/* Desktop Aurora icon system — reference-sized neon capsules */
+@media(min-width:1180px){
+  html[data-fb-visual-theme="midnight-aurora"] :is(
+    #screen .home-memory-strip-title-icon,
+    #screen .family-wall-panel .wall-head::before,
+    .desktop-date-time-icon,
+    .desktop-widget-icon,
+    .family-countdown-row-icon
+  ){
+    box-sizing:border-box!important;
+    border:1px solid rgba(86,238,255,.78)!important;
+    background:linear-gradient(145deg,rgba(4,38,67,.94),rgba(20,29,76,.90))!important;
+    color:#8ff8ff!important;
+    box-shadow:
+      inset 0 0 14px rgba(34,211,238,.14),
+      0 0 6px rgba(103,232,249,.48),
+      0 0 14px rgba(34,211,238,.24),
+      0 0 20px rgba(139,92,246,.10)!important;
+    text-shadow:0 0 8px rgba(103,232,249,.68)!important;
+  }
+
+  html[data-fb-visual-theme="midnight-aurora"] :is(
+    #screen .home-memory-strip-title-icon,
+    .desktop-date-time-icon
+  ){
+    width:44px!important;height:44px!important;flex:0 0 44px!important;border-radius:12px!important;
+  }
+
+  html[data-fb-visual-theme="midnight-aurora"] #screen .family-wall-panel .wall-head{
+    padding-left:57px!important;
+    min-height:46px!important;
+  }
+  html[data-fb-visual-theme="midnight-aurora"] #screen .family-wall-panel .wall-head::before{
+    content:""!important;
+    display:block!important;
+    position:absolute!important;
+    left:0!important;top:0!important;
+    width:44px!important;height:44px!important;
+    border-radius:12px!important;
+    background:
+      url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24' fill='none' stroke='%238ff8ff' stroke-width='1.9' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2'/%3E%3Ccircle cx='9' cy='7' r='4'/%3E%3Cpath d='M22 21v-2a4 4 0 0 0-3-3.87'/%3E%3Cpath d='M16 3.13a4 4 0 0 1 0 7.75'/%3E%3C/svg%3E") center/24px 24px no-repeat,
+      linear-gradient(145deg,rgba(4,38,67,.94),rgba(20,29,76,.90))!important;
+  }
+
+  html[data-fb-visual-theme="midnight-aurora"] :is(
+    #screen .home-memory-strip-title-icon svg,
+    .desktop-date-time-icon svg,
+    .desktop-widget-icon svg,
+    .family-countdown-row-icon svg
+  ){
+    color:inherit!important;
+    filter:drop-shadow(0 0 4px rgba(103,232,249,.88))!important;
+  }
+
+  html[data-fb-visual-theme="midnight-aurora"] .desktop-widget-icon{
+    width:34px!important;height:34px!important;flex:0 0 34px!important;border-radius:10px!important;
+  }
+  html[data-fb-visual-theme="midnight-aurora"] .family-countdown-row-icon{
+    width:32px!important;height:32px!important;flex:0 0 32px!important;border-radius:9px!important;
+  }
+
+  html[data-fb-visual-theme="midnight-aurora"] .family-countdown-head h3>svg{
+    box-sizing:content-box!important;
+    width:22px!important;height:22px!important;
+    padding:9px!important;
+    margin-right:3px!important;
+    border:1px solid rgba(86,238,255,.78)!important;
+    border-radius:11px!important;
+    background:linear-gradient(145deg,rgba(4,38,67,.94),rgba(20,29,76,.90))!important;
+    color:#8ff8ff!important;
+    box-shadow:inset 0 0 14px rgba(34,211,238,.14),0 0 6px rgba(103,232,249,.48),0 0 14px rgba(34,211,238,.24),0 0 20px rgba(139,92,246,.10)!important;
+    filter:drop-shadow(0 0 4px rgba(103,232,249,.78))!important;
+  }
+
+  html[data-fb-visual-theme="midnight-aurora"] .family-spotlight-head>svg{
+    box-sizing:content-box!important;
+    width:20px!important;height:20px!important;
+    padding:9px!important;
+    margin:0!important;
+    border:1px solid rgba(198,132,255,.80)!important;
+    border-radius:11px!important;
+    background:linear-gradient(145deg,rgba(31,25,72,.94),rgba(55,26,88,.90))!important;
+    color:#e2a7ff!important;
+    box-shadow:inset 0 0 14px rgba(168,85,247,.18),0 0 6px rgba(202,138,255,.52),0 0 15px rgba(168,85,247,.30)!important;
+    filter:drop-shadow(0 0 4px rgba(216,180,254,.86))!important;
+  }
+
+  html[data-fb-visual-theme="midnight-aurora"] .desktop-widget:has(#desktopBirthdayRows) .desktop-widget-head h3::before{
+    content:"🎁"!important;
+    display:inline-grid!important;place-items:center!important;
+    width:38px!important;height:38px!important;
+    margin-right:9px!important;
+    border:1px solid rgba(198,132,255,.82)!important;
+    border-radius:11px!important;
+    background:linear-gradient(145deg,rgba(43,25,78,.95),rgba(75,31,87,.90))!important;
+    box-shadow:inset 0 0 14px rgba(168,85,247,.18),0 0 7px rgba(202,138,255,.56),0 0 16px rgba(168,85,247,.30)!important;
+    font-size:20px!important;
+    vertical-align:middle!important;
+  }
+  html[data-fb-visual-theme="midnight-aurora"] .desktop-widget:has(#desktopBirthdayRows) .desktop-widget-head h3{
+    display:flex!important;align-items:center!important;
+  }
+
+  html[data-fb-visual-theme="midnight-aurora"] .desktop-topbar-notifications,
+  html[data-fb-visual-theme="midnight-aurora"] [data-desktop-notifications]{
+    border-color:rgba(86,238,255,.72)!important;
+    box-shadow:inset 0 0 12px rgba(34,211,238,.10),0 0 7px rgba(103,232,249,.42),0 0 14px rgba(34,211,238,.22)!important;
+  }
+}
+
 /* ============================================================
    MIDNIGHT AURORA — DESKTOP FAMILY WALL CAPSULE
    Same proven image-layer pattern as the right-hand widgets.
