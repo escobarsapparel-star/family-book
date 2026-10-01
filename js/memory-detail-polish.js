@@ -102,8 +102,11 @@
     const intro=document.createElement("section");
     intro.className="memory-detail-intro";
     const authorName=String(m.authorName||"Family member").trim()||"Family member";
-    const authorPhoto=String(m.authorPhoto||"");
-    intro.innerHTML=`<div class="memory-detail-author">${authorPhoto?`<img src="${esc(authorPhoto)}" alt="">`:`<span>${esc(initials(authorName))}</span>`}<div><small>Shared by</small><strong>${esc(authorName)}</strong></div></div><div class="memory-detail-facts">${photos.length>1?`<span><i data-lucide="images"></i>${photos.length} media items</span>`:""}${m.dateSource==="exif"&&dateText?`<span><i data-lucide="scan-line"></i>Original capture</span>`:""}</div>`;
+    const liveMembers=window.ensureOwner?.()||[];
+    const liveAuthor=liveMembers.find(person=>String(person.id||"")===String(m.authorId||""))
+      ||liveMembers.find(person=>String(person.name||"").trim()===authorName);
+    const authorPhoto=String(liveAuthor?.photo||m.authorPhoto||"");
+    intro.innerHTML=`<div class="memory-detail-author">${authorPhoto?`<img src="${esc(authorPhoto)}" alt="" onerror="this.hidden=true;this.nextElementSibling.hidden=false"><span hidden>${esc(initials(authorName))}</span>`:`<span>${esc(initials(authorName))}</span>`}<div><small>Shared by</small><strong>${esc(authorName)}</strong></div></div><div class="memory-detail-facts">${photos.length>1?`<span><i data-lucide="images"></i>${photos.length} media items</span>`:""}${m.dateSource==="exif"&&dateText?`<span><i data-lucide="scan-line"></i>Original capture</span>`:""}</div>`;
     head.insertAdjacentElement("afterend",intro);
 
     if(!caption){
