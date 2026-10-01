@@ -419,3 +419,120 @@ html[data-fb-visual-theme="midnight-aurora"] #fbMaintenanceGate{
     height:20px!important;
   }
 }
+
+
+/* ============================================================
+   MIDNIGHT AURORA — SETTINGS MOBILE
+   Final scenic/glass page treatment matching Members/Calendar.
+   ============================================================ */
+@media (max-width:759px){
+  html[data-fb-visual-theme="midnight-aurora"] #screen:has(.settings-page){
+    position:relative!important;
+    isolation:isolate!important;
+    background:
+      linear-gradient(180deg,rgba(2,7,20,.30) 0%,rgba(2,8,22,.50) 28%,rgba(2,8,21,.72) 62%,rgba(2,7,19,.90) 100%),
+      url("../assets/midnight-aurora-widget-flow.webp") center top/100% auto repeat-y!important;
+    background-color:#020814!important;
+  }
+  html[data-fb-visual-theme="midnight-aurora"] #screen:has(.settings-page)::before{
+    content:"";
+    position:absolute;
+    inset:0;
+    z-index:0;
+    pointer-events:none;
+    background:
+      radial-gradient(52% 30% at 88% 7%,rgba(34,211,238,.10),transparent 72%),
+      radial-gradient(44% 28% at 5% 16%,rgba(168,85,247,.10),transparent 74%);
+  }
+  html[data-fb-visual-theme="midnight-aurora"] #screen:has(.settings-page)>.settings-page{
+    position:relative!important;
+    z-index:1!important;
+    background:transparent!important;
+  }
+  html[data-fb-visual-theme="midnight-aurora"] .settings-page{
+    padding-top:4px!important;
+  }
+
+  /* Settings heading capsule */
+  html[data-fb-visual-theme="midnight-aurora"] .settings-page .settings-page-head{
+    position:relative!important;
+    overflow:hidden!important;
+    isolation:isolate!important;
+    margin:0 0 12px!important;
+    padding:15px 13px!important;
+    border-radius:18px!important;
+    background:
+      linear-gradient(135deg,rgba(3,11,28,.36),rgba(4,14,34,.50),rgba(3,10,27,.68)),
+      url("../assets/midnight-aurora-alpine.webp") 76% 28%/155% auto no-repeat!important;
+    border:1px solid rgba(79,230,255,.34)!important;
+    border-left:2px solid rgba(168,85,247,.82)!important;
+    box-shadow:-4px 0 16px rgba(139,92,246,.20),0 14px 30px rgba(0,0,0,.26),0 0 18px rgba(34,211,238,.08)!important;
+  }
+  html[data-fb-visual-theme="midnight-aurora"] .settings-page .settings-page-head>*{
+    position:relative!important;
+    z-index:1!important;
+  }
+  html[data-fb-visual-theme="midnight-aurora"] .settings-page .settings-page-head .eyebrow{
+    color:#7dd3fc!important;
+  }
+  html[data-fb-visual-theme="midnight-aurora"] .settings-page .settings-page-head h1{
+    color:#f4f8ff!important;
+  }
+  html[data-fb-visual-theme="midnight-aurora"] .settings-page .settings-page-head>div>p:last-child{
+    color:#b8c6da!important;
+  }
+
+  /* Account and settings capsules */
+  html[data-fb-visual-theme="midnight-aurora"] .settings-page .settings-account-summary,
+  html[data-fb-visual-theme="midnight-aurora"] .settings-page .settings-card{
+    position:relative!important;
+    overflow:hidden!important;
+    isolation:isolate!important;
+    background:
+      linear-gradient(145deg,rgba(4,14,31,.91),rgba(8,18,42,.88)),
+      url("../assets/midnight-aurora-alpine.webp") 76% 62%/cover no-repeat!important;
+    border:1px solid rgba(90,219,255,.18)!important;
+    border-left:2px solid rgba(168,85,247,.52)!important;
+    box-shadow:-3px 0 13px rgba(139,92,246,.11),0 11px 25px rgba(0,0,0,.23),inset 0 1px 0 rgba(255,255,255,.025)!important;
+    backdrop-filter:blur(8px) saturate(110%)!important;
+    -webkit-backdrop-filter:blur(8px) saturate(110%)!important;
+  }
+  html[data-fb-visual-theme="midnight-aurora"] .settings-page .settings-card>*,
+  html[data-fb-visual-theme="midnight-aurora"] .settings-page .settings-account-summary>*{
+    position:relative!important;
+    z-index:1!important;
+  }
+  html[data-fb-visual-theme="midnight-aurora"] .settings-page .settings-card-icon{
+    background:linear-gradient(145deg,rgba(7,20,42,.92),rgba(25,25,66,.78))!important;
+    border:1px solid rgba(98,226,255,.20)!important;
+    color:#8ff5ff!important;
+    box-shadow:0 0 12px rgba(34,211,238,.07)!important;
+  }
+  html[data-fb-visual-theme="midnight-aurora"] .settings-page .settings-card-head p{
+    color:#7dd3fc!important;
+  }
+  html[data-fb-visual-theme="midnight-aurora"] .settings-page .settings-card-head h2{
+    color:#f4f8ff!important;
+  }
+  html[data-fb-visual-theme="midnight-aurora"] .settings-page .settings-card-head span,
+  html[data-fb-visual-theme="midnight-aurora"] .settings-page .settings-note,
+  html[data-fb-visual-theme="midnight-aurora"] .settings-page .settings-toggle-row small,
+  html[data-fb-visual-theme="midnight-aurora"] .settings-page .settings-select-row small{
+    color:#a9b9cd!important;
+  }
+  html[data-fb-visual-theme="midnight-aurora"] .settings-page .settings-toggle-row,
+  html[data-fb-visual-theme="midnight-aurora"] .settings-page .settings-select-row{
+    border-color:rgba(90,219,255,.12)!important;
+  }
+  html[data-fb-visual-theme="midnight-aurora"] .settings-page .theme-choice,
+  html[data-fb-visual-theme="midnight-aurora"] .settings-page .fb-visual-theme-choice{
+    background:rgba(4,14,31,.86)!important;
+    border-color:rgba(90,219,255,.15)!important;
+    color:#eef7ff!important;
+  }
+  html[data-fb-visual-theme="midnight-aurora"] .settings-page .theme-choice.active,
+  html[data-fb-visual-theme="midnight-aurora"] .settings-page .fb-visual-theme-choice.active{
+    background:linear-gradient(145deg,rgba(8,29,54,.94),rgba(32,25,72,.82))!important;
+    border-color:rgba(103,232,249,.40)!important;
+  }
+}
