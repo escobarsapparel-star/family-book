@@ -616,3 +616,36 @@ html[data-theme="dark"]{
     background-repeat:no-repeat!important;
   }
 }
+
+
+/* Desktop composer — Aurora glass treatment */
+@media(min-width:1180px){
+ html[data-fb-visual-theme="midnight-aurora"] .home-social-compact{
+   position:relative!important;overflow:hidden!important;
+   background:
+    linear-gradient(90deg,rgba(2,12,29,.60),rgba(4,17,38,.34),rgba(2,13,31,.62)),
+    url("../assets/desktop-nav-aurora.webp") center 54%/cover no-repeat!important;
+   border:1px solid rgba(86,225,255,.58)!important;
+   border-left-color:rgba(168,85,247,.58)!important;
+   border-radius:18px!important;
+   box-shadow:0 0 0 1px rgba(34,211,238,.06) inset,0 0 22px rgba(34,211,238,.10),0 10px 28px rgba(0,0,0,.28)!important;
+   backdrop-filter:blur(8px) saturate(125%)!important;
+   -webkit-backdrop-filter:blur(8px) saturate(125%)!important;
+ }
+ html[data-fb-visual-theme="midnight-aurora"] .home-social-compact-prompt{
+   background:rgba(3,18,39,.70)!important;
+   border:1px solid rgba(103,232,249,.08)!important;
+   border-radius:999px!important;
+   color:#d8e8f7!important;
+   box-shadow:inset 0 1px 0 rgba(255,255,255,.025)!important;
+   backdrop-filter:blur(8px)!important;
+   -webkit-backdrop-filter:blur(8px)!important;
+ }
+ html[data-fb-visual-theme="midnight-aurora"] .home-social-compact-action{
+   color:#73efff!important;
+   filter:drop-shadow(0 0 7px rgba(34,211,238,.24));
+ }
+ html[data-fb-visual-theme="midnight-aurora"] .home-social-compact img{
+   box-shadow:0 0 0 2px rgba(103,232,249,.30),0 0 14px rgba(34,211,238,.13)!important;
+ }
+}
