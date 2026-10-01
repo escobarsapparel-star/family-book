@@ -271,3 +271,29 @@
     background:linear-gradient(145deg,rgba(8,29,54,.96),rgba(32,25,72,.86))!important;
   }
 }
+
+
+/* Midnight Aurora — force Help & About action row to match Menu glass cards */
+@media(max-width:759px){
+  html[data-fb-visual-theme="midnight-aurora"] .mobile-profile-menu [data-mobile-help-about]{
+    background:linear-gradient(145deg,rgba(4,14,31,.94),rgba(8,18,42,.90))!important;
+    border:1px solid rgba(90,219,255,.22)!important;
+    border-left:1px solid rgba(168,85,247,.42)!important;
+    color:#eef7ff!important;
+    box-shadow:-2px 0 11px rgba(139,92,246,.09),0 9px 22px rgba(0,0,0,.22),inset 0 1px 0 rgba(255,255,255,.025)!important;
+  }
+  html[data-fb-visual-theme="midnight-aurora"] .mobile-profile-menu [data-mobile-help-about] span:first-child{
+    background:linear-gradient(145deg,rgba(7,25,45,.94),rgba(26,26,68,.82))!important;
+    border:1px solid rgba(98,226,255,.18)!important;
+    color:#83eee7!important;
+  }
+  html[data-fb-visual-theme="midnight-aurora"] .mobile-profile-menu [data-mobile-help-about] strong{
+    color:#f4f8ff!important;
+  }
+  html[data-fb-visual-theme="midnight-aurora"] .mobile-profile-menu [data-mobile-help-about] small{
+    color:#a9b9cd!important;
+  }
+  html[data-fb-visual-theme="midnight-aurora"] .mobile-profile-menu [data-mobile-help-about]>svg{
+    color:#8ff5ff!important;
+  }
+}
