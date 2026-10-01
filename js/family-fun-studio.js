@@ -509,8 +509,13 @@
     camera.srcObject=null;
     camera.hidden=true;
     empty.hidden=false;
+    cameraWrap?.classList.remove("camera-live");
+    if(startBtn){
+      startBtn.disabled=false;
+      startBtn.hidden=false;
+      startBtn.style.pointerEvents="";
+    }
     flipBtn.disabled=true;
-    startBtn.disabled=false;
   }
 
   async function startCamera(){
@@ -521,18 +526,22 @@
     try{
       await stopStream();
       setStatus("Opening camera…");
+      let micAvailable=true;
       try{
         stream=await navigator.mediaDevices.getUserMedia({
           video:{facingMode:{ideal:facing}},
           audio:true
         });
       }catch(firstError){
-        console.warn("Family Fun microphone/camera request:",firstError);
-        stream=await navigator.mediaDevices.getUserMedia({
-          video:{facingMode:{ideal:facing}},
-          audio:false
-        });
-        setStatus("Camera ready. Microphone permission is off, so this clip will record without sound.","warn");
+        try{
+          stream=await navigator.mediaDevices.getUserMedia({
+            video:{facingMode:{ideal:facing}},
+            audio:false
+          });
+          micAvailable=false;
+        }catch(_){
+          throw firstError;
+        }
       }
       camera.srcObject=stream;
       camera.dataset.facing=facing;
@@ -541,12 +550,17 @@
       await camera.play().catch(()=>{});
       camera.hidden=false;
       empty.hidden=true;
+      cameraWrap?.classList.add("camera-live");
+      if(startBtn){
+        startBtn.disabled=true;
+        startBtn.hidden=true;
+        startBtn.style.pointerEvents="none";
+      }
       flipBtn.disabled=false;
-      startBtn.disabled=true;
       applyVisualEffects();
       if(lightEnabled)await syncLight();
       else if(frontFill)frontFill.hidden=true;
-      if(stream?.getAudioTracks?.().length)setStatus("Camera ready.");
+      setStatus(micAvailable?"Camera ready.":"Camera ready. Microphone is unavailable, so this clip will record without sound.",micAvailable?"":"warn");
       return true;
     }catch(err){
       console.warn("Family Fun camera:",err);
@@ -877,7 +891,8 @@
   }
 
   function captureFallback(){
-    fallbackInput.setAttribute("capture",facing);
+    fallbackInput.setAttribute("capture",facing==="environment"?"environment":"user");
+    fallbackInput.setAttribute("accept","video/*");
     fallbackInput.click();
   }
 
