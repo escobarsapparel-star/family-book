@@ -331,6 +331,11 @@ async function showLatestReleaseAlert(){
  if(window.FB_DEMO_MODE||latestReleaseAlertShownThisSession||document.querySelector("#latestReleaseAlert"))return;
  const nativeInfo=await nativeAppInfo();
  const isNative=!!nativeInfo||runningInsideNativeApp();
+ // Mobile-web APK dismissal is persistent for this release. Native outdated-app
+ // notices remain independent so an installed old build can still be warned.
+ if(!isNative){
+   try{if(localStorage.getItem(FB_ANDROID_RELEASE_KEY)==="seen")return}catch(_){}
+ }
  // APK notices are useful on Android mobile web and for outdated native installs,
  // but should never interrupt the desktop website.
  if(!isNative&&!isAndroidBrowser())return;
@@ -360,10 +365,10 @@ async function showLatestReleaseAlert(){
  document.body.appendChild(d);
  document.body.classList.add("android-release-open");
  d.showModal();
- const close=()=>{d.close();d.remove();document.body.classList.remove("android-release-open")};
- d.addEventListener("cancel",e=>{e.preventDefault();close()});
- d.querySelector(".android-install-close")?.addEventListener("click",close);
- d.querySelector("[data-latest-later]")?.addEventListener("click",close);
+ const close=(remember=false)=>{if(remember&&!isNative){try{localStorage.setItem(FB_ANDROID_RELEASE_KEY,"seen")}catch(_){}}d.close();d.remove();document.body.classList.remove("android-release-open")};
+ d.addEventListener("cancel",e=>{e.preventDefault();close(!isNative)});
+ d.querySelector(".android-install-close")?.addEventListener("click",()=>close(!isNative));
+ d.querySelector("[data-latest-later]")?.addEventListener("click",()=>close(!isNative));
  d.querySelector("[data-latest-apk]")?.addEventListener("click",async()=>{
    const url=latestApkAbsoluteUrl();
    if(isNative&&window.FB_NATIVE?.Browser?.open){
