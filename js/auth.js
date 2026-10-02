@@ -1,5 +1,6 @@
 (function(){
   const PENDING_INVITE="fb_supabase_pending_invite";
+  const PENDING_LEGAL="fb_pending_legal_acceptance_2026_09_19_v1";
   let current=null,session=null,ready=false;
   const client=()=>window.FB_SUPABASE?.client;
   const e=(v="")=>String(v).replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#039;"}[c]));
@@ -174,6 +175,66 @@
     });
 
     return current;
+  }
+
+
+  function setPendingLegalAcceptance(){
+    try{sessionStorage.setItem(PENDING_LEGAL,"1")}catch(_){}
+  }
+  function clearPendingLegalAcceptance(){
+    try{sessionStorage.removeItem(PENDING_LEGAL)}catch(_){}
+  }
+  function hasPendingLegalAcceptance(){
+    try{return sessionStorage.getItem(PENDING_LEGAL)==="1"}catch(_){return false}
+  }
+  async function getLegalAcceptance(){
+    if(!session?.user)return {accepted:false,reason:"signed_out"};
+    const {data,error}=await client().rpc("get_my_legal_acceptance");
+    if(error)throw error;
+    return data||{accepted:false};
+  }
+  async function acceptLegalTerms(){
+    if(!session?.user)throw new Error("You must be signed in to record legal acceptance.");
+    const {data,error}=await client().rpc("accept_current_legal_terms",{
+      p_terms_accepted:true,
+      p_privacy_acknowledged:true,
+      p_child_media_acknowledged:true,
+      p_age_guardian_acknowledged:true,
+      p_user_agent:String(navigator.userAgent||"").slice(0,500)
+    });
+    if(error)throw error;
+    clearPendingLegalAcceptance();
+    return data;
+  }
+  async function ensureLegalAcceptance(){
+    if(!session?.user)return false;
+    const status=await getLegalAcceptance();
+    if(status?.accepted){clearPendingLegalAcceptance();return true}
+    if(hasPendingLegalAcceptance()){
+      await acceptLegalTerms();
+      return true;
+    }
+    return false;
+  }
+  function renderLegalAcceptance(appEl,onComplete,onSignOut){
+    appEl.innerHTML=`<main class="join-page supabase-setup-page"><section class="join-card join-card-wide legal-acceptance-gate">
+      <div class="join-family-mark"><i data-lucide="shield-check"></i></div>
+      <p class="eyebrow">PRIVACY & TERMS</p>
+      <h1>Before you continue</h1>
+      <p>Family Book stores private family information and media. Please review and accept the current legal documents before using your account.</p>
+      <label class="auth-legal-consent"><input id="legalGateConsent" type="checkbox"><span>I have read and accept the <a href="legal/terms.html" target="_blank" rel="noopener">Terms & Conditions</a>, <a href="legal/privacy.html" target="_blank" rel="noopener">Privacy & POPIA Notice</a> and <a href="legal/child-media.html" target="_blank" rel="noopener">Child & Family Media Rules</a>. I confirm I am 18 or older, or have appropriate parent/guardian permission.</span></label>
+      <div class="backend-form-error" id="legalGateError" hidden></div>
+      <button class="primary full" id="legalGateAccept" type="button"><i data-lucide="check-circle-2"></i>Accept and continue</button>
+      <button type="button" class="setup-signout" id="legalGateSignout"><i data-lucide="log-out"></i>Sign out</button>
+    </section></main>`;
+    window.icons?.();
+    const btn=document.querySelector("#legalGateAccept"),err=document.querySelector("#legalGateError");
+    btn.onclick=async()=>{
+      if(!document.querySelector("#legalGateConsent")?.checked){err.textContent="You must accept all three legal documents to continue.";err.hidden=false;return}
+      err.hidden=true;btn.disabled=true;btn.textContent="Recording acceptance…";
+      try{await acceptLegalTerms();onComplete?.()}catch(ex){err.textContent=ex.message||"Could not record your acceptance.";err.hidden=false;btn.disabled=false;btn.textContent="Accept and continue"}
+    };
+    document.querySelector("#legalGateSignout").onclick=async()=>{await logout();onSignOut?.()};
   }
 
   async function signInWithPassword(email,password){
@@ -467,6 +528,7 @@
     isReady:()=>ready,
     needsSetup:()=>!!current?.needsSetup,
     signInWithPassword,signUp,signInWithGoogle,
+    setPendingLegalAcceptance,ensureLegalAcceptance,acceptLegalTerms,getLegalAcceptance,renderLegalAcceptance,
     createFamily,previewInvite,joinFamily,
     pendingInvite,setPendingInvite,
     renderSetup,
