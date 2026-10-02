@@ -144,6 +144,13 @@
     return current;
   }
 
+  function authActivitySource(){return isNativeRuntime()?"android":"web"}
+  async function recordAuthActivity(eventType){
+    if(!session?.user)return;
+    try{await client().rpc("record_platform_auth_activity",{p_event_type:eventType,p_source:authActivitySource(),p_user_agent:String(navigator.userAgent||"").slice(0,500)})}
+    catch(err){console.warn("Auth activity:",err)}
+  }
+
   async function refresh(){
     if(!client())throw new Error("Supabase is not configured.");
     const {data,error}=await client().auth.getSession();
@@ -245,6 +252,7 @@
     if(error)throw error;
     session=data.session||null;
     await loadContext();
+    await recordAuthActivity("signin");
     return current;
   }
 
@@ -261,7 +269,7 @@
     });
     if(error)throw error;
     session=data.session||null;
-    if(session)await loadContext();
+    if(session){await loadContext();await recordAuthActivity("signup")}
     return {current,needsConfirmation:!data.session,email:data.user?.email||email};
   }
 
