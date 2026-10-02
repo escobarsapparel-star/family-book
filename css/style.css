@@ -5081,3 +5081,11 @@ html[data-theme="dark"] .apk-download-cta{
     object-position:center!important;
   }
 }
+
+/* Launch legal consent gate */
+.auth-legal-consent{display:flex!important;grid-template-columns:none!important;align-items:flex-start;gap:10px!important;padding:12px 13px;border:1px solid rgba(49,92,67,.22);border-radius:13px;background:rgba(49,92,67,.055);font-size:.72rem!important;font-weight:600!important;line-height:1.45}
+.auth-legal-consent input[type="checkbox"]{width:18px!important;height:18px!important;min-width:18px;margin:1px 0 0!important;padding:0!important;accent-color:#315c43}
+.auth-legal-consent span{display:block}.auth-legal-consent a{font-weight:800;color:#315c43;text-decoration:underline;text-underline-offset:2px}
+.legal-acceptance-gate .auth-legal-consent{margin:18px 0}.legal-acceptance-gate .primary{margin-top:10px}
+html[data-theme="dark"] .auth-legal-consent{border-color:#44584b;background:rgba(167,203,176,.06)}
+html[data-theme="dark"] .auth-legal-consent a{color:#a7cbb0}
