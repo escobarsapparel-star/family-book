@@ -142,6 +142,12 @@
     </div>`;
   }
 
+  function ownerAdminShortcut(){
+    const u=user();
+    if(u.supabaseUserId!=="8d8bc782-cbf4-42ad-8f39-034d8a08b893")return "";
+    return `<section class="settings-card" id="settingsPlatformAdmin"><div class="settings-card-head"><span class="settings-card-icon"><i data-lucide="activity"></i></span><div><p>OWNER ONLY</p><h2>Admin Activity</h2><span>View FamilyBook signups and sign-ins.</span></div></div><button type="button" class="secondary" data-profile-route="admin-activity"><i data-lucide="shield-check"></i><span>Open Admin Activity</span></button></section>`;
+  }
+
   function toggleRow(id,title,desc,checked,section,field){
     return `<label class="settings-toggle-row" for="${id}">
       <span><strong>${e(title)}</strong><small>${e(desc)}</small></span>
@@ -222,6 +228,7 @@
         <div class="settings-account-avatar">${avatar()}</div>
         <div><strong>${e(u.name||"Family User")}</strong><span>${e(u.email||"Signed-in family member")}</span></div>
       </div>
+      ${ownerAdminShortcut()}
 
       <section class="settings-card" id="settingsAppearance">
         <div class="settings-card-head"><span class="settings-card-icon"><i data-lucide="palette"></i></span><div><p>APPEARANCE</p><h2>Theme</h2><span>Choose how Family Book looks on this device.</span></div></div>
@@ -429,6 +436,7 @@
   }
 
   function bindPage(){
+    document.querySelectorAll("[data-profile-route]").forEach(btn=>btn.addEventListener("click",()=>window.go?.(btn.dataset.profileRoute)));
     document.querySelectorAll("[data-theme-choice]").forEach(btn=>{
       btn.onclick=()=>{
         const theme=btn.dataset.themeChoice;
