@@ -58,11 +58,12 @@ A.innerHTML=`<main class="login-page">
 
 <form id="signup" class="form hidden">
 <div><p class="eyebrow">CREATE YOUR ACCOUNT</p><h1>Start with Family Book</h1><p class="muted">Create your secure login first. After signing in, you can create a new family or join one with an invitation.</p></div>
-<button type="button" class="google-auth-btn" data-google-auth><span class="google-mark">G</span>Continue with Google</button>
+<button type="button" class="google-auth-btn" data-google-signup><span class="google-mark">G</span>Continue with Google</button>
 <div class="auth-divider"><span>or use email</span></div>
 <div class="row"><label>First name<input id="first" required></label><label>Last name<input id="last"></label></div>
 <label>Email<input id="regemail" type="email" required></label>
 <label>Password<input id="regpass" type="password" minlength="8" required placeholder="At least 8 characters"></label>
+<label class="auth-legal-consent"><input id="signupLegalConsent" type="checkbox" required><span>I have read and accept the <a href="legal/terms.html" target="_blank" rel="noopener">Terms & Conditions</a>, <a href="legal/privacy.html" target="_blank" rel="noopener">Privacy & POPIA Notice</a> and <a href="legal/child-media.html" target="_blank" rel="noopener">Child & Family Media Rules</a>. I confirm I am 18 or older, or have appropriate parent/guardian permission to use Family Book.</span></label>
 <div class="backend-auth-message" id="signupMessage" hidden></div>
 <button class="primary full" type="submit">Create account</button>
 </form>
@@ -84,6 +85,8 @@ su.onsubmit=async e=>{
  e.preventDefault();showMessage("#signupMessage","");
  const btn=su.querySelector("button[type=submit]");btn.disabled=true;btn.textContent="Creating account…";
  try{
+  if(!$("#signupLegalConsent")?.checked)throw new Error("Please accept the Terms, Privacy Notice and Child & Family Media Rules to create an account.");
+  FB_AUTH.setPendingLegalAcceptance?.();
   const result=await FB_AUTH.signUp({first:$("#first").value,last:$("#last").value,email:$("#regemail").value,password:$("#regpass").value});
   if(result.needsConfirmation)showMessage("#signupMessage","Account created. Check your email and confirm your address, then return here and sign in.","success");
   else await routeAfterBackendAuth();
@@ -94,6 +97,13 @@ su.onsubmit=async e=>{
 document.querySelectorAll("[data-google-auth]").forEach(btn=>btn.onclick=async()=>{
  try{btn.disabled=true;btn.innerHTML='<span class="google-mark">G</span>Opening Google…';await FB_AUTH.signInWithGoogle()}
  catch(ex){alert(ex.message||"Could not start Google sign-in.");btn.disabled=false;btn.innerHTML='<span class="google-mark">G</span>Continue with Google'}
+});
+document.querySelectorAll("[data-google-signup]").forEach(btn=>btn.onclick=async()=>{
+ try{
+  if(!$("#signupLegalConsent")?.checked)throw new Error("Please accept the Terms, Privacy Notice and Child & Family Media Rules before continuing with Google.");
+  FB_AUTH.setPendingLegalAcceptance?.();
+  btn.disabled=true;btn.innerHTML='<span class="google-mark">G</span>Opening Google…';await FB_AUTH.signInWithGoogle();
+ }catch(ex){alert(ex.message||"Could not start Google sign-up.");btn.disabled=false;btn.innerHTML='<span class="google-mark">G</span>Continue with Google'}
 });
 icons();
 initAndroidDownloadUi();
@@ -217,14 +227,13 @@ function androidAppBannerHtml(){
  return "";
 }
 
-function closeAndroidInstallSplash(days=7){
+function closeAndroidInstallSplash(){
  const dialog=document.querySelector("#androidInstallSplash");
  dialog?.close();
  dialog?.remove();
  document.body.classList.remove("android-release-open");
  try{
-   const until=Date.now()+days*24*60*60*1000;
-   localStorage.setItem(FB_ANDROID_RELEASE_KEY,String(until));
+   localStorage.setItem(FB_ANDROID_RELEASE_KEY,"seen");
  }catch(_){}
 }
 
@@ -234,8 +243,7 @@ function showAndroidInstallSplash(force=false){
  if(document.querySelector("#androidInstallSplash"))return;
  if(!force){
    try{
-     const until=Number(localStorage.getItem(FB_ANDROID_RELEASE_KEY)||0);
-     if(until>Date.now())return;
+     if(localStorage.getItem(FB_ANDROID_RELEASE_KEY)==="seen")return;
    }catch(_){}
    if(currentRoute!=="home"||!document.querySelector("#screen"))return;
  }
@@ -262,10 +270,10 @@ function showAndroidInstallSplash(force=false){
  document.body.appendChild(d);
  document.body.classList.add("android-release-open");
  d.showModal();
- d.addEventListener("cancel",e=>{e.preventDefault();closeAndroidInstallSplash(7)});
- d.querySelector(".android-install-close")?.addEventListener("click",()=>closeAndroidInstallSplash(7));
- d.querySelector("[data-android-not-now]")?.addEventListener("click",()=>closeAndroidInstallSplash(7));
- d.addEventListener("click",e=>{if(e.target===d)closeAndroidInstallSplash(7)});
+ d.addEventListener("cancel",e=>{e.preventDefault();closeAndroidInstallSplash()});
+ d.querySelector(".android-install-close")?.addEventListener("click",()=>closeAndroidInstallSplash());
+ d.querySelector("[data-android-not-now]")?.addEventListener("click",()=>closeAndroidInstallSplash());
+ d.addEventListener("click",e=>{if(e.target===d)closeAndroidInstallSplash()});
  window.icons?.();
 }
 
@@ -1598,6 +1606,8 @@ function $(s){return document.querySelector(s)}function esc(v=""){return v.repla
 async function routeAfterBackendAuth(){
  const u=FB_AUTH.get();
  if(!u){auth();return}
+ const legalOk=await FB_AUTH.ensureLegalAcceptance?.();
+ if(legalOk===false){FB_AUTH.renderLegalAcceptance?.(A,()=>routeAfterBackendAuth(),()=>auth());return}
  if(FB_AUTH.needsSetup?.()){FB_AUTH.renderSetup(A,()=>routeAfterBackendAuth(),()=>auth());return}
 
  // Apply appearance and render the app shell immediately.
