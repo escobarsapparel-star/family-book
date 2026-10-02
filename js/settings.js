@@ -125,6 +125,7 @@
 
   function menuShell(){
     const u=user();
+    const platformOwner=u.supabaseUserId==="8d8bc782-cbf4-42ad-8f39-034d8a08b893";
     return `<div class="profile-popover" id="profilePopover" hidden>
       <div class="profile-popover-user">
         <div class="profile-popover-avatar">${avatar()}</div>
@@ -135,6 +136,7 @@
         <button type="button" data-profile-route="settings" data-settings-focus="notifications"><i data-lucide="bell-ring"></i><span><strong>Notifications</strong><small>Push & reminder preferences</small></span></button>
         <button type="button" data-profile-route="settings" data-settings-focus="privacy"><i data-lucide="shield-check"></i><span><strong>Privacy</strong><small>Contact & location visibility</small></span></button>
         <button type="button" data-profile-route="settings"><i data-lucide="settings"></i><span><strong>Settings</strong><small>Account preferences</small></span></button>
+        ${platformOwner?'<button type="button" data-profile-route="admin-activity"><i data-lucide="activity"></i><span><strong>Admin Activity</strong><small>Signups & sign-ins</small></span></button>':""}
       </div>
       <button type="button" class="profile-popover-signout" id="profileMenuSignout"><i data-lucide="log-out"></i>Sign out</button>
     </div>`;
