@@ -593,3 +593,78 @@
  html[data-fb-visual-theme="midnight-aurora"] .memories-page select{color:#eaf8ff!important}
  html[data-fb-visual-theme="midnight-aurora"] .memories-page option{background:#061329!important;color:#eaf8ff!important}
 }
+
+/* ============================================================
+   MIDNIGHT AURORA — ADD/EDIT MEMORY DESKTOP
+   ============================================================ */
+@media (min-width:760px){
+ html[data-fb-visual-theme="midnight-aurora"] #screen:has(.memory-editor-page){
+   background:linear-gradient(180deg,rgba(2,7,20,.24),rgba(2,8,22,.54) 48%,rgba(2,7,19,.84)),url("../assets/midnight-aurora-widget-flow.webp") center top/100% auto repeat-y!important;
+   background-color:#020814!important;
+ }
+ html[data-fb-visual-theme="midnight-aurora"] .memory-editor-page{color:#eef7ff!important}
+ html[data-fb-visual-theme="midnight-aurora"] .memory-editor-card{background:transparent!important;border:0!important;box-shadow:none!important}
+ html[data-fb-visual-theme="midnight-aurora"] .memory-editor-title{
+   padding:17px 18px!important;border-radius:18px!important;
+   background:linear-gradient(105deg,rgba(3,12,31,.72),rgba(5,18,42,.46)),url("../assets/midnight-aurora-alpine.webp") center 35%/cover no-repeat!important;
+   border:1px solid rgba(79,230,255,.26)!important;border-left:2px solid rgba(168,85,247,.68)!important;
+   box-shadow:0 13px 30px rgba(0,0,0,.24)!important;
+ }
+ html[data-fb-visual-theme="midnight-aurora"] .memory-editor-title .eyebrow{color:#7dd3fc!important}
+ html[data-fb-visual-theme="midnight-aurora"] .memory-editor-title h1{color:#f2f7ff!important}
+ html[data-fb-visual-theme="midnight-aurora"] .memory-editor-title p{color:#b7c5da!important}
+ html[data-fb-visual-theme="midnight-aurora"] .memory-editor-title>svg{color:#67e8f9!important;filter:drop-shadow(0 0 8px rgba(34,211,238,.25))}
+ html[data-fb-visual-theme="midnight-aurora"] .memory-photo-preview{
+   background:linear-gradient(145deg,rgba(3,15,33,.88),rgba(7,20,43,.80))!important;
+   border:1px dashed rgba(103,232,249,.36)!important;color:#b9cbe0!important;
+   box-shadow:inset 0 1px rgba(255,255,255,.025),0 10px 26px rgba(0,0,0,.18)!important;
+ }
+ html[data-fb-visual-theme="midnight-aurora"] .memory-photo-preview>div strong{color:#eaf8ff!important}
+ html[data-fb-visual-theme="midnight-aurora"] .memory-photo-preview>div span{color:#8fa4bd!important}
+ html[data-fb-visual-theme="midnight-aurora"] .memory-photo-preview>div svg{color:#67e8f9!important}
+ html[data-fb-visual-theme="midnight-aurora"] .memory-photo-actions button{
+   background:#061329!important;border-color:rgba(90,219,255,.28)!important;color:#e4f8ff!important;
+ }
+ html[data-fb-visual-theme="midnight-aurora"] .memory-photo-actions #memoryGalleryBtn.memory-gallery-primary{
+   background:linear-gradient(105deg,rgba(22,191,226,.92),rgba(59,130,246,.94),rgba(124,58,237,.94))!important;border-color:rgba(116,231,255,.42)!important;color:#fff!important;
+ }
+ html[data-fb-visual-theme="midnight-aurora"] .memory-video-note{color:#91a5bd!important}
+ html[data-fb-visual-theme="midnight-aurora"] .memory-editor-card label,
+ html[data-fb-visual-theme="midnight-aurora"] .memory-tags legend{color:#edf7ff!important}
+ html[data-fb-visual-theme="midnight-aurora"] #memoryCaption{
+   background:rgba(3,14,31,.88)!important;border:1px solid rgba(90,219,255,.27)!important;color:#f0f8ff!important;
+   box-shadow:inset 0 1px 0 rgba(255,255,255,.025)!important;
+ }
+ html[data-fb-visual-theme="midnight-aurora"] #memoryCaption::placeholder{color:#8197b2!important}
+ html[data-fb-visual-theme="midnight-aurora"] #memoryCaption:focus{border-color:rgba(103,232,249,.62)!important;box-shadow:0 0 0 3px rgba(34,211,238,.09),0 0 18px rgba(34,211,238,.08)!important}
+ html[data-fb-visual-theme="midnight-aurora"] .memory-tags{
+   background:linear-gradient(145deg,rgba(3,14,32,.91),rgba(8,21,45,.87))!important;
+   border:1px solid rgba(103,232,249,.24)!important;border-left:2px solid rgba(168,85,247,.58)!important;
+   box-shadow:0 11px 26px rgba(0,0,0,.20)!important;
+ }
+ html[data-fb-visual-theme="midnight-aurora"] .memory-tags>p{color:#a9b9cd!important}
+ html[data-fb-visual-theme="midnight-aurora"] .memory-tag-group>strong{color:#7dd3fc!important}
+ html[data-fb-visual-theme="midnight-aurora"] .memory-tag-group+.memory-tag-group{border-color:rgba(103,232,249,.13)!important}
+ html[data-fb-visual-theme="midnight-aurora"] .memory-tag-choice,
+ html[data-fb-visual-theme="midnight-aurora"] .history-tag-group .memory-tag-choice{
+   background:linear-gradient(145deg,rgba(4,16,35,.94),rgba(7,27,54,.87))!important;
+   border:1px solid rgba(90,219,255,.20)!important;color:#f1f7ff!important;
+ }
+ html[data-fb-visual-theme="midnight-aurora"] .memory-tag-choice:hover,
+ html[data-fb-visual-theme="midnight-aurora"] .history-tag-group .memory-tag-choice:hover{
+   background:linear-gradient(145deg,rgba(7,25,49,.97),rgba(18,28,67,.92))!important;border-color:rgba(103,232,249,.45)!important;
+   box-shadow:0 0 15px rgba(34,211,238,.08)!important;
+ }
+ html[data-fb-visual-theme="midnight-aurora"] .memory-tag-choice:has(input:checked),
+ html[data-fb-visual-theme="midnight-aurora"] .history-tag-group .memory-tag-choice:has(input:checked){
+   background:linear-gradient(145deg,rgba(7,35,59,.98),rgba(39,29,86,.92))!important;border-color:rgba(103,232,249,.55)!important;color:#f5ffff!important;
+   box-shadow:0 0 0 1px rgba(139,92,246,.16),0 0 17px rgba(34,211,238,.10)!important;
+ }
+ html[data-fb-visual-theme="midnight-aurora"] .memory-tag-choice>i,
+ html[data-fb-visual-theme="midnight-aurora"] .memory-tag-choice>svg{color:#67e8f9!important}
+ html[data-fb-visual-theme="midnight-aurora"] .memory-tag-avatar{border:1px solid rgba(103,232,249,.30)!important;background:linear-gradient(135deg,rgba(34,211,238,.15),rgba(139,92,246,.20))!important;color:#eaf8ff!important}
+ html[data-fb-visual-theme="midnight-aurora"] .history-tag-group .memory-tag-choice small{color:#a9b9cd!important}
+ html[data-fb-visual-theme="midnight-aurora"] .memory-form-actions{border-color:rgba(103,232,249,.14)!important}
+ html[data-fb-visual-theme="midnight-aurora"] .memory-form-actions .primary{background:linear-gradient(105deg,#16bfe2,#3b82f6 52%,#7c3aed)!important;color:#fff!important;border-color:rgba(116,231,255,.40)!important}
+ html[data-fb-visual-theme="midnight-aurora"] .memory-form-actions .secondary{background:#061329!important;border-color:rgba(90,219,255,.24)!important;color:#dff8ff!important}
+}
