@@ -333,3 +333,27 @@
  html[data-fb-visual-theme="midnight-aurora"] .member-contact-actions.compact a svg{color:#8ff5ff!important}
  html[data-fb-visual-theme="midnight-aurora"] .members-empty{background:rgba(3,14,31,.88)!important;border:1px solid rgba(90,219,255,.22)!important;color:#a9b9cd!important}
 }
+
+/* Members desktop — align and fully theme contact actions */
+@media (min-width:760px){
+ html[data-fb-visual-theme="midnight-aurora"] .members-grid{align-items:stretch!important}
+ html[data-fb-visual-theme="midnight-aurora"] .members-grid .member-card{display:flex!important;flex-direction:column!important;align-items:stretch!important;min-height:146px!important;padding:16px 16px 14px!important}
+ html[data-fb-visual-theme="midnight-aurora"] .members-grid .member-card.has-contact{padding-bottom:14px!important}
+ html[data-fb-visual-theme="midnight-aurora"] .members-grid .member-card-view{flex:1 1 auto!important;width:100%!important;align-items:flex-start!important;padding-right:28px!important}
+ html[data-fb-visual-theme="midnight-aurora"] .members-grid .member-contact-actions.compact{
+   position:static!important;left:auto!important;right:auto!important;bottom:auto!important;
+   width:100%!important;margin:10px 0 0!important;display:flex!important;gap:7px!important;justify-content:flex-start!important;align-items:center!important;
+ }
+ html[data-fb-visual-theme="midnight-aurora"] .members-grid .member-contact-actions.compact a{
+   flex:1 1 0!important;min-width:0!important;min-height:32px!important;padding:6px 8px!important;border-radius:9px!important;
+   background:linear-gradient(145deg,rgba(5,24,46,.94),rgba(10,31,55,.90))!important;
+   border:1px solid rgba(103,232,249,.25)!important;color:#eafaff!important;
+   box-shadow:inset 0 1px 0 rgba(255,255,255,.025),0 0 10px rgba(34,211,238,.04)!important;
+ }
+ html[data-fb-visual-theme="midnight-aurora"] .members-grid .member-contact-actions.compact a:hover{
+   background:linear-gradient(145deg,rgba(8,34,59,.98),rgba(20,29,69,.96))!important;
+   border-color:rgba(103,232,249,.55)!important;color:#fff!important;box-shadow:0 0 13px rgba(34,211,238,.11),0 0 10px rgba(139,92,246,.06)!important;
+ }
+ html[data-fb-visual-theme="midnight-aurora"] .members-grid .member-contact-actions.compact a svg{color:#8ff5ff!important;flex:0 0 auto!important}
+ html[data-fb-visual-theme="midnight-aurora"] .members-grid .member-contact-actions.compact a span{overflow:hidden!important;text-overflow:ellipsis!important;white-space:nowrap!important}
+}
