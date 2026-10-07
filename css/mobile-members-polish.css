@@ -282,3 +282,54 @@
     color:#8ff5ff!important;
   }
 }
+
+/* ============================================================
+   MIDNIGHT AURORA — MEMBERS DESKTOP
+   ============================================================ */
+@media (min-width:760px){
+ html[data-fb-visual-theme="midnight-aurora"] #app>.app>.screen:has(.members-page){background:transparent!important;background-color:transparent!important;background-image:none!important}
+ html[data-fb-visual-theme="midnight-aurora"] #app>.app>.screen:has(.members-page)::before{content:none!important;display:none!important}
+ html[data-fb-visual-theme="midnight-aurora"] .members-page{color:#eef7ff!important}
+ html[data-fb-visual-theme="midnight-aurora"] .members-page .members-head{
+   position:relative!important;overflow:hidden!important;isolation:isolate!important;padding:18px 20px!important;border-radius:20px!important;
+   background:linear-gradient(135deg,rgba(3,11,28,.38),rgba(4,14,34,.50),rgba(3,10,27,.66)),url("../assets/midnight-aurora-alpine.webp") 76% 30%/cover no-repeat!important;
+   border:1px solid rgba(79,230,255,.30)!important;border-left:2px solid rgba(168,85,247,.76)!important;
+   box-shadow:-4px 0 16px rgba(139,92,246,.18),0 14px 30px rgba(0,0,0,.25),0 0 18px rgba(34,211,238,.07)!important;
+ }
+ html[data-fb-visual-theme="midnight-aurora"] .members-head .eyebrow{color:#7dd3fc!important}
+ html[data-fb-visual-theme="midnight-aurora"] .members-head h1{color:#f4f8ff!important;font-family:Inter,sans-serif!important;font-weight:800!important;text-shadow:0 0 14px rgba(34,211,238,.08)!important}
+ html[data-fb-visual-theme="midnight-aurora"] .members-head p{color:#b8c6da!important}
+ html[data-fb-visual-theme="midnight-aurora"] .members-head .member-add,
+ html[data-fb-visual-theme="midnight-aurora"] .members-head .member-add-child{border:1px solid rgba(103,232,249,.34)!important;color:#fff!important;box-shadow:0 0 16px rgba(34,211,238,.12)!important}
+ html[data-fb-visual-theme="midnight-aurora"] .members-head .member-add{background:linear-gradient(105deg,#16bfe2,#3b82f6 52%,#7c3aed)!important}
+ html[data-fb-visual-theme="midnight-aurora"] .members-head .member-add-child{background:rgba(4,17,38,.90)!important;color:#dff8ff!important}
+ html[data-fb-visual-theme="midnight-aurora"] .member-card{
+   background:linear-gradient(145deg,rgba(3,14,31,.91),rgba(7,21,46,.88)),url("../assets/midnight-aurora-alpine.webp") 72% 56%/cover no-repeat!important;
+   border:1px solid rgba(90,219,255,.23)!important;border-left:2px solid rgba(168,85,247,.52)!important;color:#eef7ff!important;
+   box-shadow:-3px 0 13px rgba(139,92,246,.09),0 12px 27px rgba(0,0,0,.23),0 0 15px rgba(34,211,238,.05)!important;
+   backdrop-filter:blur(8px) saturate(112%)!important;-webkit-backdrop-filter:blur(8px) saturate(112%)!important;
+ }
+ html[data-fb-visual-theme="midnight-aurora"] .member-card:hover{border-color:rgba(103,232,249,.48)!important;box-shadow:0 0 16px rgba(34,211,238,.10),0 0 17px rgba(139,92,246,.08),0 12px 28px rgba(0,0,0,.24)!important}
+ html[data-fb-visual-theme="midnight-aurora"] .member-avatar{background:linear-gradient(145deg,rgba(9,38,49,.95),rgba(26,43,68,.92))!important;color:#a7f3d0!important;border:1px solid rgba(103,232,249,.28)!important;box-shadow:0 0 12px rgba(34,211,238,.07)!important}
+ html[data-fb-visual-theme="midnight-aurora"] .member-info h3{color:#f4f8ff!important}
+ html[data-fb-visual-theme="midnight-aurora"] .member-info small{color:#a9b9cd!important}
+ html[data-fb-visual-theme="midnight-aurora"] .member-info small svg{color:#67e8f9!important}
+ html[data-fb-visual-theme="midnight-aurora"] .member-linked-account,
+ html[data-fb-visual-theme="midnight-aurora"] .member-managed-profile{color:#b9c9d9!important}
+ html[data-fb-visual-theme="midnight-aurora"] .member-menu-btn,
+ html[data-fb-visual-theme="midnight-aurora"] .member-more{color:#9eeeff!important;background:transparent!important}
+ html[data-fb-visual-theme="midnight-aurora"] .member-menu-btn:hover,
+ html[data-fb-visual-theme="midnight-aurora"] .member-more:hover{background:rgba(12,39,61,.82)!important;color:#bff8ff!important}
+ html[data-fb-visual-theme="midnight-aurora"] .member-menu{background:rgba(3,14,31,.98)!important;border:1px solid rgba(90,219,255,.25)!important;box-shadow:0 14px 32px rgba(0,0,0,.38),0 0 16px rgba(34,211,238,.07)!important}
+ html[data-fb-visual-theme="midnight-aurora"] .member-menu button{color:#e7f4ff!important}
+ html[data-fb-visual-theme="midnight-aurora"] .member-menu button:hover{background:rgba(10,36,59,.92)!important}
+ html[data-fb-visual-theme="midnight-aurora"] .member-menu button.danger{color:#ff9caf!important}
+ html[data-fb-visual-theme="midnight-aurora"] .member-menu button.danger:hover{background:rgba(72,18,34,.72)!important}
+ html[data-fb-visual-theme="midnight-aurora"] .member-contact-actions.compact a{
+   background:rgba(4,17,36,.84)!important;border:1px solid rgba(90,219,255,.20)!important;color:#e5f7ff!important;
+   box-shadow:0 0 10px rgba(34,211,238,.04)!important;
+ }
+ html[data-fb-visual-theme="midnight-aurora"] .member-contact-actions.compact a:hover{border-color:rgba(103,232,249,.46)!important;background:rgba(7,27,50,.94)!important;box-shadow:0 0 13px rgba(34,211,238,.09)!important}
+ html[data-fb-visual-theme="midnight-aurora"] .member-contact-actions.compact a svg{color:#8ff5ff!important}
+ html[data-fb-visual-theme="midnight-aurora"] .members-empty{background:rgba(3,14,31,.88)!important;border:1px solid rgba(90,219,255,.22)!important;color:#a9b9cd!important}
+}
