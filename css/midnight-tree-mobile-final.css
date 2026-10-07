@@ -369,3 +369,52 @@
     -webkit-backdrop-filter:blur(8px) saturate(112%)!important;
   }
 }
+
+/* ============================================================
+   MIDNIGHT AURORA — FAMILY TREE DESKTOP
+   ============================================================ */
+@media (min-width:760px){
+ html[data-fb-visual-theme="midnight-aurora"] #screen:has(.coordinate-tree-page){
+   background:linear-gradient(180deg,rgba(2,7,20,.18),rgba(2,8,22,.42) 48%,rgba(2,7,19,.76)),url("../assets/midnight-aurora-widget-flow.webp") center top/100% auto repeat-y!important;
+   background-color:#020814!important;
+ }
+ html[data-fb-visual-theme="midnight-aurora"] .coordinate-tree-page{color:#eef7ff!important}
+ html[data-fb-visual-theme="midnight-aurora"] .coordinate-tree-page .tree-head{
+   position:relative;overflow:hidden;isolation:isolate;padding:18px 20px!important;margin:0 0 16px!important;border-radius:20px!important;
+   background:linear-gradient(105deg,rgba(3,12,31,.70),rgba(5,18,42,.42)),url("../assets/midnight-aurora-alpine.webp") center 32%/cover no-repeat!important;
+   border:1px solid rgba(79,230,255,.27)!important;border-left:2px solid rgba(168,85,247,.70)!important;
+   box-shadow:0 14px 32px rgba(0,0,0,.24),0 0 20px rgba(34,211,238,.06)!important;
+ }
+ html[data-fb-visual-theme="midnight-aurora"] .coordinate-tree-page .tree-head>*{position:relative;z-index:1}
+ html[data-fb-visual-theme="midnight-aurora"] .coordinate-tree-page .tree-head .eyebrow{color:#7dd3fc!important}
+ html[data-fb-visual-theme="midnight-aurora"] .coordinate-tree-page .tree-head h1{color:#f3f8ff!important;text-shadow:0 0 16px rgba(34,211,238,.08)!important}
+ html[data-fb-visual-theme="midnight-aurora"] .coordinate-tree-page .tree-head p{color:#b6c5d9!important}
+ html[data-fb-visual-theme="midnight-aurora"] .coordinate-tree-page .tree-head-actions button{background:rgba(4,17,38,.82)!important;border-color:rgba(91,218,255,.30)!important;color:#e9f8ff!important}
+ html[data-fb-visual-theme="midnight-aurora"] .coordinate-tree-page .ct-board{
+   position:relative!important;overflow:auto!important;min-height:575px!important;max-height:calc(100vh - 285px)!important;
+   border-radius:20px!important;
+   background:linear-gradient(180deg,rgba(2,10,27,.48),rgba(2,9,23,.72)),url("../assets/midnight-aurora-alpine.webp") 72% 62%/cover no-repeat!important;
+   border:1px solid rgba(79,229,255,.30)!important;border-left:2px solid rgba(168,85,247,.64)!important;
+   box-shadow:0 18px 38px rgba(0,0,0,.30),0 0 22px rgba(34,211,238,.08),inset 0 1px rgba(255,255,255,.035)!important;
+   scrollbar-width:thin;scrollbar-color:rgba(103,232,249,.45) rgba(2,10,25,.78);
+ }
+ html[data-fb-visual-theme="midnight-aurora"] .coordinate-tree-page .ct-board::-webkit-scrollbar{width:10px;height:10px}
+ html[data-fb-visual-theme="midnight-aurora"] .coordinate-tree-page .ct-board::-webkit-scrollbar-track{background:rgba(2,10,25,.82);border-radius:10px}
+ html[data-fb-visual-theme="midnight-aurora"] .coordinate-tree-page .ct-board::-webkit-scrollbar-thumb{background:linear-gradient(180deg,rgba(103,232,249,.56),rgba(139,92,246,.52));border:2px solid rgba(2,10,25,.82);border-radius:10px}
+ html[data-fb-visual-theme="midnight-aurora"] .coordinate-tree-page .ct-board .ct-canvas{background:transparent!important;background-image:none!important}
+ html[data-fb-visual-theme="midnight-aurora"] .coordinate-tree-page .ct-lines path,
+ html[data-fb-visual-theme="midnight-aurora"] .coordinate-tree-page .ct-lines line{stroke:rgba(103,232,249,.45)!important;filter:drop-shadow(0 0 4px rgba(34,211,238,.14))}
+ html[data-fb-visual-theme="midnight-aurora"] .coordinate-tree-page .ct-person,
+ html[data-fb-visual-theme="midnight-aurora"] .coordinate-tree-page .ct-couple{
+   background:linear-gradient(145deg,rgba(4,14,31,.95),rgba(8,18,42,.91))!important;border-color:rgba(92,220,255,.24)!important;color:#eef7ff!important;
+   box-shadow:0 10px 24px rgba(0,0,0,.26),inset 0 1px rgba(255,255,255,.035)!important;
+ }
+ html[data-fb-visual-theme="midnight-aurora"] .coordinate-tree-page .ct-person:hover,
+ html[data-fb-visual-theme="midnight-aurora"] .coordinate-tree-page .ct-couple:hover{border-color:rgba(103,232,249,.52)!important;box-shadow:0 0 18px rgba(34,211,238,.10),0 12px 26px rgba(0,0,0,.28)!important}
+ html[data-fb-visual-theme="midnight-aurora"] .coordinate-tree-page .ct-person strong,
+ html[data-fb-visual-theme="midnight-aurora"] .coordinate-tree-page .ct-couple strong{color:#f4f9ff!important}
+ html[data-fb-visual-theme="midnight-aurora"] .coordinate-tree-page .ct-person small{color:#a9b9cd!important}
+ html[data-fb-visual-theme="midnight-aurora"] .coordinate-tree-page .ct-heart{background:rgba(50,19,58,.76)!important;border-color:rgba(244,114,182,.30)!important;color:#ff91ca!important;box-shadow:0 0 12px rgba(236,72,153,.12)!important}
+ html[data-fb-visual-theme="midnight-aurora"] .coordinate-tree-page .ct-avatar{border-color:rgba(103,232,249,.28)!important}
+ html[data-fb-visual-theme="midnight-aurora"] .coordinate-tree-page .ct-couple::after{color:#b9c9dd!important}
+}
