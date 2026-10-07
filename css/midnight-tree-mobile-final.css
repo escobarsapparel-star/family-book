@@ -455,15 +455,25 @@
  html[data-fb-visual-theme="midnight-aurora"] .full-tree-hint{color:#a9b9cd!important}
 }
 
-/* Desktop Family Tree — remove outer board capsule, keep tree interactions */
+
+/* Desktop Family Tree — restore outer capsule; remove only inner tree backdrop */
 @media (min-width:760px){
  html[data-fb-visual-theme="midnight-aurora"] .tree-page.coordinate-tree-page .ct-board{
+   min-height:650px!important;
+   background:linear-gradient(180deg,rgba(2,9,24,.16),rgba(2,10,26,.32) 38%,rgba(2,9,23,.58) 75%,rgba(2,8,20,.76)),url("../assets/midnight-aurora-alpine.webp") center center/cover no-repeat!important;
+   border:1px solid rgba(79,229,255,.40)!important;
+   border-left:2px solid rgba(168,85,247,.78)!important;
+   border-radius:20px!important;
+   box-shadow:-4px 0 18px rgba(139,92,246,.18),0 18px 36px rgba(0,0,0,.30),0 0 24px rgba(34,211,238,.10)!important;
+   overflow:auto!important;
+ }
+ html[data-fb-visual-theme="midnight-aurora"] .tree-page.coordinate-tree-page .ct-board .ct-canvas,
+ html[data-fb-visual-theme="midnight-aurora"] .tree-page.coordinate-tree-page .ct-board .tree-touch-stage{
    background:transparent!important;
+   background-color:transparent!important;
    background-image:none!important;
    border:0!important;
    border-radius:0!important;
    box-shadow:none!important;
-   backdrop-filter:none!important;
-   -webkit-backdrop-filter:none!important;
  }
 }
