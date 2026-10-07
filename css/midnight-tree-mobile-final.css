@@ -477,3 +477,16 @@
    box-shadow:none!important;
  }
 }
+
+/* Desktop Family Tree — capsule outline only; Aurora page shows through */
+@media (min-width:760px){
+ html[data-fb-visual-theme="midnight-aurora"] .tree-page.coordinate-tree-page .ct-board{
+   background:transparent!important;
+   background-color:transparent!important;
+   background-image:none!important;
+   border:1px solid rgba(79,229,255,.40)!important;
+   border-left:2px solid rgba(168,85,247,.78)!important;
+   border-radius:20px!important;
+   box-shadow:-4px 0 18px rgba(139,92,246,.18),0 18px 36px rgba(0,0,0,.18),0 0 24px rgba(34,211,238,.10)!important;
+ }
+}
