@@ -326,3 +326,66 @@
  html[data-fb-visual-theme="midnight-aurora"] .cal-empty{background:rgba(4,14,31,.82)!important;border-color:rgba(90,219,255,.18)!important;color:#aab9ca!important}
  html[data-fb-visual-theme="midnight-aurora"] .cal-empty strong{color:#f4f8ff!important}
 }
+
+/* Calendar editor + detail flow — Midnight Aurora */
+html[data-fb-visual-theme="midnight-aurora"] #screen:has(.calendar-editor-page),
+html[data-fb-visual-theme="midnight-aurora"] #screen:has(.calendar-detail-page){background:transparent!important;background-image:none!important}
+html[data-fb-visual-theme="midnight-aurora"] .calendar-editor-page,
+html[data-fb-visual-theme="midnight-aurora"] .calendar-detail-page{color:#eef7ff!important}
+html[data-fb-visual-theme="midnight-aurora"] .calendar-editor-page .fu-back,
+html[data-fb-visual-theme="midnight-aurora"] .calendar-detail-page .fu-back{color:#8ff5ff!important;background:rgba(4,16,35,.70)!important;border:1px solid rgba(96,224,255,.22)!important;border-radius:12px!important;padding:9px 12px!important}
+html[data-fb-visual-theme="midnight-aurora"] .calendar-editor-card,
+html[data-fb-visual-theme="midnight-aurora"] .calendar-detail-card{
+ background:linear-gradient(180deg,rgba(3,12,29,.62),rgba(3,10,26,.88)),url("../assets/midnight-aurora-alpine.webp") center/cover no-repeat!important;
+ border:1px solid rgba(78,228,255,.30)!important;border-left:2px solid rgba(168,85,247,.72)!important;
+ box-shadow:-4px 0 18px rgba(139,92,246,.15),0 18px 38px rgba(0,0,0,.30),0 0 20px rgba(34,211,238,.07)!important;
+ backdrop-filter:blur(10px) saturate(115%)!important;-webkit-backdrop-filter:blur(10px) saturate(115%)!important;
+}
+html[data-fb-visual-theme="midnight-aurora"] .calendar-editor-head .eyebrow,
+html[data-fb-visual-theme="midnight-aurora"] .calendar-detail-card .eyebrow{color:#7dd3fc!important}
+html[data-fb-visual-theme="midnight-aurora"] .calendar-editor-head h1,
+html[data-fb-visual-theme="midnight-aurora"] .calendar-detail-card h1{color:#f4f9ff!important;font-family:Inter,sans-serif!important;font-weight:800!important}
+html[data-fb-visual-theme="midnight-aurora"] .calendar-editor-head p,
+html[data-fb-visual-theme="midnight-aurora"] .cal-detail-date,
+html[data-fb-visual-theme="midnight-aurora"] .calendar-detail-card>p{color:#b8c6da!important}
+html[data-fb-visual-theme="midnight-aurora"] .cal-form-grid label,
+html[data-fb-visual-theme="midnight-aurora"] .cal-location-field>label{color:#dce9f7!important}
+html[data-fb-visual-theme="midnight-aurora"] .cal-form-grid label>span,
+html[data-fb-visual-theme="midnight-aurora"] .cal-location-field>label span,
+html[data-fb-visual-theme="midnight-aurora"] #calLocationNote{color:#91a5bd!important}
+html[data-fb-visual-theme="midnight-aurora"] .cal-form-grid input,
+html[data-fb-visual-theme="midnight-aurora"] .cal-form-grid select,
+html[data-fb-visual-theme="midnight-aurora"] .cal-form-grid textarea,
+html[data-fb-visual-theme="midnight-aurora"] .cal-location-field input{
+ background:rgba(2,11,27,.86)!important;border:1px solid rgba(91,211,245,.25)!important;color:#eef7ff!important;box-shadow:inset 0 1px 0 rgba(255,255,255,.025)!important
+}
+html[data-fb-visual-theme="midnight-aurora"] .cal-form-grid input::placeholder,
+html[data-fb-visual-theme="midnight-aurora"] .cal-form-grid textarea::placeholder,
+html[data-fb-visual-theme="midnight-aurora"] .cal-location-field input::placeholder{color:#6f849d!important}
+html[data-fb-visual-theme="midnight-aurora"] .cal-form-grid input:focus,
+html[data-fb-visual-theme="midnight-aurora"] .cal-form-grid select:focus,
+html[data-fb-visual-theme="midnight-aurora"] .cal-form-grid textarea:focus,
+html[data-fb-visual-theme="midnight-aurora"] .cal-location-field input:focus{outline:none!important;border-color:rgba(103,232,249,.68)!important;box-shadow:0 0 0 3px rgba(34,211,238,.08),0 0 14px rgba(34,211,238,.10)!important}
+html[data-fb-visual-theme="midnight-aurora"] .cal-form-grid select option{background:#061225;color:#eef7ff}
+html[data-fb-visual-theme="midnight-aurora"] .cal-repeat,
+html[data-fb-visual-theme="midnight-aurora"] .cal-family-field{background:rgba(3,14,31,.72)!important;border-color:rgba(90,219,255,.18)!important}
+html[data-fb-visual-theme="midnight-aurora"] .cal-repeat strong,
+html[data-fb-visual-theme="midnight-aurora"] .cal-family-field legend{color:#eaf6ff!important}
+html[data-fb-visual-theme="midnight-aurora"] .cal-repeat small,
+html[data-fb-visual-theme="midnight-aurora"] .cal-family-field legend span{color:#91a5bd!important}
+html[data-fb-visual-theme="midnight-aurora"] .cal-member-check{background:rgba(4,17,36,.86)!important;border-color:rgba(90,219,255,.16)!important;color:#edf7ff!important}
+html[data-fb-visual-theme="midnight-aurora"] .cal-member-check:hover{border-color:rgba(103,232,249,.45)!important;box-shadow:0 0 13px rgba(34,211,238,.07)!important}
+html[data-fb-visual-theme="midnight-aurora"] .cal-member-dot{background:rgba(19,54,64,.90)!important;color:#9cf5ff!important}
+html[data-fb-visual-theme="midnight-aurora"] .cal-location-actions .secondary,
+html[data-fb-visual-theme="midnight-aurora"] .cal-editor-actions .secondary,
+html[data-fb-visual-theme="midnight-aurora"] .cal-map-button{background:rgba(5,18,39,.90)!important;border:1px solid rgba(96,224,255,.24)!important;color:#9af3ff!important}
+html[data-fb-visual-theme="midnight-aurora"] .cal-editor-actions .primary,
+html[data-fb-visual-theme="midnight-aurora"] .cal-detail-actions .primary{background:linear-gradient(105deg,#16bfe2,#3b82f6 52%,#7c3aed)!important;border:1px solid rgba(116,231,255,.40)!important;color:#fff!important;box-shadow:0 0 18px rgba(34,211,238,.15),0 0 18px rgba(124,58,237,.10)!important}
+html[data-fb-visual-theme="midnight-aurora"] .danger-outline{background:rgba(58,14,29,.70)!important;border-color:rgba(251,113,133,.34)!important;color:#ff9fb0!important}
+html[data-fb-visual-theme="midnight-aurora"] .cal-detail-icon{background:rgba(11,36,56,.92)!important;border:1px solid rgba(103,232,249,.22)!important;color:#8ff5ff!important;box-shadow:0 0 16px rgba(34,211,238,.08)!important}
+html[data-fb-visual-theme="midnight-aurora"] .birthday-detail .cal-detail-icon{background:rgba(65,25,54,.78)!important;color:#ff9bd0!important;border-color:rgba(244,114,182,.22)!important}
+html[data-fb-visual-theme="midnight-aurora"] .cal-detail-list>div{background:rgba(3,14,31,.82)!important;border:1px solid rgba(90,219,255,.14)!important}
+html[data-fb-visual-theme="midnight-aurora"] .cal-detail-list svg{color:#8ff5ff!important}
+html[data-fb-visual-theme="midnight-aurora"] .cal-detail-list small{color:#8ea4bd!important}
+html[data-fb-visual-theme="midnight-aurora"] .cal-detail-list strong{color:#edf7ff!important}
+html[data-fb-visual-theme="midnight-aurora"] .cal-detail-date span{color:#9af3ff!important}
