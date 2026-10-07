@@ -433,3 +433,24 @@
  html[data-fb-visual-theme="midnight-aurora"] .tree-page.coordinate-tree-page .ct-heart{background:rgba(48,20,58,.82)!important;border:1px solid rgba(244,114,182,.32)!important;color:#ff94cf!important;box-shadow:0 0 13px rgba(236,72,153,.16)!important}
  html[data-fb-visual-theme="midnight-aurora"] .tree-page.coordinate-tree-page .ct-couple::after{color:#d9b992!important}
 }
+
+/* Full Family Tree desktop — mobile Midnight Aurora parity */
+@media (min-width:760px){
+ html[data-fb-visual-theme="midnight-aurora"] #screen:has(.full-tree-page){background:linear-gradient(180deg,rgba(2,7,20,.18),rgba(2,8,22,.42) 42%,rgba(2,7,19,.76)),url("../assets/midnight-aurora-widget-flow.webp") center top/100% auto repeat-y!important;background-color:#020814!important}
+ html[data-fb-visual-theme="midnight-aurora"] .full-tree-page{color:#eef7ff!important}
+ html[data-fb-visual-theme="midnight-aurora"] .full-tree-top .eyebrow{color:#7dd3fc!important}
+ html[data-fb-visual-theme="midnight-aurora"] .full-tree-top h1{color:#f4f9ff!important}
+ html[data-fb-visual-theme="midnight-aurora"] .full-tree-top .fu-back{color:#7dd3fc!important}
+ html[data-fb-visual-theme="midnight-aurora"] .full-tree-controls .secondary{background:rgba(4,17,38,.88)!important;border-color:rgba(91,218,255,.30)!important;color:#e9f8ff!important}
+ html[data-fb-visual-theme="midnight-aurora"] .full-tree-controls .primary{background:linear-gradient(105deg,#16bfe2,#3b82f6 52%,#7c3aed)!important;border-color:rgba(116,231,255,.42)!important;color:#fff!important}
+ html[data-fb-visual-theme="midnight-aurora"] .full-tree-viewport{background:linear-gradient(180deg,rgba(2,9,24,.14),rgba(2,10,26,.28) 38%,rgba(2,9,23,.56) 76%,rgba(2,8,20,.76)),url("../assets/midnight-aurora-alpine.webp") center center/cover no-repeat!important;border:1px solid rgba(79,229,255,.40)!important;border-left:2px solid rgba(168,85,247,.78)!important;box-shadow:-4px 0 18px rgba(139,92,246,.18),0 18px 36px rgba(0,0,0,.30),0 0 24px rgba(34,211,238,.10)!important;scrollbar-width:thin;scrollbar-color:rgba(103,232,249,.45) rgba(2,10,25,.78)}
+ html[data-fb-visual-theme="midnight-aurora"] .full-tree-stage,html[data-fb-visual-theme="midnight-aurora"] .full-tree-stage .ct-canvas{background:transparent!important;background-image:none!important}
+ html[data-fb-visual-theme="midnight-aurora"] .full-tree-stage .ct-lines path,html[data-fb-visual-theme="midnight-aurora"] .full-tree-stage .ct-lines line{stroke:#55e6ef!important;stroke-width:2!important;stroke-opacity:.82!important;filter:drop-shadow(0 0 3px rgba(34,211,238,.62)) drop-shadow(0 0 7px rgba(34,211,238,.20))!important}
+ html[data-fb-visual-theme="midnight-aurora"] .full-tree-stage .ct-person,html[data-fb-visual-theme="midnight-aurora"] .full-tree-stage .ct-couple{background:linear-gradient(145deg,rgba(3,15,34,.97),rgba(6,20,45,.94))!important;border:1px solid rgba(82,224,255,.38)!important;border-radius:16px!important;color:#f4f9ff!important;box-shadow:0 10px 24px rgba(0,0,0,.27),0 0 15px rgba(34,211,238,.07),inset 0 1px rgba(255,255,255,.04)!important}
+ html[data-fb-visual-theme="midnight-aurora"] .full-tree-stage .ct-couple{border-color:rgba(82,224,255,.48)!important}
+ html[data-fb-visual-theme="midnight-aurora"] .full-tree-stage .ct-person strong,html[data-fb-visual-theme="midnight-aurora"] .full-tree-stage .ct-couple strong{color:#f7faff!important}
+ html[data-fb-visual-theme="midnight-aurora"] .full-tree-stage .ct-person small{color:#b9c7da!important}
+ html[data-fb-visual-theme="midnight-aurora"] .full-tree-stage .ct-avatar{border:1px solid rgba(103,232,249,.42)!important;box-shadow:0 0 10px rgba(34,211,238,.10)!important}
+ html[data-fb-visual-theme="midnight-aurora"] .full-tree-stage .ct-heart{background:rgba(48,20,58,.82)!important;border:1px solid rgba(244,114,182,.32)!important;color:#ff94cf!important;box-shadow:0 0 13px rgba(236,72,153,.16)!important}
+ html[data-fb-visual-theme="midnight-aurora"] .full-tree-hint{color:#a9b9cd!important}
+}
