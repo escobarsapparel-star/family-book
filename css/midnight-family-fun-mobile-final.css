@@ -367,3 +367,44 @@
     display:none!important;
   }
 }
+
+/* ============================================================
+   MIDNIGHT AURORA — FAMILY FUN DESKTOP
+   ============================================================ */
+@media (min-width:760px){
+ html[data-fb-visual-theme="midnight-aurora"] #app>.app>.screen:has(.family-fun-app-page){background:transparent!important;background-color:transparent!important;background-image:none!important}
+ html[data-fb-visual-theme="midnight-aurora"] #app>.app>.screen:has(.family-fun-app-page)::before{content:none!important;display:none!important}
+ html[data-fb-visual-theme="midnight-aurora"] .family-fun-app-page{background:transparent!important;color:#eef7ff!important}
+ html[data-fb-visual-theme="midnight-aurora"] .family-fun-app-page .family-fun-title-row{
+   position:relative!important;overflow:hidden!important;isolation:isolate!important;
+   background:linear-gradient(135deg,rgba(3,11,28,.38),rgba(4,14,34,.52),rgba(3,10,27,.68)),url("../assets/midnight-aurora-alpine.webp") 76% 30%/cover no-repeat!important;
+   border:1px solid rgba(79,230,255,.34)!important;border-left:2px solid rgba(168,85,247,.82)!important;border-radius:20px!important;
+   box-shadow:-4px 0 16px rgba(139,92,246,.20),0 14px 30px rgba(0,0,0,.26),0 0 18px rgba(34,211,238,.08)!important;
+ }
+ html[data-fb-visual-theme="midnight-aurora"] .family-fun-title-row .eyebrow,
+ html[data-fb-visual-theme="midnight-aurora"] .family-fun-app-page .fun-section-label span{color:#7dd3fc!important}
+ html[data-fb-visual-theme="midnight-aurora"] .family-fun-title-row h1,
+ html[data-fb-visual-theme="midnight-aurora"] .family-fun-app-page .fun-section-label h2{color:#f4f8ff!important}
+ html[data-fb-visual-theme="midnight-aurora"] .family-fun-title-row p:last-child{color:#b8c6da!important}
+ html[data-fb-visual-theme="midnight-aurora"] .family-fun-app-page .fun-hub{background:transparent!important;border:0!important;box-shadow:none!important}
+ html[data-fb-visual-theme="midnight-aurora"] .family-fun-app-page .fun-feature-card{
+   position:relative!important;overflow:hidden!important;
+   background:linear-gradient(145deg,rgba(3,14,31,.90),rgba(7,21,46,.88)),url("../assets/midnight-aurora-alpine.webp") 72% 55%/cover no-repeat!important;
+   border:1px solid rgba(90,219,255,.25)!important;border-left:2px solid rgba(168,85,247,.58)!important;color:#eef7ff!important;
+   box-shadow:-3px 0 13px rgba(139,92,246,.10),0 12px 28px rgba(0,0,0,.24),0 0 17px rgba(34,211,238,.06)!important;
+   backdrop-filter:blur(8px) saturate(112%)!important;-webkit-backdrop-filter:blur(8px) saturate(112%)!important;
+ }
+ html[data-fb-visual-theme="midnight-aurora"] .family-fun-app-page .fun-feature-card:hover,
+ html[data-fb-visual-theme="midnight-aurora"] .family-fun-app-page .fun-feature-card.active{border-color:rgba(103,232,249,.52)!important;box-shadow:0 0 17px rgba(34,211,238,.13),0 0 18px rgba(139,92,246,.10),0 12px 28px rgba(0,0,0,.25)!important}
+ html[data-fb-visual-theme="midnight-aurora"] .family-fun-app-page .fun-feature-copy strong{color:#f4f8ff!important}
+ html[data-fb-visual-theme="midnight-aurora"] .family-fun-app-page .fun-feature-copy small{color:#a9b9cd!important}
+ html[data-fb-visual-theme="midnight-aurora"] .family-fun-app-page .fun-feature-icon,
+ html[data-fb-visual-theme="midnight-aurora"] .family-fun-app-page .fun-ui-icon{
+   background:linear-gradient(145deg,rgba(6,24,46,.96),rgba(31,24,72,.88))!important;color:#8ff5ff!important;
+   border:1px solid rgba(98,226,255,.30)!important;box-shadow:0 0 14px rgba(34,211,238,.12),0 0 12px rgba(139,92,246,.08)!important;
+ }
+ html[data-fb-visual-theme="midnight-aurora"] .family-fun-app-page .fun-feature-arrow{color:#8ff5ff!important}
+ html[data-fb-visual-theme="midnight-aurora"] .family-fun-app-page .fun-coming-badge{background:rgba(61,31,86,.78)!important;border:1px solid rgba(192,132,252,.28)!important;color:#e9d5ff!important;box-shadow:0 0 10px rgba(168,85,247,.09)!important}
+ html[data-fb-visual-theme="midnight-aurora"] .family-fun-app-page>.muted,
+ html[data-fb-visual-theme="midnight-aurora"] .family-fun-app-page .fun-hub+.muted{color:#a9b9cd!important}
+}
