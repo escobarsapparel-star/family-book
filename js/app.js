@@ -1713,12 +1713,19 @@ let backendAuthRouteInFlight=null;
 window.FB_APP_AUTH_CHANGED=event=>{
  if(event==="SIGNED_OUT"){auth();return}
  if(event==="SIGNED_IN"){
+   // Supabase may emit SIGNED_IN again when an existing browser session is
+   // recovered/refocused. If the app shell already exists, this is NOT a new
+   // navigation event: rebuilding shell() would force go("home").
+   if(document.querySelector(".app-shell")||document.querySelector("#screen")){
+     updateLiveFamilyChrome();
+     return;
+   }
    if(!backendAuthRouteInFlight){
      backendAuthRouteInFlight=Promise.resolve().then(()=>routeAfterBackendAuth()).catch(err=>window.FB_APP_AUTH_ERROR?.(err)).finally(()=>{backendAuthRouteInFlight=null});
    }
    return;
  }
- // Returning to a browser tab refreshes cloud caches without changing route.
+ // Token refreshes, user updates and browser-tab resume must preserve currentRoute.
 };
 window.FB_APP_AUTH_ERROR=err=>{console.error(err);alert(err.message||"Family Book authentication could not be loaded.")};
 (async()=>{try{
