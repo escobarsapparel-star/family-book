@@ -573,3 +573,23 @@
  html[data-fb-visual-theme="midnight-aurora"] .memory-card-tags{color:#9fb2c7!important}
  html[data-fb-visual-theme="midnight-aurora"] .memory-card-tags svg{color:#7dd3fc!important}
 }
+
+/* Desktop Memories — Midnight Aurora text colour normalization */
+@media (min-width:760px){
+ html[data-fb-visual-theme="midnight-aurora"] .memories-page{
+   --memory-text-primary:#f2f7ff;
+   --memory-text-secondary:#a9b9cd;
+   --memory-text-muted:#8499b3;
+   --memory-text-accent:#7dd3fc;
+ }
+ html[data-fb-visual-theme="midnight-aurora"] .memories-page :is(h1,h2,h3,.memory-group-title strong,.memory-card-copy strong){color:var(--memory-text-primary)!important}
+ html[data-fb-visual-theme="midnight-aurora"] .memories-page :is(.memories-head>div>p:not(.eyebrow),.memory-group-title small,.memory-card-copy small,.memory-card-tags,.memory-gallery-toolbar,.memory-contributor-subtitle){color:var(--memory-text-secondary)!important}
+ html[data-fb-visual-theme="midnight-aurora"] .memories-page :is(.eyebrow,#memoryResultCount,.memory-gallery-count,.memory-sort-label,.memory-group-link,.memory-view-all){color:var(--memory-text-accent)!important}
+ html[data-fb-visual-theme="midnight-aurora"] .memories-page :is(.memory-scope-chip,.memory-contributor-chip){color:#dcecff!important}
+ html[data-fb-visual-theme="midnight-aurora"] .memories-page :is(.memory-scope-chip.active,.memory-contributor-chip.active){color:#f5ffff!important}
+ html[data-fb-visual-theme="midnight-aurora"] .memories-page .memory-card-tags svg,
+ html[data-fb-visual-theme="midnight-aurora"] .memories-page .memory-group-link svg,
+ html[data-fb-visual-theme="midnight-aurora"] .memories-page .memory-view-all svg{color:#67e8f9!important}
+ html[data-fb-visual-theme="midnight-aurora"] .memories-page select{color:#eaf8ff!important}
+ html[data-fb-visual-theme="midnight-aurora"] .memories-page option{background:#061329!important;color:#eaf8ff!important}
+}
