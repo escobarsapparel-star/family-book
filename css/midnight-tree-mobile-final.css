@@ -490,3 +490,24 @@
    box-shadow:-4px 0 18px rgba(139,92,246,.18),0 18px 36px rgba(0,0,0,.18),0 0 24px rgba(34,211,238,.10)!important;
  }
 }
+
+/* Desktop Family Tree — remove route-column rectangle; keep Aurora inside tree capsule */
+@media (min-width:1180px){
+ html[data-fb-visual-theme="midnight-aurora"] #app>.app>.screen:has(.tree-page.coordinate-tree-page){
+   background:transparent!important;
+   background-color:transparent!important;
+   background-image:none!important;
+ }
+ html[data-fb-visual-theme="midnight-aurora"] #app>.app>.screen:has(.tree-page.coordinate-tree-page)::before{
+   content:none!important;
+   display:none!important;
+   background:none!important;
+ }
+ html[data-fb-visual-theme="midnight-aurora"] .tree-page.coordinate-tree-page .ct-board{
+   background:linear-gradient(180deg,rgba(2,9,24,.16),rgba(2,10,26,.32) 38%,rgba(2,9,23,.58) 75%,rgba(2,8,20,.76)),url("../assets/midnight-aurora-alpine.webp") center center/cover no-repeat!important;
+   border:1px solid rgba(79,229,255,.40)!important;
+   border-left:2px solid rgba(168,85,247,.78)!important;
+   border-radius:20px!important;
+   box-shadow:-4px 0 18px rgba(139,92,246,.18),0 18px 36px rgba(0,0,0,.30),0 0 24px rgba(34,211,238,.10)!important;
+ }
+}
