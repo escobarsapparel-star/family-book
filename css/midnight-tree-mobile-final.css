@@ -418,3 +418,18 @@
  html[data-fb-visual-theme="midnight-aurora"] .coordinate-tree-page .ct-avatar{border-color:rgba(103,232,249,.28)!important}
  html[data-fb-visual-theme="midnight-aurora"] .coordinate-tree-page .ct-couple::after{color:#b9c9dd!important}
 }
+
+/* Desktop Family Tree parity with the approved mobile Midnight Aurora tree */
+@media (min-width:760px){
+ html[data-fb-visual-theme="midnight-aurora"] #screen:has(.tree-page.coordinate-tree-page){background:linear-gradient(180deg,rgba(2,7,20,.20),rgba(2,8,22,.40) 34%,rgba(2,7,19,.72)),url("../assets/midnight-aurora-widget-flow.webp") center top/100% auto repeat-y!important;background-color:#020814!important}
+ html[data-fb-visual-theme="midnight-aurora"] .tree-page.coordinate-tree-page .ct-board{min-height:650px!important;max-height:none!important;background:linear-gradient(180deg,rgba(2,9,24,.16),rgba(2,10,26,.32) 38%,rgba(2,9,23,.58) 75%,rgba(2,8,20,.76)),url("../assets/midnight-aurora-alpine.webp") center center/cover no-repeat!important;border:1px solid rgba(79,229,255,.40)!important;border-left:2px solid rgba(168,85,247,.78)!important;box-shadow:-4px 0 18px rgba(139,92,246,.18),0 18px 36px rgba(0,0,0,.30),0 0 24px rgba(34,211,238,.10)!important}
+ html[data-fb-visual-theme="midnight-aurora"] .tree-page.coordinate-tree-page .ct-board .ct-canvas{background:transparent!important;background-image:none!important}
+ html[data-fb-visual-theme="midnight-aurora"] .tree-page.coordinate-tree-page .ct-lines path,html[data-fb-visual-theme="midnight-aurora"] .tree-page.coordinate-tree-page .ct-lines line{stroke:#55e6ef!important;stroke-width:2!important;stroke-opacity:.82!important;filter:drop-shadow(0 0 3px rgba(34,211,238,.62)) drop-shadow(0 0 7px rgba(34,211,238,.20))!important}
+ html[data-fb-visual-theme="midnight-aurora"] .tree-page.coordinate-tree-page .ct-person,html[data-fb-visual-theme="midnight-aurora"] .tree-page.coordinate-tree-page .ct-couple{background:linear-gradient(145deg,rgba(3,15,34,.97),rgba(6,20,45,.94))!important;border:1px solid rgba(82,224,255,.38)!important;border-radius:16px!important;color:#f4f9ff!important;box-shadow:0 10px 24px rgba(0,0,0,.27),0 0 15px rgba(34,211,238,.07),inset 0 1px rgba(255,255,255,.04)!important}
+ html[data-fb-visual-theme="midnight-aurora"] .tree-page.coordinate-tree-page .ct-couple{border-color:rgba(82,224,255,.48)!important;box-shadow:0 0 18px rgba(34,211,238,.11),0 0 20px rgba(139,92,246,.09),0 12px 28px rgba(0,0,0,.28)!important}
+ html[data-fb-visual-theme="midnight-aurora"] .tree-page.coordinate-tree-page .ct-person strong,html[data-fb-visual-theme="midnight-aurora"] .tree-page.coordinate-tree-page .ct-couple strong{color:#f7faff!important;font-weight:800!important}
+ html[data-fb-visual-theme="midnight-aurora"] .tree-page.coordinate-tree-page .ct-person small{color:#b9c7da!important}
+ html[data-fb-visual-theme="midnight-aurora"] .tree-page.coordinate-tree-page .ct-avatar{border:1px solid rgba(103,232,249,.42)!important;box-shadow:0 0 10px rgba(34,211,238,.10)!important}
+ html[data-fb-visual-theme="midnight-aurora"] .tree-page.coordinate-tree-page .ct-heart{background:rgba(48,20,58,.82)!important;border:1px solid rgba(244,114,182,.32)!important;color:#ff94cf!important;box-shadow:0 0 13px rgba(236,72,153,.16)!important}
+ html[data-fb-visual-theme="midnight-aurora"] .tree-page.coordinate-tree-page .ct-couple::after{color:#d9b992!important}
+}
