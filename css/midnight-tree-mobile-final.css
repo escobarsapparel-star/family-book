@@ -454,3 +454,16 @@
  html[data-fb-visual-theme="midnight-aurora"] .full-tree-stage .ct-heart{background:rgba(48,20,58,.82)!important;border:1px solid rgba(244,114,182,.32)!important;color:#ff94cf!important;box-shadow:0 0 13px rgba(236,72,153,.16)!important}
  html[data-fb-visual-theme="midnight-aurora"] .full-tree-hint{color:#a9b9cd!important}
 }
+
+/* Desktop Family Tree — remove outer board capsule, keep tree interactions */
+@media (min-width:760px){
+ html[data-fb-visual-theme="midnight-aurora"] .tree-page.coordinate-tree-page .ct-board{
+   background:transparent!important;
+   background-image:none!important;
+   border:0!important;
+   border-radius:0!important;
+   box-shadow:none!important;
+   backdrop-filter:none!important;
+   -webkit-backdrop-filter:none!important;
+ }
+}
