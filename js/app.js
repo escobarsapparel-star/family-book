@@ -482,6 +482,17 @@ function go(r,opts={}){if(window.FB_DEMO_MODE)window.FB_DEMO_RESET_UI?.();if(r==
  if(r==="family-fun")window.FB_FAMILY_FUN?.bindRoute?.();
  if(r==="family-fun-gallery")window.FB_FAMILY_FUN?.bindGalleryRoute?.();
  if(r==="home"){window.FB_WALL?.bindHome?.();bindHomeMemories();window.FB_CALENDAR?.bindHomeUpcoming?.();initAndroidDownloadUi()}
+ if(r==="tree"||r.startsWith("family-unit:")){
+   const board=document.querySelector(".coordinate-tree-page .ct-board");
+   const canvas=board?.querySelector(".ct-canvas");
+   if(board&&canvas){
+     requestAnimationFrame(()=>{
+       const maxLeft=Math.max(0,canvas.scrollWidth-board.clientWidth);
+       board.scrollLeft=Math.round(maxLeft/2);
+       board.scrollTop=0;
+     });
+   }
+ }
  if(r==="settings")window.FB_SETTINGS?.bindPage?.()
  if(r==="notifications")window.FB_NOTIFICATIONS?.bindPage?.()
  if(r==="admin-activity")bindAdminActivity()
