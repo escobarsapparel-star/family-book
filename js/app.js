@@ -56,6 +56,7 @@ A.innerHTML=`<main class="login-page">
 </a>
         <a class="android-install-link" href="https://raw.githubusercontent.com/escobarsapparel-star/family-book/main/downloads/FamilyBook-original-fullscreen-test.apk" target="_blank" rel="noopener">Download original fullscreen test APK (GitHub direct)</a>
         <a class="android-install-link" href="https://raw.githubusercontent.com/escobarsapparel-star/family-book/main/downloads/FamilyBook-original-mobile-lite-test.apk" target="_blank" rel="noopener">Download Mobile Lite test APK (no desktop widgets)</a>
+        <a class="android-install-link" href="https://raw.githubusercontent.com/escobarsapparel-star/family-book/main/downloads/FamilyBook-original-mobile-fixes-ota-test.apk" target="_blank" rel="noopener">Download Mobile Bugfix + OTA Test (reactions and Family Camera)</a>
         <small style="display:block;margin:8px 0;color:var(--muted,#666)">Diagnostic only. This APK is signed differently from the original and may require uninstalling the existing app after backing up unsynced data.</small>
         <button class="android-install-link" type="button" data-android-install-help>Install guide</button>
 
@@ -268,6 +269,7 @@ function showAndroidInstallSplash(force=false){
        <a class="primary" href="${FB_ANDROID_APK_URL}" download><i data-lucide="download"></i>Download Family Book v1.4.8</a>
        <a class="secondary" href="https://raw.githubusercontent.com/escobarsapparel-star/family-book/main/downloads/FamilyBook-original-fullscreen-test.apk" target="_blank" rel="noopener">Original fullscreen test (GitHub)</a>
        <a class="secondary" href="https://raw.githubusercontent.com/escobarsapparel-star/family-book/main/downloads/FamilyBook-original-mobile-lite-test.apk" target="_blank" rel="noopener">Mobile Lite test — no desktop widgets</a>
+       <a class="secondary" href="https://raw.githubusercontent.com/escobarsapparel-star/family-book/main/downloads/FamilyBook-original-mobile-fixes-ota-test.apk" target="_blank" rel="noopener">Mobile bugfix + OTA test — new</a>
        <button class="secondary" type="button" data-android-not-now>Not now</button>
      </div>
      <small class="android-install-note">If you already use an older Cache Test build, install v1.4.7 over it. Your normal Family Book app remains separate.</small>
