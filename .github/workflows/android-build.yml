@@ -67,8 +67,28 @@ jobs:
           cp android-app/android/app/build/outputs/apk/debug/app-debug.apk "$TARGET"
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          # Keep the original v1.4.2 baseline download on the website until explicitly promoted.
-          git add "$TARGET"
+          # Promote the diagnostic download only after the APK exists.
+          if [ "$VERSION" = "1.4.7" ]; then
+            python3 - <<'PY'
+          from pathlib import Path
+          app = Path("js/app.js")
+          data = app.read_text()
+          data = data.replace('const FB_ANDROID_LATEST_VERSION="1.4.2"', 'const FB_ANDROID_LATEST_VERSION="1.4.7"')
+          data = data.replace("FamilyBook-v1.4.2-cache-test.apk", "FamilyBook-v1.4.7-cache-test.apk")
+          data = data.replace("Download Family Book v1.4.2", "Download Family Book v1.4.7")
+          data = data.replace("VERSION 1.4.2", "VERSION 1.4.7")
+          data = data.replace("Version 1.4.2 is the original older test APK retained as a recovery baseline.", "Version 1.4.7 is a Classic-theme-only diagnostic build, with animated and blurred effects disabled on Android.")
+          data = data.replace("Original v1.4.2 test APK · known working baseline", "Diagnostic build · Classic theme · effects disabled")
+          app.write_text(data)
+          settings = Path("js/settings.js")
+          data = settings.read_text().replace("FamilyBook-v1.4.2-cache-test.apk", "FamilyBook-v1.4.7-cache-test.apk")
+          data = data.replace("Install Android 1.4.2 recovery test", "Install Android 1.4.7 diagnostic test")
+          data = data.replace("Install Family Book 1.4.2", "Install Family Book 1.4.7")
+          data = data.replace("This is the original v1.4.2 test APK, retained for startup regression testing; it installs separately from production.", "This is the v1.4.7 Classic-theme diagnostic APK. It installs separately from production.")
+          settings.write_text(data)
+          PY
+          fi
+          git add "$TARGET" js/app.js js/settings.js
           if git diff --cached --quiet; then
             echo "APK already matches published copy."
             exit 0
