@@ -133,11 +133,27 @@
     }finally{processing=false}
   }
 
+  // Only decode gallery thumbnails as they approach the screen. This avoids
+  // loading every family video at once on lower-memory Android phones.
+  const observedCards=new WeakSet();
+  const visibleCards=typeof IntersectionObserver==="function"
+    ?new IntersectionObserver(entries=>{
+      for(const entry of entries){
+        if(!entry.isIntersecting)continue;
+        visibleCards.unobserve(entry.target);
+        const card=entry.target;
+        candidate(card.querySelector(".fun-gallery-media video"),
+                  card.querySelector(".fb-gallery-cover"),"gallery");
+      }
+    },{rootMargin:"180px"}):null;
   function scan(){
     for(const card of document.querySelectorAll("#funGalleryGrid .fun-gallery-card")){
       const video=card.querySelector(".fun-gallery-media video");
-      const cover=card.querySelector(".fun-gallery-cover, .fb-gallery-cover");
-      if(video&&cover)candidate(video,cover,"gallery");
+      const cover=card.querySelector(".fb-gallery-cover");
+      if(!video||!cover||observedCards.has(card))continue;
+      observedCards.add(card);
+      if(visibleCards)visibleCards.observe(card);
+      else candidate(video,cover,"gallery");
     }
     const review=document.getElementById("funResultVideo");
     const reviewCover=document.querySelector("#funResult.fb-review-enhanced .fb-review-cover");
