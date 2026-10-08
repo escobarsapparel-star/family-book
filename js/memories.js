@@ -258,9 +258,13 @@
 
       const removedOld=oldPaths.filter(path=>!finalPaths.has(path));
       await removeStorage(removedOld);
+      // The database save is the success boundary. Re-fetching every signed
+      // media URL here can fail or exhaust Android WebView memory after upload.
       invalidateCloud();
-      await loadCloud(true);
-      return await getOne(id);
+      return {id, ...memory, photos:mediaPayload.map((row,i)=>({
+        id:String(i),kind:row.media_type==="video"?"video":"image",
+        meta:{storagePath:row.storage_path,thumbnailPath:row.thumbnail_path}
+      }))};
     }catch(err){
       await removeStorage(uploadedNow);
       throw err;
@@ -573,6 +577,8 @@
           createdAt:existing?.createdAt||now,updatedAt:now
         });
         window.FB_EVENT_DAY?.clearCaptureContext?.();
+        // Avoid a second heavy media fetch/navigation immediately after saving.
+        // Return to the library only after the save has actually completed.
         window.go?.("memories");
       }catch(err){alert(err.message||"Could not save this memory.");saveBtn.disabled=false;saveBtn.innerHTML=old;window.icons?.()}
     };
