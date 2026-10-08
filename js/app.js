@@ -183,7 +183,7 @@ function setFamilyFormSaving(form,saving,label="Saving…"){
 
 const FB_ANDROID_LATEST_VERSION="1.4.6";
 const FB_ANDROID_APK_URL="downloads/FamilyBook-v1.4.6-cache-test.apk";
-const FB_ANDROID_RELEASE_KEY="familybook_android_release_modal_145";
+const FB_ANDROID_RELEASE_KEY="familybook_android_release_modal_146";
 let fbAndroidApkAvailable=null;
 
 function runningInsideNativeApp(){
@@ -354,7 +354,7 @@ async function showLatestReleaseAlert(){
        <img class="android-install-logo" src="assets/logo/family-book-logo-dark-header.png" alt="Family Book">
        <p>${isNative?"APP UPDATE AVAILABLE":"LATEST ANDROID APP"} · VERSION ${FB_ANDROID_LATEST_VERSION}</p>
        <h2 id="latestReleaseTitle">${isNative?"A newer Family Book app is available":"Family Book v"+FB_ANDROID_LATEST_VERSION+" is available"}</h2>
-       <span>${isNative?(current?"You are using v"+current+". ":"")+"Update to the latest build for Google sign-in fixes, Share to FamilyBook and offline image caching.":"Download the latest Android app with Share to FamilyBook, offline image caching and the newest sign-in fixes."}</span>
+       <span>${isNative?(current?"You are using v"+current+". ":"")+"Update to the v1.4.6 recovery build based on the last stable Android interface.":"Download the v1.4.6 recovery build based on the last stable Android interface."}</span>
      </div>
      <div class="android-install-actions">
        <button class="primary" type="button" data-latest-apk><i data-lucide="download"></i>${isNative?"Update to v":"Download v"}${FB_ANDROID_LATEST_VERSION}</button>
