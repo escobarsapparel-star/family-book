@@ -66,6 +66,17 @@ for (const [url,source,target] of vendors) {
   if (!html.includes(url)) throw new Error(`Vendor reference changed: ${url}`);
   html = html.replaceAll(url,target);
 }
+// Android-only home isolation: retain login but avoid heavy home modules after sign-in.
+const diagnosticAppPath = path.join(www,'js/app.js');
+let diagnosticApp = await fs.readFile(diagnosticAppPath,'utf8');
+diagnosticApp = diagnosticApp.replace('window.FB_WALL?.bindHome?.();bindHomeMemories();window.FB_CALENDAR?.bindHomeUpcoming?.();initAndroidDownloadUi()', 'initAndroidDownloadUi()');
+diagnosticApp = diagnosticApp.replace('window.FB_EVENT_DAY?.bindRoute?.(r);', '/* v1.4.8 diagnostic: event-day overlays disabled */');
+diagnosticApp = diagnosticApp.replace('window.FB_CALENDAR?.homeUpcomingShell?.()', '`<div class="empty-events">Upcoming events disabled for Android diagnosis</div>`');
+await fs.writeFile(diagnosticAppPath, diagnosticApp);
+const diagnosticCountdownPath = path.join(www,'js/family-countdown.js');
+let diagnosticCountdown = await fs.readFile(diagnosticCountdownPath,'utf8');
+diagnosticCountdown = diagnosticCountdown.replace(/setInterval\(refresh,1000\);/g, '/* countdown timer disabled for v1.4.8 */');
+await fs.writeFile(diagnosticCountdownPath, diagnosticCountdown);
 // Android-only theme isolation test: remove saved visual theme before any page CSS/JS.
 const classicBoot = `<script>
 (function(){
