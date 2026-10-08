@@ -12,6 +12,7 @@ from zipfile import ZipFile
 
 CSS_PATH = "assets/public/css/apk-native.css"
 INDEX_PATH = "assets/public/index.html"
+FAMILY_FUN_HTML_PATH = "assets/public/family-fun.html"
 SOCIAL_PATH = "assets/public/js/social-data.js"
 CAMERA_JS_PATH = "assets/public/js/family-fun-studio.js"
 CAMERA_CSS_PATH = "assets/public/css/family-fun.css"
@@ -140,7 +141,7 @@ def patch_apk(source, output):
     changed = []
     with ZipFile(source) as original, ZipFile(output, "w") as patched:
         paths = set(original.namelist())
-        if not {CSS_PATH, INDEX_PATH, SOCIAL_PATH, CAMERA_JS_PATH, CAMERA_CSS_PATH} <= paths:
+        if not {CSS_PATH, INDEX_PATH, FAMILY_FUN_HTML_PATH, SOCIAL_PATH, CAMERA_JS_PATH, CAMERA_CSS_PATH} <= paths:
             raise RuntimeError("Wrong original APK layout")
         for info in original.infolist():
             data = original.read(info)
@@ -153,6 +154,12 @@ def patch_apk(source, output):
                 changed.append(info.filename)
             elif info.filename == INDEX_PATH:
                 data = patch_html(data.decode("utf-8")).replace("</body>", '<script src="js/fb-mobile-ota.js"></script>\n</body>').encode("utf-8")
+                changed.append(info.filename)
+            elif info.filename == FAMILY_FUN_HTML_PATH:
+                fun_html = data.decode("utf-8")
+                if fun_html.count("</body>") != 1 or "js/family-fun-studio.js" not in fun_html:
+                    raise ValueError("Unexpected Family Camera page baseline")
+                data = fun_html.replace("</body>", '<script src="js/fb-mobile-ota.js"></script>\n</body>').encode("utf-8")
                 changed.append(info.filename)
             elif info.filename == SOCIAL_PATH:
                 data = patch_social(data.decode("utf-8")).encode("utf-8")
@@ -169,7 +176,7 @@ def patch_apk(source, output):
             raise RuntimeError("OTA client source missing or invalid")
         patched.writestr(OTA_JS_PATH, ota_source)
     with ZipFile(source) as original, ZipFile(output) as patched:
-        if set(changed) != {CSS_PATH, INDEX_PATH, SOCIAL_PATH, CAMERA_JS_PATH, CAMERA_CSS_PATH}:
+        if set(changed) != {CSS_PATH, INDEX_PATH, FAMILY_FUN_HTML_PATH, SOCIAL_PATH, CAMERA_JS_PATH, CAMERA_CSS_PATH}:
             raise RuntimeError(f"Unexpected patch set: {changed}")
         if set(original.namelist()) | {OTA_JS_PATH} != set(patched.namelist()):
             raise RuntimeError("Archive members changed unexpectedly")
@@ -179,10 +186,13 @@ def patch_apk(source, output):
             if name not in changed and original.getinfo(name).CRC != patched.getinfo(name).CRC:
                 raise RuntimeError(f"Unexpected modified file: {name}")
         html = patched.read(INDEX_PATH).decode("utf-8")
+        fun_html = patched.read(FAMILY_FUN_HTML_PATH).decode("utf-8")
+        if "js/fb-mobile-ota.js" not in fun_html:
+            raise RuntimeError("Camera page OTA loader was not included")
         for name in DESKTOP_ONLY:
             if f"js/{name}.js" in html:
                 raise RuntimeError(f"Desktop module still loaded: {name}")
-    print('PASS: only startup HTML, fullscreen CSS, social reactions and camera JS/CSS changed')
+    print("PASS: only app/camera page HTML, fullscreen CSS, social reactions and camera JS/CSS changed")
     print(f"PASS: excluded {len(DESKTOP_ONLY)} desktop widget and desktop shell modules")
     print("PASS: native files and existing remaining assets unchanged; optional web OTA loader added")
     print(f"Unsigned APK: {output}")
