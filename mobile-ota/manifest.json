@@ -1,7 +1,7 @@
 {
   "schema": 1,
   "channel": "original-mobile-lite",
-  "version": 4,
+  "version": 5,
   "assets": [
     {
       "type": "css",
@@ -11,17 +11,17 @@
     {
       "type": "css",
       "name": "video-controls.css",
-      "sha256": "381ea908790bf33fea34abcaa94001444787743606008500bb65d30e7f79c0af"
+      "sha256": "27b85153d4a5828d37a8da569a0385f27b816569d168f15aaf0b4e3c942cd5d7"
     },
     {
       "type": "js",
       "name": "video-controls.js",
-      "sha256": "7a770e0a2d826b256a70abecd87eddd2ee0b4003f4d8c0083632c0898324c738"
+      "sha256": "208cf4373c143f14cb4f0ed15dbf16f52aaa600ba4f55f9cd354541b6c34103a"
     },
     {
       "type": "js",
       "name": "video-thumbnails.js",
-      "sha256": "df02f3ed6d68ba6ca0939b0ed43541955aa7a2f9f4a11721063d29a94bec9b09"
+      "sha256": "557deff838f3ddadbbcc2a95d13c3b517b9c1fe08a3dc2bd7a78590651925962"
     }
   ]
 }
