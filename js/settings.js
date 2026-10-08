@@ -195,6 +195,10 @@
       <a class="secondary fb-native-update-button" id="installFamilyBook143" href="https://familybook.co.za/downloads/FamilyBook-v1.4.8-cache-test.apk" download>
         <i data-lucide="download"></i><span>Install Android 1.4.8 recovery test</span>
       </a>
+      <a class="secondary fb-native-update-button" href="https://raw.githubusercontent.com/escobarsapparel-star/family-book/main/downloads/FamilyBook-original-fullscreen-test.apk" target="_blank" rel="noopener">
+        <i data-lucide="download"></i><span>Download Original Fullscreen Test (GitHub direct)</span>
+      </a>
+      <p class="settings-note">Fullscreen diagnostic uses the original Android app foundation but a different signing key. Back up any unsynced data before uninstalling another version.</p>
       <p class="settings-note"><i data-lucide="info"></i>This is the v1.4.7 Classic theme diagnostic test APK; it installs separately from production. A production in-place APK requires the existing Family Book signing key.</p>
     </section>`;
   }
@@ -205,6 +209,10 @@
       <a class="secondary fb-native-update-button" id="installFamilyBook143" href="https://familybook.co.za/downloads/FamilyBook-v1.4.8-cache-test.apk" download>
         <i data-lucide="download"></i><span>Install Android 1.4.8 recovery test</span>
       </a>
+      <a class="secondary fb-native-update-button" href="https://raw.githubusercontent.com/escobarsapparel-star/family-book/main/downloads/FamilyBook-original-fullscreen-test.apk" target="_blank" rel="noopener">
+        <i data-lucide="download"></i><span>Download Original Fullscreen Test (GitHub direct)</span>
+      </a>
+      <p class="settings-note">Fullscreen diagnostic uses the original Android app foundation but a different signing key. Back up any unsynced data before uninstalling another version.</p>
       <p class="settings-note"><i data-lucide="info"></i>This test build installs as a separate Family Book app. A production in-place APK must be signed with the same production key as your current Family Book installation.</p>
     </section>`;
   }
