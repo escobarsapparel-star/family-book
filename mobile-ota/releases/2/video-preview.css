@@ -1,0 +1,86 @@
+/* Family Book OTA v2 — remove Android WebView's oversized native play placeholder.
+   The video itself is not modified; real preview frames are extracted from video and
+   displayed as photo thumbnails when decoding is available. */
+
+/* Saved gallery: cover the unsupported native video poster with a real frame. */
+.fun-gallery-media{
+  background:linear-gradient(145deg,#17241e,#080e0a)!important;
+}
+.fun-gallery-media video{
+  opacity:0!important;
+}
+.fun-gallery-media .fb-video-thumb{
+  position:absolute;
+  inset:0;
+  width:100%;
+  height:100%;
+  object-fit:cover;
+  display:block;
+  z-index:1;
+  pointer-events:none;
+}
+.fun-gallery-media .fun-gallery-play{
+  width:48px!important;
+  height:48px!important;
+  z-index:3!important;
+  border-radius:50%!important;
+  background:rgba(7,13,9,.69)!important;
+  border:1px solid rgba(255,255,255,.3)!important;
+}
+.fun-gallery-media .fun-gallery-play svg{
+  width:21px!important;
+  height:21px!important;
+  max-width:21px!important;
+  max-height:21px!important;
+}
+.fun-gallery-viewer-stage video{
+  opacity:1!important;
+  visibility:visible!important;
+}
+
+/* Freshly recorded clip review: show a real frame behind the small Preview
+   button instead of the enormous Android play glyph. */
+.fun-capture-review .fun-result-preview{
+  background:#0b1410!important;
+}
+.fun-capture-review .fun-result-preview video{
+  opacity:0!important;
+  position:relative;
+  z-index:2;
+}
+.fun-capture-review .fun-result-preview[data-fb-video-playing="true"] video{
+  opacity:1!important;
+}
+.fun-capture-review .fun-result-preview .fb-review-thumb{
+  position:absolute;
+  inset:0;
+  width:100%;
+  height:100%;
+  object-fit:contain;
+  pointer-events:none;
+  z-index:1;
+}
+.fun-capture-review .fun-result-preview[data-fb-video-playing="true"] .fb-review-thumb{
+  opacity:0!important;
+}
+.fun-capture-review .fun-review-play{
+  z-index:5!important;
+  min-width:0!important;
+  min-height:44px!important;
+  padding:9px 13px!important;
+  max-width:160px!important;
+  border-radius:999px!important;
+  color:#fff!important;
+  background:rgba(12,22,16,.83)!important;
+}
+.fun-capture-review .fun-review-play svg{
+  width:20px!important;
+  height:20px!important;
+  max-width:20px!important;
+  max-height:20px!important;
+}
+
+/* Do not scale the mobile media placeholder icon when preview is unavailable. */
+.fun-gallery-media[data-fb-preview="unavailable"]{
+  background:linear-gradient(145deg,#1a2b21,#0d1510)!important;
+}
