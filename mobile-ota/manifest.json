@@ -1,6 +1,12 @@
 {
   "schema": 1,
   "channel": "original-mobile-lite",
-  "version": 0,
-  "assets": []
+  "version": 1,
+  "assets": [
+    {
+      "type": "css",
+      "name": "camera-layout.css",
+      "sha256": "4de2e40c34a5386fef2720ab8df079c89a6d08f2ac60eacc1c7b54e549a9aae9"
+    }
+  ]
 }
