@@ -1,0 +1,72 @@
+name: Build original working APK - fullscreen CSS diagnostic
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths:
+      - "scripts/patch-working-apk-fullscreen.py"
+      - ".github/workflows/original-fullscreen-test.yml"
+
+permissions:
+  contents: write
+
+jobs:
+  fullscreen:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Verify the exact known-working original
+        shell: bash
+        run: |
+          printf '%s  %s\n' '7270a0519eb77e2d663b9db8f6545b378364ead2fa2c4536344c29e4abfaff01' 'downloads/FamilyBook.apk' | sha256sum -c -
+
+      - name: Patch only the black Android system-bar overlays
+        run: python3 scripts/patch-working-apk-fullscreen.py
+
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '21'
+
+      - uses: android-actions/setup-android@v4
+      - name: Align, sign and verify the diagnostic APK
+        shell: bash
+        run: |
+          set -euo pipefail
+          sdkmanager --install "build-tools;35.0.0"
+          BTOOLS="$ANDROID_HOME/build-tools/35.0.0"
+          mkdir -p build/fullscreen downloads
+          "$BTOOLS/zipalign" -f -p 4 build/fullscreen/FamilyBook-original-unsigned.apk build/fullscreen/FamilyBook-original-aligned.apk
+          "$BTOOLS/zipalign" -c -p 4 build/fullscreen/FamilyBook-original-aligned.apk
+          keytool -genkeypair -noprompt -keyalg RSA -keysize 2048 -validity 365 \
+            -alias familybook-fullscreen -keystore build/fullscreen/diagnostic.keystore \
+            -storepass diagnostic123 -keypass diagnostic123 \
+            -dname "CN=Family Book Fullscreen Test,O=Diagnostic,C=ZA"
+          "$BTOOLS/apksigner" sign \
+            --ks build/fullscreen/diagnostic.keystore \
+            --ks-key-alias familybook-fullscreen \
+            --ks-pass pass:diagnostic123 --key-pass pass:diagnostic123 \
+            --out downloads/FamilyBook-original-fullscreen-test.apk \
+            build/fullscreen/FamilyBook-original-aligned.apk
+          "$BTOOLS/apksigner" verify --verbose downloads/FamilyBook-original-fullscreen-test.apk
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: FamilyBook-original-fullscreen-test-APK
+          path: downloads/FamilyBook-original-fullscreen-test.apk
+
+      - name: Publish separate test APK - do not change main website download
+        shell: bash
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add downloads/FamilyBook-original-fullscreen-test.apk
+          if git diff --cached --quiet; then
+            echo "Test APK already published"
+            exit 0
+          fi
+          git commit -m "Publish fullscreen diagnostic based on original working APK"
+          git pull --rebase origin main
+          git push origin main
