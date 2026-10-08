@@ -7,8 +7,8 @@ android {
         applicationId "com.familybook.app"
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
-        versionCode 9
-        versionName "1.4.6"
+        versionCode 10
+        versionName "1.4.7"
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         manifestPlaceholders = [appLabel: "Family Book", authScheme: "com.familybook.app"]
         aaptOptions {
