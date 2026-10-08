@@ -66,12 +66,8 @@ if (document.readyState === "loading") {
 } else {
   startNavigationBarSync();
 }
-const familyBookUpdates = startUpdates({
-  Capacitor,
-  updater: CapacitorUpdater,
-  App,
-  http: CapacitorHttp,
-  runtime: __FB_RUNTIME__,
-  bundledVersion: __FB_BUNDLE_VERSION__
-});
+// Recovery build: keep the known-good bundled interface fixed in place.
+ // OTA updates are temporarily disabled so a stable APK cannot immediately
+ // replace itself with a newer web bundle while the startup crash is isolated.
+const familyBookUpdates = null;
 window.FB_NATIVE.updates = familyBookUpdates;
