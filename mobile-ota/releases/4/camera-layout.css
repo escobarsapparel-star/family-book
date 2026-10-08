@@ -1,0 +1,70 @@
+/* Family Book Android camera UI hotfix 1.
+   Applies only while the Family Camera is in fullscreen mode.
+   Keeps native camera, recording, shutter, mode wheel and desktop site untouched. */
+
+/* Move the vertical controls down so Filters cannot hide behind Family Book's
+   mobile topbar and navigation row. Keep all four controls reachable. */
+#funCameraPanel.fun-camera-fullscreen .fun-camera-wrap .fun-camera-rail {
+  top: max(154px, calc(env(safe-area-inset-top, 0px) + 132px)) !important;
+  right: max(12px, env(safe-area-inset-right, 0px)) !important;
+  bottom: auto !important;
+  left: auto !important;
+  width: 58px !important;
+  display: flex !important;
+  flex-direction: column !important;
+  align-items: center !important;
+  gap: 8px !important;
+  max-height: calc(100dvh - 310px) !important;
+  overflow-y: auto !important;
+  overflow-x: hidden !important;
+  overscroll-behavior: contain;
+  scrollbar-width: none;
+  z-index: 35 !important;
+}
+#funCameraPanel.fun-camera-fullscreen .fun-camera-rail::-webkit-scrollbar { display: none; }
+#funCameraPanel.fun-camera-fullscreen .fun-camera-rail button {
+  flex: 0 0 auto !important;
+  width: 52px !important;
+  min-height: 54px !important;
+  color: #fff !important;
+}
+#funCameraPanel.fun-camera-fullscreen .fun-camera-rail button small {
+  color: #fff !important;
+  font-size: .68rem !important;
+  line-height: 1.1 !important;
+}
+
+/* Dark, high-contrast Countdown chooser regardless of the Family Book theme.
+   Higher specificity overrides the light theme's !important dialog colors. */
+html[data-theme="light"] #funCameraPanel.fun-camera-fullscreen .fun-camera-wrap #funCountdownOptions,
+html[data-theme="dark"] #funCameraPanel.fun-camera-fullscreen .fun-camera-wrap #funCountdownOptions,
+#funCameraPanel.fun-camera-fullscreen .fun-camera-wrap #funCountdownOptions {
+  background: rgba(12, 21, 17, .94) !important;
+  border: 1px solid rgba(255, 255, 255, .30) !important;
+  color: #fff !important;
+  box-shadow: 0 8px 28px rgba(0, 0, 0, .32) !important;
+}
+#funCameraPanel.fun-camera-fullscreen #funCountdownOptions > strong {
+  color: #fff !important;
+  opacity: 1 !important;
+  text-shadow: none !important;
+}
+#funCameraPanel.fun-camera-fullscreen #funCountdownOptions .fun-choice-row span {
+  color: #fff !important;
+  background: rgba(255, 255, 255, .12) !important;
+  border-color: rgba(255, 255, 255, .36) !important;
+  opacity: 1 !important;
+}
+#funCameraPanel.fun-camera-fullscreen #funCountdownOptions .fun-choice-row input:checked + span {
+  background: #91d4ad !important;
+  color: #112719 !important;
+  border-color: #bbe8cc !important;
+  box-shadow: 0 0 0 2px rgba(145, 212, 173, .28) !important;
+}
+@media (max-height: 650px) {
+  #funCameraPanel.fun-camera-fullscreen .fun-camera-wrap .fun-camera-rail {
+    top: 112px !important;
+    gap: 4px !important;
+    max-height: calc(100dvh - 206px) !important;
+  }
+}
