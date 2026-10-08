@@ -86,7 +86,7 @@ html[data-fb-android-classic-diagnostic="true"] *::after {
   filter: none !important;
 }
 </style>`;
-html = html.replace('<head>', '<head>\\n' + classicBoot);
+html = html.replace('<head>', '<head>\n' + classicBoot);
 html = html.replace('</head>','<link rel="stylesheet" href="css/apk-native.css">\n<script src="js/apk-native-bridge.js"></script>\n</head>');
 html = html.replace('</body>','<script src="js/apk-native-enhancements.js"></script>\n</body>');
 // The native updater owns the bundle cache; a website service worker must not
