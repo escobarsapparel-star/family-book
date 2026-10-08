@@ -192,18 +192,18 @@
         <i data-lucide="circle-check"></i><span>Ready to check for updates.</span>
       </div>
       <button type="button" class="secondary fb-native-update-button" id="checkFamilyBookUpdate"><i data-lucide="refresh-cw"></i><span>Check for updates</span></button>
-      <a class="secondary fb-native-update-button" id="installFamilyBook143" href="https://familybook.co.za/downloads/FamilyBook-v1.4.2-cache-test.apk" download>
-        <i data-lucide="download"></i><span>Install Android 1.4.2 recovery test</span>
+      <a class="secondary fb-native-update-button" id="installFamilyBook143" href="https://familybook.co.za/downloads/FamilyBook-v1.4.7-cache-test.apk" download>
+        <i data-lucide="download"></i><span>Install Android 1.4.7 recovery test</span>
       </a>
-      <p class="settings-note"><i data-lucide="info"></i>This is the original v1.4.2 test APK, retained for startup regression testing; it installs separately from production. A production in-place APK requires the existing Family Book signing key.</p>
+      <p class="settings-note"><i data-lucide="info"></i>This is the v1.4.7 Classic theme diagnostic test APK; it installs separately from production. A production in-place APK requires the existing Family Book signing key.</p>
     </section>`;
   }
 
   function androidInstallerShell(){
     return `<section class="settings-card fb-native-update-card" id="settingsAndroidInstaller">
-      <div class="settings-card-head"><span class="settings-card-icon"><i data-lucide="smartphone"></i></span><div><p>ANDROID APP</p><h2>Install Family Book 1.4.2</h2><span>Install the original v1.4.2 test APK to verify the previous working Android baseline. This installs separately from the main Family Book app.</span></div></div>
-      <a class="secondary fb-native-update-button" id="installFamilyBook143" href="https://familybook.co.za/downloads/FamilyBook-v1.4.2-cache-test.apk" download>
-        <i data-lucide="download"></i><span>Install Android 1.4.2 recovery test</span>
+      <div class="settings-card-head"><span class="settings-card-icon"><i data-lucide="smartphone"></i></span><div><p>ANDROID APP</p><h2>Install Family Book 1.4.7</h2><span>Test Classic theme with visual effects disabled in Android v1.4.7. This installs separately from the main Family Book app.</span></div></div>
+      <a class="secondary fb-native-update-button" id="installFamilyBook143" href="https://familybook.co.za/downloads/FamilyBook-v1.4.7-cache-test.apk" download>
+        <i data-lucide="download"></i><span>Install Android 1.4.7 recovery test</span>
       </a>
       <p class="settings-note"><i data-lucide="info"></i>This test build installs as a separate Family Book app. A production in-place APK must be signed with the same production key as your current Family Book installation.</p>
     </section>`;
