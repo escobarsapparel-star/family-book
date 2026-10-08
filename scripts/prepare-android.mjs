@@ -66,6 +66,27 @@ for (const [url,source,target] of vendors) {
   if (!html.includes(url)) throw new Error(`Vendor reference changed: ${url}`);
   html = html.replaceAll(url,target);
 }
+// Android-only theme isolation test: remove saved visual theme before any page CSS/JS.
+const classicBoot = `<script>
+(function(){
+  try { localStorage.setItem('fb_visual_theme','classic'); } catch (_) {}
+  document.documentElement.removeAttribute('data-fb-visual-theme');
+  document.documentElement.dataset.fbVisualTheme = 'classic';
+  document.documentElement.dataset.fbAndroidClassicDiagnostic = 'true';
+})();
+</script>
+<style>
+html[data-fb-android-classic-diagnostic="true"] *,
+html[data-fb-android-classic-diagnostic="true"] *::before,
+html[data-fb-android-classic-diagnostic="true"] *::after {
+  animation: none !important;
+  transition: none !important;
+  backdrop-filter: none !important;
+  -webkit-backdrop-filter: none !important;
+  filter: none !important;
+}
+</style>`;
+html = html.replace('<head>', '<head>\\n' + classicBoot);
 html = html.replace('</head>','<link rel="stylesheet" href="css/apk-native.css">\n<script src="js/apk-native-bridge.js"></script>\n</head>');
 html = html.replace('</body>','<script src="js/apk-native-enhancements.js"></script>\n</body>');
 // The native updater owns the bundle cache; a website service worker must not
