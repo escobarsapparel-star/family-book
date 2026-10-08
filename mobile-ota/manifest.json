@@ -1,7 +1,7 @@
 {
   "schema": 1,
   "channel": "original-mobile-lite",
-  "version": 3,
+  "version": 4,
   "assets": [
     {
       "type": "css",
@@ -17,6 +17,11 @@
       "type": "js",
       "name": "video-controls.js",
       "sha256": "7a770e0a2d826b256a70abecd87eddd2ee0b4003f4d8c0083632c0898324c738"
+    },
+    {
+      "type": "js",
+      "name": "video-thumbnails.js",
+      "sha256": "df02f3ed6d68ba6ca0939b0ed43541955aa7a2f9f4a11721063d29a94bec9b09"
     }
   ]
 }
