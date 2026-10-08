@@ -67,7 +67,24 @@ jobs:
           cp android-app/android/app/build/outputs/apk/debug/app-debug.apk "$TARGET"
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add "$TARGET"
+          # Switch website links only after the new APK has been built and copied.
+          python3 - <<'PY'
+          from pathlib import Path
+          app = Path("js/app.js")
+          content = app.read_text()
+          content = content.replace("const FB_ANDROID_LATEST_VERSION=\"1.4.5\"", "const FB_ANDROID_LATEST_VERSION=\"1.4.6\"")
+          content = content.replace("FamilyBook-v1.4.5-cache-test.apk", "FamilyBook-v1.4.6-cache-test.apk")
+          content = content.replace("Download Family Book v1.4.5", "Download Family Book v1.4.6")
+          content = content.replace("VERSION 1.4.5", "VERSION 1.4.6")
+          content = content.replace("Version 1.4.5 includes Share to FamilyBook, native offline image caching and the latest Google sign-in fixes.", "Version 1.4.6 is a recovery test built from the previously working v1.4.2 app. Automatic web updates are temporarily disabled.")
+          content = content.replace("install v1.4.5 over it", "install v1.4.6 over it")
+          content = content.replace("Latest Android build · Share to FamilyBook · offline image cache", "Recovery test · stable v1.4.2 interface · updates paused")
+          app.write_text(content)
+          settings = Path("js/settings.js")
+          settings_content = settings.read_text().replace("FamilyBook-v1.4.3-cache-test.apk", "FamilyBook-v1.4.6-cache-test.apk")
+          settings.write_text(settings_content)
+          PY
+          git add "$TARGET" js/app.js js/settings.js
           if git diff --cached --quiet; then
             echo "APK already matches published copy."
             exit 0
