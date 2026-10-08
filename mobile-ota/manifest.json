@@ -1,7 +1,7 @@
 {
   "schema": 1,
   "channel": "original-mobile-lite",
-  "version": 2,
+  "version": 3,
   "assets": [
     {
       "type": "css",
@@ -10,13 +10,13 @@
     },
     {
       "type": "css",
-      "name": "video-preview.css",
-      "sha256": "45cc786355a8909d05f434019b67788ec7ad587b2958f4d0090e926c3218d9f6"
+      "name": "video-controls.css",
+      "sha256": "381ea908790bf33fea34abcaa94001444787743606008500bb65d30e7f79c0af"
     },
     {
       "type": "js",
-      "name": "video-preview.js",
-      "sha256": "47d1747540de9bc178cbf37db27970144d039c7d4cd4a12386aa0297ed0e2fca"
+      "name": "video-controls.js",
+      "sha256": "7a770e0a2d826b256a70abecd87eddd2ee0b4003f4d8c0083632c0898324c738"
     }
   ]
 }
