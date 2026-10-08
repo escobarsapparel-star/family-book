@@ -1,0 +1,72 @@
+name: Build mobile-lite test from original working APK
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths:
+      - "scripts/patch-working-apk-mobile-lite.py"
+      - ".github/workflows/original-mobile-lite-test.yml"
+
+permissions:
+  contents: write
+
+jobs:
+  mobile-lite:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Verify known-working original APK
+        shell: bash
+        run: |
+          printf '%s  %s\n' '7270a0519eb77e2d663b9db8f6545b378364ead2fa2c4536344c29e4abfaff01' 'downloads/FamilyBook.apk' | sha256sum -c -
+
+      - name: Apply only fullscreen CSS and suppress desktop widget scripts
+        run: python3 scripts/patch-working-apk-mobile-lite.py
+
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '21'
+
+      - uses: android-actions/setup-android@v4
+      - name: Align, sign and verify isolated mobile test APK
+        shell: bash
+        run: |
+          set -euo pipefail
+          sdkmanager --install "build-tools;35.0.0"
+          BTOOLS="$ANDROID_HOME/build-tools/35.0.0"
+          mkdir -p build/mobile-lite downloads
+          "$BTOOLS/zipalign" -f -p 4 build/mobile-lite/FamilyBook-original-mobile-lite-unsigned.apk build/mobile-lite/FamilyBook-original-mobile-lite-aligned.apk
+          "$BTOOLS/zipalign" -c -p 4 build/mobile-lite/FamilyBook-original-mobile-lite-aligned.apk
+          keytool -genkeypair -noprompt -keyalg RSA -keysize 2048 -validity 365 \
+            -alias familybook-mobile-lite -keystore build/mobile-lite/diagnostic.keystore \
+            -storepass diagnostic123 -keypass diagnostic123 \
+            -dname "CN=Family Book Mobile Lite Test,O=Diagnostic,C=ZA"
+          "$BTOOLS/apksigner" sign \
+            --ks build/mobile-lite/diagnostic.keystore \
+            --ks-key-alias familybook-mobile-lite \
+            --ks-pass pass:diagnostic123 --key-pass pass:diagnostic123 \
+            --out downloads/FamilyBook-original-mobile-lite-test.apk \
+            build/mobile-lite/FamilyBook-original-mobile-lite-aligned.apk
+          "$BTOOLS/apksigner" verify --verbose downloads/FamilyBook-original-mobile-lite-test.apk
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: FamilyBook-original-mobile-lite-test-APK
+          path: downloads/FamilyBook-original-mobile-lite-test.apk
+
+      - name: Publish test only; leave current website default intact
+        shell: bash
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add downloads/FamilyBook-original-mobile-lite-test.apk
+          if git diff --cached --quiet; then
+            echo "Mobile lite test APK already published"
+            exit 0
+          fi
+          git commit -m "Publish Family Book original mobile-lite test APK"
+          git pull --rebase origin main
+          git push origin main
