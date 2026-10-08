@@ -19,70 +19,27 @@
     if(text)el.textContent=text;
     return el;
   }
-  // Dedicated in-app gallery screen. Keep the *same* gallery DOM so the
-  // stable original Family Fun runtime keeps fetching, filtering and deleting.
-  let galleryReturnScroll=0;
-  function closeGalleryPage(){
-    const page=document.getElementById("fbMobileGalleryPage");
-    if(!page)return;
-    const panel=document.getElementById("funCameraPanel");
-    const gallery=document.getElementById("funGalleryPanel");
-    if(panel&&gallery){
-      panel.appendChild(gallery);
-      gallery.hidden=true;
-      panel.querySelector('[data-fun-tab="create"]')?.click();
-      panel.hidden=true;
-    }
-    const oldPage=document.querySelector("#screen > .family-fun-app-page");
-    oldPage?.classList.remove("fb-gallery-background-hidden");
-    page.remove();
-    document.getElementById("screen")?.classList.remove("fb-gallery-route-open");
-    try{window.scrollTo(0,galleryReturnScroll)}catch(_){}
-  }
+  // The ORIGINAL stable APK already bundles a separate, routable Gallery page.
+  // Never inject a second Gallery card or move the existing inline gallery:
+  // that caused a 12-second late-appearing shortcut and an unwanted scroll.
   function showGallery(){
-    const screen=document.getElementById("screen");
-    const panel=document.getElementById("funCameraPanel");
-    const gallery=document.getElementById("funGalleryPanel");
-    const create=document.getElementById("funCreatePanel");
-    if(!screen||!panel||!gallery||!create)return;
-    if(document.getElementById("fbMobileGalleryPage"))return;
-    galleryReturnScroll=window.scrollY||document.scrollingElement?.scrollTop||0;
-    const page=document.createElement("section");
-    page.id="fbMobileGalleryPage";
-    page.className="family-fun-app-page fb-mobile-gallery-page";
-    page.innerHTML='<header class="fb-gallery-page-header"><button type="button" class="fb-gallery-back">← Family Fun</button><h1>Family Video Gallery</h1><p>Watch the videos saved by your family.</p></header>';
-    page.querySelector(".fb-gallery-back").addEventListener("click",closeGalleryPage);
-    // Make the old gallery visible before moving it: this keeps the original
-    // JS references and event handlers intact across camera/gallery switches.
-    panel.hidden=false;
-    panel.removeAttribute("hidden");
-    panel.style.display="";
-    panel.classList.remove("fun-camera-fullscreen");
-    document.documentElement.classList.remove("fun-camera-open");
-    document.body.classList.remove("fun-camera-open");
-    document.querySelector('[data-family-fun-feature="camera"]')?.classList.remove("active");
-    if(gallery.hidden){
-      panel.querySelector('[data-fun-tab="gallery"]')?.click();
-      gallery.hidden=false;
-    }
-    page.appendChild(gallery);
-    const oldPage=screen.querySelector(":scope > .family-fun-app-page");
-    oldPage?.classList.add("fb-gallery-background-hidden");
-    screen.appendChild(page);
-    screen.classList.add("fb-gallery-route-open");
-    window.scrollTo(0,0);
-    screen.scrollTop=0;
+    if(typeof window.go!=="function"||!window.FB_FAMILY_FUN?.galleryShell)return false;
+    window.go("family-fun-gallery");
+    return true;
   }
+  // Make the older camera-panel Gallery tab use the same separate built-in
+  // Gallery route. Capture phase prevents its original switchTab/scroll logic.
+  document.addEventListener("click",event=>{
+    const button=event.target?.closest?.("#funCameraPanel [data-fun-tab='gallery'],#funHub .fb-mobile-gallery-shortcut");
+    if(!button)return;
+    if(typeof window.go!=="function"||!window.FB_FAMILY_FUN?.galleryShell)return;
+    event.preventDefault();
+    event.stopImmediatePropagation();
+    showGallery();
+  },true);
   function addGalleryShortcut(){
-    const hub=document.querySelector("#funHub .fun-feature-grid");
-    if(!hub||hub.querySelector(".fb-mobile-gallery-shortcut"))return;
-    const button=make("button","fun-feature-card fb-mobile-gallery-shortcut");
-    button.type="button";
-    button.innerHTML='<span class="fun-feature-icon" aria-hidden="true">▶</span><span class="fun-feature-copy"><strong>Family Video Gallery</strong><small>Open your saved family clips</small></span><span class="fun-feature-arrow" aria-hidden="true">›</span>';
-    button.addEventListener("click",showGallery);
-    const camera=hub.querySelector('[data-family-fun-feature="camera"]');
-    camera?.after(button);
-    if(!camera)hub.prepend(button);
+    // Remove only the OTA-added duplicate, not the original APK gallery card.
+    document.querySelectorAll("#funHub .fb-mobile-gallery-shortcut").forEach(el=>el.remove());
   }
 
   function coverFromCamera(cover){
