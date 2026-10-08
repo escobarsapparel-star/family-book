@@ -1,9 +1,9 @@
 #!/usr/bin/env python3
-"""Repack the confirmed-working original APK for an Android-only, no-desktop-widgets test.
+"""Repack the original working Family Book APK with small mobile-only fixes.
 
-Exactly two assets change: the bundled index.html and Android fullscreen CSS.
-Native manifest, plugins, JS source files and production website stay untouched.
-The repacked APK is unsigned; the workflow zipaligns and signs it separately.
+Retains the proven fullscreen adjustment and excludes desktop widget startup.
+Patches only the reaction loader and Family Camera web code/styles.
+Adds an optional, checksum-verified web-only OTA loader; native files are unchanged.
 """
 import argparse
 import re
@@ -15,6 +15,8 @@ INDEX_PATH = "assets/public/index.html"
 SOCIAL_PATH = "assets/public/js/social-data.js"
 CAMERA_JS_PATH = "assets/public/js/family-fun-studio.js"
 CAMERA_CSS_PATH = "assets/public/css/family-fun.css"
+OTA_JS_PATH = "assets/public/js/fb-mobile-ota.js"
+OTA_JS_SOURCE = Path("android-app/mobile-ota/boot.js")
 
 DESKTOP_ONLY = (
     "desktop-shell-v2",
@@ -66,7 +68,7 @@ def patch_social(js):
     return photo;
   }
 """
-    return js.replace(marker, marker + "\\n" + fix)
+    return js.replace(marker, marker + "\n" + fix)
 
 def patch_camera(js):
     status_anchor = '    status.textContent=message;'
@@ -102,7 +104,7 @@ def patch_camera(js):
     },{passive:true});
   }
 """
-    return js.replace(mode_anchor, mode_anchor + "\\n" + mode_logic)
+    return js.replace(mode_anchor, mode_anchor + "\n" + mode_logic)
 
 CAMERA_CSS_FIX = """
 /* APK-only Family Camera usability fixes. Desktop website CSS is unchanged. */
@@ -150,7 +152,7 @@ def patch_apk(source, output):
                 data = (css.rstrip() + "\n" + CSS_FIX).encode("utf-8")
                 changed.append(info.filename)
             elif info.filename == INDEX_PATH:
-                data = patch_html(data.decode("utf-8")).encode("utf-8")
+                data = patch_html(data.decode("utf-8")).replace("</body>", '<script src="js/fb-mobile-ota.js"></script>\n</body>').encode("utf-8")
                 changed.append(info.filename)
             elif info.filename == SOCIAL_PATH:
                 data = patch_social(data.decode("utf-8")).encode("utf-8")
@@ -159,13 +161,17 @@ def patch_apk(source, output):
                 data = patch_camera(data.decode("utf-8")).encode("utf-8")
                 changed.append(info.filename)
             elif info.filename == CAMERA_CSS_PATH:
-                data = (data.decode("utf-8").rstrip() + "\\n" + CAMERA_CSS_FIX).encode("utf-8")
+                data = (data.decode("utf-8").rstrip() + "\n" + CAMERA_CSS_FIX).encode("utf-8")
                 changed.append(info.filename)
             patched.writestr(info, data)
+        ota_source = OTA_JS_SOURCE.read_bytes()
+        if not ota_source or not b"FB_MOBILE_OTA" in ota_source:
+            raise RuntimeError("OTA client source missing or invalid")
+        patched.writestr(OTA_JS_PATH, ota_source)
     with ZipFile(source) as original, ZipFile(output) as patched:
         if set(changed) != {CSS_PATH, INDEX_PATH, SOCIAL_PATH, CAMERA_JS_PATH, CAMERA_CSS_PATH}:
             raise RuntimeError(f"Unexpected patch set: {changed}")
-        if set(original.namelist()) != set(patched.namelist()):
+        if set(original.namelist()) | {OTA_JS_PATH} != set(patched.namelist()):
             raise RuntimeError("Archive members changed unexpectedly")
         if patched.testzip() is not None:
             raise RuntimeError("ZIP CRC check failed")
@@ -178,7 +184,7 @@ def patch_apk(source, output):
                 raise RuntimeError(f"Desktop module still loaded: {name}")
     print('PASS: only startup HTML, fullscreen CSS, social reactions and camera JS/CSS changed')
     print(f"PASS: excluded {len(DESKTOP_ONLY)} desktop widget and desktop shell modules")
-    print("PASS: original native files and all remaining assets unchanged")
+    print("PASS: native files and existing remaining assets unchanged; optional web OTA loader added")
     print(f"Unsigned APK: {output}")
 
 if __name__ == "__main__":
