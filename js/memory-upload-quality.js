@@ -1,5 +1,5 @@
 (()=>{
-  if(window.__fbMemoryUploadQuality)return;
+  // The high-resolution canvas override can exhaust Android WebView memory\n  // after returning from the external camera. Use the standard bounded encoder.\n  if(window.Capacitor?.isNativePlatform?.() || /Android/i.test(navigator.userAgent))return;\n  if(window.__fbMemoryUploadQuality)return;
   window.__fbMemoryUploadQuality=true;
 
   const nativeCreateImageBitmap=typeof window.createImageBitmap==="function"

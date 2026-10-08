@@ -711,10 +711,13 @@
       try{const img=await new Promise((res,rej)=>{const im=new Image();im.onload=()=>res(im);im.onerror=()=>rej(new Error("This image could not be opened."));im.src=url});drawSource=img;width=img.naturalWidth;height=img.naturalHeight}finally{URL.revokeObjectURL(url)}
     }
     if(!width||!height)throw new Error("This image has no readable dimensions.");
-    const image=await canvasBlob(drawSource,width,height,1800,.80,"image/webp");
-    const thumb=await canvasBlob(drawSource,width,height,540,.72,"image/webp");
-    if(bitmap)bitmap.close();
-    return {image,thumb,width,height};
+    try{
+      // Keep the decoded camera bitmap alive only while encoding, and avoid
+      // retaining two large canvases on memory-constrained Android WebViews.
+      const image=await canvasBlob(drawSource,width,height,1600,.82,"image/webp");
+      const thumb=await canvasBlob(drawSource,width,height,480,.72,"image/webp");
+      return {image,thumb,width,height};
+    }finally{bitmap?.close?.();}
   }
   let eventFrameLogoPromise=null;
   function loadEventFrameLogo(){
@@ -872,7 +875,7 @@
 
   async function readPhotoMetadata(file){
     if(!/jpe?g/i.test(file.type||"")&&!/\.jpe?g$/i.test(file.name||""))return null;
-    try{return parseExifDate(await file.arrayBuffer())}catch(_){return null}
+    try{return parseExifDate(await file.slice(0,256*1024).arrayBuffer())}catch(_){return null}
   }
   function parseExifDate(buffer){
     const v=new DataView(buffer);if(v.byteLength<12||v.getUint16(0,false)!==0xFFD8)return null;
