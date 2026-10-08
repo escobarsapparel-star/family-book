@@ -1,0 +1,102 @@
+name: Build stable mobile hotfix + optional web OTA test
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths:
+      - "scripts/patch-working-apk-mobile-fixes.py"
+      - "android-app/mobile-ota/boot.js"
+      - ".github/workflows/original-mobile-fixes-ota-test.yml"
+
+permissions:
+  contents: write
+
+jobs:
+  mobile-fixes:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Verify known-working original APK
+        shell: bash
+        run: |
+          printf '%s  %s\n' '7270a0519eb77e2d663b9db8f6545b378364ead2fa2c4536344c29e4abfaff01' 'downloads/FamilyBook.apk' | sha256sum -c -
+
+      - name: Patch stable APK camera and reactions while retaining mobile-only layout
+        run: python3 scripts/patch-working-apk-mobile-fixes.py
+
+      - name: Validate web-only changes and script syntax
+        shell: bash
+        run: |
+          set -euo pipefail
+          python3 -m py_compile scripts/patch-working-apk-mobile-fixes.py
+          APK="build/mobile-fixes/FamilyBook-original-mobile-fixes-unsigned.apk"
+          for file in js/social-data.js js/family-fun-studio.js js/fb-mobile-ota.js; do
+            unzip -p "$APK" "assets/public/$file" > "/tmp/$(basename "$file")"
+            node --check "/tmp/$(basename "$file")"
+          done
+          python3 - <<'PY'
+          from zipfile import ZipFile
+          p="build/mobile-fixes/FamilyBook-original-mobile-fixes-unsigned.apk"
+          with ZipFile(p) as z:
+              html=z.read("assets/public/index.html").decode()
+              assert "js/fb-mobile-ota.js" in html
+              assert "js/desktop-date-time.js" not in html
+              social=z.read("assets/public/js/social-data.js").decode()
+              assert "function currentPersonPhoto(" in social
+              camera=z.read("assets/public/js/family-fun-studio.js").decode()
+              assert 'nativeModeStrip.addEventListener("scroll"' in camera
+              assert 'status.dataset.quiet' in camera
+              css=z.read("assets/public/css/family-fun.css").decode()
+              assert '#funStatus[data-quiet="true"]' in css
+              assert "safe-area-inset-right" in css
+              assert "\\\\n" not in css.split("APK-only Family Camera usability fixes")[-1]
+          print("PASS: reaction, mode scroll, status, tool safe area, OTA loader and desktop-widget isolation")
+          PY
+
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '21'
+
+      - uses: android-actions/setup-android@v4
+      - name: Align, sign and verify isolated mobile test APK
+        shell: bash
+        run: |
+          set -euo pipefail
+          sdkmanager --install "build-tools;35.0.0"
+          BTOOLS="$ANDROID_HOME/build-tools/35.0.0"
+          mkdir -p build/mobile-lite downloads
+          "$BTOOLS/zipalign" -f -p 4 build/mobile-fixes/FamilyBook-original-mobile-fixes-unsigned.apk build/mobile-fixes/FamilyBook-original-mobile-fixes-aligned.apk
+          "$BTOOLS/zipalign" -c -p 4 build/mobile-fixes/FamilyBook-original-mobile-fixes-aligned.apk
+          keytool -genkeypair -noprompt -keyalg RSA -keysize 2048 -validity 365 \
+            -alias familybook-mobile-fixes -keystore build/mobile-fixes/diagnostic.keystore \
+            -storepass diagnostic123 -keypass diagnostic123 \
+            -dname "CN=Family Book Mobile Fixes Test,O=Diagnostic,C=ZA"
+          "$BTOOLS/apksigner" sign \
+            --ks build/mobile-fixes/diagnostic.keystore \
+            --ks-key-alias familybook-mobile-fixes \
+            --ks-pass pass:diagnostic123 --key-pass pass:diagnostic123 \
+            --out downloads/FamilyBook-original-mobile-fixes-ota-test.apk \
+            build/mobile-fixes/FamilyBook-original-mobile-fixes-aligned.apk
+          "$BTOOLS/apksigner" verify --verbose downloads/FamilyBook-original-mobile-fixes-ota-test.apk
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: FamilyBook-original-mobile-fixes-ota-test-APK
+          path: downloads/FamilyBook-original-mobile-fixes-ota-test.apk
+
+      - name: Publish test only; leave current website default intact
+        shell: bash
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add downloads/FamilyBook-original-mobile-fixes-ota-test.apk
+          if git diff --cached --quiet; then
+            echo "Mobile lite test APK already published"
+            exit 0
+          fi
+          git commit -m "Publish Family Book original mobile fixes OTA test APK"
+          git pull --rebase origin main
+          git push origin main
