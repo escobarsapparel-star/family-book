@@ -38,7 +38,7 @@ html.native-app body::after {
 
 def patch_html(html):
     for name in DESKTOP_ONLY:
-        pattern = r'<script\\s+src="js/' + re.escape(name) + r'\\.js(?:\\?[^"]*)?"\\s*></script>'
+        pattern = r'<script\s+src="js/' + re.escape(name) + r'\.js(?:\?[^"]*)?"\s*></script>'
         html, count = re.subn(pattern, "", html)
         if count != 1:
             raise ValueError(f"Expected exactly one desktop script for {name}; found {count}")
@@ -60,7 +60,7 @@ def patch_apk(source, output):
                 for token in ("--fb-apk-status-h:", "--fb-apk-navigation-h:", "html.native-app body::before"):
                     if token not in css:
                         raise ValueError(f"Source CSS missing {token}")
-                data = (css.rstrip() + "\\n" + CSS_FIX).encode("utf-8")
+                data = (css.rstrip() + "\n" + CSS_FIX).encode("utf-8")
                 changed.append(info.filename)
             elif info.filename == INDEX_PATH:
                 data = patch_html(data.decode("utf-8")).encode("utf-8")
