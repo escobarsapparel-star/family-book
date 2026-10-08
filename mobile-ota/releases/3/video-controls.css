@@ -184,7 +184,7 @@ body.fb-video-viewer-open{overflow:hidden!important}
   font-size:13px;
   text-align:center;
 }
-.fb-video-viewer-open{
+.fb-video-viewer a.fb-video-viewer-open{
   text-align:center;
   color:#b8eacb!important;
   text-decoration:underline!important;
