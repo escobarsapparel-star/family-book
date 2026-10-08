@@ -1,12 +1,22 @@
 {
   "schema": 1,
   "channel": "original-mobile-lite",
-  "version": 1,
+  "version": 2,
   "assets": [
     {
       "type": "css",
       "name": "camera-layout.css",
       "sha256": "4de2e40c34a5386fef2720ab8df079c89a6d08f2ac60eacc1c7b54e549a9aae9"
+    },
+    {
+      "type": "css",
+      "name": "video-preview.css",
+      "sha256": "45cc786355a8909d05f434019b67788ec7ad587b2958f4d0090e926c3218d9f6"
+    },
+    {
+      "type": "js",
+      "name": "video-preview.js",
+      "sha256": "47d1747540de9bc178cbf37db27970144d039c7d4cd4a12386aa0297ed0e2fca"
     }
   ]
 }
