@@ -2,14 +2,14 @@
 
 Current public Android build:
 
-`FamilyBook-v1.4.4-cache-test.apk`
+`FamilyBook-v1.4.5-cache-test.apk`
 
 Public download path:
 
-`/family-book/downloads/FamilyBook-v1.4.4-cache-test.apk`
+`/family-book/downloads/FamilyBook-v1.4.5-cache-test.apk`
 
-Version 1.4.4 is the versioned APK linked from the Family Book website; the previous 1.4.2 APK remains in the downloads folder as a fallback. It includes the current native cache/share build and receives compatible Family Book interface updates through the live-update system.
+Version 1.4.5 is the current versioned APK linked from the Family Book website. It includes the corrected Android memory guard that prevents the high-resolution upload override from running in the Android WebView.
 
-The previous v1.4.2 cache-test APK remains available for rollback.
+Version 1.4.4 was withdrawn because it could crash after launch/login. The previous v1.4.2 cache-test APK remains available as a rollback fallback.
 
-Native Android changes still require a new APK. HTML/CSS/JavaScript fixes can continue to ship through the compatible interface-update feeds.
+Native Android changes still require a new APK. Compatible HTML/CSS/JavaScript fixes can continue to ship through the interface-update system.
