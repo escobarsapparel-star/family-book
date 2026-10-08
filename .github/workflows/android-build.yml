@@ -40,7 +40,7 @@ jobs:
       - name: Restore current website files after recovery packaging
         shell: bash
         run: |
-          git restore --source=HEAD -- js css assets legal index.html family-fun.html manifest.json
+          git restore --source=HEAD --staged --worktree -- js css assets legal index.html family-fun.html manifest.json
       - name: Read Family Book app version
         id: app_version
         shell: bash
