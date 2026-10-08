@@ -54,6 +54,8 @@ A.innerHTML=`<main class="login-page">
   <span><strong>Download Family Book v1.4.8</strong><small>Home isolation test · calendar and event widgets paused</small></span>
   <i data-lucide="download"></i>
 </a>
+        <a class="android-install-link" href="https://raw.githubusercontent.com/escobarsapparel-star/family-book/main/downloads/FamilyBook-original-fullscreen-test.apk" target="_blank" rel="noopener">Download original fullscreen test APK (GitHub direct)</a>
+        <small style="display:block;margin:8px 0;color:var(--muted,#666)">Diagnostic only. This APK is signed differently from the original and may require uninstalling the existing app after backing up unsynced data.</small>
         <button class="android-install-link" type="button" data-android-install-help>Install guide</button>
 
 <form id="signup" class="form hidden">
@@ -263,6 +265,7 @@ function showAndroidInstallSplash(force=false){
      <details class="android-release-guide"><summary>How to install</summary>${androidInstallStepsHtml()}</details>
      <div class="android-install-actions">
        <a class="primary" href="${FB_ANDROID_APK_URL}" download><i data-lucide="download"></i>Download Family Book v1.4.8</a>
+       <a class="secondary" href="https://raw.githubusercontent.com/escobarsapparel-star/family-book/main/downloads/FamilyBook-original-fullscreen-test.apk" target="_blank" rel="noopener">Original fullscreen test (GitHub)</a>
        <button class="secondary" type="button" data-android-not-now>Not now</button>
      </div>
      <small class="android-install-note">If you already use an older Cache Test build, install v1.4.7 over it. Your normal Family Book app remains separate.</small>
