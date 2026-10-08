@@ -26,10 +26,19 @@ jobs:
         working-directory: android-app
       - run: npm test
         working-directory: android-app
+      - name: Use known-good v1.4.2 web bundle for recovery APK
+        shell: bash
+        run: |
+          STABLE_REF="62ff7825bbc91d3ccaaff2eff05ec7c7150b3695"
+          git checkout "$STABLE_REF" -- js css assets legal index.html family-fun.html manifest.json
       - run: npm run sync:android
         working-directory: android-app
       - run: bash gradlew assembleRelease assembleDebug
         working-directory: android-app/android
+      - name: Restore current website files after recovery packaging
+        shell: bash
+        run: |
+          git restore --source=HEAD -- js css assets legal index.html family-fun.html manifest.json
       - name: Read Family Book app version
         id: app_version
         shell: bash
@@ -47,7 +56,7 @@ jobs:
           name: FamilyBook-v${{ steps.app_version.outputs.version }}-cache-test-debug
           path: android-app/android/app/build/outputs/apk/debug/app-debug.apk
 
-      - name: Publish cache-test APK beside existing installer
+      - name: Publish recovery APK beside existing installer
         env:
           VERSION: ${{ steps.app_version.outputs.version }}
         shell: bash
