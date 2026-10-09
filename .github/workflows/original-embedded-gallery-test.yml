@@ -1,0 +1,120 @@
+name: Build Family Book embedded Gallery + adaptive status bar APK test
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths:
+      - "scripts/patch-original-embedded-gallery.py"
+      - ".github/workflows/original-embedded-gallery-test.yml"
+      - "mobile-ota/releases/6/video-controls.js"
+      - "mobile-ota/releases/6/video-thumbnails.js"
+      - "mobile-ota/releases/7/social-reactions.js"
+      - "mobile-ota/releases/7/mobile-ui-restoration.js"
+
+permissions:
+  contents: write
+
+jobs:
+  embedded-gallery:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Verify original known-working APK
+        shell: bash
+        run: |
+          printf '%s  %s\n' '7270a0519eb77e2d663b9db8f6545b378364ead2fa2c4536344c29e4abfaff01' 'downloads/FamilyBook.apk' | sha256sum -c -
+
+      - name: Bundle Gallery and mobile fixes directly into original APK
+        shell: bash
+        run: |
+          python3 -m py_compile scripts/patch-original-embedded-gallery.py
+          python3 scripts/patch-original-embedded-gallery.py
+
+      - name: Verify bundled scripts, UI and intact native APK
+        shell: bash
+        run: |
+          set -euo pipefail
+          APK=build/embedded-gallery/FamilyBook-embedded-gallery-unsigned.apk
+          for name in fb-mobile-safe-area.js fb-mobile-video-controls.js fb-mobile-video-thumbnails.js fb-mobile-social-reactions.js fb-mobile-ui-restoration.js fb-mobile-ota.js; do
+            unzip -p "$APK" "assets/public/js/$name" > "/tmp/$name"
+            node --check "/tmp/$name"
+          done
+          python3 - <<'PY'
+          from zipfile import ZipFile
+          apk="build/embedded-gallery/FamilyBook-embedded-gallery-unsigned.apk"
+          with ZipFile(apk) as z:
+              idx=z.read("assets/public/index.html").decode()
+              fun=z.read("assets/public/js/family-fun-route.js").decode()
+              css=z.read("assets/public/css/apk-native.css").decode()
+              ui=z.read("assets/public/js/fb-mobile-ui-restoration.js").decode()
+              reaction=z.read("assets/public/js/fb-mobile-social-reactions.js").decode()
+              thumb=z.read("assets/public/js/fb-mobile-video-thumbnails.js").decode()
+              ota=z.read("assets/public/js/fb-mobile-ota.js").decode()
+              assert 'family-gallery-feature fb-mobile-gallery-shortcut' in fun
+              assert 'fb-mobile-video-controls.js' in idx
+              assert 'fb-mobile-ui-restoration.js' in idx
+              assert 'fb-mobile-social-reactions.js' in idx
+              assert '--fb-native-top-inset' in css
+              assert 'max(28px' not in css.split("multi-device Android status")[-1]
+              assert 'data-mobile-signout' in ui
+              assert 'Who reacted' in reaction
+              assert 'cachePut(' in thumb
+              assert 'manifest.version<=7' in ota
+              assert 'm.assets.length<=12' in ota
+              for script in ('desktop-shell-v2','family-countdown','desktop-date-time','family-prayer-widget'):
+                  assert 'js/'+script+'.js' not in idx
+              assert z.testzip() is None
+          print("PASS: Embedded Gallery/Back, video, reaction names, menu, thumbnail cache and multi-device status area")
+          PY
+
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '21'
+      - uses: android-actions/setup-android@v4
+
+      - name: Zipalign, sign and verify test APK
+        shell: bash
+        run: |
+          set -euo pipefail
+          sdkmanager --install "build-tools;35.0.0"
+          BT="$ANDROID_HOME/build-tools/35.0.0"
+          mkdir -p build/embedded-gallery downloads
+          "$BT/zipalign" -f -p 4 \
+            build/embedded-gallery/FamilyBook-embedded-gallery-unsigned.apk \
+            build/embedded-gallery/FamilyBook-embedded-gallery-aligned.apk
+          "$BT/zipalign" -c -p 4 build/embedded-gallery/FamilyBook-embedded-gallery-aligned.apk
+          keytool -genkeypair -noprompt -keyalg RSA -keysize 2048 -validity 365 \
+            -alias familybook-embedded-gallery -keystore build/embedded-gallery/diagnostic.keystore \
+            -storepass diagnostic123 -keypass diagnostic123 \
+            -dname "CN=Family Book Embedded Gallery Test,O=Diagnostic,C=ZA"
+          "$BT/apksigner" sign \
+            --ks build/embedded-gallery/diagnostic.keystore \
+            --ks-key-alias familybook-embedded-gallery \
+            --ks-pass pass:diagnostic123 --key-pass pass:diagnostic123 \
+            --out downloads/FamilyBook-embedded-gallery-test.apk \
+            build/embedded-gallery/FamilyBook-embedded-gallery-aligned.apk
+          "$BT/apksigner" verify --verbose downloads/FamilyBook-embedded-gallery-test.apk
+          sha256sum downloads/FamilyBook-embedded-gallery-test.apk
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: FamilyBook-embedded-gallery-test-APK
+          path: downloads/FamilyBook-embedded-gallery-test.apk
+
+      - name: Publish new test APK without replacing stable app
+        shell: bash
+        run: |
+          set -euo pipefail
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add downloads/FamilyBook-embedded-gallery-test.apk
+          if git diff --cached --quiet; then
+            echo "Embedded-gallery APK already current"
+            exit 0
+          fi
+          git commit -m "Publish Family Book bundled Gallery and Android safe area APK test"
+          git pull --rebase origin main
+          git push origin main
