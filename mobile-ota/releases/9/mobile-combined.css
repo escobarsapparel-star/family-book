@@ -1,0 +1,686 @@
+/* Family Book OTA v7 combined stylesheet: compatible with original APK's 6-asset loader. */
+/* mobile-ota/releases/7/camera-layout.css */
+/* Family Book Android camera UI hotfix 1.
+   Applies only while the Family Camera is in fullscreen mode.
+   Keeps native camera, recording, shutter, mode wheel and desktop site untouched. */
+
+/* Move the vertical controls down so Filters cannot hide behind Family Book's
+   mobile topbar and navigation row. Keep all four controls reachable. */
+#funCameraPanel.fun-camera-fullscreen .fun-camera-wrap .fun-camera-rail {
+  top: max(154px, calc(env(safe-area-inset-top, 0px) + 132px)) !important;
+  right: max(12px, env(safe-area-inset-right, 0px)) !important;
+  bottom: auto !important;
+  left: auto !important;
+  width: 58px !important;
+  display: flex !important;
+  flex-direction: column !important;
+  align-items: center !important;
+  gap: 8px !important;
+  max-height: calc(100dvh - 310px) !important;
+  overflow-y: auto !important;
+  overflow-x: hidden !important;
+  overscroll-behavior: contain;
+  scrollbar-width: none;
+  z-index: 35 !important;
+}
+#funCameraPanel.fun-camera-fullscreen .fun-camera-rail::-webkit-scrollbar { display: none; }
+#funCameraPanel.fun-camera-fullscreen .fun-camera-rail button {
+  flex: 0 0 auto !important;
+  width: 52px !important;
+  min-height: 54px !important;
+  color: #fff !important;
+}
+#funCameraPanel.fun-camera-fullscreen .fun-camera-rail button small {
+  color: #fff !important;
+  font-size: .68rem !important;
+  line-height: 1.1 !important;
+}
+
+/* Dark, high-contrast Countdown chooser regardless of the Family Book theme.
+   Higher specificity overrides the light theme's !important dialog colors. */
+html[data-theme="light"] #funCameraPanel.fun-camera-fullscreen .fun-camera-wrap #funCountdownOptions,
+html[data-theme="dark"] #funCameraPanel.fun-camera-fullscreen .fun-camera-wrap #funCountdownOptions,
+#funCameraPanel.fun-camera-fullscreen .fun-camera-wrap #funCountdownOptions {
+  background: rgba(12, 21, 17, .94) !important;
+  border: 1px solid rgba(255, 255, 255, .30) !important;
+  color: #fff !important;
+  box-shadow: 0 8px 28px rgba(0, 0, 0, .32) !important;
+}
+#funCameraPanel.fun-camera-fullscreen #funCountdownOptions > strong {
+  color: #fff !important;
+  opacity: 1 !important;
+  text-shadow: none !important;
+}
+#funCameraPanel.fun-camera-fullscreen #funCountdownOptions .fun-choice-row span {
+  color: #fff !important;
+  background: rgba(255, 255, 255, .12) !important;
+  border-color: rgba(255, 255, 255, .36) !important;
+  opacity: 1 !important;
+}
+#funCameraPanel.fun-camera-fullscreen #funCountdownOptions .fun-choice-row input:checked + span {
+  background: #91d4ad !important;
+  color: #112719 !important;
+  border-color: #bbe8cc !important;
+  box-shadow: 0 0 0 2px rgba(145, 212, 173, .28) !important;
+}
+@media (max-height: 650px) {
+  #funCameraPanel.fun-camera-fullscreen .fun-camera-wrap .fun-camera-rail {
+    top: 112px !important;
+    gap: 4px !important;
+    max-height: calc(100dvh - 206px) !important;
+  }
+}
+
+/* mobile-ota/releases/7/video-controls.css */
+/* Family Book Mobile OTA v3: restore video control usability in ORIGINAL APK.
+   No recorder, codec, storage or native-Android changes. */
+
+/* Saved videos: remove OTA v2's hidden-video regression. A small, functional
+   gallery button covers Android WebView's oversized preplay graphic. */
+.fun-gallery-media.fb-gallery-enhanced{
+  position:relative!important;
+  background:#102218!important;
+}
+.fun-gallery-media.fb-gallery-enhanced>video{
+  opacity:0!important;
+  pointer-events:none!important;
+}
+.fun-gallery-media.fb-gallery-enhanced .fb-gallery-cover{
+  position:absolute!important;
+  inset:0!important;
+  display:flex!important;
+  flex-direction:column;
+  align-items:center;
+  justify-content:center;
+  gap:12px;
+  background:linear-gradient(145deg,#234231,#101c15);
+  background-position:center;
+  background-size:cover;
+  z-index:1;
+  color:#fff;
+  text-align:center;
+  pointer-events:none!important;
+}
+.fun-gallery-media.fb-gallery-enhanced .fb-gallery-small-play{
+  display:grid;
+  place-items:center;
+  width:48px!important;
+  height:48px!important;
+  border-radius:50%;
+  border:1px solid rgba(255,255,255,.45);
+  background:rgba(5,9,6,.5);
+  color:#fff;
+  font-size:22px!important;
+  line-height:1!important;
+  padding-left:3px;
+  box-shadow:0 5px 15px rgba(0,0,0,.2);
+}
+.fun-gallery-media.fb-gallery-enhanced .fb-gallery-prompt{
+  font-size:12px!important;
+  font-weight:700;
+  letter-spacing:.02em;
+}
+.fun-gallery-media.fb-gallery-enhanced .fb-gallery-open{
+  position:absolute!important;
+  inset:0!important;
+  width:100%!important;
+  height:100%!important;
+  background:transparent!important;
+  border:0!important;
+  color:transparent!important;
+  z-index:4!important;
+  cursor:pointer!important;
+}
+.fun-gallery-media.fb-gallery-enhanced .fun-gallery-mode{
+  z-index:5!important;
+  pointer-events:none!important;
+}
+
+/* Review screen: a readable, explicit Play recording action above Save/Discard. */
+#funResult.fb-review-enhanced{
+  position:absolute;
+}
+#funResult.fb-review-enhanced>video{
+  opacity:0!important;
+  position:relative;
+  z-index:1;
+}
+#funResult.fb-review-enhanced[data-fb-review-playing="true"]>video{
+  opacity:1!important;
+}
+#funResult.fb-review-enhanced .fb-review-cover{
+  position:absolute!important;
+  inset:0!important;
+  z-index:2!important;
+  background:linear-gradient(145deg,#233e2e,#09140c);
+  background-size:cover;
+  background-position:center;
+  pointer-events:none!important;
+}
+#funResult.fb-review-enhanced .fb-review-cover[hidden]{
+  display:none!important;
+}
+#funResult.fb-review-enhanced .fun-review-caption{
+  z-index:4!important;
+  pointer-events:none;
+}
+#funResult.fb-review-enhanced .fb-review-play{
+  position:absolute!important;
+  left:50%!important;
+  bottom:max(243px,calc(env(safe-area-inset-bottom,0px) + 228px))!important;
+  transform:translateX(-50%)!important;
+  z-index:6!important;
+  min-width:188px!important;
+  max-width:calc(100vw - 36px)!important;
+  min-height:54px!important;
+  padding:10px 18px!important;
+  background:#f6fff8!important;
+  color:#1b4c30!important;
+  border:2px solid #7ecba0!important;
+  border-radius:999px!important;
+  font-weight:850!important;
+  font-size:15px!important;
+  box-shadow:0 6px 24px rgba(0,0,0,.4)!important;
+  cursor:pointer!important;
+  white-space:nowrap!important;
+}
+#funResult.fb-review-enhanced .fb-review-play[hidden]{display:none!important}
+#funResult.fb-review-enhanced .fb-review-error{
+  position:absolute!important;
+  left:15px!important;
+  right:15px!important;
+  bottom:max(304px,calc(env(safe-area-inset-bottom,0px) + 289px))!important;
+  background:rgba(33,18,17,.93)!important;
+  color:#fff!important;
+  border-radius:12px!important;
+  padding:12px!important;
+  z-index:7!important;
+  text-align:center!important;
+  font-size:13px!important;
+}
+#funResult.fb-review-enhanced .fb-review-error[hidden]{display:none!important}
+
+/* Video player opened from the gallery without replacing the current route. */
+body.fb-video-viewer-open{overflow:hidden!important}
+.fb-video-viewer{
+  position:fixed!important;
+  inset:0!important;
+  z-index:100500!important;
+  display:flex!important;
+  justify-content:center!important;
+  align-items:center!important;
+  background:rgba(0,0,0,.94)!important;
+  padding:max(20px,env(safe-area-inset-top,0px)) 10px max(20px,env(safe-area-inset-bottom,0px))!important;
+  box-sizing:border-box!important;
+}
+.fb-video-viewer-body{
+  width:100%;
+  max-width:600px;
+  max-height:94dvh;
+  display:flex;
+  flex-direction:column;
+  align-items:stretch;
+  gap:10px;
+  color:#fff;
+}
+.fb-video-viewer-top{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:12px;
+}
+.fb-video-viewer-top strong{font-size:16px}
+.fb-video-viewer-top button{
+  background:#f6fff8!important;
+  color:#174029!important;
+  border:0!important;
+  border-radius:12px!important;
+  padding:11px 16px!important;
+  font-weight:800!important;
+  min-height:44px!important;
+}
+.fb-video-viewer video{
+  display:block!important;
+  width:100%!important;
+  height:auto!important;
+  max-height:72dvh!important;
+  min-height:240px;
+  object-fit:contain!important;
+  opacity:1!important;
+  visibility:visible!important;
+  background:#080d0a!important;
+  border-radius:12px;
+}
+.fb-video-viewer-status{
+  min-height:18px;
+  margin:0;
+  color:#e1e9e3;
+  font-size:13px;
+  text-align:center;
+}
+.fb-video-viewer a.fb-video-viewer-open{
+  text-align:center;
+  color:#b8eacb!important;
+  text-decoration:underline!important;
+  font-size:14px!important;
+  padding:8px;
+}
+
+/* Make the saved-video shortcut clearly visible when opening Family Fun. */
+#funHub .fb-mobile-gallery-shortcut{
+  border:1px solid rgba(49,92,67,.23)!important;
+  background:linear-gradient(135deg,#f3faf4,#fff)!important;
+}
+#funHub .fb-mobile-gallery-shortcut .fun-feature-icon{
+  font-size:22px!important;
+  color:#315c43!important;
+}
+#funGalleryPanel{scroll-margin-top:190px}
+@media(max-height:650px){
+  #funResult.fb-review-enhanced .fb-review-play{bottom:185px!important}
+  #funResult.fb-review-enhanced .fb-review-error{bottom:245px!important}
+}
+
+/* OTA v5: gallery is a dedicated in-app screen, never an expanded
+   section below Family Fun. Keep original gallery DOM for stable cloud data. */
+#screen.fb-gallery-route-open>.family-fun-app-page.fb-gallery-background-hidden{
+  display:none!important;
+}
+#screen .fb-mobile-gallery-page{
+  display:block!important;
+  width:100%!important;
+  max-width:100%!important;
+  min-height:calc(100dvh - 230px);
+  padding:16px 16px 40px!important;
+  box-sizing:border-box;
+  background:var(--fb-page-bg,#faf9f3);
+}
+#screen .fb-mobile-gallery-page .fb-gallery-page-header{
+  margin-bottom:17px;
+  display:flex;
+  flex-direction:column;
+  align-items:flex-start;
+  gap:8px;
+}
+#screen .fb-mobile-gallery-page .fb-gallery-back{
+  display:inline-flex;
+  align-items:center;
+  min-height:43px;
+  padding:9px 14px;
+  border-radius:999px;
+  background:#eef6ef;
+  color:#25573b;
+  border:1px solid rgba(38,89,57,.23);
+  font-weight:800;
+  font-size:14px;
+  cursor:pointer;
+}
+#screen .fb-mobile-gallery-page .fb-gallery-page-header h1{
+  font-size:clamp(1.35rem,5vw,1.85rem);
+  color:var(--fb-heading-color,#244f37);
+  margin:5px 0 0;
+}
+#screen .fb-mobile-gallery-page .fb-gallery-page-header p{
+  color:var(--fb-muted,#69786d);
+  margin:0;
+  font-size:.91rem;
+}
+#screen .fb-mobile-gallery-page #funGalleryPanel{
+  display:block!important;
+  width:100%;
+  max-width:100%;
+  background:transparent;
+}
+#screen .fb-mobile-gallery-page #funGalleryPanel[hidden]{
+  display:none!important;
+}
+#screen .fb-mobile-gallery-page .fun-gallery-grid{
+  display:grid;
+  grid-template-columns:repeat(2,minmax(0,1fr));
+  gap:10px;
+}
+#screen .fb-mobile-gallery-page .fun-gallery-card{
+  min-width:0;
+}
+/* Gallery previews are cached per private video path in local IndexedDB. */
+#screen .fb-mobile-gallery-page .fb-gallery-cover{
+  transition:background-image .15s ease;
+}
+html[data-theme="dark"] #screen .fb-mobile-gallery-page{
+  background:#101711;
+}
+html[data-theme="dark"] #screen .fb-mobile-gallery-page .fb-gallery-back{
+  background:#1c3325;
+  border-color:#3b6148;
+  color:#dcf3e3;
+}
+html[data-theme="dark"] #screen .fb-mobile-gallery-page .fb-gallery-page-header h1{
+  color:#f2f8f3;
+}
+
+/* mobile-ota/releases/7/mobile-ui-restoration.css */
+/* OTA v7 copied from the current Family Book mobile website. */
+.reaction-total{
+  border:0;
+  background:transparent;
+  padding:6px 2px;
+  font:inherit;
+  cursor:pointer;
+  text-decoration:underline;
+  text-decoration-color:transparent;
+  text-underline-offset:3px;
+  transition:.16s ease;
+}
+.reaction-total:hover,.reaction-total:focus-visible{color:#315c43;text-decoration-color:currentColor}
+.reaction-total[hidden]{display:none!important}
+body.reaction-viewer-open{overflow:hidden}
+.reaction-viewer-overlay{
+  position:fixed;
+  inset:0;
+  z-index:2147482500;
+  display:grid;
+  place-items:end center;
+  padding:18px;
+  background:rgba(20,25,21,.58);
+  backdrop-filter:blur(5px);
+}
+.reaction-viewer{
+  width:min(460px,100%);
+  max-height:min(72vh,640px);
+  overflow:hidden;
+  display:flex;
+  flex-direction:column;
+  border:1px solid #ded4c8;
+  border-radius:24px;
+  background:#fffaf4;
+  box-shadow:0 28px 70px rgba(24,30,25,.32);
+}
+.reaction-viewer-head{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:16px;
+  padding:20px 20px 12px;
+}
+.reaction-viewer-head p{margin:0 0 4px;color:#b27a3d;font-size:.62rem;font-weight:900;letter-spacing:.09em}
+.reaction-viewer-head h2{margin:0;color:#315c43;font:700 1.55rem Georgia,serif}
+.reaction-viewer-close{
+  width:40px;
+  height:40px;
+  border:1px solid #ded4c8;
+  border-radius:50%;
+  background:#fff;
+  color:#5f5750;
+  display:grid;
+  place-items:center;
+}
+.reaction-viewer-close svg{width:19px;height:19px}
+.reaction-viewer-tabs{
+  display:flex;
+  gap:7px;
+  overflow-x:auto;
+  padding:0 20px 13px;
+  scrollbar-width:none;
+}
+.reaction-viewer-tabs::-webkit-scrollbar{display:none}
+.reaction-viewer-tabs button{
+  flex:0 0 auto;
+  border:1px solid #ded4c8;
+  border-radius:999px;
+  background:#fff;
+  color:#72675f;
+  padding:7px 10px;
+  font-size:.66rem;
+  font-weight:850;
+}
+.reaction-viewer-tabs button b{font-size:.6rem}
+.reaction-viewer-tabs button.active{background:#eaf2ec;border-color:#7aa28a;color:#315c43}
+.reaction-viewer-tabs button:disabled{opacity:.45}
+.reaction-viewer-list{
+  min-height:120px;
+  overflow:auto;
+  padding:4px 12px 16px;
+  border-top:1px solid #eee5dc;
+}
+.reaction-viewer-person{
+  display:grid;
+  grid-template-columns:auto minmax(0,1fr) auto;
+  align-items:center;
+  gap:11px;
+  padding:10px 8px;
+  border-radius:14px;
+}
+.reaction-viewer-person[role="button"]{cursor:pointer}
+.reaction-viewer-person[role="button"]:hover,.reaction-viewer-person[role="button"]:focus-visible{background:#f3eee6;outline:none}
+.reaction-viewer-avatar{
+  width:44px;
+  height:44px;
+  border-radius:50%;
+  overflow:hidden;
+  display:grid;
+  place-items:center;
+  background:#e7efe9;
+  color:#315c43;
+  font-size:.72rem;
+  font-weight:900;
+}
+.reaction-viewer-avatar img{width:100%;height:100%;object-fit:cover}
+.reaction-viewer-name{min-width:0;display:grid;gap:2px}
+.reaction-viewer-name strong{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;color:#342f2b;font-size:.78rem}
+.reaction-viewer-name small{color:#8a8077;font-size:.62rem}
+.reaction-viewer-badge{
+  width:34px;
+  height:34px;
+  border-radius:50%;
+  display:grid;
+  place-items:center;
+  background:#eef3ef;
+  color:#315c43;
+}
+.reaction-viewer-badge svg{width:17px;height:17px}
+.reaction-viewer-badge.is-love{background:#fff0f2;color:#b74459}
+.reaction-viewer-badge.is-celebrate{background:#fff3df;color:#96652f}
+.reaction-viewer-empty{
+  min-height:150px;
+  display:grid;
+  place-items:center;
+  align-content:center;
+  gap:8px;
+  color:#8a8077;
+  text-align:center;
+}
+.reaction-viewer-empty svg{width:30px;height:30px;color:#315c43}
+html[data-theme="dark"] .reaction-viewer{background:#171d18;border-color:#394037;box-shadow:0 28px 70px rgba(0,0,0,.48)}
+html[data-theme="dark"] .reaction-viewer-head h2{color:#a7cbb0}
+html[data-theme="dark"] .reaction-viewer-close,
+html[data-theme="dark"] .reaction-viewer-tabs button{background:#1e231d;border-color:#394037;color:#ddd6cc}
+html[data-theme="dark"] .reaction-viewer-tabs button.active{background:#263229;border-color:#79a989;color:#a7cbb0}
+html[data-theme="dark"] .reaction-viewer-list{border-color:#343a31}
+html[data-theme="dark"] .reaction-viewer-person[role="button"]:hover,
+html[data-theme="dark"] .reaction-viewer-person[role="button"]:focus-visible{background:#20261f}
+html[data-theme="dark"] .reaction-viewer-avatar{background:#263229;color:#a7cbb0}
+html[data-theme="dark"] .reaction-viewer-name strong{color:#f1ece5}
+html[data-theme="dark"] .reaction-viewer-name small{color:#aaa298}
+@media(min-width:621px){.reaction-viewer-overlay{place-items:center}}
+@media(max-width:620px){
+  .reaction-viewer-overlay{padding:0;align-items:end}
+  .reaction-viewer{width:100%;max-height:78vh;border-radius:24px 24px 0 0;border-bottom:0}
+}
+
+/* Restore visible account controls at the bottom of the mobile profile menu. */
+@media(max-width:759px){
+ .mobile-profile-menu-scroll{min-height:0;overflow-y:auto;-webkit-overflow-scrolling:touch;padding-bottom:max(30px,env(safe-area-inset-bottom))}
+ .mobile-profile-menu .fb-mobile-menu-appearance,.mobile-profile-menu .fb-mobile-menu-signout{width:100%;min-height:60px;display:flex;align-items:center;gap:12px;margin-top:12px;padding:12px 15px;border-radius:13px;text-align:left;background:var(--fb-shell-panel,#fffdf8);border:1px solid var(--fb-shell-border,rgba(49,92,67,.16));color:var(--fb-shell-text,#1f2a22)}
+ .mobile-profile-menu .fb-mobile-menu-appearance>span:nth-child(2),.mobile-profile-menu .fb-mobile-menu-signout>span:nth-child(2){display:grid;gap:2px;flex:1;min-width:0}
+ .mobile-profile-menu .fb-mobile-menu-appearance strong,.mobile-profile-menu .fb-mobile-menu-signout strong{font-weight:800;font-size:.88rem}
+ .mobile-profile-menu .fb-mobile-menu-appearance small,.mobile-profile-menu .fb-mobile-menu-signout small{font-size:.75rem;color:var(--fb-shell-muted,#738076)}
+ .mobile-profile-menu .fb-mobile-menu-signout{color:#a73839;border-color:rgba(167,56,57,.22)}
+ .mobile-profile-menu .fb-mobile-menu-signout>span:first-child{color:#a73839}
+}
+
+/* Keep the Family Memories rail touch-scrollable on mobile, independently of page navigation. */
+@media (max-width:759px){
+  #homeMemoryStripTrack.home-memory-strip-track{
+    display:flex!important;
+    width:100%!important;
+    min-width:0!important;
+    max-width:100%!important;
+    overflow-x:auto!important;
+    overflow-y:hidden!important;
+    touch-action:pan-x pan-y!important;
+    overscroll-behavior-x:contain;
+    -webkit-overflow-scrolling:touch;
+  }
+  #homeMemoryStripTrack .home-memory-strip-card,
+  #homeMemoryStripTrack .home-memory-add-card{flex-shrink:0!important}
+}
+
+
+
+/* Family Video Gallery — compact mobile layout, OTA v9.
+   Applies to both the original APK's dedicated gallery and the newer routed page.
+   No database, camera, recording or permission changes. */
+#screen .fb-mobile-gallery-page .fun-gallery-empty[hidden],
+#screen .fb-mobile-gallery-page #funGalleryEmpty[hidden],
+.fun-gallery-page #funGalleryEmpty[hidden],
+#funGalleryPanel .fun-gallery-empty[hidden] {
+  display:none!important;
+  visibility:hidden!important;
+}
+#screen .fb-mobile-gallery-page #funGalleryGrid[hidden],
+.fun-gallery-page #funGalleryGrid[hidden] {display:none!important}
+@media(max-width:759px) {
+  #screen .fb-mobile-gallery-page,
+  #screen .fun-gallery-page {
+    padding:12px 14px max(36px,env(safe-area-inset-bottom,20px))!important;
+    width:100%!important;
+    max-width:100%!important;
+    box-sizing:border-box!important;
+    overflow-x:hidden!important;
+  }
+  #screen .fb-mobile-gallery-page .fb-gallery-page-header {
+    gap:3px!important;
+    margin:0 0 12px!important;
+    align-items:flex-start!important;
+  }
+  #screen .fb-mobile-gallery-page .fb-gallery-back {
+    padding:5px 8px!important;
+    min-height:32px!important;
+    font-size:.78rem!important;
+    border:0!important;
+    background:transparent!important;
+    border-radius:8px!important;
+    box-shadow:none!important;
+  }
+  #screen .fb-mobile-gallery-page .fb-gallery-page-header h1{
+    font-size:clamp(1.32rem,5.2vw,1.72rem)!important;
+    line-height:1.17!important;
+    font-weight:800!important;
+    margin:0!important;
+  }
+  #screen .fb-mobile-gallery-page .fb-gallery-page-header p{display:none!important}
+  #screen .fb-mobile-gallery-page .fun-gallery-header{
+    display:flex!important;
+    justify-content:flex-end!important;
+    align-items:center!important;
+    margin:0 0 6px!important;
+    min-height:20px!important;
+    gap:0!important;
+  }
+  #screen .fb-mobile-gallery-page .fun-gallery-header>div {display:none!important}
+  #screen .fb-mobile-gallery-page .fun-gallery-header>span{
+    padding:3px 7px!important;
+    font-size:.68rem!important;
+    line-height:1.2!important;
+    border-radius:999px!important;
+  }
+  #screen .fun-gallery-page .fun-gallery-page-head{
+    display:flex!important;
+    flex-direction:column!important;
+    align-items:flex-start!important;
+    gap:4px!important;
+    margin:0 0 10px!important;
+  }
+  #screen .fun-gallery-page .fun-gallery-page-head .fun-feature-back{
+    padding:6px 8px!important;
+    min-height:32px!important;
+    font-size:.78rem!important;
+    background:transparent!important;
+    border:0!important;
+    box-shadow:none!important;
+  }
+  #screen .fun-gallery-page .fun-gallery-page-title h1{
+    font-size:1.45rem!important;
+    line-height:1.18!important;
+    margin:0!important;
+  }
+  #screen .fun-gallery-page .fun-gallery-page-title .eyebrow,
+  #screen .fun-gallery-page .fun-gallery-page-title p:last-child {display:none!important}
+  #screen .fun-gallery-page .fun-gallery-standalone-meta{
+    justify-content:flex-end!important;
+    margin:0 0 5px!important;
+  }
+  #screen .fun-gallery-page .fun-gallery-standalone-meta>span{
+    padding:3px 7px!important;font-size:.68rem!important
+  }
+  #screen .fb-mobile-gallery-page .fun-gallery-filters,
+  #screen .fun-gallery-page .fun-gallery-filters{
+    display:grid!important;
+    grid-template-columns:repeat(6,minmax(0,1fr))!important;
+    gap:7px!important;
+    width:100%!important;
+    max-width:100%!important;
+    overflow:visible!important;
+    padding:0 0 12px!important;
+    margin:0!important;
+    box-sizing:border-box!important;
+  }
+  #screen .fb-mobile-gallery-page .fun-gallery-filters button,
+  #screen .fun-gallery-page .fun-gallery-filters button {
+    grid-column:span 2!important;
+    min-width:0!important;
+    max-width:100%!important;
+    min-height:36px!important;
+    padding:6px 3px!important;
+    display:flex!important;
+    justify-content:center!important;
+    align-items:center!important;
+    gap:4px!important;
+    font-size:.72rem!important;
+    line-height:1.15!important;
+    white-space:normal!important;
+    text-align:center!important;
+    border-radius:10px!important;
+  }
+  #screen .fb-mobile-gallery-page .fun-gallery-filters button:nth-child(4),
+  #screen .fb-mobile-gallery-page .fun-gallery-filters button:nth-child(5),
+  #screen .fun-gallery-page .fun-gallery-filters button:nth-child(4),
+  #screen .fun-gallery-page .fun-gallery-filters button:nth-child(5){
+    grid-column:span 3!important;
+  }
+  #screen .fb-mobile-gallery-page .fun-gallery-filters button svg,
+  #screen .fun-gallery-page .fun-gallery-filters button svg{
+    width:14px!important;
+    height:14px!important;
+    flex-shrink:0!important;
+  }
+  #screen .fb-mobile-gallery-page #funGalleryGrid,
+  #screen .fun-gallery-page #funGalleryGrid {
+    grid-template-columns:repeat(2,minmax(0,1fr))!important;
+    gap:9px!important;
+    margin:0!important;
+    min-width:0!important;
+  }
+  #screen .fb-mobile-gallery-page .fun-gallery-card,
+  #screen .fun-gallery-page .fun-gallery-card{min-width:0!important}
+  #screen .fb-mobile-gallery-page .fun-gallery-empty:not([hidden]),
+  #screen .fun-gallery-page .fun-gallery-empty:not([hidden]){
+    margin:10px 0 0!important;
+    padding:24px 14px!important;
+    border-radius:14px!important;
+  }
+  #screen .fb-mobile-gallery-page .fun-gallery-empty:not([hidden]) p,
+  #screen .fun-gallery-page .fun-gallery-empty:not([hidden]) p{
+    font-size:.86rem!important;line-height:1.45!important
+  }
+}
