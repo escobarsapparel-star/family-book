@@ -1114,6 +1114,15 @@
 
       galleryCount.textContent=rows.length===1?"1 video":rows.length+" videos";
       galleryEmpty.hidden=visible.length>0;
+      // A selected category can have no matches even when the family has clips.
+      // Never tell the user the whole family gallery is empty in that case.
+      if(!visible.length){
+        galleryEmpty.querySelector("strong").textContent=rows.length
+          ?"No videos in this category":"No family videos yet";
+        galleryEmpty.querySelector("p").textContent=rows.length
+          ?"Choose another filter to see your family's recordings."
+          :"Record a video in Family Camera, then save it to your family gallery.";
+      }
       galleryGrid.innerHTML="";
 
       visible.forEach(item=>{
