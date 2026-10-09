@@ -1,0 +1,177 @@
+name: Build Family Book Midnight Aurora mobile theme APK
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths:
+      - "scripts/patch-original-midnight-mobile-theme.py"
+      - ".github/workflows/family-book-midnight-mobile-test.yml"
+      - "js/profile-avatar-route.js"
+      - "css/mobile-profile-menu.css"
+      - "js/visual-themes.js"
+      - "css/visual-themes.css"
+      - "css/midnight-mobile-final.css"
+      - "css/midnight-memories-mobile-final.css"
+      - "css/midnight-tree-mobile-final.css"
+      - "css/midnight-calendar-mobile-final.css"
+      - "css/midnight-family-fun-mobile-final.css"
+      - "css/member-profile-social.css"
+      - "css/mobile-header-stability.css"
+      - "assets/midnight-aurora-alpine.webp"
+      - "assets/midnight-aurora-widget-flow.webp"
+
+permissions:
+  contents: write
+
+jobs:
+  midnight-mobile-test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Verify original stable APK and bundle full OTA Settings controls
+        shell: bash
+        run: |
+          set -euo pipefail
+          printf '%s  %s\n' '7270a0519eb77e2d663b9db8f6545b378364ead2fa2c4536344c29e4abfaff01' 'downloads/FamilyBook.apk' | sha256sum -c -
+          python3 -m py_compile scripts/patch-original-midnight-mobile-theme.py
+          python3 scripts/patch-original-midnight-mobile-theme.py
+          unzip -p build/midnight-mobile/FamilyBook-midnight-mobile-unsigned.apk assets/public/js/profile-avatar-route.js > /tmp/fb-profile-menu.js
+          unzip -p build/midnight-mobile/FamilyBook-midnight-mobile-unsigned.apk assets/public/js/fb-mobile-ui-restoration.js > /tmp/fb-mobile-ui-restoration.js
+          node --check /tmp/fb-profile-menu.js
+          node --check /tmp/fb-mobile-ui-restoration.js
+          unzip -p build/midnight-mobile/FamilyBook-midnight-mobile-unsigned.apk assets/public/js/fb-settings-ota-updater.js > /tmp/fb-settings-ota-updater.js
+          node --check /tmp/fb-settings-ota-updater.js
+          unzip -p build/midnight-mobile/FamilyBook-midnight-mobile-unsigned.apk assets/public/js/fb-platform-owner-activity.js > /tmp/fb-platform-owner-activity.js
+          node --check /tmp/fb-platform-owner-activity.js
+          unzip -p build/midnight-mobile/FamilyBook-midnight-mobile-unsigned.apk assets/public/js/fb-visual-themes.js > /tmp/fb-visual-themes.js
+          unzip -p build/midnight-mobile/FamilyBook-midnight-mobile-unsigned.apk assets/public/js/fb-native-visual-theme-settings.js > /tmp/fb-native-visual-theme-settings.js
+          node --check /tmp/fb-visual-themes.js
+          node --check /tmp/fb-native-visual-theme-settings.js
+          python3 - <<'PY'
+          from zipfile import ZipFile
+          p='build/midnight-mobile/FamilyBook-midnight-mobile-unsigned.apk'
+          with ZipFile(p) as z:
+              menu=z.read('assets/public/js/profile-avatar-route.js').decode()
+              css=z.read('assets/public/css/apk-native.css').decode()
+              updater=z.read('assets/public/js/fb-settings-ota-updater.js').decode()
+              boot=z.read('assets/public/js/fb-mobile-ota.js').decode()
+              html=z.read('assets/public/index.html').decode()
+              assert "admin=String(u.role||'')==='admin'" in menu
+              assert "admin?'<button" in menu
+              assert 'data-mobile-menu-route="family-access"' in menu
+              assert 'data-mobile-signout' in menu
+              assert 'data-mobile-appearance' in menu
+              assert "top:calc(var(--fb-apk-status-h" in css
+              assert "content:\"\"!important" in css
+              assert "window.FB_MOBILE_OTA" in updater
+              assert "settingsOtaUpdates" in updater
+              assert "Check &amp; install OTA update" in updater
+              assert "if(manifest.version<=11" in boot
+              assert "window.FB_BUNDLED_OTA_VERSION=11" in html
+              assert 'family-gallery-feature fb-mobile-gallery-shortcut' in z.read('assets/public/js/family-fun-route.js').decode()
+              bundled=z.read('assets/public/css/fb-mobile-bundled.css').decode()
+              assert 'Family Video Gallery — compact mobile layout, OTA v9' in bundled
+              assert 'Family Book dark / system gallery shortcut correction, OTA v10' in bundled
+              assert 'data-mobile-ota-settings' in menu
+              assert 'fb-visual-themes.js' in html
+              assert 'fb-native-visual-theme-settings.js' in html
+              assert 'fb-midnight-native.css' in html
+              assert 'midnight-memories-mobile-final.css' in html
+              assert 'midnight-calendar-mobile-final.css' in html
+              for image in ('midnight-aurora-alpine.webp','midnight-aurora-widget-flow.webp'):
+                  picture=z.read('assets/public/assets/'+image)
+                  assert picture[:4]==b'RIFF' and picture[8:12]==b'WEBP'
+              picker=z.read('assets/public/js/fb-visual-themes.js').decode()
+              assert 'midnight-aurora' in picker
+              assert 'Classic Family' in picker
+              assert 'window.FB_VISUAL_THEME' in picker
+              assert 'data-mobile-menu-route="family-access"' in menu
+              assert 'data-mobile-menu-route="admin-activity"' in menu
+          print("PASS: menu options, admin guard, Android layout")
+          PY
+
+      - name: Test rendered menu for admin and ordinary family member
+        shell: bash
+        run: |
+          node - <<'JS'
+          const fs=require('fs'),vm=require('vm'),src=fs.readFileSync('/tmp/fb-profile-menu.js','utf8');
+          function render(role) {
+            let click,rendered='';
+            const selected={matches:()=>true};
+            const body={classList:{add(){},remove(){}},appendChild(el){rendered=el.innerHTML}};
+            const doc={body,addEventListener(name,fn){if(name==='click')click=fn},querySelector(){return null},createElement(){return {
+              className:'',innerHTML:'',setAttribute(){},querySelector(){return null},
+              querySelectorAll(){return []},addEventListener(){}}}};
+            const win={FB_AUTH:{get:()=>({name:'Test member',memberId:'1',role})},
+              matchMedia:()=>({matches:true}),go(){},addEventListener(){}};
+            vm.runInNewContext(src,{window:win,document:doc,setTimeout(){},console});
+            const target={matches:()=>true};
+            click({target:{closest:()=>target},preventDefault(){},stopPropagation(){},
+              stopImmediatePropagation(){}});
+            return rendered;
+          }
+          const member=render('member'),admin=render('admin');
+          if(!member.includes('data-mobile-signout')||!member.includes('data-mobile-appearance')||!member.includes('data-mobile-ota-settings'))throw Error('Public menu incomplete');
+          if(member.includes('data-mobile-menu-route="family-access"'))throw Error('ADMIN LEAK: ordinary member has admin row');
+          if(!admin.includes('data-mobile-menu-route="family-access"'))throw Error('Admin invitation entry missing');
+          console.log('PASS: member has standard menu, no admin invitation; admin alone has invite access');
+          // The new updater must be present in all native Settings routes.
+          const updater=fs.readFileSync('/tmp/fb-settings-ota-updater.js','utf8');
+          let html;
+          const settings={
+            pageShell:()=>'<section class="settings-page"><section class="settings-card settings-about-card"></section></section>',
+            bindPage(){},
+          };
+          const fake={documentElement:{classList:{contains:n=>n==='native-app'}},body:null,querySelector:()=>null,querySelectorAll:()=>[]};
+          vm.runInNewContext(updater,{window:{FB_SETTINGS:settings,FB_MOBILE_OTA:{checkNow:async()=> 'unchanged',getStatus:()=> 'idle'},addEventListener(){}},
+             document:fake,console});
+          html=settings.pageShell();
+          if(!html.includes('id="settingsOtaUpdates"')||!html.includes('fbSettingsOtaCheck'))throw Error('Settings OTA install control missing');
+          console.log('PASS: OTA controls are embedded in Settings for every Android family member');
+          JS
+
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '21'
+      - uses: android-actions/setup-android@v4
+
+      - name: Sign and verify separate embedded-OTA diagnostic APK
+        shell: bash
+        run: |
+          set -euo pipefail
+          sdkmanager --install "build-tools;35.0.0"
+          BTOOLS="$ANDROID_HOME/build-tools/35.0.0"
+          mkdir -p downloads
+          "$BTOOLS/zipalign" -f -p 4 \
+            build/midnight-mobile/FamilyBook-midnight-mobile-unsigned.apk \
+            build/midnight-mobile/FamilyBook-midnight-mobile-aligned.apk
+          "$BTOOLS/zipalign" -c -p 4 build/midnight-mobile/FamilyBook-midnight-mobile-aligned.apk
+          keytool -genkeypair -noprompt -keyalg RSA -keysize 2048 -validity 365 \
+            -alias familybook-midnight-mobile -keystore build/midnight-mobile/diagnostic.keystore \
+            -storepass diagnostic123 -keypass diagnostic123 \
+            -dname "CN=Family Book Offline v11 Gallery and Settings Test,O=Diagnostic,C=ZA"
+          "$BTOOLS/apksigner" sign \
+            --ks build/midnight-mobile/diagnostic.keystore \
+            --ks-key-alias familybook-midnight-mobile \
+            --ks-pass pass:diagnostic123 --key-pass pass:diagnostic123 \
+            --out downloads/FamilyBook-midnight-mobile-test.apk \
+            build/midnight-mobile/FamilyBook-midnight-mobile-aligned.apk
+          "$BTOOLS/apksigner" verify --verbose downloads/FamilyBook-midnight-mobile-test.apk
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: FamilyBook-midnight-mobile-test-APK
+          path: downloads/FamilyBook-midnight-mobile-test.apk
+
+      - name: Publish isolated test APK, do not replace current download
+        shell: bash
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add downloads/FamilyBook-midnight-mobile-test.apk
+          if git diff --cached --quiet; then exit 0; fi
+          git commit -m "Publish Family Book embedded Settings OTA updater test APK"
+          git pull --rebase origin main
+          git push origin main
