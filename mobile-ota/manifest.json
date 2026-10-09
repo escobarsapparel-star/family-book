@@ -1,12 +1,12 @@
 {
   "schema": 1,
   "channel": "original-mobile-lite",
-  "version": 8,
+  "version": 9,
   "assets": [
     {
       "type": "css",
       "name": "mobile-combined.css",
-      "sha256": "9593a9808df50555ac1b6818ccbec060c23cbfe869ecc955d674d84282375565"
+      "sha256": "4df9a6699af639139498937bca66e7c25b0e956dc187e8acd9350268e78636b9"
     },
     {
       "type": "js",
