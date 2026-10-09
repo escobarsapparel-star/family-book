@@ -1,0 +1,118 @@
+/* Family Book: Midnight Aurora Android performance edition.
+   CSS-only and scoped to the OPTIONAL Midnight visual theme on native mobile.
+   Keep the scenic wall art, gradients, layout, contrast and active controls;
+   remove expensive per-frame blurred backdrops on scrolling content.
+   Never change the camera's filter effects, video or image rendering. */
+@media (max-width:759px) {
+  html.native-app[data-fb-visual-theme="midnight-aurora"] :is(
+    #app>.app>.topbar,
+    #app>.app>.bottom,
+    .home-social-compact,
+    .home-memory-strip-shell,
+    .family-wall-panel,
+    .family-wall-panel .wall-post,
+    .memories-page .memories-head,
+    .memories-page .memory-filter-panel,
+    .memories-page #memoryLibrary.memory-gallery,
+    .tree-page.coordinate-tree-page .tree-head,
+    .tree-page.coordinate-tree-page .ct-board,
+    .tree-page.coordinate-tree-page .tree-history-directory,
+    .calendar-title-row,
+    .calendar-toolbar,
+    .calendar-upcoming-card,
+    .calendar-editor-card,
+    .calendar-detail-card,
+    .family-fun-app-page .fun-hub,
+    .family-fun-app-page .fun-feature-card,
+    .family-fun-app-page .fun-studio-card,
+    .family-fun-app-page .fun-camera-inline-panel:not(.fun-camera-fullscreen),
+    .members-page .members-head,
+    .members-page .member-card,
+    .fb-member-profile,
+    .fb-profile-card,
+    .settings-page .settings-card,
+    .mobile-profile-menu
+  ){
+    backdrop-filter:none!important;
+    -webkit-backdrop-filter:none!important;
+  }
+
+  /* Opaque glass-coloured surfaces cost much less to composite than an
+     animated scene visible through a blurred layer. */
+  html.native-app[data-fb-visual-theme="midnight-aurora"] :is(
+    .home-memory-strip-shell,
+    .family-wall-panel,
+    .memories-page #memoryLibrary.memory-gallery,
+    .memories-page .memory-filter-panel,
+    .tree-page.coordinate-tree-page .tree-history-directory,
+    .family-fun-app-page .fun-hub
+  ){
+    background-color:rgba(4,13,30,.90)!important;
+  }
+
+  /* Lists can contain many repeated cards. Show the mountains in the page
+     itself and in key feature headers, not in every scrolling card. */
+  html.native-app[data-fb-visual-theme="midnight-aurora"] :is(
+    .members-page .member-card,
+    .family-fun-app-page #funHub .fun-feature-card,
+    .fun-gallery-page .fun-gallery-card,
+    .fb-mobile-gallery-page .fun-gallery-card,
+    .tree-page.coordinate-tree-page .ct-person,
+    .tree-page.coordinate-tree-page .ct-couple
+  ){
+    background-image:none!important;
+    background-color:#0b1931!important;
+    backdrop-filter:none!important;
+    -webkit-backdrop-filter:none!important;
+  }
+
+  /* Keep active controls' cyan border but collapse multi-layer shadows to
+     one inexpensive neutral depth; do not affect full-screen camera preview. */
+  html.native-app[data-fb-visual-theme="midnight-aurora"] :is(
+    .family-wall-panel .wall-post,
+    .members-page .member-card,
+    .family-fun-app-page #funHub .fun-feature-card,
+    .fun-gallery-page .fun-gallery-card,
+    .fb-mobile-gallery-page .fun-gallery-card,
+    .tree-page.coordinate-tree-page .ct-person,
+    .tree-page.coordinate-tree-page .ct-couple,
+    .memory-card,
+    .album-card,
+    .calendar-day
+  ){
+    box-shadow:0 4px 12px rgba(0,0,0,.23)!important;
+  }
+
+  /* SVG lines in a large family tree are numerous; removing their
+     drop-shadow avoids a filter pass on every connector. */
+  html.native-app[data-fb-visual-theme="midnight-aurora"] :is(
+    .tree-page.coordinate-tree-page .ct-lines path,
+    .tree-page.coordinate-tree-page .ct-lines line,
+    .full-tree-stage .ct-lines path,
+    .full-tree-stage .ct-lines line
+  ){
+    filter:none!important;
+  }
+
+  /* A fixed glass navbar repaints continuously over moving scenery.
+     Its cyan/violet highlights stay, but blur is replaced with dark paint. */
+  html.native-app[data-fb-visual-theme="midnight-aurora"] #app>.app>.bottom{
+    background:
+      linear-gradient(90deg,rgba(3,11,28,.94),rgba(12,16,40,.94)),
+      url("../assets/midnight-aurora-alpine.webp") center top/cover no-repeat!important;
+  }
+}
+
+/* Respect accessibility preferences independently of device performance. */
+@media (prefers-reduced-motion:reduce) {
+  html.native-app[data-fb-visual-theme="midnight-aurora"] :is(
+    .fun-feature-card,
+    .member-card,
+    .wall-post,
+    .memory-card,
+    .theme-choice
+  ){
+    animation:none!important;
+    transition:none!important;
+  }
+}
