@@ -184,7 +184,7 @@ if(typeof window.currentPersonPhoto!=="function"){
    Later SPA navigations use the replaced FB_REACTIONS.controlsHtml directly. */
 (()=>{
  let refreshTimer=0,lastAttempt=0,loading=false;
- function bindVisible(){
+ function bindVisible(refresh=false){
   document.querySelectorAll(".reaction-bar[data-reaction-target]").forEach(bar=>{
     let total=bar.querySelector("[data-reaction-total]");
     if(total&&total.tagName!=="BUTTON"){
@@ -197,7 +197,7 @@ if(typeof window.currentPersonPhoto!=="function"){
       bar.dataset.reactionBound="";
     }
     if(bar.dataset.reactionBound!=="1")window.FB_REACTIONS?.bind?.(bar.parentElement||document);
-    window.FB_REACTIONS?.refreshBar?.(bar);
+    if(refresh)window.FB_REACTIONS?.refreshBar?.(bar);
   });
  }
  function schedule(){
@@ -209,7 +209,7 @@ if(typeof window.currentPersonPhoto!=="function"){
   lastAttempt=Date.now();loading=true;
   try{
     await window.FB_SOCIAL_DATA?.load?.();
-    bindVisible();
+    bindVisible(true);
   }catch(err){console.warn("Family Book OTA social refresh:",err?.message||err)}
   finally{loading=false}
  }
