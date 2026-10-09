@@ -1,0 +1,243 @@
+/* Family Book Android — Midnight Aurora final mobile route repairs.
+   Bundled after the site visual theme and previous OTA styles.
+   Applies ONLY when the optional Midnight Aurora visual theme is selected.
+   Classic, original Dark, Light and System are intentionally untouched. */
+
+@media(max-width:759px){
+  /* The original APK mounts Gallery as a second page inside #screen and
+     scrolls the window to zero. Unlike a normal route this bypasses the
+     space reserved for the fixed logo/nav rows. Reserve that space HERE. */
+  html.native-app[data-fb-visual-theme="midnight-aurora"]
+  #screen.fb-gallery-route-open>.fb-mobile-gallery-page{
+    margin-top:calc(var(--fb-mobile-header-h,102px) + 14px)!important;
+    padding-top:12px!important;
+    min-height:calc(100dvh - var(--fb-mobile-header-h,102px))!important;
+    box-sizing:border-box!important;
+  }
+  html.native-app[data-fb-visual-theme="midnight-aurora"]
+  #screen .family-fun-app-page:not(.fb-mobile-gallery-page){
+    margin-top:18px!important;
+  }
+  /* Keep scenic page artwork behind the Members content, not the default
+     cream document surface. The full website Members mobile rules are bundled
+     separately before this final stylesheet. */
+  html.native-app[data-fb-visual-theme="midnight-aurora"]
+  #app>.app>.screen:has(.members-page){
+    background:
+      linear-gradient(180deg,rgba(2,7,20,.30),rgba(2,8,22,.54) 45%,rgba(2,7,19,.9)),
+      url("../assets/midnight-aurora-widget-flow.webp") center top/100% auto repeat-y!important;
+    background-color:#020814!important;
+    color:#eef7ff!important;
+  }
+  html.native-app[data-fb-visual-theme="midnight-aurora"]
+  #app>.app>.screen>.members-page{
+    background:transparent!important;
+    color:#eef7ff!important;
+  }
+  html.native-app[data-fb-visual-theme="midnight-aurora"] .members-page .members-head{
+    background:linear-gradient(140deg,rgba(4,14,34,.54),rgba(2,10,29,.72)),
+      url("../assets/midnight-aurora-alpine.webp") center 32%/cover no-repeat!important;
+    border:1px solid rgba(103,232,249,.28)!important;
+    border-left:2px solid rgba(168,85,247,.74)!important;
+    border-radius:18px!important;
+    padding:17px 14px!important;
+    color:#eef7ff!important;
+  }
+  html.native-app[data-fb-visual-theme="midnight-aurora"] .members-page .members-head h1{
+    color:#f3f9ff!important;
+  }
+  html.native-app[data-fb-visual-theme="midnight-aurora"] .members-page .members-head p{
+    color:#b8cde0!important;
+  }
+}
+
+/* Family Wall post lettering in the original APK inherits the classic brown
+   ink despite dark Aurora post backgrounds. Change lettering, NOT the pale
+   reaction buttons (which already have legible dark icon colours). */
+html.native-app[data-fb-visual-theme="midnight-aurora"]
+#screen .family-wall-panel .wall-post{
+  color:#eef7ff!important;
+  border-color:rgba(103,232,249,.19)!important;
+}
+html.native-app[data-fb-visual-theme="midnight-aurora"]
+#screen .family-wall-panel .wall-post .wall-post-head strong,
+html.native-app[data-fb-visual-theme="midnight-aurora"]
+#screen .family-wall-panel .wall-post .wall-post-body>p{
+  color:#f0f7ff!important;
+  opacity:1!important;
+}
+html.native-app[data-fb-visual-theme="midnight-aurora"]
+#screen .family-wall-panel .wall-post .wall-post-head span,
+html.native-app[data-fb-visual-theme="midnight-aurora"]
+#screen .family-wall-panel .wall-post .reaction-total,
+html.native-app[data-fb-visual-theme="midnight-aurora"]
+#screen .family-wall-panel .wall-post .comment-toggle{
+  color:#b8c9de!important;
+  opacity:1!important;
+}
+html.native-app[data-fb-visual-theme="midnight-aurora"]
+#screen .family-wall-panel .wall-post .comment-toggle svg{
+  color:#78dfec!important;
+}
+html.native-app[data-fb-visual-theme="midnight-aurora"]
+#screen .family-wall-panel .wall-post .comment-thread,
+html.native-app[data-fb-visual-theme="midnight-aurora"]
+#screen .family-wall-panel .wall-post .reaction-bar{
+  border-color:rgba(144,197,230,.21)!important;
+}
+html.native-app[data-fb-visual-theme="midnight-aurora"]
+#screen .family-wall-panel .wall-post .comment-bubble{
+  background:rgba(13,28,53,.92)!important;
+  color:#f0f7ff!important;
+}
+html.native-app[data-fb-visual-theme="midnight-aurora"]
+#screen .family-wall-panel .wall-post .comment-bubble p{
+  color:#edf5ff!important;
+}
+html.native-app[data-fb-visual-theme="midnight-aurora"]
+#screen .family-wall-panel .wall-post .comment-bubble small{
+  color:#a7bcd4!important;
+}
+
+/* The original gallery shortcut has older hard-coded #fff rules. Force the
+   same glass treatment as Camera and Games, including actual readable text. */
+html.native-app[data-fb-visual-theme="midnight-aurora"]
+#screen .family-fun-app-page #funHub .fun-feature-grid button.fb-mobile-gallery-shortcut{
+  background:linear-gradient(145deg,rgba(5,17,39,.93),rgba(11,24,52,.79)),
+    url("../assets/midnight-aurora-widget-flow.webp") center 40%/cover no-repeat!important;
+  color:#eff9ff!important;
+  border:1px solid rgba(95,228,255,.28)!important;
+  border-left:2px solid rgba(168,85,247,.62)!important;
+  box-shadow:0 10px 26px rgba(0,0,0,.27),
+    inset 0 1px 0 rgba(255,255,255,.05)!important;
+}
+html.native-app[data-fb-visual-theme="midnight-aurora"]
+#screen .family-fun-app-page #funHub button.fb-mobile-gallery-shortcut .fun-feature-copy strong{
+  color:#f3f9ff!important;
+  -webkit-text-fill-color:#f3f9ff!important;
+  opacity:1!important;
+}
+html.native-app[data-fb-visual-theme="midnight-aurora"]
+#screen .family-fun-app-page #funHub button.fb-mobile-gallery-shortcut .fun-feature-copy small{
+  color:#b5c8df!important;
+  -webkit-text-fill-color:#b5c8df!important;
+  opacity:1!important;
+}
+html.native-app[data-fb-visual-theme="midnight-aurora"]
+#screen .family-fun-app-page #funHub button.fb-mobile-gallery-shortcut .fun-feature-icon{
+  background:linear-gradient(135deg,rgba(4,21,47,.94),rgba(29,24,73,.75))!important;
+  border:1px solid rgba(103,232,249,.28)!important;
+  color:#8af5ff!important;
+}
+html.native-app[data-fb-visual-theme="midnight-aurora"]
+#screen .family-fun-app-page #funHub button.fb-mobile-gallery-shortcut .fun-feature-arrow{
+  color:#8af5ff!important;
+}
+
+/* Gallery light cards and muted white-on-white titles shown in the screenshot.
+   Keep thumbnails/videos untouched; only style the cards and captions. */
+html.native-app[data-fb-visual-theme="midnight-aurora"]
+#screen .fb-mobile-gallery-page,
+html.native-app[data-fb-visual-theme="midnight-aurora"]
+#screen .fun-gallery-page{
+  background:transparent!important;
+  color:#edf7ff!important;
+}
+html.native-app[data-fb-visual-theme="midnight-aurora"]
+#screen .fb-mobile-gallery-page .fb-gallery-page-header h1,
+html.native-app[data-fb-visual-theme="midnight-aurora"]
+#screen .fun-gallery-page .fun-gallery-page-title h1{
+  color:#f1f9ff!important;
+}
+html.native-app[data-fb-visual-theme="midnight-aurora"]
+#screen .fb-mobile-gallery-page .fb-gallery-back,
+html.native-app[data-fb-visual-theme="midnight-aurora"]
+#screen .fun-gallery-page .fun-feature-back{
+  background:rgba(6,22,47,.92)!important;
+  border:1px solid rgba(103,232,249,.28)!important;
+  color:#b9f4ff!important;
+}
+html.native-app[data-fb-visual-theme="midnight-aurora"]
+#screen .fb-mobile-gallery-page .fun-gallery-card,
+html.native-app[data-fb-visual-theme="midnight-aurora"]
+#screen .fun-gallery-page .fun-gallery-card{
+  background:linear-gradient(145deg,#0a1935,#10172e)!important;
+  color:#edf7ff!important;
+  border:1px solid rgba(103,232,249,.27)!important;
+  box-shadow:0 9px 25px rgba(0,0,0,.24)!important;
+}
+html.native-app[data-fb-visual-theme="midnight-aurora"]
+#screen .fb-mobile-gallery-page .fun-gallery-copy,
+html.native-app[data-fb-visual-theme="midnight-aurora"]
+#screen .fun-gallery-page .fun-gallery-copy{
+  background:linear-gradient(145deg,#0a1935,#10172e)!important;
+  color:#edf7ff!important;
+}
+html.native-app[data-fb-visual-theme="midnight-aurora"]
+#screen .fb-mobile-gallery-page .fun-gallery-copy strong,
+html.native-app[data-fb-visual-theme="midnight-aurora"]
+#screen .fun-gallery-page .fun-gallery-copy strong{
+  color:#f4f8ff!important;
+  opacity:1!important;
+}
+html.native-app[data-fb-visual-theme="midnight-aurora"]
+#screen .fb-mobile-gallery-page .fun-gallery-copy small,
+html.native-app[data-fb-visual-theme="midnight-aurora"]
+#screen .fun-gallery-page .fun-gallery-copy small{
+  color:#bbcee0!important;
+}
+html.native-app[data-fb-visual-theme="midnight-aurora"]
+#screen .fb-mobile-gallery-page .fun-gallery-delete,
+html.native-app[data-fb-visual-theme="midnight-aurora"]
+#screen .fun-gallery-page .fun-gallery-delete{
+  background:rgba(120,32,55,.36)!important;
+  border:1px solid rgba(255,138,163,.34)!important;
+  color:#ffb4c4!important;
+}
+html.native-app[data-fb-visual-theme="midnight-aurora"]
+#screen .fb-mobile-gallery-page .fun-gallery-filters button,
+html.native-app[data-fb-visual-theme="midnight-aurora"]
+#screen .fun-gallery-page .fun-gallery-filters button{
+  background:rgba(4,17,38,.94)!important;
+  border:1px solid rgba(103,232,249,.2)!important;
+  color:#bed3e8!important;
+}
+html.native-app[data-fb-visual-theme="midnight-aurora"]
+#screen .fb-mobile-gallery-page .fun-gallery-filters button.active,
+html.native-app[data-fb-visual-theme="midnight-aurora"]
+#screen .fun-gallery-page .fun-gallery-filters button.active{
+  background:linear-gradient(135deg,#0894b2,#6841bc)!important;
+  border-color:rgba(122,235,255,.59)!important;
+  color:#fff!important;
+}
+html.native-app[data-fb-visual-theme="midnight-aurora"]
+#screen .fb-mobile-gallery-page .fun-gallery-header>span,
+html.native-app[data-fb-visual-theme="midnight-aurora"]
+#screen .fun-gallery-page .fun-gallery-standalone-meta>span{
+  background:rgba(6,25,51,.88)!important;
+  color:#95f1ff!important;
+  border:1px solid rgba(103,232,249,.22)!important;
+}
+html.native-app[data-fb-visual-theme="midnight-aurora"]
+#screen .fb-mobile-gallery-page .fun-gallery-empty,
+html.native-app[data-fb-visual-theme="midnight-aurora"]
+#screen .fun-gallery-page .fun-gallery-empty{
+  background:rgba(6,21,44,.91)!important;
+  color:#edf7ff!important;
+  border-color:rgba(103,232,249,.24)!important;
+}
+html.native-app[data-fb-visual-theme="midnight-aurora"]
+#screen .fb-mobile-gallery-page .fun-gallery-empty p,
+html.native-app[data-fb-visual-theme="midnight-aurora"]
+#screen .fun-gallery-page .fun-gallery-empty p{
+  color:#b5c8df!important;
+}
+
+/* Honor all hidden attributes: existing video filtering controls own whether
+   empty-state and grid are visible. Do not change video data or rendering. */
+html.native-app[data-fb-visual-theme="midnight-aurora"]
+#screen .fb-mobile-gallery-page .fun-gallery-empty[hidden],
+html.native-app[data-fb-visual-theme="midnight-aurora"]
+#screen .fun-gallery-page .fun-gallery-empty[hidden]{
+  display:none!important;
+}
