@@ -297,3 +297,14 @@
     color:#8ff5ff!important;
   }
 }
+
+/* Restore visible account controls at the bottom of the mobile profile menu. */
+@media(max-width:759px){
+ .mobile-profile-menu-scroll{min-height:0;overflow-y:auto;-webkit-overflow-scrolling:touch;padding-bottom:max(30px,env(safe-area-inset-bottom))}
+ .mobile-profile-menu .fb-mobile-menu-appearance,.mobile-profile-menu .fb-mobile-menu-signout{width:100%;min-height:60px;display:flex;align-items:center;gap:12px;margin-top:12px;padding:12px 15px;border-radius:13px;text-align:left;background:var(--fb-shell-panel,#fffdf8);border:1px solid var(--fb-shell-border,rgba(49,92,67,.16));color:var(--fb-shell-text,#1f2a22)}
+ .mobile-profile-menu .fb-mobile-menu-appearance>span:nth-child(2),.mobile-profile-menu .fb-mobile-menu-signout>span:nth-child(2){display:grid;gap:2px;flex:1;min-width:0}
+ .mobile-profile-menu .fb-mobile-menu-appearance strong,.mobile-profile-menu .fb-mobile-menu-signout strong{font-weight:800;font-size:.88rem}
+ .mobile-profile-menu .fb-mobile-menu-appearance small,.mobile-profile-menu .fb-mobile-menu-signout small{font-size:.75rem;color:var(--fb-shell-muted,#738076)}
+ .mobile-profile-menu .fb-mobile-menu-signout{color:#a73839;border-color:rgba(167,56,57,.22)}
+ .mobile-profile-menu .fb-mobile-menu-signout>span:first-child{color:#a73839}
+}
