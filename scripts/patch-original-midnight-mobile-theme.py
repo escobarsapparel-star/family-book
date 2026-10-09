@@ -118,6 +118,26 @@ def patch(source:Path,target:Path)->None:
     additions[ROOT+"css/fb-midnight-nav.css"]=nav[i:].encode("utf-8")
     additions[ROOT+"css/fb-midnight-native.css"]=NATIVE_CSS.encode("utf-8")
 
+    # The last build missed the website's complete Members mobile artwork,
+    # leaving a Classic cream body below the Midnight navigation.
+    members=site("css/mobile-members-polish.css").decode("utf-8")
+    members_start=members.find("MIDNIGHT AURORA — MEMBERS MOBILE")
+    members_end=members.find("MIDNIGHT AURORA — MEMBERS DESKTOP")
+    if members_start<0 or members_end<=members_start:
+        raise RuntimeError("Website mobile Members theme markers missing")
+    members_start=members.rfind("/*",0,members_start)
+    members_end=members.rfind("/*",0,members_end)
+    additions[ROOT+"css/fb-midnight-members.css"]=members[members_start:members_end].encode("utf-8")
+
+    # APK-only final CSS repair layer, loaded after all website theme styling.
+    # Do not apply any of it to the Classic/Dark default appearance.
+    final_css=site("scripts/assets/fb-midnight-apk-route-repairs.css")
+    for target in (b".family-wall-panel",b".fb-mobile-gallery-page",
+                   b".fb-mobile-gallery-shortcut",b".members-page"):
+        if target not in final_css:
+            raise RuntimeError("Missing final theme repair selector: "+repr(target))
+    additions[ROOT+"css/fb-midnight-apk-route-repairs.css"]=final_css
+
     engine=site("js/visual-themes.js").decode("utf-8")
     old='localStorage.getItem(KEY)||"classic"'
     if engine.count(old)!=1:raise RuntimeError("Site theme preference engine changed")
@@ -139,7 +159,9 @@ def patch(source:Path,target:Path)->None:
              *THEME_FILES,
              "fb-midnight-member-profiles.css",
              "fb-midnight-nav.css",
-             "fb-midnight-native.css"
+             "fb-midnight-native.css",
+             "fb-midnight-members.css",
+             "fb-midnight-apk-route-repairs.css"
         ])
         # Activate the selected theme before the UI paints, using a phone-local
         # preference. A new install selects Midnight; Classic stays available.
@@ -190,6 +212,14 @@ def patch(source:Path,target:Path)->None:
         assert "fb-mobile-video-controls.js" in index
         assert "family-gallery-feature fb-mobile-gallery-shortcut" in new.read(ROOT+"js/family-fun-route.js").decode("utf-8")
         assert "midnight-aurora-alpine.webp" in css
+        assert "fb-midnight-members.css" in index
+        assert "fb-midnight-apk-route-repairs.css" in index
+        assert b"members-head" in new.read(ROOT+"css/fb-midnight-members.css")
+        final=new.read(ROOT+"css/fb-midnight-apk-route-repairs.css").decode("utf-8")
+        for mark in ("wall-post-head strong","button.fb-mobile-gallery-shortcut",
+                     "fun-gallery-copy strong","fb-gallery-route-open",
+                     "#app>.app>.screen:has(.members-page)"):
+            assert mark in final,mark
     print("PASS: exact Midnight Aurora mobile website CSS for Home, Memories, Tree, Calendar and Family Fun")
     print("PASS: user/member profiles and neon navigation CSS; two scenic backgrounds inside APK")
     print("PASS: normal Dark theme default on fresh install; Midnight Aurora optional")
