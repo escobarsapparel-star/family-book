@@ -1,0 +1,148 @@
+
+/* Family Video Gallery — compact mobile layout, OTA v9.
+   Applies to both the original APK's dedicated gallery and the newer routed page.
+   No database, camera, recording or permission changes. */
+#screen .fb-mobile-gallery-page .fun-gallery-empty[hidden],
+#screen .fb-mobile-gallery-page #funGalleryEmpty[hidden],
+.fun-gallery-page #funGalleryEmpty[hidden],
+#funGalleryPanel .fun-gallery-empty[hidden] {
+  display:none!important;
+  visibility:hidden!important;
+}
+#screen .fb-mobile-gallery-page #funGalleryGrid[hidden],
+.fun-gallery-page #funGalleryGrid[hidden] {display:none!important}
+@media(max-width:759px) {
+  #screen .fb-mobile-gallery-page,
+  #screen .fun-gallery-page {
+    padding:12px 14px max(36px,env(safe-area-inset-bottom,20px))!important;
+    width:100%!important;
+    max-width:100%!important;
+    box-sizing:border-box!important;
+    overflow-x:hidden!important;
+  }
+  #screen .fb-mobile-gallery-page .fb-gallery-page-header {
+    gap:3px!important;
+    margin:0 0 12px!important;
+    align-items:flex-start!important;
+  }
+  #screen .fb-mobile-gallery-page .fb-gallery-back {
+    padding:5px 8px!important;
+    min-height:32px!important;
+    font-size:.78rem!important;
+    border:0!important;
+    background:transparent!important;
+    border-radius:8px!important;
+    box-shadow:none!important;
+  }
+  #screen .fb-mobile-gallery-page .fb-gallery-page-header h1{
+    font-size:clamp(1.32rem,5.2vw,1.72rem)!important;
+    line-height:1.17!important;
+    font-weight:800!important;
+    margin:0!important;
+  }
+  #screen .fb-mobile-gallery-page .fb-gallery-page-header p{display:none!important}
+  #screen .fb-mobile-gallery-page .fun-gallery-header{
+    display:flex!important;
+    justify-content:flex-end!important;
+    align-items:center!important;
+    margin:0 0 6px!important;
+    min-height:20px!important;
+    gap:0!important;
+  }
+  #screen .fb-mobile-gallery-page .fun-gallery-header>div {display:none!important}
+  #screen .fb-mobile-gallery-page .fun-gallery-header>span{
+    padding:3px 7px!important;
+    font-size:.68rem!important;
+    line-height:1.2!important;
+    border-radius:999px!important;
+  }
+  #screen .fun-gallery-page .fun-gallery-page-head{
+    display:flex!important;
+    flex-direction:column!important;
+    align-items:flex-start!important;
+    gap:4px!important;
+    margin:0 0 10px!important;
+  }
+  #screen .fun-gallery-page .fun-gallery-page-head .fun-feature-back{
+    padding:6px 8px!important;
+    min-height:32px!important;
+    font-size:.78rem!important;
+    background:transparent!important;
+    border:0!important;
+    box-shadow:none!important;
+  }
+  #screen .fun-gallery-page .fun-gallery-page-title h1{
+    font-size:1.45rem!important;
+    line-height:1.18!important;
+    margin:0!important;
+  }
+  #screen .fun-gallery-page .fun-gallery-page-title .eyebrow,
+  #screen .fun-gallery-page .fun-gallery-page-title p:last-child {display:none!important}
+  #screen .fun-gallery-page .fun-gallery-standalone-meta{
+    justify-content:flex-end!important;
+    margin:0 0 5px!important;
+  }
+  #screen .fun-gallery-page .fun-gallery-standalone-meta>span{
+    padding:3px 7px!important;font-size:.68rem!important
+  }
+  #screen .fb-mobile-gallery-page .fun-gallery-filters,
+  #screen .fun-gallery-page .fun-gallery-filters{
+    display:grid!important;
+    grid-template-columns:repeat(6,minmax(0,1fr))!important;
+    gap:7px!important;
+    width:100%!important;
+    max-width:100%!important;
+    overflow:visible!important;
+    padding:0 0 12px!important;
+    margin:0!important;
+    box-sizing:border-box!important;
+  }
+  #screen .fb-mobile-gallery-page .fun-gallery-filters button,
+  #screen .fun-gallery-page .fun-gallery-filters button {
+    grid-column:span 2!important;
+    min-width:0!important;
+    max-width:100%!important;
+    min-height:36px!important;
+    padding:6px 3px!important;
+    display:flex!important;
+    justify-content:center!important;
+    align-items:center!important;
+    gap:4px!important;
+    font-size:.72rem!important;
+    line-height:1.15!important;
+    white-space:normal!important;
+    text-align:center!important;
+    border-radius:10px!important;
+  }
+  #screen .fb-mobile-gallery-page .fun-gallery-filters button:nth-child(4),
+  #screen .fb-mobile-gallery-page .fun-gallery-filters button:nth-child(5),
+  #screen .fun-gallery-page .fun-gallery-filters button:nth-child(4),
+  #screen .fun-gallery-page .fun-gallery-filters button:nth-child(5){
+    grid-column:span 3!important;
+  }
+  #screen .fb-mobile-gallery-page .fun-gallery-filters button svg,
+  #screen .fun-gallery-page .fun-gallery-filters button svg{
+    width:14px!important;
+    height:14px!important;
+    flex-shrink:0!important;
+  }
+  #screen .fb-mobile-gallery-page #funGalleryGrid,
+  #screen .fun-gallery-page #funGalleryGrid {
+    grid-template-columns:repeat(2,minmax(0,1fr))!important;
+    gap:9px!important;
+    margin:0!important;
+    min-width:0!important;
+  }
+  #screen .fb-mobile-gallery-page .fun-gallery-card,
+  #screen .fun-gallery-page .fun-gallery-card{min-width:0!important}
+  #screen .fb-mobile-gallery-page .fun-gallery-empty:not([hidden]),
+  #screen .fun-gallery-page .fun-gallery-empty:not([hidden]){
+    margin:10px 0 0!important;
+    padding:24px 14px!important;
+    border-radius:14px!important;
+  }
+  #screen .fb-mobile-gallery-page .fun-gallery-empty:not([hidden]) p,
+  #screen .fun-gallery-page .fun-gallery-empty:not([hidden]) p{
+    font-size:.86rem!important;line-height:1.45!important
+  }
+}
