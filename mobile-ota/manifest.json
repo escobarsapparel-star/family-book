@@ -5,18 +5,8 @@
   "assets": [
     {
       "type": "css",
-      "name": "camera-layout.css",
-      "sha256": "4de2e40c34a5386fef2720ab8df079c89a6d08f2ac60eacc1c7b54e549a9aae9"
-    },
-    {
-      "type": "css",
-      "name": "video-controls.css",
-      "sha256": "27b85153d4a5828d37a8da569a0385f27b816569d168f15aaf0b4e3c942cd5d7"
-    },
-    {
-      "type": "css",
-      "name": "mobile-ui-restoration.css",
-      "sha256": "34da3dc3b1e6567b5519191bda1a8e679936ddc3ad3db8ed339c01d9ba6180aa"
+      "name": "mobile-combined.css",
+      "sha256": "9593a9808df50555ac1b6818ccbec060c23cbfe869ecc955d674d84282375565"
     },
     {
       "type": "js",
