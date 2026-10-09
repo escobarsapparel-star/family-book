@@ -1,0 +1,118 @@
+name: Build Family Book embedded profile menu (admin-safe) test APK
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths:
+      - "scripts/patch-original-embedded-profile-menu.py"
+      - ".github/workflows/original-embedded-profile-menu-test.yml"
+      - "js/profile-avatar-route.js"
+      - "css/mobile-profile-menu.css"
+
+permissions:
+  contents: write
+
+jobs:
+  embedded-profile-menu:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Verify original stable APK and bundle full mobile menu
+        shell: bash
+        run: |
+          set -euo pipefail
+          printf '%s  %s\n' '7270a0519eb77e2d663b9db8f6545b378364ead2fa2c4536344c29e4abfaff01' 'downloads/FamilyBook.apk' | sha256sum -c -
+          python3 -m py_compile scripts/patch-original-embedded-profile-menu.py
+          python3 scripts/patch-original-embedded-profile-menu.py
+          unzip -p build/embedded-menu/FamilyBook-embedded-menu-unsigned.apk assets/public/js/profile-avatar-route.js > /tmp/fb-profile-menu.js
+          unzip -p build/embedded-menu/FamilyBook-embedded-menu-unsigned.apk assets/public/js/fb-mobile-ui-restoration.js > /tmp/fb-mobile-ui-restoration.js
+          node --check /tmp/fb-profile-menu.js
+          node --check /tmp/fb-mobile-ui-restoration.js
+          python3 - <<'PY'
+          from zipfile import ZipFile
+          p='build/embedded-menu/FamilyBook-embedded-menu-unsigned.apk'
+          with ZipFile(p) as z:
+              menu=z.read('assets/public/js/profile-avatar-route.js').decode()
+              css=z.read('assets/public/css/apk-native.css').decode()
+              assert "admin=String(u.role||'')==='admin'" in menu
+              assert "admin?'<button" in menu
+              assert 'data-mobile-menu-route="family-access"' in menu
+              assert 'data-mobile-signout' in menu
+              assert 'data-mobile-appearance' in menu
+              assert "top:calc(var(--fb-apk-status-h" in css
+              assert "content:\"\"!important" in css
+          print("PASS: menu options, admin guard, Android layout")
+          PY
+
+      - name: Test rendered menu for admin and ordinary family member
+        shell: bash
+        run: |
+          node - <<'JS'
+          const fs=require('fs'),vm=require('vm'),src=fs.readFileSync('/tmp/fb-profile-menu.js','utf8');
+          function render(role) {
+            let click,rendered='';
+            const selected={matches:()=>true};
+            const body={classList:{add(){},remove(){}},appendChild(el){rendered=el.innerHTML}};
+            const doc={body,addEventListener(name,fn){if(name==='click')click=fn},querySelector(){return null},createElement(){return {
+              className:'',innerHTML:'',setAttribute(){},querySelector(){return null},
+              querySelectorAll(){return []},addEventListener(){}}}};
+            const win={FB_AUTH:{get:()=>({name:'Test member',memberId:'1',role})},
+              matchMedia:()=>({matches:true}),go(){},addEventListener(){}};
+            vm.runInNewContext(src,{window:win,document:doc,setTimeout(){},console});
+            const target={matches:()=>true};
+            click({target:{closest:()=>target},preventDefault(){},stopPropagation(){},
+              stopImmediatePropagation(){}});
+            return rendered;
+          }
+          const member=render('member'),admin=render('admin');
+          if(!member.includes('data-mobile-signout')||!member.includes('data-mobile-appearance'))throw Error('Public menu incomplete');
+          if(member.includes('data-mobile-menu-route="family-access"'))throw Error('ADMIN LEAK: ordinary member has admin row');
+          if(!admin.includes('data-mobile-menu-route="family-access"'))throw Error('Admin invitation entry missing');
+          console.log('PASS: member has standard menu, no admin invitation; admin alone has invite access');
+          JS
+
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '21'
+      - uses: android-actions/setup-android@v4
+
+      - name: Sign and verify separate profile-menu diagnostic APK
+        shell: bash
+        run: |
+          set -euo pipefail
+          sdkmanager --install "build-tools;35.0.0"
+          BTOOLS="$ANDROID_HOME/build-tools/35.0.0"
+          mkdir -p downloads
+          "$BTOOLS/zipalign" -f -p 4 \
+            build/embedded-menu/FamilyBook-embedded-menu-unsigned.apk \
+            build/embedded-menu/FamilyBook-embedded-menu-aligned.apk
+          "$BTOOLS/zipalign" -c -p 4 build/embedded-menu/FamilyBook-embedded-menu-aligned.apk
+          keytool -genkeypair -noprompt -keyalg RSA -keysize 2048 -validity 365 \
+            -alias familybook-profile-menu -keystore build/embedded-menu/diagnostic.keystore \
+            -storepass diagnostic123 -keypass diagnostic123 \
+            -dname "CN=Family Book Embedded Profile Menu Test,O=Diagnostic,C=ZA"
+          "$BTOOLS/apksigner" sign \
+            --ks build/embedded-menu/diagnostic.keystore \
+            --ks-key-alias familybook-profile-menu \
+            --ks-pass pass:diagnostic123 --key-pass pass:diagnostic123 \
+            --out downloads/FamilyBook-embedded-profile-menu-test.apk \
+            build/embedded-menu/FamilyBook-embedded-menu-aligned.apk
+          "$BTOOLS/apksigner" verify --verbose downloads/FamilyBook-embedded-profile-menu-test.apk
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: FamilyBook-embedded-profile-menu-test-APK
+          path: downloads/FamilyBook-embedded-profile-menu-test.apk
+
+      - name: Publish isolated test APK, do not replace current download
+        shell: bash
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add downloads/FamilyBook-embedded-profile-menu-test.apk
+          if git diff --cached --quiet; then exit 0; fi
+          git commit -m "Publish Family Book admin-safe embedded profile menu test APK"
+          git pull --rebase origin main
+          git push origin main
