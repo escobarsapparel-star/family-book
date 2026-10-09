@@ -1,0 +1,26 @@
+/* Family Book bundled owner-only platform Admin Activity page. */
+.fb-owner-activity-page{max-width:960px;margin:auto;padding:18px 12px 48px;color:var(--text,#f1f4ed)}
+.fb-owner-activity-page>header{padding:18px 0 10px}
+.fb-owner-activity-page header h1{font-size:clamp(1.45rem,5vw,2rem);margin:4px 0}
+.fb-owner-activity-page header p:last-child{font-size:.84rem;line-height:1.5;opacity:.82}
+.fb-owner-activity-back{min-height:40px;padding:8px 12px}
+.fb-owner-activity-panel{border:1px solid var(--border,rgba(130,160,140,.2));border-radius:16px;background:var(--panel,rgba(255,255,255,.04));padding:16px}
+.fb-owner-activity-panel h2{font-size:1rem;margin:16px 0 8px}
+.fb-owner-activity-panel>p{font-size:.8rem;opacity:.75;margin:0 0 12px}
+.fb-owner-activity-row{display:flex;align-items:center;justify-content:space-between;gap:10px}
+.fb-owner-activity-row h2{margin:0}
+.fb-owner-activity-row button{min-height:36px}
+.fb-owner-activity-stats{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px;padding-top:12px}
+.fb-owner-activity-stats>div{padding:12px;border-radius:12px;background:var(--surface,rgba(120,140,130,.09));border:1px solid var(--border,rgba(130,160,140,.16))}
+.fb-owner-activity-stats strong{display:block;font-size:1.35rem}
+.fb-owner-activity-stats span{display:block;font-size:.73rem;opacity:.8}
+.fb-owner-activity-users{display:grid;gap:8px;min-width:0}
+.fb-owner-activity-person{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:10px;padding:12px;border:1px solid var(--border,rgba(130,160,140,.16));border-radius:12px;background:var(--surface,rgba(120,140,130,.09));min-width:0}
+.fb-owner-activity-person strong,.fb-owner-activity-person small,.fb-owner-activity-date span{display:block;overflow-wrap:anywhere}
+.fb-owner-activity-person strong{font-size:.86rem}
+.fb-owner-activity-person small,.fb-owner-activity-date{font-size:.74rem;opacity:.8}
+.fb-owner-activity-date{display:grid;gap:2px}
+.fb-owner-empty{padding:16px;text-align:center;opacity:.7}
+.fb-owner-activity-open{width:100%;min-height:42px;margin-top:10px}
+.mobile-profile-menu-admin.fb-owner-only-activity{background:var(--fb-shell-panel,#29352d);color:var(--fb-shell-text,inherit)}
+@media(min-width:700px){.fb-owner-activity-stats{grid-template-columns:repeat(4,minmax(0,1fr))}}
