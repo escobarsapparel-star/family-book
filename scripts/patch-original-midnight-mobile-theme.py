@@ -121,7 +121,9 @@ def patch(source:Path,target:Path)->None:
     engine=site("js/visual-themes.js").decode("utf-8")
     old='localStorage.getItem(KEY)||"classic"'
     if engine.count(old)!=1:raise RuntimeError("Site theme preference engine changed")
-    engine=engine.replace(old,'localStorage.getItem(KEY)||"midnight-aurora"')
+    # Follow the mobile website: Midnight is opt-in, Classic is the visual default.
+    # Dark is handled independently by the native Settings appearance default.
+    if engine.count(old)!=1:raise RuntimeError("Unexpected theme engine default")
     engine=engine.replace("Premium theme preview — test version.","New scenic mobile layout.")
     engine=engine.replace(
        "These themes are currently a preview feature. Classic Family remains the default.",
@@ -143,7 +145,7 @@ def patch(source:Path,target:Path)->None:
         # preference. A new install selects Midnight; Classic stays available.
         init="""<script>(function(){
           try {
-            var name=localStorage.getItem("fb_visual_theme")||"midnight-aurora";
+            var name=localStorage.getItem("fb_visual_theme")||"classic";
             if(name==="midnight-aurora"){
               document.documentElement.setAttribute("data-fb-visual-theme",name);
               document.documentElement.dataset.fbVisualTheme=name;
@@ -153,7 +155,15 @@ def patch(source:Path,target:Path)->None:
         html=html.replace("</head>",init+"\n"+head_tags+"\n</head>")
         scripts='<script src="'+ENGINE+'"></script>\n<script src="'+SETTINGS+'"></script>'
         html=html.replace("</body>",scripts+"\n</body>")
-        changed={ROOT+"index.html":html.encode("utf-8")}
+        settings_path=ROOT+"js/settings.js"
+        settings=original.read(settings_path).decode("utf-8")
+        # Change only the fallback for a new account/device, not saved choices.
+        old_default='appearance:{\\n      theme:"system"\\n    }'.replace('\\n','\n')
+        new_default='appearance:{\\n      theme:"dark"\\n    }'.replace('\\n','\n')
+        if settings.count(old_default)!=1:
+            raise RuntimeError("Native Settings default format changed; abort safely")
+        settings=settings.replace(old_default,new_default)
+        changed={ROOT+"index.html":html.encode("utf-8"),settings_path:settings.encode("utf-8")}
         if set(additions).intersection(original.namelist()):
             raise RuntimeError("Theme asset would overwrite an original APK file")
         with ZipFile(target,"w") as new:
@@ -170,7 +180,9 @@ def patch(source:Path,target:Path)->None:
         index=new.read(ROOT+"index.html").decode("utf-8")
         script=new.read(ROOT+ENGINE).decode("utf-8")
         css=new.read(ROOT+"css/visual-themes.css").decode("utf-8")
-        assert "localStorage.getItem(KEY)||"+'"midnight-aurora"' in script
+        assert 'localStorage.getItem(KEY)||"classic"' in script
+        assert 'theme:"dark"' in new.read(ROOT+"js/settings.js").decode("utf-8")
+        assert 'localStorage.getItem("fb_visual_theme")||"classic"' in index
         assert "window.FB_VISUAL_THEME" in script
         assert "FB_VISUAL_THEME?.install?.()" in new.read(ROOT+SETTINGS).decode("utf-8")
         assert "fb-settings-ota-updater.js" in index
@@ -180,7 +192,8 @@ def patch(source:Path,target:Path)->None:
         assert "midnight-aurora-alpine.webp" in css
     print("PASS: exact Midnight Aurora mobile website CSS for Home, Memories, Tree, Calendar and Family Fun")
     print("PASS: user/member profiles and neon navigation CSS; two scenic backgrounds inside APK")
-    print("PASS: native Settings theme picker appears immediately, default Midnight Aurora, Classic remains")
+    print("PASS: normal Dark theme default on fresh install; Midnight Aurora optional")
+    print("PASS: saved Dark/Light/System/Midnight preferences are not overwritten")
     print("PASS: profile admin security, Gallery, OTA and unrelated Android binary assets retained")
     print("Unsigned APK:",target)
 
