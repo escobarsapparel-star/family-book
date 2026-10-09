@@ -219,7 +219,7 @@
 
   function loadStudio(onLoad){
     const script=document.createElement("script");
-    script.src="js/family-fun-studio.js?v=mobile-web-camera-race-fix-2";
+    script.src="js/family-fun-studio.js?v=compact-gallery-9";
     script.dataset.familyFunRuntime="1";
     script.onload=()=>{
       window.icons?.();
