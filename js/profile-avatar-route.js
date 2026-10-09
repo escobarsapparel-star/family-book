@@ -52,8 +52,10 @@
           <button type="button" class="mobile-profile-menu-card" data-mobile-menu-route="notifications"><span class="mobile-profile-menu-card-icon"><i data-lucide="bell-ring"></i></span><span><strong>Notifications</strong><small>Family activity and reminders</small></span></button>
           <button type="button" class="mobile-profile-menu-card" data-mobile-menu-route="settings"><span class="mobile-profile-menu-card-icon"><i data-lucide="settings"></i></span><span><strong>Settings</strong><small>Privacy and preferences</small></span></button>
         </div>
+        <button type="button" class="mobile-profile-menu-wide fb-mobile-menu-appearance" data-mobile-appearance><span><i data-lucide="monitor-cog"></i></span><span><strong>Display & accessibility</strong><small>Light, Dark or System theme</small></span><i data-lucide="chevron-right"></i></button>
         <button type="button" class="mobile-profile-menu-wide" data-mobile-help-about><span><i data-lucide="circle-help"></i></span><span><strong>Help & About</strong><small>Help, app information and support</small></span><i data-lucide="chevron-right"></i></button>
         ${admin?'<button type="button" class="mobile-profile-menu-admin" data-mobile-menu-route="family-access"><span><i data-lucide="user-plus"></i></span><span>Invite & family access</span><i data-lucide="chevron-right"></i></button>':''}
+        <button type="button" class="mobile-profile-menu-wide fb-mobile-menu-signout" data-mobile-signout><span><i data-lucide="log-out"></i></span><span><strong>Sign out</strong><small>Leave this account securely</small></span><i data-lucide="chevron-right"></i></button>
       </div>`;
     document.body.appendChild(menu);
     document.body.classList.add('fb-mobile-menu-open');
@@ -61,6 +63,16 @@
     menu.querySelector('.mobile-profile-menu-close')?.addEventListener('click',closeMenu);
     menu.querySelectorAll('[data-mobile-menu-route]').forEach(btn=>btn.addEventListener('click',()=>routeFromMenu(btn.dataset.mobileMenuRoute)));
     menu.querySelector('[data-mobile-help-about]')?.addEventListener('click',()=>routeFromMenu('settings',{about:true}));
+    menu.querySelector('[data-mobile-appearance]')?.addEventListener('click',()=>{
+      routeFromMenu('settings');
+      setTimeout(()=>document.querySelector('#settingsAppearance')?.scrollIntoView({behavior:'smooth',block:'start'}),90);
+    });
+    menu.querySelector('[data-mobile-signout]')?.addEventListener('click',async()=>{
+      if(!window.confirm('Sign out of Family Book?'))return;
+      closeMenu();
+      try{await window.FB_AUTH?.logout?.();window.location.reload()}
+      catch(err){alert(err?.message||'Could not sign out. Please try again.')}
+    });
     window.lucide?.createIcons?.();
   }
   function openOwnProfile(ev){
