@@ -1,7 +1,7 @@
 {
   "schema": 1,
   "channel": "original-mobile-lite",
-  "version": 7,
+  "version": 8,
   "assets": [
     {
       "type": "css",
@@ -27,6 +27,11 @@
       "type": "js",
       "name": "mobile-ui-restoration.js",
       "sha256": "faadbc8678726b832a9665929cabfec56edbe213d9648b3eb1631921092bf3e2"
+    },
+    {
+      "type": "js",
+      "name": "ota-settings.js",
+      "sha256": "617fc7496b72fa004977fce437e2d5fb96152bb8f203beb987be5e75ae4de89b"
     }
   ]
 }
