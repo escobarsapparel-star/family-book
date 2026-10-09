@@ -132,10 +132,10 @@ def patch(source:Path,target:Path)->None:
     # APK-only final CSS repair layer, loaded after all website theme styling.
     # Do not apply any of it to the Classic/Dark default appearance.
     final_css=site("scripts/assets/fb-midnight-apk-route-repairs.css")
-    for target in (b".family-wall-panel",b".fb-mobile-gallery-page",
-                   b".fb-mobile-gallery-shortcut",b".members-page"):
-        if target not in final_css:
-            raise RuntimeError("Missing final theme repair selector: "+repr(target))
+    for selector in (b".family-wall-panel",b".fb-mobile-gallery-page",
+                     b".fb-mobile-gallery-shortcut",b".members-page"):
+        if selector not in final_css:
+            raise RuntimeError("Missing final theme repair selector: "+repr(selector))
     additions[ROOT+"css/fb-midnight-apk-route-repairs.css"]=final_css
 
     engine=site("js/visual-themes.js").decode("utf-8")
