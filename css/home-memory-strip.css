@@ -110,3 +110,20 @@
   .home-memory-strip-caption{font-size:.73rem}
   .home-memory-add-avatar,.home-memory-add-avatar-media{width:56px;height:56px}
 }
+
+/* Keep the Family Memories rail touch-scrollable on mobile, independently of page navigation. */
+@media (max-width:759px){
+  #homeMemoryStripTrack.home-memory-strip-track{
+    display:flex!important;
+    width:100%!important;
+    min-width:0!important;
+    max-width:100%!important;
+    overflow-x:auto!important;
+    overflow-y:hidden!important;
+    touch-action:pan-x pan-y!important;
+    overscroll-behavior-x:contain;
+    -webkit-overflow-scrolling:touch;
+  }
+  #homeMemoryStripTrack .home-memory-strip-card,
+  #homeMemoryStripTrack .home-memory-add-card{flex-shrink:0!important}
+}
