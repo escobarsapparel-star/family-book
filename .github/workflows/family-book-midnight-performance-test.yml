@@ -1,0 +1,131 @@
+name: Build Family Book Midnight Aurora Lite performance APK
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths:
+      - ".github/workflows/family-book-midnight-performance-test.yml"
+      - "scripts/patch-original-midnight-performance.py"
+      - "scripts/assets/fb-midnight-android-performance.css"
+      - "css/mobile-members-polish.css"
+
+permissions:
+  contents: write
+
+jobs:
+  build-midnight-lite:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Verify baseline and build bundled theme
+        shell: bash
+        run: |
+          set -euo pipefail
+          echo "7270a0519eb77e2d663b9db8f6545b378364ead2fa2c4536344c29e4abfaff01  downloads/FamilyBook.apk" | sha256sum -c -
+          python3 -m py_compile scripts/patch-original-midnight-performance.py
+          python3 scripts/patch-original-midnight-performance.py
+          APK=build/midnight-performance/FamilyBook-midnight-performance-unsigned.apk
+          unzip -p "$APK" assets/public/js/settings.js > /tmp/fb-settings-dark.js
+          unzip -p "$APK" assets/public/js/fb-visual-themes.js > /tmp/fb-themes.js
+          unzip -p "$APK" assets/public/js/fb-native-visual-theme-settings.js > /tmp/fb-theme-settings.js
+          node --check /tmp/fb-settings-dark.js
+          node --check /tmp/fb-themes.js
+          node --check /tmp/fb-theme-settings.js
+          python3 - <<'PY'
+          from zipfile import ZipFile
+          original="downloads/FamilyBook.apk"
+          apk="build/midnight-performance/FamilyBook-midnight-performance-unsigned.apk"
+          with ZipFile(original) as o,ZipFile(apk) as a:
+              assert a.testzip() is None
+              assert o.read("AndroidManifest.xml")==a.read("AndroidManifest.xml")
+              for path in o.namelist():
+                  if path.endswith(".dex") or path.startswith("lib/"):
+                      assert a.read(path)==o.read(path),path
+              settings=a.read("assets/public/js/settings.js").decode()
+              theme=a.read("assets/public/js/fb-visual-themes.js").decode()
+              html=a.read("assets/public/index.html").decode()
+              owner=a.read("assets/public/js/profile-avatar-route.js").decode()
+              assert 'appearance:{\n      theme:"dark"\n    }' in settings
+              assert 'localStorage.getItem(KEY)||"classic"' in theme
+              assert 'localStorage.getItem("fb_visual_theme")||"classic"' in html
+              assert 'data-visual-theme="'+chr(36)+'{id}' in theme or "data-visual-theme" in theme
+              assert "midnight-aurora" in theme
+              assert "fb-settings-ota-updater.js" in html
+              assert "fb-mobile-video-controls.js" in html
+              assert "fb-platform-owner-activity.js" in html
+              assert "admin=String(u.role||'')==='admin'" in owner
+              assert "platformOwner=String(u.supabaseUserId||'')" in owner
+              assert 'fb-midnight-members.css' in html
+              assert 'fb-midnight-apk-route-repairs.css' in html
+              membercss=a.read("assets/public/css/fb-midnight-members.css").decode()
+              repair=a.read("assets/public/css/fb-midnight-apk-route-repairs.css").decode()
+              for selector in ("members-head","members-page","member-card"):
+                  assert selector in membercss,selector
+              for selector in ("wall-post-head strong","comment-toggle",
+                               "button.fb-mobile-gallery-shortcut","fun-gallery-copy strong",
+                               "fb-gallery-route-open","fun-gallery-delete"):
+                  assert selector in repair,selector
+              assert 'html.native-app[data-fb-visual-theme="midnight-aurora"]' in repair
+              assert repair.count("{")==repair.count("}"),"Invalid repair CSS braces"
+              assert "fb-midnight-android-performance.css" in html
+              perf=a.read("assets/public/css/fb-midnight-android-performance.css").decode()
+              assert 'html.native-app[data-fb-visual-theme="midnight-aurora"]' in perf
+              for selector in ("backdrop-filter:none!important","background-image:none!important","ct-lines path"):
+                  assert selector in perf,selector
+              assert perf.count("{")==perf.count("}")
+              assert html.index("fb-midnight-apk-route-repairs.css")<html.index("fb-midnight-android-performance.css")
+              print("PASS: Wall, Fun, Members and Video Gallery repairs present in APK")
+              for image in ("midnight-aurora-alpine.webp","midnight-aurora-widget-flow.webp"):
+                  content=a.read("assets/public/assets/"+image)
+                  assert content[:4]==b"RIFF" and content[8:12]==b"WEBP"
+          print("PASS: DARK default, Midnight opt-in, saved preferences preserved")
+          print("PASS: owner/admin restrictions and all original native files retained")
+          PY
+
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '21'
+      - uses: android-actions/setup-android@v4
+
+      - name: Sign and verify separate test package
+        shell: bash
+        run: |
+          set -euo pipefail
+          sdkmanager --install "build-tools;35.0.0"
+          BT="$ANDROID_HOME/build-tools/35.0.0"
+          APK=build/midnight-performance/FamilyBook-midnight-performance-unsigned.apk
+          ALIGNED=build/midnight-performance/FamilyBook-midnight-lite-aligned.apk
+          mkdir -p downloads
+          "$BT/zipalign" -f -p 4 "$APK" "$ALIGNED"
+          "$BT/zipalign" -c -p 4 "$ALIGNED"
+          keytool -genkeypair -noprompt -keyalg RSA -keysize 2048 -validity 365 \
+            -alias familybook-midnight-lite \
+            -keystore build/midnight-performance/midnight-lite-test.keystore \
+            -storepass familybooktest123 -keypass familybooktest123 \
+            -dname "CN=Family Book Midnight Aurora Lite Test,O=Family Book,C=ZA"
+          "$BT/apksigner" sign \
+            --ks build/midnight-performance/midnight-lite-test.keystore \
+            --ks-key-alias familybook-midnight-lite \
+            --ks-pass pass:familybooktest123 \
+            --key-pass pass:familybooktest123 \
+            --out downloads/FamilyBook-midnight-lite-test.apk "$ALIGNED"
+          "$BT/apksigner" verify --verbose downloads/FamilyBook-midnight-lite-test.apk
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: FamilyBook-midnight-lite-test
+          path: downloads/FamilyBook-midnight-lite-test.apk
+
+      - name: Publish separate APK without replacing the release
+        shell: bash
+        run: |
+          set -euo pipefail
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add downloads/FamilyBook-midnight-lite-test.apk
+          if git diff --cached --quiet; then exit 0; fi
+          git commit -m "Publish Family Book lightweight Midnight Aurora performance APK"
+          git pull --rebase origin main
+          git push origin main
