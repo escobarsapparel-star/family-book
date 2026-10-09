@@ -1317,3 +1317,55 @@ html[data-theme="dark"] .fun-gallery-standalone-meta>span{color:#8fc19f;backgrou
     font-size:.86rem!important;line-height:1.45!important
   }
 }
+
+
+/* Family Book dark / system gallery shortcut correction, OTA v10.
+   The previous forced-white OTA card overrode dark-mode styles. */
+html[data-theme="dark"] #funHub .fb-mobile-gallery-shortcut,
+html[data-theme="dark"] #funHub .family-gallery-feature,
+html[data-theme="midnight"] #funHub .fb-mobile-gallery-shortcut,
+html[data-theme="midnight"] #funHub .family-gallery-feature {
+  background:linear-gradient(135deg,#192820,#17221c)!important;
+  color:#f1f7f1!important;
+  border-color:rgba(145,196,160,.24)!important;
+  box-shadow:0 8px 22px rgba(0,0,0,.12)!important;
+}
+html[data-theme="dark"] #funHub .fb-mobile-gallery-shortcut .fun-feature-icon,
+html[data-theme="dark"] #funHub .family-gallery-feature .fun-feature-icon,
+html[data-theme="midnight"] #funHub .fb-mobile-gallery-shortcut .fun-feature-icon,
+html[data-theme="midnight"] #funHub .family-gallery-feature .fun-feature-icon{
+  background:#24392c!important;color:#a3cfb0!important;
+}
+html[data-theme="dark"] #funHub .fb-mobile-gallery-shortcut strong,
+html[data-theme="dark"] #funHub .family-gallery-feature strong,
+html[data-theme="midnight"] #funHub .fb-mobile-gallery-shortcut strong,
+html[data-theme="midnight"] #funHub .family-gallery-feature strong {
+  color:#f1f7f1!important;
+  opacity:1!important;
+}
+html[data-theme="dark"] #funHub .fb-mobile-gallery-shortcut small,
+html[data-theme="dark"] #funHub .family-gallery-feature small,
+html[data-theme="midnight"] #funHub .fb-mobile-gallery-shortcut small,
+html[data-theme="midnight"] #funHub .family-gallery-feature small{
+  color:#b6c5b8!important;opacity:1!important;
+}
+html[data-theme="dark"] #funHub .fb-mobile-gallery-shortcut .fun-feature-arrow,
+html[data-theme="midnight"] #funHub .fb-mobile-gallery-shortcut .fun-feature-arrow{
+  color:#a0b4a4!important;
+}
+@media(prefers-color-scheme:dark){
+  html:not([data-theme="light"]):not([data-theme="dark"]):not([data-theme="midnight"]) #funHub .fb-mobile-gallery-shortcut,
+  html:not([data-theme="light"]):not([data-theme="dark"]):not([data-theme="midnight"]) #funHub .family-gallery-feature {
+    background:linear-gradient(135deg,#192820,#17221c)!important;
+    color:#f1f7f1!important;
+    border-color:rgba(145,196,160,.24)!important;
+  }
+  html:not([data-theme="light"]):not([data-theme="dark"]):not([data-theme="midnight"]) #funHub .fb-mobile-gallery-shortcut strong,
+  html:not([data-theme="light"]):not([data-theme="dark"]):not([data-theme="midnight"]) #funHub .family-gallery-feature strong{color:#f1f7f1!important}
+  html:not([data-theme="light"]):not([data-theme="dark"]):not([data-theme="midnight"]) #funHub .fb-mobile-gallery-shortcut small,
+  html:not([data-theme="light"]):not([data-theme="dark"]):not([data-theme="midnight"]) #funHub .family-gallery-feature small{color:#b6c5b8!important}
+  html:not([data-theme="light"]):not([data-theme="dark"]):not([data-theme="midnight"]) #funHub .fb-mobile-gallery-shortcut .fun-feature-icon,
+  html:not([data-theme="light"]):not([data-theme="dark"]):not([data-theme="midnight"]) #funHub .family-gallery-feature .fun-feature-icon {
+    background:#24392c!important;color:#a3cfb0!important;
+  }
+}
