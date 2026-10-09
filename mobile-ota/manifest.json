@@ -1,7 +1,7 @@
 {
   "schema": 1,
   "channel": "original-mobile-lite",
-  "version": 6,
+  "version": 7,
   "assets": [
     {
       "type": "css",
@@ -14,6 +14,11 @@
       "sha256": "27b85153d4a5828d37a8da569a0385f27b816569d168f15aaf0b4e3c942cd5d7"
     },
     {
+      "type": "css",
+      "name": "mobile-ui-restoration.css",
+      "sha256": "34da3dc3b1e6567b5519191bda1a8e679936ddc3ad3db8ed339c01d9ba6180aa"
+    },
+    {
       "type": "js",
       "name": "video-controls.js",
       "sha256": "ecd79efc1db58155594c035878afba6ec7e8de35b7f9622b5115563c9f13cf2d"
@@ -22,6 +27,16 @@
       "type": "js",
       "name": "video-thumbnails.js",
       "sha256": "557deff838f3ddadbbcc2a95d13c3b517b9c1fe08a3dc2bd7a78590651925962"
+    },
+    {
+      "type": "js",
+      "name": "social-reactions.js",
+      "sha256": "6f250be12a04f315ca1f1513cd1b738ed11d46d7accbf8fd51e369fae56a3d12"
+    },
+    {
+      "type": "js",
+      "name": "mobile-ui-restoration.js",
+      "sha256": "faadbc8678726b832a9665929cabfec56edbe213d9648b3eb1631921092bf3e2"
     }
   ]
 }
