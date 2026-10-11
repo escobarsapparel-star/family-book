@@ -1,0 +1,57 @@
+name: Diagnose Family Book Original APK Calendar Routes
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths:
+      - ".github/workflows/family-book-calendar-diagnostics.yml"
+permissions:
+  contents: read
+jobs:
+  inspect-calendar:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Inspect exact embedded calendar and special card runtime
+        shell: bash
+        run: |
+          set -euo pipefail
+          python3 - <<'PY'
+          import re, zipfile
+          paths=[
+            'downloads/FamilyBook.apk',
+            'downloads/FamilyBook-midnight-lite-test.apk',
+            'downloads/FamilyBook-midnight-layout-repairs-test.apk'
+          ]
+          for path in paths:
+            try:
+              z=zipfile.ZipFile(path)
+            except FileNotFoundError:continue
+            print('=== APK',path,'===')
+            names=set(z.namelist())
+            for p in ('index.html','js/app.js','js/calendar.js','js/event-day.js','js/organizer-data.js','js/marriage-anniversaries.js','js/marriage-remembrance.js','js/calendar-date-add.js'):
+              key='assets/public/'+p
+              if key not in names:
+                print('MISSING',p);continue
+              code=z.read(key).decode('utf-8',errors='replace')
+              print('FOUND',p,'bytes',len(code))
+              if p=='index.html':
+                for q in ('js/calendar.js','js/event-day.js','js/organizer-data.js','js/marriage-anniversaries.js'):
+                  print('   script',q,'present',bool(re.search(r'src=["\\x27]'+re.escape(q),code)))
+              if p=='js/app.js':
+                for q in ('FB_CALENDAR.bindRoute','window.FB_EVENT_DAY','view-event:',"r==='calendar'","r===\"calendar\"",'familybook:event-day'):
+                  print('   code',q,'present',q in code)
+                for line in code.splitlines():
+                  if 'FB_CALENDAR.bindRoute' in line or 'FB_EVENT_DAY' in line or 'function go(' in line:
+                    print('   route line',line[:550])
+              if p=='js/calendar.js':
+                for q in ('function bindCalendar(', 'function renderMonth(', 'function renderUpcoming(', 'function bindRoute(', 'window.FB_CALENDAR=', 'function detailShell('):
+                  print('   code',q,'present',q in code)
+                for line in code.splitlines():
+                  if 'function bindRoute(' in line or 'window.FB_CALENDAR=' in line or 'function bindCalendar(' in line:
+                    print('   binding',line[:850])
+              if p=='js/event-day.js':
+                for q in ('window.FB_EVENT_DAY=', 'enhanceCurrentRoute', 'function applyThemeToEventDetail('):
+                  print('   code',q,'present',q in code)
+            print('=== end APK ===')
+          PY
