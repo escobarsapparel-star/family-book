@@ -1,15 +1,17 @@
-# Family Book Android download
+# Family Book Android downloads
 
-Current public Android build:
+## Last confirmed working on an Android phone
 
-`FamilyBook-v1.4.5-cache-test.apk`
+`FamilyBook-original-fullscreen-test.apk`
 
-Public download path:
+The user confirmed this original APK was functional and its fullscreen issue was resolved. It is deliberately the main download linked from the Family Book website while newer APK builds undergo real-device testing.
 
-`/family-book/downloads/FamilyBook-v1.4.5-cache-test.apk`
+Public direct download:
 
-Version 1.4.5 is the current versioned APK linked from the Family Book website. It includes the corrected Android memory guard that prevents the high-resolution upload override from running in the Android WebView.
+`https://raw.githubusercontent.com/escobarsapparel-star/family-book/main/downloads/FamilyBook-original-fullscreen-test.apk`
 
-Version 1.4.4 was withdrawn because it could crash after launch/login. The previous v1.4.2 cache-test APK remains available as a rollback fallback.
+**Important:** This separately signed test APK may not install over an existing Family Book APK. Synchronise or back up any unsaved local data before replacing an installation.
 
-Native Android changes still require a new APK. Compatible HTML/CSS/JavaScript fixes can continue to ship through the interface-update system.
+## Experimental APKs
+
+Other files in this directory are testing/diagnostic builds. A successful GitHub Actions build or signature verification does not guarantee stable behaviour on an Android phone. Do not promote these as the recommended app until tested.
