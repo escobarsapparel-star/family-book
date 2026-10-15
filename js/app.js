@@ -51,14 +51,11 @@ A.innerHTML=`<main class="login-page">
 
 <a class="apk-download-cta" data-apk-download href="${FB_ANDROID_APK_URL}" download hidden>
   <span class="apk-download-icon"><i data-lucide="smartphone"></i></span>
-  <span><strong>Download Family Book v1.4.8</strong><small>Home isolation test · calendar and event widgets paused</small></span>
+  <span><strong>Download working Family Book APK</strong><small>Original fullscreen build · verified on a phone</small></span>
   <i data-lucide="download"></i>
 </a>
-        <a class="android-install-link" href="https://raw.githubusercontent.com/escobarsapparel-star/family-book/main/downloads/FamilyBook-original-fullscreen-test.apk" target="_blank" rel="noopener">Download original fullscreen test APK (GitHub direct)</a>
-        <a class="android-install-link" href="https://raw.githubusercontent.com/escobarsapparel-star/family-book/main/downloads/FamilyBook-original-mobile-lite-test.apk" target="_blank" rel="noopener">Download Mobile Lite test APK (no desktop widgets)</a>
-        <a class="android-install-link" href="https://raw.githubusercontent.com/escobarsapparel-star/family-book/main/downloads/FamilyBook-original-mobile-fixes-ota-test.apk" target="_blank" rel="noopener">Download Mobile Bugfix + OTA Test (reactions and Family Camera)</a>
-        <small style="display:block;margin:8px 0;color:var(--muted,#666)">Diagnostic only. This APK is signed differently from the original and may require uninstalling the existing app after backing up unsynced data.</small>
-        <button class="android-install-link" type="button" data-android-install-help>Install guide</button>
+        <small style="display:block;margin:8px 0;color:var(--muted,#666)">Test-signed APK. Synchronise or back up unsaved local data before replacing an installed app.</small>
+         <button class="android-install-link" type="button" data-android-install-help>Install guide</button>
 
 <form id="signup" class="form hidden">
 <div><p class="eyebrow">CREATE YOUR ACCOUNT</p><h1>Start with Family Book</h1><p class="muted">Create your secure login first. After signing in, you can create a new family or join one with an invitation.</p></div>
@@ -185,8 +182,8 @@ function setFamilyFormSaving(form,saving,label="Saving…"){
  }
 }
 
-const FB_ANDROID_LATEST_VERSION="1.4.8";
-const FB_ANDROID_APK_URL="downloads/FamilyBook-v1.4.8-cache-test.apk";
+const FB_ANDROID_LATEST_VERSION="1.0";
+const FB_ANDROID_APK_URL="https://raw.githubusercontent.com/escobarsapparel-star/family-book/main/downloads/FamilyBook-original-fullscreen-test.apk";
 const FB_ANDROID_RELEASE_KEY="familybook_android_release_modal_146";
 let fbAndroidApkAvailable=null;
 
@@ -260,19 +257,16 @@ function showAndroidInstallSplash(force=false){
      <button class="android-install-close" type="button" aria-label="Close"><i data-lucide="x"></i></button>
      <div class="android-install-hero">
        <img class="android-install-logo" src="assets/logo/family-book-logo-dark-header.png" alt="Family Book">
-       <p>ANDROID APP · VERSION 1.4.8</p>
-       <h2 id="androidInstallTitle">Get the latest Family Book app</h2>
-       <span>Version 1.4.7 tests Classic theme startup with heavy visual effects disabled on Android.</span>
+       <p>ANDROID APP · CONFIRMED WORKING BUILD</p>
+       <h2 id="androidInstallTitle">Download working Family Book APK</h2>
+       <span>Original fullscreen Android build confirmed working on a phone; newer experimental builds remain under testing.</span>
      </div>
      <details class="android-release-guide"><summary>How to install</summary>${androidInstallStepsHtml()}</details>
      <div class="android-install-actions">
-       <a class="primary" href="${FB_ANDROID_APK_URL}" download><i data-lucide="download"></i>Download Family Book v1.4.8</a>
-       <a class="secondary" href="https://raw.githubusercontent.com/escobarsapparel-star/family-book/main/downloads/FamilyBook-original-fullscreen-test.apk" target="_blank" rel="noopener">Original fullscreen test (GitHub)</a>
-       <a class="secondary" href="https://raw.githubusercontent.com/escobarsapparel-star/family-book/main/downloads/FamilyBook-original-mobile-lite-test.apk" target="_blank" rel="noopener">Mobile Lite test — no desktop widgets</a>
-       <a class="secondary" href="https://raw.githubusercontent.com/escobarsapparel-star/family-book/main/downloads/FamilyBook-original-mobile-fixes-ota-test.apk" target="_blank" rel="noopener">Mobile bugfix + OTA test — new</a>
+       <a class="primary" href="${FB_ANDROID_APK_URL}" download><i data-lucide="download"></i>Download working fullscreen APK</a>
        <button class="secondary" type="button" data-android-not-now>Not now</button>
      </div>
-     <small class="android-install-note">If you already use an older Cache Test build, install v1.4.7 over it. Your normal Family Book app remains separate.</small>
+     <small class="android-install-note">This APK uses a test signing certificate. Android may require uninstalling your current app; synchronise or back up unsaved data first.</small>
    </section>`;
  document.body.appendChild(d);
  document.body.classList.add("android-release-open");
@@ -346,7 +340,7 @@ async function showLatestReleaseAlert(){
  // APK notices are useful on Android mobile web and for outdated native installs,
  // but should never interrupt the desktop website.
  if(!isNative&&!isAndroidBrowser())return;
- if(isNative&&!isVersionOlder(nativeInfo?.version||"",FB_ANDROID_LATEST_VERSION))return;
+ if(isNative)return; // This last-confirmed working APK is not a native in-place update.
 
  latestReleaseAlertShownThisSession=true;
  const d=document.createElement("dialog");
@@ -359,15 +353,15 @@ async function showLatestReleaseAlert(){
      <button class="android-install-close" type="button" aria-label="Close"><i data-lucide="x"></i></button>
      <div class="android-install-hero">
        <img class="android-install-logo" src="assets/logo/family-book-logo-dark-header.png" alt="Family Book">
-       <p>${isNative?"APP UPDATE AVAILABLE":"LATEST ANDROID APP"} · VERSION ${FB_ANDROID_LATEST_VERSION}</p>
-       <h2 id="latestReleaseTitle">${isNative?"A newer Family Book app is available":"Family Book v"+FB_ANDROID_LATEST_VERSION+" is available"}</h2>
-       <span>${isNative?(current?"You are using v"+current+". ":"")+"Update to the v1.4.7 original v1.4.7 test build.":"Download the v1.4.7 original v1.4.7 test build."}</span>
+       <p>ANDROID APP · CONFIRMED WORKING BUILD</p>
+       <h2 id="latestReleaseTitle">Working Family Book APK available</h2>
+       <span>Original fullscreen Android build confirmed working on a phone. Newer experimental APKs have not all passed phone testing.</span>
      </div>
      <div class="android-install-actions">
-       <button class="primary" type="button" data-latest-apk><i data-lucide="download"></i>${isNative?"Update to v":"Download v"}${FB_ANDROID_LATEST_VERSION}</button>
+       <button class="primary" type="button" data-latest-apk><i data-lucide="download"></i>Download working APK</button>
        <button class="secondary" type="button" data-latest-later>Not now</button>
      </div>
-     <small class="android-install-note">${isNative?"Install the new APK over your older Cache Test build.":"Android download only. You can dismiss this alert and continue using the website."}</small>
+     <small class="android-install-note">Separately signed test APK; may not install over the app you have. Back up unsynchronised data before uninstalling.</small>
    </section>`;
  document.body.appendChild(d);
  document.body.classList.add("android-release-open");
@@ -381,7 +375,7 @@ async function showLatestReleaseAlert(){
    if(isNative&&window.FB_NATIVE?.Browser?.open){
      try{await window.FB_NATIVE.Browser.open({url})}catch(_){location.href=url}
    }else{
-     const a=document.createElement("a");a.href=url;a.download="FamilyBook-v1.4.8-cache-test.apk";document.body.appendChild(a);a.click();a.remove();
+     const a=document.createElement("a");a.href=url;a.download="FamilyBook-original-fullscreen-test.apk";document.body.appendChild(a);a.click();a.remove();
    }
  });
  window.icons?.();
