@@ -184,7 +184,7 @@
   function nativeUpdateShell(){
     if(!isNativeFamilyBook())return "";
     return `<section class="settings-card fb-native-update-card" id="settingsAppUpdate">
-      <div class="settings-card-head"><span class="settings-card-icon"><i data-lucide="download-cloud"></i></span><div><p>APP UPDATE</p><h2>Family Book updates</h2><span>Check GitHub immediately instead of waiting for the automatic update check.</span></div></div>
+      <div class="settings-card-head"><span class="settings-card-icon"><i data-lucide="download-cloud"></i></span><div><p>APP UPDATE</p><h2>Family Book updates</h2><span>Check for a compatible interface update without reinstalling the Android app.</span></div></div>
       <div class="settings-version-row"><span>App version</span><strong id="fbNativeAppVersion">Loading…</strong></div>
       <div class="settings-version-row"><span>Interface build</span><strong id="fbNativeInterfaceVersion">Loading…</strong></div>
       <div class="settings-version-row" id="fbNativePendingRow" hidden><span>Ready update</span><strong id="fbNativePendingVersion"></strong></div>
@@ -192,40 +192,18 @@
         <i data-lucide="circle-check"></i><span>Ready to check for updates.</span>
       </div>
       <button type="button" class="secondary fb-native-update-button" id="checkFamilyBookUpdate"><i data-lucide="refresh-cw"></i><span>Check for updates</span></button>
-      <a class="secondary fb-native-update-button" id="installFamilyBook143" href="https://familybook.co.za/downloads/FamilyBook-v1.4.8-cache-test.apk" download>
-        <i data-lucide="download"></i><span>Install Android 1.4.8 recovery test</span>
-      </a>
-      <a class="secondary fb-native-update-button" href="https://raw.githubusercontent.com/escobarsapparel-star/family-book/main/downloads/FamilyBook-original-fullscreen-test.apk" target="_blank" rel="noopener">
-        <i data-lucide="download"></i><span>Download Original Fullscreen Test (GitHub direct)</span>
-      </a>
-      <a class="secondary fb-native-update-button" href="https://raw.githubusercontent.com/escobarsapparel-star/family-book/main/downloads/FamilyBook-original-mobile-lite-test.apk" target="_blank" rel="noopener">
-        <i data-lucide="download"></i><span>Download Mobile Lite Test (Desktop widgets disabled)</span>
-      </a>
-      <a class="secondary fb-native-update-button" href="https://raw.githubusercontent.com/escobarsapparel-star/family-book/main/downloads/FamilyBook-original-mobile-fixes-ota-test.apk" target="_blank" rel="noopener">
-        <i data-lucide="download"></i><span>Download Mobile Bugfix + OTA Test (Camera and Reactions)</span>
-      </a>
-      <p class="settings-note">Fullscreen diagnostic uses the original Android app foundation but a different signing key. Back up any unsynced data before uninstalling another version.</p>
-      <p class="settings-note"><i data-lucide="info"></i>This is the v1.4.7 Classic theme diagnostic test APK; it installs separately from production. A production in-place APK requires the existing Family Book signing key.</p>
+      <p class="settings-note"><i data-lucide="shield-check"></i>Only compatible OTA updates will be offered. Older diagnostic APK installers are not app updates.</p>
     </section>`;
   }
 
   function androidInstallerShell(){
+    if(isNativeFamilyBook())return "";
     return `<section class="settings-card fb-native-update-card" id="settingsAndroidInstaller">
-      <div class="settings-card-head"><span class="settings-card-icon"><i data-lucide="smartphone"></i></span><div><p>ANDROID APP</p><h2>Install Family Book 1.4.8</h2><span>Test Classic theme with visual effects disabled in Android v1.4.7. This installs separately from the main Family Book app.</span></div></div>
-      <a class="secondary fb-native-update-button" id="installFamilyBook143" href="https://familybook.co.za/downloads/FamilyBook-v1.4.8-cache-test.apk" download>
-        <i data-lucide="download"></i><span>Install Android 1.4.8 recovery test</span>
+      <div class="settings-card-head"><span class="settings-card-icon"><i data-lucide="smartphone"></i></span><div><p>ANDROID APP</p><h2>Download working Family Book APK</h2><span>Original fullscreen Android build. This is the most recent APK explicitly confirmed working on a phone; newer experimental builds are still being tested.</span></div></div>
+      <a class="secondary fb-native-update-button" id="downloadFamilyBookWorking" href="https://raw.githubusercontent.com/escobarsapparel-star/family-book/main/downloads/FamilyBook-original-fullscreen-test.apk" download>
+        <i data-lucide="download"></i><span>Download confirmed-working fullscreen APK</span>
       </a>
-      <a class="secondary fb-native-update-button" href="https://raw.githubusercontent.com/escobarsapparel-star/family-book/main/downloads/FamilyBook-original-fullscreen-test.apk" target="_blank" rel="noopener">
-        <i data-lucide="download"></i><span>Download Original Fullscreen Test (GitHub direct)</span>
-      </a>
-      <a class="secondary fb-native-update-button" href="https://raw.githubusercontent.com/escobarsapparel-star/family-book/main/downloads/FamilyBook-original-mobile-lite-test.apk" target="_blank" rel="noopener">
-        <i data-lucide="download"></i><span>Download Mobile Lite Test (Desktop widgets disabled)</span>
-      </a>
-      <a class="secondary fb-native-update-button" href="https://raw.githubusercontent.com/escobarsapparel-star/family-book/main/downloads/FamilyBook-original-mobile-fixes-ota-test.apk" target="_blank" rel="noopener">
-        <i data-lucide="download"></i><span>Download Mobile Bugfix + OTA Test (Camera and Reactions)</span>
-      </a>
-      <p class="settings-note">Fullscreen diagnostic uses the original Android app foundation but a different signing key. Back up any unsynced data before uninstalling another version.</p>
-      <p class="settings-note"><i data-lucide="info"></i>This test build installs as a separate Family Book app. A production in-place APK must be signed with the same production key as your current Family Book installation.</p>
+      <p class="settings-note"><i data-lucide="info"></i>This is a test-signed APK, not an in-place production update. It might require uninstalling the existing app; synchronise or back up any unsaved data first.</p>
     </section>`;
   }
 
