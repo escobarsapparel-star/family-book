@@ -1,0 +1,106 @@
+/* Family Book Settings — Android downloads responsive layout fix.
+   Former .secondary anchors were inline, so long titles overlapped on phones.
+   Scoped to Settings APK cards: does not alter theme, roles, or other controls. */
+
+.settings-page .fb-native-update-card{
+  box-sizing:border-box;
+  min-width:0;
+  max-width:100%;
+  overflow-wrap:anywhere;
+}
+.settings-page .fb-native-update-card .settings-card-head{
+  display:grid;
+  grid-template-columns:42px minmax(0,1fr);
+  align-items:center;
+  gap:12px;
+  min-width:0;
+}
+.settings-page .fb-native-update-card .settings-card-head>div{
+  min-width:0;
+  max-width:100%;
+}
+.settings-page .fb-native-update-card .settings-card-head h2,
+.settings-page .fb-native-update-card .settings-card-head>div>span{
+  display:block;
+  min-width:0;
+  max-width:100%;
+  overflow-wrap:break-word;
+}
+.settings-page .fb-native-update-card .fb-native-update-button{
+  display:flex!important;
+  position:relative;
+  box-sizing:border-box;
+  width:100%;
+  max-width:100%;
+  min-width:0;
+  min-height:48px;
+  height:auto;
+  margin:0 0 9px;
+  padding:12px 13px;
+  gap:11px;
+  align-items:center;
+  justify-content:flex-start;
+  text-align:left;
+  white-space:normal;
+  overflow-wrap:anywhere;
+  line-height:1.42;
+  text-decoration:none;
+  border-radius:12px;
+  cursor:pointer;
+}
+.settings-page .fb-native-update-card .fb-native-update-button>svg,
+.settings-page .fb-native-update-card .fb-native-update-button>i,
+.settings-page .fb-native-update-card .fb-native-update-button>.lucide{
+  display:block;
+  flex:0 0 20px;
+  width:20px;
+  height:20px;
+  max-width:20px;
+  align-self:center;
+}
+.settings-page .fb-native-update-card .fb-native-update-button>span{
+  display:block;
+  min-width:0;
+  max-width:100%;
+  flex:1 1 auto;
+  font:inherit;
+  line-height:1.4;
+  overflow-wrap:anywhere;
+  word-break:normal;
+}
+.settings-page .fb-native-update-card .settings-note{
+  box-sizing:border-box;
+  display:flex;
+  max-width:100%;
+  min-width:0;
+  margin:10px 0 0;
+  line-height:1.5;
+  overflow-wrap:anywhere;
+}
+.settings-page .fb-native-update-card .settings-note svg,
+.settings-page .fb-native-update-card .settings-note i{
+  flex:0 0 16px;
+  max-width:16px;
+}
+@media(max-width:600px){
+  .settings-page .fb-native-update-card{
+    padding:14px 13px;
+  }
+  .settings-page .fb-native-update-card .settings-card-head{
+    grid-template-columns:40px minmax(0,1fr);
+    gap:10px;
+  }
+  .settings-page .fb-native-update-card .settings-card-head h2{
+    font-size:1.13rem;
+    line-height:1.25;
+  }
+  .settings-page .fb-native-update-card .settings-card-head>div>span{
+    font-size:.77rem;
+    line-height:1.45;
+  }
+  .settings-page .fb-native-update-card .fb-native-update-button{
+    font-size:.83rem;
+    padding:12px 11px;
+    gap:10px;
+  }
+}
