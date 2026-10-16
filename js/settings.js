@@ -199,11 +199,11 @@
   function androidInstallerShell(){
     if(isNativeFamilyBook())return "";
     return `<section class="settings-card fb-native-update-card" id="settingsAndroidInstaller">
-      <div class="settings-card-head"><span class="settings-card-icon"><i data-lucide="smartphone"></i></span><div><p>ANDROID APP</p><h2>Download working Family Book APK</h2><span>Original fullscreen Android build. This is the most recent APK explicitly confirmed working on a phone; newer experimental builds are still being tested.</span></div></div>
-      <a class="secondary fb-native-update-button" id="downloadFamilyBookWorking" href="https://raw.githubusercontent.com/escobarsapparel-star/family-book/main/downloads/FamilyBook-original-fullscreen-test.apk" download>
-        <i data-lucide="download"></i><span>Download confirmed-working fullscreen APK</span>
+      <div class="settings-card-head"><span class="settings-card-icon"><i data-lucide="smartphone"></i></span><div><p>ANDROID APP</p><h2>Family Book — Calendar &amp; Event Cards Fix</h2><span>11 October 2026 test release. Includes the Calendar repair and special celebration cards when events are selected.</span></div></div>
+      <a class="secondary fb-native-update-button" id="downloadFamilyBookWorking" href="https://raw.githubusercontent.com/escobarsapparel-star/family-book/main/downloads/FamilyBook-special-event-cards-on-tap-test.apk" download>
+        <i data-lucide="download"></i><span>Download Calendar &amp; Event Cards Fix APK (11 October)</span>
       </a>
-      <p class="settings-note"><i data-lucide="info"></i>This is a test-signed APK, not an in-place production update. It might require uninstalling the existing app; synchronise or back up any unsaved data first.</p>
+      <p class="settings-note"><i data-lucide="info"></i>This is a test-signed APK, not a guaranteed in-place update. If Android asks you to uninstall an existing app, first make sure family data is synced and any unsaved local data is backed up.</p>
     </section>`;
   }
 
